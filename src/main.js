@@ -32,7 +32,7 @@ var LoadModule=function(url,callback,error)
 }
 
 LoadModule("https://stevinus73.github.io/IdleCookies/src/engine/engine.js");
-import("./engine/engine.js").then((module) => {
+import("https://stevinus73.github.io/IdleCookies/src/engine/engine.js").then((module) => {
     console.log(module);
 });
 
