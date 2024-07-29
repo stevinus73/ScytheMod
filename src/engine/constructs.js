@@ -17,5 +17,5 @@ upgrade_engine.flavored_engine.addNewFlavoredCookie=function(cost, multiplier, i
 }
 
 function magic() {
-    Game.LocalizeUpgradesAndAchievs();
+    LocalizeUpgradesAndAchievs();
 }
