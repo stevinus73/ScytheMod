@@ -24,6 +24,7 @@ shimmer_engine.init = function () {
          * or not having the upgrade,
          * makes golden cookies nonexistent!
          */
+        if (!Game.Has('Golden switch')) return false; //probably not necessary but just in case
         if (Game.Has('Golden switch [off]')) return true; else return false;
     };
 
