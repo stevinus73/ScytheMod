@@ -13,4 +13,4 @@ var IC = {
 
     },
 };
-Game.RegisterMod("IdleCookies", IC);
+Game.registerMod("IdleCookies", IC);
