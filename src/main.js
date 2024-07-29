@@ -32,6 +32,9 @@ var LoadModule = function (url, callback, error) {
 }
 LoadModule("https://stevinus73.github.io/IdleCookies/src/engine/engine.js");
 var en;
+//replacing an existing canvas picture with a new one at runtime : Game.Loader.Replace('perfectCookie.png','imperfectCookie.png');
+	//upgrades and achievements can use other pictures than icons.png; declare their icon with [posX,posY,'http://example.com/myIcons.png']
+	//check out the "UNLOCKING STUFF" section to see how unlocking achievs and upgrades is done
 
 
 function buildingSpecials() {
@@ -51,14 +54,27 @@ var Initialize = function (mod) {
     //en.init();
 
     Game.registerHook('create', function() {
+        order=399999;
+        new Game.Achievement('Grail',loc("Perform a Grail combo, having <b>all five distinct golden cookie effects and Elder frenzy</b>.")
+                    +'<q>The holy grail of noscum, one of the most powerful combos in Cookie Clicker. Just pause, and look at how far you\'ve come.</q>',[23,6]);
 
+        order=20000;
+        new Game.Achievement('How did we get here?',loc("Have <b>25 golden cookie effects</b> and Elder frenzy.")
+                    +'<q>This is actually probably illegal.</q>',[28,12]);
+        Game.last.pool='shadow';
+        LocalizeUpgradesAndAchievs();
     });
 
     Game.registerHook('check', function() {
         if (Game.hasBuff('Frenzy') && Game.hasBuff('Dragonflight') 
             && Game.hasBuff('Dragon Harvest') && Game.hasBuff('Click frenzy') 
-                && Game.hasBuff('Elder frenzy') && buildingSpecials()) {
-            en.Notify("Grail", "Notification unlocked", [23,6]);
+                && Game.hasBuff('Elder frenzy')) {
+            if (buildingSpecials()) {
+                Game.Win('Grail');
+                if (buildingSpecials()>=20) {
+                    Game.Win('How did we get here?');
+                }
+            }
         }
     });
 }
