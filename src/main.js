@@ -30,15 +30,19 @@ var LoadModule=function(url,callback,error)
 	js.setAttribute('src',url);
 	document.head.appendChild(js);
 }
-
 LoadModule("https://stevinus73.github.io/IdleCookies/src/engine/engine.js");
+
+var en;
 import("https://stevinus73.github.io/IdleCookies/src/engine/engine.js").then((module) => {
-    console.log(module);
+    en = module.engine;
+}).catch(function(e) {
+    en={};
+    console.error(e);
 });
 
 var IC = {
     init: function() {
-        engine.init();
+        if(en) en.init();
     },
 
     save: function() {
