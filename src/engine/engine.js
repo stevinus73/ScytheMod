@@ -5,6 +5,7 @@ import "./constructs.js";
 var engine={};
 
 engine.init=function(){
+    console.log("Initializing!");
     shimmer_engine.init();
 }
 

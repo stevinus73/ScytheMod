@@ -42,7 +42,7 @@ import("https://stevinus73.github.io/IdleCookies/src/engine/engine.js").then((mo
 
 var IC = {
     init: function() {
-        if(en) en.init();
+        en.init();
     },
 
     save: function() {
