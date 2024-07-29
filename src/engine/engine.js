@@ -1,6 +1,6 @@
-import './shimmers.js';
-import './constructs.js';
-import './cps.js';
+Game.LoadMod("https://zixuan75.github.io/IdleCookies/src/engine/shimmers.js");
+Game.LoadMod("https://zixuan75.github.io/IdleCookies/src/engine/constructs.js");
+Game.LoadMod("https://zixuan75.github.io/IdleCookies/src/engine/cps.js");
 
 var engine={};
 
