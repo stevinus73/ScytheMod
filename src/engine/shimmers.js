@@ -24,7 +24,7 @@ shimmer_engine.init = function () {
          * or not having the upgrade,
          * makes golden cookies nonexistent!
          */
-        if (Game.Has('Golden switch [on]')) return true; else return false;
+        if (Game.Has('Golden switch [off]')) return true; else return false;
     };
 
     //completely rewrite popFunc (sorry, compatibility, go jump in the lava over there)
