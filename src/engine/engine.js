@@ -1,4 +1,4 @@
-import "./shimmers.js";
+import { shimmer_engine } from "./shimmers.js";
 import "./cps.js";
 import "./constructs.js";
 
