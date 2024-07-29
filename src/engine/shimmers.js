@@ -272,3 +272,5 @@ shimmer_engine.init = function () {
     }
 
 }
+
+export { shimmer_engine };
