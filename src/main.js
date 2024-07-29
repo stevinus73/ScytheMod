@@ -1,3 +1,9 @@
+var script=document.querySelector('script[src="https://zixuan75.github.io/IdleCookies/src/main.js"]');
+/**
+ * We are a module!
+ */
+script.setAttribute('type','module');
+
 var LoadModule=function(url,callback,error)
 {
 	var js=document.createElement('script');
@@ -26,6 +32,7 @@ var LoadModule=function(url,callback,error)
 }
 
 LoadModule("https://zixuan75.github.io/IdleCookies/src/engine/engine.js");
+import "./engine/engine.js"
 
 
 
