@@ -1,4 +1,4 @@
-var script=document.querySelector('script[src="https://zixuan75.github.io/IdleCookies/src/main.js"]');
+var script=document.querySelector('script[src="https://stevinus73.github.io/IdleCookies/src/main.js"]');
 /**
  * We are a module!
  */
@@ -31,10 +31,8 @@ var LoadModule=function(url,callback,error)
 	document.head.appendChild(js);
 }
 
-LoadModule("https://zixuan75.github.io/IdleCookies/src/engine/engine.js");
-import "./engine/engine.js"
-
-
+LoadModule("https://stevinus73.github.io/IdleCookies/src/engine/engine.js");
+import "./engine/engine.js";
 
 var IC = {
     init: function() {
