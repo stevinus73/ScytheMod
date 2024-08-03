@@ -52,7 +52,7 @@ function buildingSpecials() {
 var CreateMod = function (mod) {
     en = mod.IdlersPocket;
     en.LoadMod('IdleCookies', function(Id) {
-
+        console.log("Loaded mod!");
     });
 
     // Game.registerHook('create', function() {
