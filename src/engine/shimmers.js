@@ -85,7 +85,6 @@ shimmer_engine.init = function () {
 					
 					me.life=1;//the cookie's current progression through its lifespan (in frames)
 					me.dur=13;//duration; the cookie's lifespan in seconds before it despawns
-                    if (me.wrath) me.dur=
 					
 					var dur=13;
 					if (Game.Has('Lucky day')) dur*=2;
@@ -101,7 +100,7 @@ shimmer_engine.init = function () {
 					me.dur=dur;
 					me.life=Math.ceil(Game.fps*me.dur);
 					me.sizeMult=1;
-				},
+				}
 
     
     gc.popFunc = function (me) {
