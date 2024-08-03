@@ -49,29 +49,31 @@ function buildingSpecials() {
 /**
  * Initializes the mod.
  */
-var Initialize = function (mod) {
-    en = mod.engine;
-    //en.init();
+var CreateMod = function (mod) {
+    en = mod.IdlersPocket;
+    en.LoadMod('IdleCookies', function(Id) {
 
-    Game.registerHook('create', function() {
-        en.customAch('Grail',loc("Perform a Grail combo, having <b>all five distinct golden cookie effects and Elder frenzy</b>.")
-                    +'<q>The holy grail of noscum, one of the most powerful combos in Cookie Clicker. Just pause, and look at how far you\'ve come.</q>',[23,6],399999);
-
-        en.customAch('How did we get here?',loc("Have <b>every golden cookie effect</b>.")
-                    +'<q>This is actually probably illegal.</q>',[28,12],20000,true);
     });
 
-    Game.registerHook('check', function() {
-        if (Game.hasBuff('Frenzy') && Game.hasBuff('Dragonflight') 
-            && Game.hasBuff('Dragon Harvest') && Game.hasBuff('Click frenzy')) {
-            if (buildingSpecials() && Game.hasBuff('Elder frenzy')) {
-                Game.Win('Grail');
-            }
-            if (buildingSpecials()>=20) {
-                Game.Win('How did we get here?');
-            }
-        }
-    });
+    // Game.registerHook('create', function() {
+    //     en.customAch('Grail',loc("Perform a Grail combo, having <b>all five distinct golden cookie effects and Elder frenzy</b>.")
+    //                 +'<q>The holy grail of noscum, one of the most powerful combos in Cookie Clicker. Just pause, and look at how far you\'ve come.</q>',[23,6],399999);
+
+    //     en.customAch('How did we get here?',loc("Have <b>every golden cookie effect</b>.")
+    //                 +'<q>This is actually probably illegal.</q>',[28,12],20000,true);
+    // });
+
+    // Game.registerHook('check', function() {
+    //     if (Game.hasBuff('Frenzy') && Game.hasBuff('Dragonflight') 
+    //         && Game.hasBuff('Dragon Harvest') && Game.hasBuff('Click frenzy')) {
+    //         if (buildingSpecials() && Game.hasBuff('Elder frenzy')) {
+    //             Game.Win('Grail');
+    //         }
+    //         if (buildingSpecials()>=20) {
+    //             Game.Win('How did we get here?');
+    //         }
+    //     }
+    // });
 }
 
 
@@ -83,17 +85,4 @@ var GetModule = function (promise, callback) {
         .then((module) => callback(module))
         .catch((e) => console.error(e));
 }
-var IC = {
-    init: function () {
-        GetModule(import("https://stevinus73.github.io/IdleCookies/src/engine/engine.js"), Initialize);
-    },
-
-    save: function () {
-        return '';
-    },
-
-    load: function (str) {
-
-    },
-};
-Game.registerMod("IdleCookies", IC);
+GetModule(import("https://stevinus73.github.io/IdleCookies/src/engine/engine.js"), CreateMod);

@@ -24,15 +24,86 @@ shimmer_engine.init = function () {
          * or not having the upgrade,
          * makes golden cookies nonexistent!
          */
-        if (!Game.Has('Golden switch')) return false; //probably not necessary but just in case
+        if (Game.elderWrath==3) return true;
         if (Game.Has('Golden switch [off]')) return true; else return false;
     };
-
-    //completely rewrite popFunc (sorry, compatibility, go jump in the lava over there)
 
     /**
      * Wrath cookies will be rewritten, so we firstly decouple them from goldens
      */
+
+    //completely rewrite GC functions (sorry, compatibility, go jump in the lava over there)
+
+    gc.initFunc = function(me) {
+					if (!this.spawned && me.force!='cookie storm drop' && Game.chimeType!=0 && Game.ascensionMode!=1) Game.playGoldenCookieChime();
+					
+					//set image
+					var bgPic=Game.resPath+'img/goldCookie.png';
+					var picX=0;var picY=0;
+					
+					
+					if ((!me.forceObj || !me.forceObj.noWrath) && ((me.forceObj && me.forceObj.wrath) || (Game.elderWrath==1 && Math.random()<1/3) || (Game.elderWrath==2 && Math.random()<2/3) || (Game.elderWrath==3) || (Game.hasGod && Game.hasGod('scorn'))))
+					{
+						me.wrath=1;
+						if (Game.season=='halloween') bgPic=Game.resPath+'img/spookyCookie.png';
+						else bgPic=Game.resPath+'img/wrathCookie.png';
+					}
+					else
+					{
+						me.wrath=0;
+					}
+					
+					if (Game.season=='valentines')
+					{
+						bgPic=Game.resPath+'img/hearts.png';
+						picX=Math.floor(Math.random()*8);
+					}
+					else if (Game.season=='fools')
+					{
+						bgPic=Game.resPath+'img/contract.png';
+						if (me.wrath) bgPic=Game.resPath+'img/wrathContract.png';
+					}
+					else if (Game.season=='easter')
+					{
+						bgPic=Game.resPath+'img/bunnies.png';
+						picX=Math.floor(Math.random()*4);
+						picY=0;
+						if (me.wrath) picY=1;
+					}
+					
+					me.x=Math.floor(Math.random()*Math.max(0,(Game.bounds.right-300)-Game.bounds.left-128)+Game.bounds.left+64)-64;
+					me.y=Math.floor(Math.random()*Math.max(0,Game.bounds.bottom-Game.bounds.top-128)+Game.bounds.top+64)-64;
+					me.l.style.left=me.x+'px';
+					me.l.style.top=me.y+'px';
+					me.l.style.width='96px';
+					me.l.style.height='96px';
+					me.l.style.backgroundImage='url('+bgPic+')';
+					me.l.style.backgroundPosition=(-picX*96)+'px '+(-picY*96)+'px';
+					me.l.style.opacity='0';
+					me.l.style.display='block';
+					me.l.setAttribute('alt',loc(me.wrath?"Wrath cookie":"Golden cookie"));
+					
+					me.life=1;//the cookie's current progression through its lifespan (in frames)
+					me.dur=13;//duration; the cookie's lifespan in seconds before it despawns
+                    if (me.wrath) me.dur=
+					
+					var dur=13;
+					if (Game.Has('Lucky day')) dur*=2;
+					if (Game.Has('Serendipity')) dur*=2;
+					if (Game.Has('Decisive fate')) dur*=1.05;
+					if (Game.Has('Lucky digit')) dur*=1.01;
+					if (Game.Has('Lucky number')) dur*=1.01;
+					if (Game.Has('Lucky payout')) dur*=1.01;
+					if (!me.wrath) dur*=Game.eff('goldenCookieDur');
+					else dur*=Game.eff('wrathCookieDur');
+					dur*=Math.pow(0.95,Game.shimmerTypes['golden'].n-1);//5% shorter for every other golden cookie on the screen
+					if (this.chain>0) dur=Math.max(2,10/this.chain);//this is hilarious
+					me.dur=dur;
+					me.life=Math.ceil(Game.fps*me.dur);
+					me.sizeMult=1;
+				},
+
+    
     gc.popFunc = function (me) {
         if (me.spawnLead) {
             Game.goldenClicks++;
