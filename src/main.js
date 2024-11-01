@@ -3,9 +3,6 @@ script.setAttribute('type','module')
 
 var LoadModule = function (url, callback, error) {
     var js = document.createElement('script');
-    /**
-     * Creates a module instead.
-     */
     js.setAttribute('type', 'module');
     if (js.readyState) {
         js.onreadystatechange = function () {
@@ -33,8 +30,10 @@ var CreateMod = function (engine) {
     en.LoadMod('ScytheMod', function() {
         var tl = LoadModule("https://stevinus73.github.io/ScytheMod/src/logic/l_loader.js");
         GetModule(tl, function(l) {
-            l.mod.Load(en);
-            console.log("Loaded mod!");
+            l.mod.Init(en);
+            console.log("Loaded ScytheMod - This may have compatibility issues, so beware of mixing it with other mods.");
+            Game.Notify("This is ScytheMod, an experimental mod for Cookie Clicker. Careful!",
+                '<div class="title" style="font-size:18px;margin-top:-2px;">Welcome!</div>',[23, 6]);
         })
     });
 }

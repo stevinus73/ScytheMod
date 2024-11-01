@@ -1,10 +1,11 @@
-import {buildings} from "./buildings.js"
+import {BModify} from "./buildings.js"
 
 var mod = {}
 
-mod.Load = function(engine) {
+mod.Init = function(engine) {
     this.en = engine;
-    buildings._Initialize(en);
+    this.bModify = BModify;
+    this.bModify._Initialize(en);
 }
 
 export { mod }
