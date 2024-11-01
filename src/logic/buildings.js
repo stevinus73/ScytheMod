@@ -55,7 +55,7 @@ BModify._Initialize = function(en) {
             for (var i in me.tieredUpgrades) {
                 if (!Game.Tiers[me.tieredUpgrades[i].tier].special && Game.Has(me.tieredUpgrades[i].name)) {
                     var tierMult=2; 
-                    var tierRsMult=math.max(1.5 + 0.1 * i, 2);
+                    var tierRsMult=Math.max(1.5 + 0.1 * i, 2);
                     if (Game.ascensionMode!=1 && Game.Has(me.unshackleUpgrade) && Game.Has(Game.Tiers[me.tieredUpgrades[i].tier].unshackleUpgrade)) {
                         tierMult+=me.id==1?0.5:(20-me.id)*0.1;
                         tierRsMult+=me.id==1?0.25:(20-me.id)*0.05;
@@ -81,7 +81,7 @@ BModify._Initialize = function(en) {
         }
 
         this.decayedFactor = function() {
-            return this.me.amount * math.pow(0.997, this.me.amount);
+            return this.me.amount * Math.pow(0.997, this.me.amount);
         }
 
         // called once per Game.Logic loop
@@ -94,7 +94,7 @@ BModify._Initialize = function(en) {
             if (this.pause) {
                 var rate = 0.000003 * Math.max(Math.round((this.rsAvailable/this.rsTotal)*100), 1);
                 this.rsUsed -= (rate / Game.fps) * this.rsTotal;
-                this.rsUsed = math.max(this.rsUsed, 0);
+                this.rsUsed = Math.max(this.rsUsed, 0);
                 return;
             }
             if (this.depleted) return;
