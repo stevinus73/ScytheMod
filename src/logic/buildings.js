@@ -71,24 +71,16 @@ BModify._Initialize = function(en) {
         return 'RS_Manager';
     }
 
-    BModify.Recalculate = function() {
-        for (const mn in this.rsManagers) {
-            mn.recalculate();
-        }
-    }
-
-    BModify.Harvest = function() {
-        for (const mn in this.rsManagers) {
-            //mn.harvest();
-        }
-    }
+    BModify.Recalculate = function() { this.rsManagers.forEach(mn => mn.recalculate()) }
+    BModify.Harvest = function() { this.rsManagers.forEach(mn => mn.harvest()) }
+    
 
     //this.en.injectCode(Game.CalculateGains, "var mult=1;", "mod.bModify.Recalculate();", "after");
     Game.registerHook('cps', function(cps) {
         BModify.Recalculate();
         return cps;
     })
-    Game.registerHook('logic', this.Harvest);
+    //Game.registerHook('logic', this.Harvest);
 
     // testing, for farms, mines
     new BModify.RS_Manager(2, 8, 40000);
