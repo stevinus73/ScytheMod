@@ -147,21 +147,12 @@ BModify._Initialize = function(en) {
         var str = '';
         str+='<style>'
         +'#resBar{max-width:95%;margin:4px auto;height:16px;}'
-        +'#resBarFull{transform:scale(1,2);transform-origin:50% 0;height:50%;}';
+        +'#resBarFull{transform:scale(1,2);transform-origin:50% 0;height:50%;}'
         +'</style>';
         str+='<div id="resBar'+this.id+'" class="smallFramed meterContainer" style="width:1px;"></div>'
         str+='<div id="resBarFull'+this.id+'" class="meter filling" style="width:1px;"></div>'
 //          str+='<div id="grimoireBarText" class="titleFont"></div><div '+Game.getTooltip('<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+loc("This is your magic meter. Each spell costs magic to use.<div class=\"line\"></div>Your maximum amount of magic varies depending on your amount of <b>Wizard towers</b>, and their level.<div class=\"line\"></div>Magic refills over time. The lower your magic meter, the slower it refills.")+'</div>')+' style="position:absolute;left:0px;top:0px;right:0px;bottom:0px;"></div></div>';
         l('statsVisual'+this.id).innerHTML = str;
-
-        str = '';
-        str+='<span class="listing"> <b>'+this.rsNames[0]+' harvest rate ('+this.rsNames[2]+'/second) per '+this.me.dname+':</b> <p id="rhps'+this.id+'">0</p>' 
-        str+='(<p id="rhpst'+this.id+'">0</p> for <p id="numB'+this.id+'">0</p> '+this.me.dname+'s)</span>';
-        str+='<span class="listing"> <b>Yield:</b> <p id="yield'+this.id+'">0</p></span>';
-        str+='<span class="listing"> <b>Total amount of '+this.rsNames[0]+':</b> <p id="rsTotal'+this.id+'">0</p></span>';
-        str+='<span class="listing"> <b>Harvested '+this.rsNames[0]+' so far:</b> <p id="rsUsed'+this.id+'">0</p></span>';
-        str+='<span class="listing"> <b>Total CpS:</b> <p id="rscps'+this.id+'">0</p></span>';
-        l('statsListing'+this.id).innerHTML = str;
 
         this.switchStats = function(on) {
             if (on == -1) on = !this.statsView;
@@ -190,13 +181,14 @@ BModify._Initialize = function(en) {
         }
 
         this.update = function() {
-            l('rhps'+this.id).textContent = LBeautify(this.RhpS);
-            l('rhpst'+this.id).textContent = LBeautify(this.RhpS * this.me.amount);
-            l('numB'+this.id).textContent = LBeautify(this.me.amount);
-            l('yield'+this.id).textContent = LBeautify(this.yield) + " cookies/" + this.rsNames[1];
-            l('rsTotal'+this.id).textContent = LBeautify(this.rsTotal) + " " + this.rsNames[2];
-            l('rsUsed'+this.id).textContent = LBeautify(this.rsUsed) + " " + this.rsNames[2];
-            l('rscps'+this.id).textContent = LBeautify(this.getRawCpS()) + " cookies/second";
+            str = '';
+            str+='<div class="listing"> <b>'+this.rsNames[0]+' harvest rate ('+this.rsNames[2]+'/second) per '+this.me.dname+':</b>'+Beautify(this.RhpS);
+            str+=' ('+Beautify(this.RhpS * this.me.amount)+' for '+Beautify(this.me.amount)+' '+this.me.dname+'s)</div>';
+            str+='<div class="listing"> <b>Yield:</b>'+Beautify(this.yield)+ " cookies/"+this.rsNames[1]+'</div>';
+            str+='<div class="listing"> <b>Total amount of '+this.rsNames[3]+':</b> '+Beautify(this.rsTotal) + " " + this.rsNames[2]+'</div>';
+            str+='<div class="listing"> <b>Harvested '+this.rsNames[3]+' so far:</b> '+Beautify(this.rsUsed) + " " + this.rsNames[2]+'</div>';
+            str+='<div class="listing"> <b>Total CpS:</b> '+Beautify(this.getRawCpS())+" cookies/second"+'</div>';
+            l('statsListing'+this.id).innerHTML = str;
         }
     }
 
@@ -225,9 +217,9 @@ BModify._Initialize = function(en) {
 
 
     // testing, for farms, mines
-    new BModify.RS_Manager(2, 40000, ["Arable land", "acre", "acres"]);
-    new BModify.RS_Manager(3, 200000, ["Cookie ore", "ton", "tons"]);
-    new BModify.RS_Manager(4, 170000, ["Chocolate fuel", "liter", "liters"]);
+    new BModify.RS_Manager(2, 40000, ["Arable land", "acre", "acres", "arable land"]);
+    new BModify.RS_Manager(3, 200000, ["Cookie ore", "ton", "tons", "cookie ore"]);
+    new BModify.RS_Manager(4, 170000, ["Chocolate fuel", "liter", "liters", "chocolate fuel"]);
 }
 
 
