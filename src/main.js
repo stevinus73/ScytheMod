@@ -1,57 +1,10 @@
-/**
- * this part of code probably unnecessary (who knows)
- */
+var script=document.querySelector('script[src="https://stevinus73.github.io/ScytheMod/src/main.js"]')
+script.setAttribute('type','module')
+import("https://stevinus73.github.io/ScytheMod/src/engine/engine.js")
 
-var script = document.querySelector('script[src="https://stevinus73.github.io/IdleCookies/src/main.js"]');
-/**
- * We are a module!
- */
-script.setAttribute('type', 'module');
-
-var LoadModule = function (url, callback, error) {
-    var js = document.createElement('script');
-    /**
-     * Creates a module instead.
-     */
-    js.setAttribute('type', 'module');
-    if (js.readyState) {
-        js.onreadystatechange = function () {
-            if (js.readyState === "loaded" || js.readyState === "complete") {
-                js.onreadystatechange = null;
-                if (callback) callback();
-            }
-        };
-    }
-    else if (callback) {
-        js.onload = callback;
-    }
-    if (error) js.onerror = error;
-
-    js.setAttribute('src', url);
-    document.head.appendChild(js);
-}
-LoadModule("https://stevinus73.github.io/IdleCookies/src/engine/engine.js");
-var en;
-//replacing an existing canvas picture with a new one at runtime : Game.Loader.Replace('perfectCookie.png','imperfectCookie.png');
-	//upgrades and achievements can use other pictures than icons.png; declare their icon with [posX,posY,'http://example.com/myIcons.png']
-	//check out the "UNLOCKING STUFF" section to see how unlocking achievs and upgrades is done
-
-
-function buildingSpecials() {
-    var bs = 0;
-    Object.entries(Game.goldenCookieBuildingBuffs).map(entry => {
-        let buffName = entry[1][0];
-        if (Game.hasBuff(buffName)) bs += 1;
-    });
-    return bs;
-}
-
-/**
- * Initializes the mod.
- */
 var CreateMod = function (mod) {
     en = mod.IdlersPocket;
-    en.LoadMod('IdleCookies', function(Id) {
+    en.LoadMod('ScytheMod', function(Id) {
         console.log("Loaded mod!");
     });
 
@@ -85,4 +38,4 @@ var GetModule = function (promise, callback) {
         .then((module) => callback(module))
         .catch((e) => console.error(e));
 }
-GetModule(import("https://stevinus73.github.io/IdleCookies/src/engine/engine.js"), CreateMod);
+GetModule(import("https://stevinus73.github.io/ScytheMod/src/engine/engine.js"), CreateMod);
