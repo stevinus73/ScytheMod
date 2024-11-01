@@ -29,7 +29,7 @@ var el = LoadModule("https://stevinus73.github.io/ScytheMod/src/engine/engine.js
 
 var CreateMod = function (engine) {
     engine.IdlersPocket.LoadMod('ScytheMod', function(en) {
-        var tl = LoadModule("https://stevinus73.github.io/ScytheMod/src/logic/buildings.js");
+        var tl = LoadModule("https://stevinus73.github.io/ScytheMod/src/logic/l_loader.js");
         GetModule(tl, function(l) {
             l.mod.load(en);
             console.log("Loaded mod!");
