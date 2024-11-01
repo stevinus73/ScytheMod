@@ -22,24 +22,24 @@ var LoadModule = function (url, callback, error) {
 
     js.setAttribute('src', url);
     document.head.appendChild(js);
+    return js;
 }
-//LoadModule("https://stevinus73.github.io/IdleCookies/src/engine/engine.js");
 
-var CreateMod = function () {
-    IdlersPocket.LoadMod('ScytheMod', function(en) {
-        //GetModule(import("https://stevinus73.github.io/ScytheMod/src/logic/buildings.js"), 
-        LoadModule("https://stevinus73.github.io/ScytheMod/src/logic/buildings.js",
-        function() {
-            mod.load(en);
+el = LoadModule("https://stevinus73.github.io/IdleCookies/src/engine/engine.js");
+
+var CreateMod = function (engine) {
+    engine.IdlersPocket.LoadMod('ScytheMod', function(en) {
+        tl = LoadModule("https://stevinus73.github.io/ScytheMod/src/logic/buildings.js");
+        GetModule(tl, function(l) {
+            l.mod.load(en);
             console.log("Loaded mod!");
         })
     });
 }
 
-var GetModule = function (promise, callback) {
-    promise
+var GetModule = function (element, callback) {
+    import(element.getAttribute('src'))
         .then((module) => callback(module))
         .catch((e) => console.error(e));
 }
-LoadModule("https://stevinus73.github.io/ScytheMod/src/engine/engine.js", CreateMod);
-//GetModule(import("https://stevinus73.github.io/ScytheMod/src/engine/engine.js"), CreateMod);
+GetModule(el, CreateMod);
