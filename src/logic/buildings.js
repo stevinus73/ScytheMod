@@ -186,8 +186,8 @@ BModify._Initialize = function(en) {
 
         this.update = function() {
             str = '';
-            str+='<div class="listing"> <b>'+this.rsNames[0]+' harvest rate ('+this.rsNames[2]+'/second) per '+this.me.dname.toLowercase()+': </b>'+Beautify(this.RhpS);
-            str+=' ('+Beautify(this.RhpS * this.me.amount)+' for '+Beautify(this.me.amount)+' '+this.me.plural.toLowercase()+')</div>';
+            str+='<div class="listing"> <b>'+this.rsNames[0]+' harvest rate ('+this.rsNames[2]+'/second) per '+this.me.dname.toLowerCase()+': </b>'+Beautify(this.RhpS);
+            str+=' ('+Beautify(this.RhpS * this.me.amount)+' for '+Beautify(this.me.amount)+' '+this.me.plural.toLowerCase()+')</div>';
             str+='<div class="listing"> <b>Yield: </b>'+Beautify(this.yield)+ " cookies/"+this.rsNames[1]+'</div>';
             str+='<div class="listing"> <b>Total amount of '+this.rsNames[3]+':</b> '+Beautify(this.rsTotal) + " " + this.rsNames[2]+'</div>';
             str+='<div class="listing"> <b>Harvested '+this.rsNames[3]+' so far:</b> '+Beautify(this.rsUsed) + " " + this.rsNames[2]+'</div>';
