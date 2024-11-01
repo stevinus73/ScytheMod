@@ -38,7 +38,7 @@ var BModify = {}
 // 			}
 // 			str+='</div>';
 // 			var icon=[29,14];
-// 			str+='<div id="grimoireBar" class="smallFramed meterContainer" style="width:1px;"><div '+Game.getDynamicTooltip('Game.ObjectsById['+M.parent.id+'].minigame.refillTooltip','this')+' id="grimoireLumpRefill" class="usesIcon shadowFilter lumpRefill" style="left:-40px;top:-17px;background-position:'+(-icon[0]*48)+'px '+(-icon[1]*48)+'px;"></div>'
+// 			str+='<div id="grimoireBar" class="smallFramed meterContainer" style="width:1px;"></div>'
 //          str+='<div id="grimoireBarFull" class="meter filling" style="width:1px;"></div>'
 //          str+='<div id="grimoireBarText" class="titleFont"></div><div '+Game.getTooltip('<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+loc("This is your magic meter. Each spell costs magic to use.<div class=\"line\"></div>Your maximum amount of magic varies depending on your amount of <b>Wizard towers</b>, and their level.<div class=\"line\"></div>Magic refills over time. The lower your magic meter, the slower it refills.")+'</div>')+' style="position:absolute;left:0px;top:0px;right:0px;bottom:0px;"></div></div>';
 // 			str+='<div id="grimoireInfo"></div>';
@@ -121,6 +121,7 @@ BModify._Initialize = function(en) {
 
         // called once per Game.Logic loop
         this.harvest = function() {
+            if (this.depleted) return;
             this.rsUsed += (this.RhpS / Game.fps) * this.me.amount;
             this.rsAvailable = this.rsTotal - this.rsUsed;
             if (this.rsAvailable <= 0)
@@ -154,6 +155,9 @@ BModify._Initialize = function(en) {
 //          str+='<div id="grimoireBarText" class="titleFont"></div><div '+Game.getTooltip('<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+loc("This is your magic meter. Each spell costs magic to use.<div class=\"line\"></div>Your maximum amount of magic varies depending on your amount of <b>Wizard towers</b>, and their level.<div class=\"line\"></div>Magic refills over time. The lower your magic meter, the slower it refills.")+'</div>')+' style="position:absolute;left:0px;top:0px;right:0px;bottom:0px;"></div></div>';
         l('statsVisual'+this.id).innerHTML = str;
 
+        this.mbarFull = l("resBarFull"+this.id);
+        this.mbar = l("resBar"+this.id);
+
         this.switchStats = function(on) {
             if (on == -1) on = !this.statsView;
             this.statsView = on;
@@ -182,13 +186,21 @@ BModify._Initialize = function(en) {
 
         this.update = function() {
             str = '';
-            str+='<div class="listing"> <b>'+this.rsNames[0]+' harvest rate ('+this.rsNames[2]+'/second) per '+this.me.dname+':</b>'+Beautify(this.RhpS);
-            str+=' ('+Beautify(this.RhpS * this.me.amount)+' for '+Beautify(this.me.amount)+' '+this.me.dname+'s)</div>';
-            str+='<div class="listing"> <b>Yield:</b>'+Beautify(this.yield)+ " cookies/"+this.rsNames[1]+'</div>';
+            str+='<div class="listing"> <b>'+this.rsNames[0]+' harvest rate ('+this.rsNames[2]+'/second) per '+this.me.dname.toLowercase()+': </b>'+Beautify(this.RhpS);
+            str+=' ('+Beautify(this.RhpS * this.me.amount)+' for '+Beautify(this.me.amount)+' '+this.me.plural.toLowercase()+')</div>';
+            str+='<div class="listing"> <b>Yield: </b>'+Beautify(this.yield)+ " cookies/"+this.rsNames[1]+'</div>';
             str+='<div class="listing"> <b>Total amount of '+this.rsNames[3]+':</b> '+Beautify(this.rsTotal) + " " + this.rsNames[2]+'</div>';
             str+='<div class="listing"> <b>Harvested '+this.rsNames[3]+' so far:</b> '+Beautify(this.rsUsed) + " " + this.rsNames[2]+'</div>';
             str+='<div class="listing"> <b>Total CpS:</b> '+Beautify(this.getRawCpS())+" cookies/second"+'</div>';
             l('statsListing'+this.id).innerHTML = str;
+        }
+
+        this.draw = function() {
+	    	if (Game.drawT%5==0) {
+	    		this.mbarFull.style.width=Math.round((this.rsAvailable/this.rsTotal)*100)+'%';
+			    this.mbar.style.width=(this.rsTotal*3)+'px';
+		    }
+		    this.mbarFull.style.backgroundPosition=(-Game.T*0.5)+'px';
         }
     }
 
@@ -201,6 +213,7 @@ BModify._Initialize = function(en) {
     BModify.Logic = function() {
         BModify.Harvest();
         BModify.rsManagers.forEach(mn => mn.logic())
+        BModify.rsManagers.forEach(mn => mn.draw())
     }
 
     Game.registerHook('cps', function(cps) {
@@ -218,8 +231,8 @@ BModify._Initialize = function(en) {
 
     // testing, for farms, mines
     new BModify.RS_Manager(2, 40000, ["Arable land", "acre", "acres", "arable land"]);
-    new BModify.RS_Manager(3, 200000, ["Cookie ore", "ton", "tons", "cookie ore"]);
-    new BModify.RS_Manager(4, 170000, ["Chocolate fuel", "liter", "liters", "chocolate fuel"]);
+    new BModify.RS_Manager(3, 150000, ["Cookie ore", "ton", "tons", "cookie ore"]);
+    new BModify.RS_Manager(4, 135000, ["Chocolate fuel", "liter", "liters", "chocolate fuel"]);
 }
 
 
