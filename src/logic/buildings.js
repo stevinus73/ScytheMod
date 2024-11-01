@@ -70,7 +70,7 @@ BModify._Initialize = function(en) {
         l("productMinigameButton"+this.id).insertAdjacentHTML('afterend', 
             '<div id="productStatsButton'+this.id+'" class="productButton" onclick="Game.ObjectsById['+this.id+'].rsManager.switchStats(-1)">View Stats</div>');
         l("row"+this.id).insertAdjacentHTML('beforeend', 
-            '<div id="rowStats"'+this.id+'" style="display: none" class="rowSpecial"></div>'
+            '<div id="rowStats'+this.id+'" style="display: none" class="rowSpecial"></div>'
         )
 
 
@@ -82,9 +82,12 @@ BModify._Initialize = function(en) {
             this.statsView = on;
             if (this.statsView) {
                 this.me.switchMinigame(false);
+                l('rowSpecial'+this.id).style.display='none';
+                this.getStatDiv().style.display='block';
                 this.getButton().textContent = loc("Close Stats");
                 l('row'+this.id).classList.add('onMinigame');
             } else {
+                this.getStatDiv().style.display='none';
                 this.getButton().textContent = loc("View Stats");
                 l('row'+this.id).classList.remove('onMinigame');
             }
@@ -96,6 +99,7 @@ BModify._Initialize = function(en) {
         this.logic = function() {
             if (this.statsView && this.me.onMinigame) {
                 this.switchStats(false);
+                l('rowSpecial'+this.id).style.display='block';
             }
         }
     }
