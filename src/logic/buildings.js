@@ -1,55 +1,5 @@
 var BModify = {}
 
-// var str='';
-// 		str+='<style>'+
-// 		'#grimoireBG{background:url('+Game.resPath+'img/shadedBorders.png),url('+Game.resPath+'img/BGgrimoire.jpg);background-size:100% 100%,auto;position:absolute;left:0px;right:0px;top:0px;bottom:16px;}'+
-// 		'#grimoireContent{position:relative;box-sizing:border-box;padding:4px 24px;}'+
-// 		'#grimoireBar{max-width:95%;margin:4px auto;height:16px;}'+
-// 		'#grimoireBarFull{transform:scale(1,2);transform-origin:50% 0;height:50%;}'+
-// 		'#grimoireBarText{transform:scale(1,0.8);width:100%;position:absolute;left:0px;top:0px;text-align:center;color:#fff;text-shadow:-1px 1px #000,0px 0px 4px #000,0px 0px 6px #000;margin-top:2px;}'+
-// 		'#grimoireSpells{text-align:center;width:100%;padding:8px;box-sizing:border-box;}'+
-// 		'.grimoireIcon{pointer-events:none;margin:2px 6px 0px 6px;width:48px;height:48px;opacity:0.8;position:relative;}'+
-// 		'.grimoirePrice{pointer-events:none;}'+
-// 		'.grimoireSpell{box-shadow:4px 4px 4px #000;cursor:pointer;position:relative;color:#f33;opacity:0.8;text-shadow:0px 0px 4px #000,0px 0px 6px #000;font-weight:bold;font-size:12px;display:inline-block;width:60px;height:74px;background:url('+Game.resPath+'img/spellBG.png);}'+
-// 		'.grimoireSpell.ready{color:rgba(255,255,255,0.8);opacity:1;}'+
-// 		'.grimoireSpell.ready:hover{color:#fff;}'+
-// 		'.grimoireSpell:hover{box-shadow:6px 6px 6px 2px #000;z-index:1000000001;top:-1px;}'+
-// 		'.grimoireSpell:active{top:1px;}'+
-// 		'.grimoireSpell.ready .grimoireIcon{opacity:1;}'+
-// 		'.grimoireSpell:hover{background-position:0px -74px;} .grimoireSpell:active{background-position:0px 74px;}'+
-// 		'.grimoireSpell:nth-child(4n+1){background-position:-60px 0px;} .grimoireSpell:nth-child(4n+1):hover{background-position:-60px -74px;} .grimoireSpell:nth-child(4n+1):active{background-position:-60px 74px;}'+
-// 		'.grimoireSpell:nth-child(4n+2){background-position:-120px 0px;} .grimoireSpell:nth-child(4n+2):hover{background-position:-120px -74px;} .grimoireSpell:nth-child(4n+2):active{background-position:-120px 74px;}'+
-// 		'.grimoireSpell:nth-child(4n+3){background-position:-180px 0px;} .grimoireSpell:nth-child(4n+3):hover{background-position:-180px -74px;} .grimoireSpell:nth-child(4n+3):active{background-position:-180px 74px;}'+
-		
-// 		'.grimoireSpell:hover .grimoireIcon{top:-1px;}'+
-// 		'.grimoireSpell.ready:hover .grimoireIcon{animation-name:bounce;animation-iteration-count:infinite;animation-duration:0.8s;}'+
-// 		'.noFancy .grimoireSpell.ready:hover .grimoireIcon{animation:none;}'+
-		
-// 		'#grimoireInfo{text-align:center;font-size:11px;margin-top:12px;color:rgba(255,255,255,0.75);text-shadow:-1px 1px 0px #000;}'+
-// 		'</style>';
-// 		str+='<div id="grimoireBG"></div>';
-// 		str+='<div id="grimoireContent">';
-// 			str+='<div id="grimoireSpells">';//did you know adding class="shadowFilter" to this cancels the "z-index:1000000001" that displays the selected spell above the tooltip? stacking orders are silly https://philipwalton.com/articles/what-no-one-told-you-about-z-index/
-// 			for (var i in M.spells)
-// 			{
-// 				var me=M.spells[i];
-// 				var icon=me.icon||[28,12];
-// 				str+='<div class="grimoireSpell titleFont" id="grimoireSpell'+me.id+'" '+Game.getDynamicTooltip('Game.ObjectsById['+M.parent.id+'].minigame.spellTooltip('+me.id+')','this')+'><div class="usesIcon shadowFilter grimoireIcon" style="background-position:'+(-icon[0]*48)+'px '+(-icon[1]*48)+'px;"></div><div class="grimoirePrice" id="grimoirePrice'+me.id+'">-</div></div>';
-// 			}
-// 			str+='</div>';
-// 			var icon=[29,14];
-// 			str+='<div id="grimoireBar" class="smallFramed meterContainer" style="width:1px;"></div>'
-//          str+='<div id="grimoireBarFull" class="meter filling" style="width:1px;"></div>'
-//          str+='<div id="grimoireBarText" class="titleFont"></div><div '+Game.getTooltip('<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+loc("This is your magic meter. Each spell costs magic to use.<div class=\"line\"></div>Your maximum amount of magic varies depending on your amount of <b>Wizard towers</b>, and their level.<div class=\"line\"></div>Magic refills over time. The lower your magic meter, the slower it refills.")+'</div>')+' style="position:absolute;left:0px;top:0px;right:0px;bottom:0px;"></div></div>';
-// 			str+='<div id="grimoireInfo"></div>';
-// 		str+='</div>';
-// 		div.innerHTML=str;
-// 		M.magicBarL=l('grimoireBar');
-// 		M.magicBarFullL=l('grimoireBarFull');
-// 		M.magicBarTextL=l('grimoireBarText');
-// 		M.lumpRefill=l('grimoireLumpRefill');
-// 		M.infoL=l('grimoireInfo');
-
 BModify._Initialize = function(en) {
     this.en = en;
     //Game.UpdateMenu = en.injectCode(Game.UpdateMenu, "(dropMult!=1", `'<div class="listing"><b>'+loc("Missed golden cookies:")+'</b> '+Beautify(Game.missedGoldenClicks)+'</div>' + `, "before")
@@ -84,6 +34,11 @@ BModify._Initialize = function(en) {
                 dmult = 0;
             return cps * dmult;
         }
+
+        // most important line ever
+        this.me.cps = function(me) {
+            return me.rsManager.getRawCpS();
+        };
 
         // called once every calculateGains()
         this.recalculate = function() {
@@ -121,13 +76,13 @@ BModify._Initialize = function(en) {
 
         // called once per Game.Logic loop
         this.harvest = function() {
-            if (this.depleted) return;
-            this.rsUsed += (this.RhpS / Game.fps) * this.me.amount;
             this.rsAvailable = this.rsTotal - this.rsUsed;
             if (this.rsAvailable <= 0)
                 this.depleted = true;
             else
                 this.depleted = false;
+            if (this.depleted) return;
+            this.rsUsed += (this.RhpS / Game.fps) * this.me.amount;
         }
 
         l("productMinigameButton"+this.id).insertAdjacentHTML('afterend', 
@@ -141,7 +96,7 @@ BModify._Initialize = function(en) {
         this.getStatDiv = function() { return l("rowStats"+this.id); }
 
         this.getStatDiv().insertAdjacentHTML('beforeend', '<div id="stats'+this.id+'" class="subsection"></div>')
-        l('stats'+this.id).insertAdjacentHTML('beforeend', '<div class="title" style="position:relative">'+this.me.dname+'s</div>')
+        l('stats'+this.id).insertAdjacentHTML('beforeend', '<div class="title" style="position:relative">'+this.me.plural+'</div>')
         l('stats'+this.id).insertAdjacentHTML('beforeend', '<div id="statsListing'+this.id+'"></div>')
         l('stats'+this.id).insertAdjacentHTML('beforeend', '<div id="statsVisual'+this.id+'"></div>')
 
@@ -187,19 +142,21 @@ BModify._Initialize = function(en) {
 
         this.update = function() {
             str = '';
+            prestigeMult = parseFloat(Game.prestige)*0.01*Game.heavenlyPower*Game.GetHeavenlyMultiplier();
+            sty = this.depleted ? 'style="color:red"' : '';
             str+='<div class="listing"> <b>'+this.rsNames[0]+' harvest rate ('+this.rsNames[2]+'/second) per '+this.me.dname.toLowerCase()+': </b>'+Beautify(this.RhpS);
             str+=' ('+Beautify(this.RhpS * this.me.amount)+' for '+Beautify(this.me.amount)+' '+this.me.plural.toLowerCase()+')</div>';
-            str+='<div class="listing"> <b>Yield: </b>'+Beautify(this.yield)+ " cookies/"+this.rsNames[1]+'</div>';
-            str+='<div class="listing"> <b>Total amount of '+this.rsNames[3]+':</b> '+Beautify(this.rsTotal) + " " + this.rsNames[2]+'</div>';
-            str+='<div class="listing"> <b>Harvested '+this.rsNames[3]+' so far:</b> '+Beautify(this.rsUsed) + " " + this.rsNames[2]+'</div>';
-            str+='<div class="listing"> <b>Total CpS:</b> '+Beautify(this.getRawCpS())+" cookies/second"+'</div>';
+            str+='<div class="listing"> <b>Yield: </b>'+Beautify(this.yield * prestigeMult)+ " cookies/"+this.rsNames[1]+'</div>';
+            str+='<div class="listing"> <b>Total amount of '+this.rsNames[0].toLowerCase()+':</b> '+Beautify(this.rsTotal) + " " + this.rsNames[2]+'</div>';
+            str+='<div class="listing"> <b>Harvested '+this.rsNames[0].toLowerCase()+' so far:</b> '+Beautify(this.rsUsed) + " " + this.rsNames[2]+'</div>';
+            str+='<div class="listing" '+sty+'> <b>Total CpS:</b> '+Beautify(this.getRawCpS() * prestigeMult)+" cookies/second"+'</div>';
             l('statsListing'+this.id).innerHTML = str;
         }
 
         this.draw = function() {
 	    	if (Game.drawT%5==0) {
 	    		this.mbarFull.style.width=Math.round((this.rsAvailable/this.rsTotal)*100)+'%';
-			    this.mbar.style.width='150px';
+			    this.mbar.style.width='350px';
 		    }
 		    this.mbarFull.style.backgroundPosition=(-Game.T*0.5)+'px';
         }
@@ -230,10 +187,25 @@ BModify._Initialize = function(en) {
 
 
 
-    // testing, for farms, mines
-    new BModify.RS_Manager(2, 40000, ["Arable land", "acre", "acres", "arable land"]);
-    new BModify.RS_Manager(3, 150000, ["Cookie ore", "ton", "tons", "cookie ore"]);
-    new BModify.RS_Manager(4, 135000, ["Chocolate fuel", "liter", "liters", "chocolate fuel"]);
+    // vals
+    new BModify.RS_Manager(2,  20000, ["Arable land", "acre", "acres"]);
+    new BModify.RS_Manager(3,  75000, ["Cookie ore", "ton", "tons"]);
+    new BModify.RS_Manager(4,  70000, ["Chocolate fuel", "liter", "liters"]);
+    new BModify.RS_Manager(5,  66000, ["Interest", "dollar", "dollars"]);
+    new BModify.RS_Manager(6,  62000, ["Artifact", "gram", "grams"]);
+    new BModify.RS_Manager(7,  57000, ["Mana", "magic", "magic"]);
+    new BModify.RS_Manager(8,  51000, ["Planet matter", "earth mass", "earth masses"]);
+    new BModify.RS_Manager(9,  46000, ["Warped cookies", "aetheria", "aethereiars"]);
+    // Alchemy labs not included because they utilize a special mechanic
+    new BModify.RS_Manager(11, 43000, ["Reachable times", "century", "centuries"]);
+    new BModify.RS_Manager(12, 39000, ["Antimatter", "gram", "grams"]);
+    new BModify.RS_Manager(13, 38000, ["Light", "photon", "photons"]);
+    // Chancemakers not included for scientific reasons
+    new BModify.RS_Manager(15, 35000, ["Metafractal", "cookie", "cookies"]);
+    new BModify.RS_Manager(16, 33000, ["Computational power", "operation", "operations"]);
+    // Idleverses not included for the same reason as alchemy labs
+    // Cortex bakers not included for similar reasons as the chancemaker
+    new BModify.RS_Manager(19, 29000, ["Clone DNA", "gene", "genes"]);
 }
 
 
