@@ -107,8 +107,8 @@ BModify._Initialize = function(en) {
     BModify.Recalculate = function() { this.rsManagers.forEach(mn => mn.recalculate()) }
     BModify.Harvest = function() { this.rsManagers.forEach(mn => mn.harvest()) }
     BModify.Logic = function() {
-        //this.Harvest();
-        this.rsManagers.forEach(mn => mn.logic())
+        //BModify.Harvest();
+        BModify.rsManagers.forEach(mn => mn.logic())
     }
 
     Game.registerHook('cps', function(cps) {
