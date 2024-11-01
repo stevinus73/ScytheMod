@@ -1,4 +1,4 @@
-import "./utils.js";
+import {injectCode, injectCodes} from "./utils.js";
 
 var shimmer_engine = {};
 

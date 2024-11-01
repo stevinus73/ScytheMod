@@ -1,3 +1,5 @@
+import {injectCode, injectCodes} from "./utils.js";
+
 var cps_calculator={};
 
 cps_calculator.replaceCpSFunc=function(){

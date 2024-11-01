@@ -31,7 +31,7 @@ var CreateMod = function (engine) {
     engine.IdlersPocket.LoadMod('ScytheMod', function(en) {
         var tl = LoadModule("https://stevinus73.github.io/ScytheMod/src/logic/l_loader.js");
         GetModule(tl, function(l) {
-            l.mod.load(en);
+            l.mod.Load(en);
             console.log("Loaded mod!");
         })
     });

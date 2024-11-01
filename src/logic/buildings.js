@@ -6,5 +6,4 @@ buildings._Initialize = function(en) {
     console.log("Boop! Boop! Initializing!")
 }
 
-
 export { buildings }
