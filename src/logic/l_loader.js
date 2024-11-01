@@ -1,4 +1,4 @@
-import "./buildings.js"
+import {buildings} from "./buildings.js"
 
 mod = {}
 

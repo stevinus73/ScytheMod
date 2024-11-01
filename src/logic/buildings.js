@@ -1,4 +1,4 @@
-buildings = {}
+var buildings = {}
 
 buildings._Initialize = function(en) {
     this.en = en;
