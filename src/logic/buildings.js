@@ -147,8 +147,8 @@ BModify._Initialize = function(en) {
 
         var str = '';
         str+='<style>'
-        +'#resBar{max-width:95%;margin:4px auto;height:16px;}'
-        +'#resBarFull{transform:scale(1,2);transform-origin:50% 0;height:50%;}'
+        +'#resBar'+this.id+'{max-width:95%;margin:4px auto;height:16px;}'
+        +'#resBarFull'+this.id+'{transform:scale(1,2);transform-origin:50% 0;height:50%;}'
         +'</style>';
         str+='<div id="resBar'+this.id+'" class="smallFramed meterContainer" style="width:1px;">'
         str+='<div id="resBarFull'+this.id+'" class="meter filling" style="width:1px;"></div>'
