@@ -5,11 +5,14 @@ BModify._Initialize = function(en) {
     //Game.UpdateMenu = en.injectCode(Game.UpdateMenu, "(dropMult!=1", `'<div class="listing"><b>'+loc("Missed golden cookies:")+'</b> '+Beautify(Game.missedGoldenClicks)+'</div>' + `, "before")
     this.rsManagers = [];
 
-    BModify.RS_Manager = function(id, baseYield, baseRS) {
+    BModify.RS_Manager = function(id, baseRS, rsNames) {
         this.id = id;
+        this.me = Game.ObjectsById[this.id];
+        this.me.rsManager = this;
+        this.rsNames = rsNames;
 
-        this.baseYield = baseYield;
-        this.yield = baseYield;
+        this.baseYield = this.me.baseCps;
+        this.yield = this.baseYield;
 
         this.baseRhpS = 1; // resource harvest rate
         this.RhpS = this.baseRhpS;
@@ -22,17 +25,14 @@ BModify._Initialize = function(en) {
         this.depleted = false;
         this.statsView = false;
 
-        this.me = Game.ObjectsById[this.id];
-        this.me.rsManager = this;
-
         BModify.rsManagers.push(this);
 
-        this.getBaseCpS = function() {
+        this.getRawCpS = function() {
             cps = this.RhpS * this.yield * this.me.amount;
             var dmult = 1;
             if (this.depleted)
                 dmult = 0;
-            return cps;
+            return cps * dmult;
         }
 
         // called once every calculateGains()
@@ -66,6 +66,7 @@ BModify._Initialize = function(en) {
             this.RhpS = this.baseRhpS * rhpsmult;
             this.rsTotal = this.baseRs * rsmult;
             this.rsAvailable = this.rsTotal - this.rsUsed;
+            this.update()
         }
 
         // called once per Game.Logic loop
@@ -101,11 +102,23 @@ BModify._Initialize = function(en) {
         )
         
         l('statsListing'+this.id).insertAdjacentHTML('beforeend',
-            '<div class="listing"> <b>Resource harvest rate (tons per second per building):</b> <p id="rhps'+this.id+'"></p></div>'
+            '<span class="listing"> <b>'+this.rsNames[0]+' harvest rate ('+this.rsNames[2]+'/second) per '+this.me.dname+':</b> <p id="rhps'+this.id+'">0</p> (<p id="rhpst'+this.id+'">0</p> for <p id="numB'+this.id+'">0</p> '+this.me.dname+'s)</span>'
         )
 
         l('statsListing'+this.id).insertAdjacentHTML('beforeend',
-            '<div class="listing"> <b>Yield (cookies per ton):</b> <p id="yield'+this.id+'"></p></div>'
+            '<span class="listing"> <b>Yield:</b> <p id="yield'+this.id+'">0</p></span>'
+        )
+
+        l('statsListing'+this.id).insertAdjacentHTML('beforeend',
+            '<span class="listing"> <b>Total amount of '+this.rsNames[0]+':</b> <p id="rsTotal'+this.id+'">0</p></span>'
+        )
+
+        l('statsListing'+this.id).insertAdjacentHTML('beforeend',
+            '<span class="listing"> <b>Harvested '+this.rsNames[0]+' so far:</b> <p id="rsUsed'+this.id+'">0</p></span>'
+        )
+
+        l('statsListing'+this.id).insertAdjacentHTML('beforeend',
+            '<span class="listing"> <b>Total CpS:</b> <p id="rscps'+this.id+'">0</p></span>'
         )
 
         this.switchStats = function(on) {
@@ -135,8 +148,13 @@ BModify._Initialize = function(en) {
         }
 
         this.update = function() {
-            l('rhps'+this.id).textContent = this.RhpS;
-            l('yield'+this.id).textContent = this.yield;
+            l('rhps'+this.id).textContent = LBeautify(this.RhpS);
+            l('rhpst'+this.id).textContent = LBeautify(this.RhpS * this.me.amount);
+            l('numB'+this.id).textContent = LBeautify(this.me.amount);
+            l('yield'+this.id).textContent = LBeautify(this.yield) + " cookies/" + this.rsNames[1];
+            l('rsTotal'+this.id).textContent = LBeautify(this.rsTotal) + " " + this.rsNames[2];
+            l('rsUsed'+this.id).textContent = LBeautify(this.rsUsed) + " " + this.rsNames[2];
+            l('rscps'+this.id).textContent = LBeautify(this.getRawCpS()) + " cookies/second";
         }
     }
 
@@ -147,7 +165,7 @@ BModify._Initialize = function(en) {
     BModify.Recalculate = function() { this.rsManagers.forEach(mn => mn.recalculate()) }
     BModify.Harvest = function() { this.rsManagers.forEach(mn => mn.harvest()) }
     BModify.Logic = function() {
-        //BModify.Harvest();
+        BModify.Harvest();
         BModify.rsManagers.forEach(mn => mn.logic())
     }
 
@@ -165,8 +183,9 @@ BModify._Initialize = function(en) {
 
 
     // testing, for farms, mines
-    new BModify.RS_Manager(2, 8, 40000);
-    new BModify.RS_Manager(3, 47, 150000);
+    new BModify.RS_Manager(2, 40000, ["Arable land", "acre", "acres"]);
+    new BModify.RS_Manager(3, 200000, ["Cookie ore", "ton", "tons"]);
+    new BModify.RS_Manager(4, 170000, ["Chocolate fuel", "liter", "liters"]);
 }
 
 
