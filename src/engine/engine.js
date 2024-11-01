@@ -105,7 +105,7 @@ IdlersPocket.LoadMod = function (name, init) {
     this._Initialize();
     var mod = {
         init: function () {
-            init(this);
+            init();
         },
     
         save: this._save,
