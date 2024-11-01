@@ -4,39 +4,31 @@ var script=document.querySelector('script[src="https://stevinus73.github.io/Idle
  */
 script.setAttribute('type','module');
 
-var LoadModule=function(url,callback,error)
-{
-	var js=document.createElement('script');
-    /**
-     * Creates a module instead.
-     */
-	js.setAttribute('type','module');
-	if (js.readyState){
-		js.onreadystatechange=function()
-		{
-			if (js.readyState==="loaded" || js.readyState==="complete")
-			{
-				js.onreadystatechange=null;
-				if (callback) callback();
-			}
-		};
-	}
-	else if (callback)
-	{
-		js.onload=callback;
-	}
-	if (error) js.onerror=error;
-	
-	js.setAttribute('src',url);
-	document.head.appendChild(js);
+var LoadModule=function(url,callback,error){
+    var js=document.createElement('script');
+    js.setAttribute('type','module');
+    if (js.readyState){
+	js.onreadystatechange=function() {
+	    if (js.readyState==="loaded" || js.readyState==="complete") {
+		js.onreadystatechange=null;
+		if (callback) callback();
+	    }
+	};
+    }
+    else if (callback) {
+	js.onload=callback;
+    }
+    if (error) js.onerror=error;
+    js.setAttribute('src',url);
+    document.head.appendChild(js);
 }
 
-LoadModule("https://stevinus73.github.io/IdleCookies/src/engine/engine.js");
-import("https://stevinus73.github.io/IdleCookies/src/engine/engine.js").then((module) => {
+LoadModule("https://stevinus73.github.io/ScytheMod/src/engine/engine.js");
+import("https://stevinus73.github.io/ScytheMod/src/engine/engine.js").then((module) => {
     console.log(module);
 });
 
-var IC = {
+var SM = {
     init: function() {
         engine.init();
     },
@@ -49,4 +41,4 @@ var IC = {
 
     },
 };
-Game.registerMod("IdleCookies", IC);
+Game.registerMod("ScytheMod", SM);
