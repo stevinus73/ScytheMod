@@ -8,10 +8,6 @@ BModify._Initialize = function(en) {
     BModify.RS_Manager = function(id, baseYield, baseRS) {
         this.id = id;
 
-        this.en.injectCode(this.me.rebuild, "str+='</div>';", 
-            `str+='<div id="productStatsButton'+this.id+'" class="productButton" onclick="Game.ObjectsById['+this.id+'].rsManager.switchStats()"></div>';`, 
-            "before");
-
         //this.baseYield = baseYield;
         this.yield = baseYield;
 
@@ -24,6 +20,7 @@ BModify._Initialize = function(en) {
         this.rsAvailable = baseRS;
 
         this.depleted = false;
+        this.statsView = false;
 
         this.me = Game.ObjectsById[this.id];
         this.me.rsManager = this;
@@ -32,7 +29,7 @@ BModify._Initialize = function(en) {
 
         this.getBaseCpS = function() {
             cps = this.RhpS * this.yield * Game.ObjectsById[this.id].amount;
-            dmult = 1;
+            var dmult = 1;
             if (this.depleted)
                 dmult = 0;
             return cps;
@@ -70,12 +67,19 @@ BModify._Initialize = function(en) {
                 this.depleted = false;
         }
 
-        this.switchStats = function() {
-            Game.ObjectsById[id].switchMinigame(0);
-            console.log("A note pressed");
-        }
+        l("productMinigameButton"+this.id).insertAdjacentHTML('afterend', 
+            '<div id="productStatsButton'+this.id+'" class="productButton" onclick="Game.ObjectsById['+this.id+'].rsManager.switchStats()"></div>');
+        
+        this.getButton = function() { return l("productStatsButton"+this.id); }
 
-        l('productStatsButton'+this.id).textContent="Stats";
+        this.switchStats = function() {
+            this.statsView = !this.statsView;
+            if (this.statsView) {
+                this.me.switchMinigame(0);
+                this.getButton().textContent = loc("Close Stats");
+            } else this.getButton().textContent = loc("View Stats");
+        }   
+        
     }
 
     BModify.RS_Manager.prototype.getType = function () {
