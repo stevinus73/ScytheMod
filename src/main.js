@@ -23,7 +23,7 @@ var LoadModule = function (url, callback, error) {
     js.setAttribute('src', url);
     document.head.appendChild(js);
 }
-LoadModule("https://stevinus73.github.io/IdleCookies/src/engine/engine.js");
+//LoadModule("https://stevinus73.github.io/IdleCookies/src/engine/engine.js");
 
 var CreateMod = function () {
     IdlersPocket.LoadMod('ScytheMod', function(en) {
