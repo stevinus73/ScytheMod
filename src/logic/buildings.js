@@ -5,7 +5,7 @@ BModify._Initialize = function(en) {
     //Game.UpdateMenu = en.injectCode(Game.UpdateMenu, "(dropMult!=1", `'<div class="listing"><b>'+loc("Missed golden cookies:")+'</b> '+Beautify(Game.missedGoldenClicks)+'</div>' + `, "before")
     this.rsManagers = [];
 
-    BModify.RS_Manager = function(id, baseYield, baseRS, RS_name) {
+    BModify.RS_Manager = function(id, baseYield, baseRS) {
         this.id = id;
 
         //this.baseYield = baseYield;
@@ -79,11 +79,20 @@ BModify._Initialize = function(en) {
 
     BModify.Harvest = function() {
         for (const mn in this.rsManagers) {
-            mn.harvest();
+            //mn.harvest();
         }
     }
 
-    this.en.injectCode(Game.CalculateGains, "var mult=1;", "mod.bModify.Recalculate();", "after");
+    //this.en.injectCode(Game.CalculateGains, "var mult=1;", "mod.bModify.Recalculate();", "after");
+    Game.registerHook('cps', function(cps) {
+        this.Recalculate();
+        return cps;
+    })
+    Game.registerHook('logic', this.Harvest);
+
+    // testing, for farms, mines
+    new RS_Manager(2, 8, 40000);
+    new RS_Manager(3, 47, 150000);
 }
 
 
