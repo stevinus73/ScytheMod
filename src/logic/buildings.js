@@ -152,7 +152,7 @@ BModify._Initialize = function(en) {
         str+='<div id="resBar'+this.id+'" class="smallFramed meterContainer" style="width:1px;"></div>'
         str+='<div id="resBarFull'+this.id+'" class="meter filling" style="width:1px;"></div>'
 //          str+='<div id="grimoireBarText" class="titleFont"></div><div '+Game.getTooltip('<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+loc("This is your magic meter. Each spell costs magic to use.<div class=\"line\"></div>Your maximum amount of magic varies depending on your amount of <b>Wizard towers</b>, and their level.<div class=\"line\"></div>Magic refills over time. The lower your magic meter, the slower it refills.")+'</div>')+' style="position:absolute;left:0px;top:0px;right:0px;bottom:0px;"></div></div>';
-        str+=
+        l('statsVisual'+this.id).innerHTML = str;
 
         str = '';
         str+='<span class="listing"> <b>'+this.rsNames[0]+' harvest rate ('+this.rsNames[2]+'/second) per '+this.me.dname+':</b> <p id="rhps'+this.id+'">0</p>' 
