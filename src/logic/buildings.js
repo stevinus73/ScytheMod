@@ -108,7 +108,6 @@ BModify._Initialize = function(en) {
         str+='<div id="resBar'+this.id+'" class="smallFramed meterContainer" style="width:1px;">'
         str+='<div id="resBarFull'+this.id+'" class="meter filling" style="width:1px;"></div>'
         str+='</div>'
-//          str+='<div id="grimoireBarText" class="titleFont"></div><div '+Game.getTooltip('<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+loc("This is your magic meter. Each spell costs magic to use.<div class=\"line\"></div>Your maximum amount of magic varies depending on your amount of <b>Wizard towers</b>, and their level.<div class=\"line\"></div>Magic refills over time. The lower your magic meter, the slower it refills.")+'</div>')+' style="position:absolute;left:0px;top:0px;right:0px;bottom:0px;"></div></div>';
         l('statsVisual'+this.id).innerHTML = str;
 
         this.mbarFull = l("resBarFull"+this.id);
@@ -142,8 +141,8 @@ BModify._Initialize = function(en) {
 
         this.update = function() {
             str = '';
-            prestigeMult = parseFloat(Game.prestige)*0.01*Game.heavenlyPower*Game.GetHeavenlyMultiplier();
-            sty = this.depleted ? 'style="color:red"' : '';
+            var prestigeMult = parseFloat(Game.prestige)*0.01*Game.heavenlyPower*Game.GetHeavenlyMultiplier();
+            var sty = this.depleted ? 'style="color:red"' : '';
             str+='<div class="listing"> <b>'+this.rsNames[0]+' harvest rate ('+this.rsNames[2]+'/second) per '+this.me.dname.toLowerCase()+': </b>'+Beautify(this.RhpS);
             str+=' ('+Beautify(this.RhpS * this.me.amount)+' for '+Beautify(this.me.amount)+' '+this.me.plural.toLowerCase()+')</div>';
             str+='<div class="listing"> <b>Yield: </b>'+Beautify(this.yield * prestigeMult)+ " cookies/"+this.rsNames[1]+'</div>';
