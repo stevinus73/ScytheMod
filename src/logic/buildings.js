@@ -85,14 +85,14 @@ BModify._Initialize = function(en) {
 
     //this.en.injectCode(Game.CalculateGains, "var mult=1;", "mod.bModify.Recalculate();", "after");
     Game.registerHook('cps', function(cps) {
-        this.Recalculate();
+        BModify.Recalculate();
         return cps;
     })
     Game.registerHook('logic', this.Harvest);
 
     // testing, for farms, mines
-    new RS_Manager(2, 8, 40000);
-    new RS_Manager(3, 47, 150000);
+    new BModify.RS_Manager(2, 8, 40000);
+    new BModify.RS_Manager(3, 47, 150000);
 }
 
 
