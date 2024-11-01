@@ -26,12 +26,15 @@ var LoadModule = function (url, callback, error) {
 }
 
 var el = LoadModule("https://stevinus73.github.io/ScytheMod/src/engine/engine.js");
+var en;
 
 var CreateMod = function (engine) {
-    engine.IdlersPocket.LoadMod('ScytheMod', function(en) {
+    engine.IdlersPocket.LoadMod('ScytheMod', function(e) {
         var tl = LoadModule("https://stevinus73.github.io/ScytheMod/src/logic/l_loader.js");
+        en = e;
         GetModule(tl, function(l) {
-            l.mod.Load(en);
+            if (en != undefined)
+                l.mod.Load(en);
             console.log("Loaded mod!");
         })
     });
