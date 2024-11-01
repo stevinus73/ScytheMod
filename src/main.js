@@ -25,7 +25,7 @@ var LoadModule = function (url, callback, error) {
     return js;
 }
 
-el = LoadModule("https://stevinus73.github.io/IdleCookies/src/engine/engine.js");
+el = LoadModule("https://stevinus73.github.io/ScytheMod/src/engine/engine.js");
 
 var CreateMod = function (engine) {
     engine.IdlersPocket.LoadMod('ScytheMod', function(en) {
