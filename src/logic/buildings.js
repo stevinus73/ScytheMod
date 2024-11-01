@@ -150,8 +150,9 @@ BModify._Initialize = function(en) {
         +'#resBar{max-width:95%;margin:4px auto;height:16px;}'
         +'#resBarFull{transform:scale(1,2);transform-origin:50% 0;height:50%;}'
         +'</style>';
-        str+='<div id="resBar'+this.id+'" class="smallFramed meterContainer" style="width:1px;"></div>'
+        str+='<div id="resBar'+this.id+'" class="smallFramed meterContainer" style="width:1px;">'
         str+='<div id="resBarFull'+this.id+'" class="meter filling" style="width:1px;"></div>'
+        str+='</div>'
 //          str+='<div id="grimoireBarText" class="titleFont"></div><div '+Game.getTooltip('<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+loc("This is your magic meter. Each spell costs magic to use.<div class=\"line\"></div>Your maximum amount of magic varies depending on your amount of <b>Wizard towers</b>, and their level.<div class=\"line\"></div>Magic refills over time. The lower your magic meter, the slower it refills.")+'</div>')+' style="position:absolute;left:0px;top:0px;right:0px;bottom:0px;"></div></div>';
         l('statsVisual'+this.id).innerHTML = str;
 
@@ -198,7 +199,7 @@ BModify._Initialize = function(en) {
         this.draw = function() {
 	    	if (Game.drawT%5==0) {
 	    		this.mbarFull.style.width=Math.round((this.rsAvailable/this.rsTotal)*100)+'%';
-			    this.mbar.style.width=(this.rsTotal*3)+'px';
+			    this.mbar.style.width='150px';
 		    }
 		    this.mbarFull.style.backgroundPosition=(-Game.T*0.5)+'px';
         }
