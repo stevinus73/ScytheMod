@@ -69,7 +69,7 @@ BModify._Initialize = function(en) {
 
         l("productMinigameButton"+this.id).insertAdjacentHTML('afterend', 
             '<div id="productStatsButton'+this.id+'" class="productButton" onclick="Game.ObjectsById['+this.id+'].rsManager.switchStats(-1)">View Stats</div>');
-        l("row"+this.id).appendHTML(
+        l("row"+this.id).insertAdjacentHTML('beforeend', 
             '<div id="rowStats"'+this.id+'" style="display: none" class="rowSpecial"></div>'
         )
 
