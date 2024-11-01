@@ -5,6 +5,10 @@ BModify._Initialize = function(en) {
     //Game.UpdateMenu = en.injectCode(Game.UpdateMenu, "(dropMult!=1", `'<div class="listing"><b>'+loc("Missed golden cookies:")+'</b> '+Beautify(Game.missedGoldenClicks)+'</div>' + `, "before")
     this.rsManagers = [];
 
+    this.en.injectCode(this.me.rebuild, "str+='</div>';", 
+        `str+='<div id="productStatsButton'+this.id+'" class="productButton" style="display:none" onclick="Game.ObjectsById[id].switchMinigame(0);console.log("A note pressed");"></div>';`, 
+        "before");
+
     BModify.RS_Manager = function(id, baseYield, baseRS) {
         this.id = id;
 
@@ -37,23 +41,23 @@ BModify._Initialize = function(en) {
         // called once every calculateGains()
         this.recalculate = function() {
             var me = this.me;
-			var rhpsmult=1;
+            var rhpsmult=1;
             var rsmult=1;
-			for (var i in me.tieredUpgrades)
-			{
-				if (!Game.Tiers[me.tieredUpgrades[i].tier].special && Game.Has(me.tieredUpgrades[i].name))
-				{
-					var tierMult=2;
+            for (var i in me.tieredUpgrades) {
+                if (!Game.Tiers[me.tieredUpgrades[i].tier].special && Game.Has(me.tieredUpgrades[i].name)) {
+                    var tierMult=2; 
                     var tierRsMult=1.5;
-					if (Game.ascensionMode!=1 && Game.Has(me.unshackleUpgrade) && Game.Has(Game.Tiers[me.tieredUpgrades[i].tier].unshackleUpgrade))
+                    if (Game.ascensionMode!=1 && Game.Has(me.unshackleUpgrade) && Game.Has(Game.Tiers[me.tieredUpgrades[i].tier].unshackleUpgrade)) {
                         tierMult+=me.id==1?0.5:(20-me.id)*0.1;
-                        tierRsMult += me.id==1?0.25:(20-me.id)*0.05;
-					rhpsmult*=tierMult;
+                        tierRsMult+=me.id==1?0.25:(20-me.id)*0.05;
+                    }
+                    rhpsmult*=tierMult;
                     rsmult*=tierRsMult;
-				}
-		    }
+                }
+            }
             this.RhpS = this.baseRhpS * rhpsmult;
             this.rsTotal = this.baseRs * rsmult;
+            this.rsAvailable = this.rsTotal - this.rsUsed;
         }
 
         // called once per Game.Logic loop
@@ -65,6 +69,9 @@ BModify._Initialize = function(en) {
             else
                 this.depleted = false;
         }
+
+        l('productStatsButton'+this.id).style.display='block';
+        l('productStatsButton'+this.id).textContent="Stats";
     }
 
     BModify.RS_Manager.prototype.getType = function () {
@@ -73,7 +80,6 @@ BModify._Initialize = function(en) {
 
     BModify.Recalculate = function() { this.rsManagers.forEach(mn => mn.recalculate()) }
     BModify.Harvest = function() { this.rsManagers.forEach(mn => mn.harvest()) }
-    
 
     //this.en.injectCode(Game.CalculateGains, "var mult=1;", "mod.bModify.Recalculate();", "after");
     Game.registerHook('cps', function(cps) {
