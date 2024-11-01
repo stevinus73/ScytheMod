@@ -8,11 +8,11 @@ BModify._Initialize = function(en) {
     BModify.RS_Manager = function(id, baseYield, baseRS) {
         this.id = id;
 
-        //this.baseYield = baseYield;
+        this.baseYield = baseYield;
         this.yield = baseYield;
 
         this.baseRhpS = 1; // resource harvest rate
-        this.RhpS = 1;
+        this.RhpS = this.baseRhpS;
 
         this.baseRs = baseRS;
         this.rsTotal = baseRS;
@@ -28,7 +28,7 @@ BModify._Initialize = function(en) {
         BModify.rsManagers.push(this);
 
         this.getBaseCpS = function() {
-            cps = this.RhpS * this.yield * Game.ObjectsById[this.id].amount;
+            cps = this.RhpS * this.yield * this.me.amount;
             var dmult = 1;
             if (this.depleted)
                 dmult = 0;
@@ -40,6 +40,7 @@ BModify._Initialize = function(en) {
             var me = this.me;
             var rhpsmult=1;
             var rsmult=1;
+            var yieldmult=1;
             for (var i in me.tieredUpgrades) {
                 if (!Game.Tiers[me.tieredUpgrades[i].tier].special && Game.Has(me.tieredUpgrades[i].name)) {
                     var tierMult=2; 
@@ -52,6 +53,16 @@ BModify._Initialize = function(en) {
                     rsmult*=tierRsMult;
                 }
             }
+            for (var i in me.synergies) {
+                var syn=me.synergies[i];
+                if (Game.Has(syn.name)) {
+                    if (syn.buildingTie1.name==me.name) yieldmult*=(1+0.05*syn.buildingTie2.amount);
+                    else if (syn.buildingTie2.name==me.name) yieldmult*=(1+0.001*syn.buildingTie1.amount);
+                }
+            }
+            if (me.fortune && Game.Has(me.fortune.name)) yieldmult*=1.07;
+            if (me.grandma && Game.Has(me.grandma.name)) yieldmult*=(1+Game.Objects['Grandma'].amount*0.01*(1/(me.id-1)));
+            this.yield = this.baseYield * yieldmult;
             this.RhpS = this.baseRhpS * rhpsmult;
             this.rsTotal = this.baseRs * rsmult;
             this.rsAvailable = this.rsTotal - this.rsUsed;
@@ -59,7 +70,7 @@ BModify._Initialize = function(en) {
 
         // called once per Game.Logic loop
         this.harvest = function() {
-            this.rsUsed += (this.RhpS / Game.fps);
+            this.rsUsed += (this.RhpS / Game.fps) * this.me.amount;
             this.rsAvailable = this.rsTotal - this.rsUsed;
             if (this.rsAvailable <= 0)
                 this.depleted = true;
@@ -76,6 +87,26 @@ BModify._Initialize = function(en) {
 
         this.getButton = function() { return l("productStatsButton"+this.id); }
         this.getStatDiv = function() { return l("rowStats"+this.id); }
+
+        this.getStatDiv().insertAdjacentHTML('beforeend', 
+            '<div id="stats'+this.id+'" class="subsection"></div>'
+        )
+
+        l('stats'+this.id).insertAdjacentHTML('beforeend',
+            '<div class="title" style="position:relative">'+this.me.dname+'s</div>'
+        )
+
+        l('stats'+this.id).insertAdjacentHTML('beforeend',
+            '<div id="statsListing'+this.id+'"></div>'
+        )
+        
+        l('statsListing'+this.id).insertAdjacentHTML('beforeend',
+            '<div class="listing"> <b>Resource harvest rate (tons per second per building):</b> <p id="rhps'+this.id+'"></p></div>'
+        )
+
+        l('statsListing'+this.id).insertAdjacentHTML('beforeend',
+            '<div class="listing"> <b>Yield (cookies per ton):</b> <p id="yield'+this.id+'"></p></div>'
+        )
 
         this.switchStats = function(on) {
             if (on == -1) on = !this.statsView;
@@ -102,6 +133,11 @@ BModify._Initialize = function(en) {
                 l('rowSpecial'+this.id).style.display='block';
             }
         }
+
+        this.update = function() {
+            l('rhps'+this.id).textContent = this.RhpS;
+            l('yield'+this.id).textContent = this.yield;
+        }
     }
 
     BModify.RS_Manager.prototype.getType = function () {
@@ -120,6 +156,9 @@ BModify._Initialize = function(en) {
         return cps;
     })
     Game.registerHook('logic', this.Logic);
+    Game.registerHook('check', function() {
+        BModify.rsManagers.forEach(mn => mn.update())
+    })
 
 
 
