@@ -1,4 +1,4 @@
-import "./utils.js";
+import {injectCode, injectCodes} from "./utils.js";
 import { shimmer_engine } from "./shimmers.js";
 import "./cps.js";
 import "./constructs.js";
@@ -22,6 +22,7 @@ IdlersPocket._Initialize = function () {
     }
 
     IdlersPocket.injectCode = injectCode;
+    IdlersPocket.injectCodes = injectCodes;
     IdlersPocket.shimmer_engine = shimmer_engine;
 
     IdlersPocket.ints=[];
