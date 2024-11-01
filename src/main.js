@@ -24,13 +24,15 @@ var LoadModule = function (url, callback, error) {
 
 var el = LoadModule("https://stevinus73.github.io/ScytheMod/src/engine/engine.js");
 var en;
+var mod;
 
 var CreateMod = function (engine) {
     en = engine.IdlersPocket;
     en.LoadMod('ScytheMod', function() {
         var tl = LoadModule("https://stevinus73.github.io/ScytheMod/src/logic/l_loader.js");
         GetModule(tl, function(l) {
-            l.mod.Init(en);
+            mod = l.mod;
+            mod.Init(en);
             console.log("Loaded ScytheMod - This may have compatibility issues, so beware of mixing it with other mods.");
             Game.Notify("This is ScytheMod, an experimental mod for Cookie Clicker. Careful!",
                 '<div class="title" style="font-size:18px;margin-top:-2px;">Welcome!</div>',[23, 6]);
