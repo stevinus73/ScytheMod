@@ -5,12 +5,12 @@ BModify._Initialize = function(en) {
     //Game.UpdateMenu = en.injectCode(Game.UpdateMenu, "(dropMult!=1", `'<div class="listing"><b>'+loc("Missed golden cookies:")+'</b> '+Beautify(Game.missedGoldenClicks)+'</div>' + `, "before")
     this.rsManagers = [];
 
-    this.en.injectCode(this.me.rebuild, "str+='</div>';", 
-        `str+='<div id="productStatsButton'+this.id+'" class="productButton" style="display:none" onclick="Game.ObjectsById[id].switchMinigame(0);console.log("A note pressed");"></div>';`, 
-        "before");
-
     BModify.RS_Manager = function(id, baseYield, baseRS) {
         this.id = id;
+
+        this.en.injectCode(this.me.rebuild, "str+='</div>';", 
+            `str+='<div id="productStatsButton'+this.id+'" class="productButton" onclick="Game.ObjectsById['+this.id+'].rsManager.switchStats()"></div>';`, 
+            "before");
 
         //this.baseYield = baseYield;
         this.yield = baseYield;
@@ -70,7 +70,11 @@ BModify._Initialize = function(en) {
                 this.depleted = false;
         }
 
-        l('productStatsButton'+this.id).style.display='block';
+        this.switchStats = function() {
+            Game.ObjectsById[id].switchMinigame(0);
+            console.log("A note pressed");
+        }
+
         l('productStatsButton'+this.id).textContent="Stats";
     }
 
