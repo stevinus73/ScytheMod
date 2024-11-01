@@ -47,7 +47,7 @@ BModify._Initialize = function(en) {
                     var tierRsMult=1.5;
 					if (Game.ascensionMode!=1 && Game.Has(me.unshackleUpgrade) && Game.Has(Game.Tiers[me.tieredUpgrades[i].tier].unshackleUpgrade))
                         tierMult+=me.id==1?0.5:(20-me.id)*0.1;
-                        tireRsMult += me.id==1?0.25:(20-me.id)*0.05;
+                        tierRsMult += me.id==1?0.25:(20-me.id)*0.05;
 					rhpsmult*=tierMult;
                     rsmult*=tierRsMult;
 				}
