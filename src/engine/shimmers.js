@@ -1,3 +1,5 @@
+import "./utils.js";
+
 var shimmer_engine = {};
 
 shimmer_engine.createShimmer = function (shimmerData) {
@@ -22,3 +24,5 @@ shimmer_engine.init = function () {
     //};
 
 }
+
+export { shimmer_engine };

@@ -1,5 +1,4 @@
-
-
+import "./utils.js";
 import { shimmer_engine } from "./shimmers.js";
 import "./cps.js";
 import "./constructs.js";
@@ -7,7 +6,6 @@ import "./constructs.js";
 var IdlersPocket = {};
 
 IdlersPocket._Initialize = function () {
-
 
 
     /**
@@ -22,6 +20,9 @@ IdlersPocket._Initialize = function () {
     IdlersPocket._load = function(str) {
         console.log('luarping');
     }
+
+    IdlersPocket.injectCode = injectCode;
+    IdlersPocket.shimmer_engine = shimmer_engine;
 
     IdlersPocket.ints=[];
 
@@ -63,6 +64,7 @@ IdlersPocket._Initialize = function () {
         this.icon = icon;
         this.type = type;
         if (winCon) this.winCon = winCon;
+        return this;
     }
 
     IdlersPocket.Achievement.prototype.getType = function () {
