@@ -68,18 +68,26 @@ BModify._Initialize = function(en) {
         }
 
         l("productMinigameButton"+this.id).insertAdjacentHTML('afterend', 
-            '<div id="productStatsButton'+this.id+'" class="productButton" onclick="Game.ObjectsById['+this.id+'].rsManager.switchStats()"></div>');
+            '<div id="productStatsButton'+this.id+'" class="productButton" onclick="Game.ObjectsById['+this.id+'].rsManager.switchStats(-1)">View Stats</div>');
         
         this.getButton = function() { return l("productStatsButton"+this.id); }
 
-        this.switchStats = function() {
-            this.statsView = !this.statsView;
+        this.switchStats = function(on) {
+            if (on == -1) on = !this.statsView;
+            this.statsView = on;
             if (this.statsView) {
-                this.me.switchMinigame(0);
+                this.me.switchMinigame(false);
                 this.getButton().textContent = loc("Close Stats");
             } else this.getButton().textContent = loc("View Stats");
         }   
         
+        BModify.en.injectCode(Game.DrawBuildings, '&& !me.onMinigame ', '&& !me.rsManager.statsView', "after");
+
+        this.logic = function() {
+            if (this.statsView && this.me.onMinigame) {
+                this.switchStats(false);
+            }
+        }
     }
 
     BModify.RS_Manager.prototype.getType = function () {
@@ -88,13 +96,17 @@ BModify._Initialize = function(en) {
 
     BModify.Recalculate = function() { this.rsManagers.forEach(mn => mn.recalculate()) }
     BModify.Harvest = function() { this.rsManagers.forEach(mn => mn.harvest()) }
+    BModify.Logic = function() {
+        //this.Harvest();
+        this.rsManagers.forEach(mn => mn.logic())
+    }
 
     //this.en.injectCode(Game.CalculateGains, "var mult=1;", "mod.bModify.Recalculate();", "after");
     Game.registerHook('cps', function(cps) {
         BModify.Recalculate();
         return cps;
     })
-    //Game.registerHook('logic', this.Harvest);
+    //Game.registerHook('logic', this.Logic);
 
     // testing, for farms, mines
     new BModify.RS_Manager(2, 8, 40000);
