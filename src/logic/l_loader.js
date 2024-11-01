@@ -1,6 +1,6 @@
 import {buildings} from "./buildings.js"
 
-mod = {}
+var mod = {}
 
 mod.Load = function(engine) {
     this.en = engine;
