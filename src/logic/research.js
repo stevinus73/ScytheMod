@@ -17,17 +17,6 @@ Research._Initialize = function(en) {
     )
     l("centerArea").insertAdjacentHTML('beforeend', '<div id="research"></div>')
     this.container = l("research");
-    // this.container.insertAdjacentHTML('beforeend',
-
-    // )
-
-    // this.container.insertAdjacentHTML('beforeend',
-    //     '<canvas id="researchCanvas"></canvas>'
-    // )
-
-    // this.canvas = l("researchCanvas");
-    // this.ctx = this.canvas.getContext("2d");
-
     this.research = 0;
 
     this.upgrades = [];
@@ -67,8 +56,8 @@ Research._Initialize = function(en) {
         this.draw = function() {
             var cX = Research.container.offsetWidth  * 0.5 - Research.userX - 36;
             var cY = Research.container.offsetHeight * 0.5 - Research.userY - 36;
-            var sX = this.x * Research.container.offsetWidth  * 0.5 + cX;
-            var sY = this.y * Research.container.offsetHeight * 0.5 + cY;
+            var sX =  this.x * Research.container.offsetWidth  * 0.5 + cX;
+            var sY = -this.y * Research.container.offsetHeight * 0.5 + cY;
             var classes = 'crate upgrade heavenly';
             var clickStr = this.onBuy;
             var enabled = 0;
@@ -94,6 +83,8 @@ Research._Initialize = function(en) {
     Research.Tech.prototype.getType = function () {
         return 'TechUpgrade';
     }
+
+    en.injectCode(Game.resize, 'Game.scale=scale;', 'mod.research.draw();', "after");
 
 
 
@@ -124,8 +115,21 @@ Research._Initialize = function(en) {
     Research.draw = function() {
         if (!this.researchOn) return;
         var str = '';
-        this.upgrades.forEach((u) => str += u.draw())
+        this.upgrades.forEach(function(u) {
+            str += u.draw()
+        })
         this.container.innerHTML = str;
+    }
+
+    Research.update = function() {
+        if (Game.keys[37]) this.userX -= 4;
+        if (Game.keys[38]) this.userY -= 4;
+        if (Game.keys[39]) this.userX += 4;
+        if (Game.keys[40]) this.userY += 4;
+        if (userX < -1200) userX = -1200;
+        if (userY < -1200) userY = -1200;
+        if (userX >  1200) userX =  1200;
+        if (userY >  1200) userY =  1200;
     }
 
     
@@ -133,10 +137,6 @@ Research._Initialize = function(en) {
     function f(){return true;}
     new Research.Tech("Magic mushrooms", "They make you magic!", 10, f, f, [], [23, 10], 0, 0);
     new Research.Tech("Howdy!", "It's me. Flowery.", 10, f, f, [], [26, 11], -0.4, 0.6);
-
-    
-
-    //Game.crate(me,'ascend','return;','researchUpgrade','');
 
     Research.en.saveCallback(function() {
 
@@ -148,6 +148,7 @@ Research._Initialize = function(en) {
 
     Game.registerHook('logic', function() {
         //Research.draw();
+        Research.update();
     });
 }
 
