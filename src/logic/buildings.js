@@ -298,7 +298,7 @@ BModify._Initialize = function(en) {
 
     Game.registerHook('cps', function(cps) {
         BModify.Recalculate();
-        BModify.Idleverses.getStat();
+        BModify.idleverse.getStat();
         return cps;
     })
     Game.registerHook('logic', this.Logic);
