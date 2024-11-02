@@ -23,7 +23,7 @@ upgrade_engine.hupgrade_engine={};
 //}
 
 upgrade_engine.appendToUpgradeDesc = function(upgrade, newDesc) {
-    pos = upgrade.ddesc.indexOf("<q>");
+    var position = upgrade.ddesc.indexOf("<q>");
     upgrade.ddesc = [upgrade.ddesc.slice(0, position), " " + newDesc, upgrade.ddesc.slice(position)].join('');
 }
 
