@@ -114,22 +114,24 @@ Research._Initialize = function(en) {
     }
 
     Research.draw = function() {
-        this.canvas.width = this.container.width;
-        this.canvas.height = this.container.height;
-        if (Game.drawT%2==0) {
+        // this.canvas.width = this.container.width;
+        // this.canvas.height = this.container.height;
+        //if (Game.drawT%2==0) {
             //this.upgrades.forEach(u => u.draw());
+        //}
+        if (!this.researchOn) return;
+        str = '';
+        for (var t in this.tech) {
+            str += t.draw();
         }
+
+        this.container.innerHTML = str;
     }
 
     var f = function(){return true;}
     new Research.Tech("Magic mushrooms", "They make you magic!", 10, f, f, [], [23, 10], 0, 0);
 
-    str = '';
-    for (var t in this.tech) {
-        str += t.draw();
-    }
-
-    this.container.innerHTML = str;
+    
 
     //Game.crate(me,'ascend','return;','researchUpgrade','');
 
