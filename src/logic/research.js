@@ -13,7 +13,7 @@ Research._Initialize = function(en) {
     this.button = l("researchButton");
     this.researchOn = false;
     l("centerArea").insertAdjacentHTML('beforeend', 
-        '<style>#research{background: url("img/starbg.jpg"); z-index: 1; position: absolute; inset: 40px 0px 0px;} #researchButton.hover{color:#fff;text-shadow:0px 1px 0px #999,0px 0px 4px #000; cursor: pointer;}</style>'
+        '<style>#research{background: url("img/starbg.jpg"); z-index: 1; position: absolute; inset: 40px 0px 0px;}</style>'
     )
     l("centerArea").insertAdjacentHTML('beforeend', '<div id="research"></div>')
     this.container = l("research");
@@ -125,7 +125,7 @@ Research._Initialize = function(en) {
             str += t.draw();
         }
 
-        this.container.innerHTML = str;
+        //this.container.innerHTML = str;
     }
 
     var f = function(){return true;}
