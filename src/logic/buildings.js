@@ -81,7 +81,7 @@ BModify._Initialize = function(en) {
         }
 
         this.decayedFactor = function() {
-            return this.me.amount * Math.pow(0.997, this.me.amount);
+            return this.me.amount * Math.pow(0.997, math.min(this.me.amount, 600));
         }
 
         // called once per Game.Logic loop
@@ -106,7 +106,7 @@ BModify._Initialize = function(en) {
         l("productMinigameButton"+this.id).insertAdjacentHTML('afterend', 
             '<div id="pauseButton'+this.id+'" class="productButton" onclick="Game.ObjectsById['+this.id+'].rsManager.switch()">Pause</div>');
         l("row"+this.id).insertAdjacentHTML('beforeend', 
-            '<div id="rowStats'+this.id+'" style="display: none" class="rowSpecial"></div>'
+            '<div id="rowStats'+this.id+'" style="display: none"></div>'
         )
 
 
@@ -132,18 +132,15 @@ BModify._Initialize = function(en) {
         this.mbar = l("resBar"+this.id);
 
         this.switchStats = function(on) {
+            if (this.me.onMinigame) return;
             if (on == -1) on = !this.statsView;
             this.statsView = on;
             if (this.statsView) {
-                this.me.switchMinigame(false);
-                l('rowSpecial'+this.id).style.display='none';
                 this.getStatDiv().style.display='block';
                 this.getButton().textContent = loc("Close Stats");
-                l('row'+this.id).classList.add('onMinigame');
             } else {
                 this.getStatDiv().style.display='none';
                 this.getButton().textContent = loc("View Stats");
-                l('row'+this.id).classList.remove('onMinigame');
             }
         }   
 
@@ -156,15 +153,13 @@ BModify._Initialize = function(en) {
             }
         }
         
-        Game.DrawBuildings = BModify.en.injectCode(Game.DrawBuildings, '&& !me.onMinigame ', 
-            '&& (me.rsManager ? !me.rsManager.statsView : true) ', "after");
+        this.me.switchMinigame = BModify.en.injectCode(this.me.switchMinigame, `l('row'+this.id).classList.add('onMinigame');`,
+            `this.rsManager.getStatDiv().style.display='none';`, "after");
 
-        this.logic = function() {
-            if (this.statsView && this.me.onMinigame) {
-                this.switchStats(false);
-                l('rowSpecial'+this.id).style.display='block';
-            }
-        }
+        this.me.switchMinigame = BModify.en.injectCode(this.me.switchMinigame, `l('row'+this.id).classList.remove('onMinigame');`,
+            `this.rsManager.getStatDiv().style.display=this.rsManager.statsView;`, "after");
+
+        this.logic = function() {}
 
         this.update = function() {
             str = '';
@@ -175,6 +170,7 @@ BModify._Initialize = function(en) {
             str+='<div class="listing"> <b>Total amount of '+this.rsNames[0].toLowerCase()+':</b> '+Beautify(this.rsTotal) + " " + this.rsNames[2]+'</div>';
             str+='<div class="listing"> <b>Harvested '+this.rsNames[0].toLowerCase()+' so far:</b> '+Beautify(this.rsUsed) + " " + this.rsNames[2]+'</div>';
             str+='<div class="listing" '+sty+'> <b>Base CpS:</b> '+Beautify(this.getRawCpS(), 1)+" cookies/second"+'</div>';
+            str+='<div class="listing" '+sty+'> <b>CpS:</b> '+Beautify(this.me.storedTotalCps*Game.globalCpsMult, 1)+" cookies/second"+'</div>';
             l('statsListing'+this.id).innerHTML = str;
         }
 
@@ -200,6 +196,8 @@ BModify._Initialize = function(en) {
             this.depleted = false;
             this.pause = false;
             this.statsView = false;
+
+            this.getStatDiv().style.display='none';
         }
     }
 
