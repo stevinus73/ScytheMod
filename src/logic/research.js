@@ -59,8 +59,8 @@ Research._Initialize = function(en) {
         }
 
         this.draw = function() {
-            cX = (this.x + 1) * Research.container.clientWidth * 0.5 - Research.userX;
-            cY = (this.y + 1) * Research.container.clientHeight * 0.5 - Research.userY;
+            var cX = (this.x + 1) * Research.container.clientWidth * 0.5 - Research.userX;
+            var cY = (this.y + 1) * Research.container.clientHeight * 0.5 - Research.userY;
             var classes = 'crate upgrade heavenly';
             var clickStr = this.onBuy;
             var enabled = 0;
