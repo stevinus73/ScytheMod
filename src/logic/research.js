@@ -13,7 +13,7 @@ Research._Initialize = function(en) {
     this.button = l("researchButton");
     this.researchOn = false;
     l("centerArea").insertAdjacentHTML('beforeend', 
-        '<style>#research{background: url("img/starbg.jpg"); z-index: 1; position: absolute; inset: 40px 0px 0px;}</style>'
+        '<style>#research{background: url("img/starbg.jpg"); z-index: 1; position: absolute; inset: 40px 0px 0px; display: none;}</style>'
     )
     l("centerArea").insertAdjacentHTML('beforeend', '<div id="research"></div>')
     this.container = l("research");
@@ -107,7 +107,7 @@ Research._Initialize = function(en) {
             this.button.firstChild.textContent = "View Research";
         }
     }
-
+    
     Research.clear = function() {
         this.switch(false);
     }
@@ -124,7 +124,7 @@ Research._Initialize = function(en) {
             str += t.draw();
         }
 
-        //this.container.innerHTML = str;
+        this.container.innerHTML = str;
     }
 
     var f = function(){return true;}
