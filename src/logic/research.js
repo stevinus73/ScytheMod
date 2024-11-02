@@ -55,7 +55,13 @@ Research._Initialize = function(en) {
             for (var parent in this.parents) {
                 if (!parent.canBuy()) parentBuy = false;
             }
-            return (this.requirements() && parentBuy && (Research.research >= this.priceR));
+            return (this.requirements() && parentBuy && (Research.research >= this.priceR) && !this.bought);
+        }
+
+        this.buy = function() {
+            Research.research -= this.priceR;
+            this.bought = true;
+            this.onBuy();
         }
 
         this.draw = function() {
@@ -79,6 +85,7 @@ Research._Initialize = function(en) {
             str += '<div style="margin:6px 0px;font-size:11px;">'+this.desc+'</div>';
             str += "<br />";
             str += '</div>';
+            return str;
         }
 
         Research.id += 1;
@@ -122,7 +129,7 @@ Research._Initialize = function(en) {
         //}
         if (!this.researchOn) return;
         var str = '';
-        for (var t in this.tech) {
+        for (var t in this.upgrades) {
             str += t.draw();
         }
         this.container.innerHTML = str;
