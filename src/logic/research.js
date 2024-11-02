@@ -96,7 +96,7 @@ Research._Initialize = function(en) {
 
     Research.switch = function(on) {
         if (on == -1) on = !this.researchOn;
-        this.researchOn = on;
+        //this.researchOn = on;
         if (this.researchOn) {
             this.container.style.display = "block";
             l("rows").style.display = "none";
