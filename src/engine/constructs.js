@@ -30,3 +30,5 @@ upgrade_engine.appendToUpgradeDesc = function(upgrade, newDesc) {
 upgrade_engine.replaceUpgradeDesc = function(upgrade, newDesc) {
     upgrade.ddesc = [newDesc, "<q>" + upgrade.ddesc.split("<q>")[1]].join('');
 }
+
+export { building_engine, upgrade_engine }
