@@ -145,10 +145,10 @@ BModify._Initialize = function(en) {
 
         this.getButton = function() { return l("productStatsButton"+this.id); }
         this.getStatDiv = function() { return l("rowStats"+this.id); }
-
-        this.getStatDiv().insertAdjacentHTML('beforeend', '<div id="stats'+this.id+'" class="subsection"></div>')
+        this.getStatDiv().insertAdjacentHTML('beforeend', '<div class="separatorTop"/>')
+        this.getStatDiv().insertAdjacentHTML('beforeend', '<div id="statsBG'+this.id+'"></div>')
+        l('statsBG'+this.id).insertAdjacentHTML('beforeend', '<div id="stats'+this.id+'" class="subsection"></div>')
         l('stats'+this.id).insertAdjacentHTML('beforeend', '<div class="title" style="position:relative">'+cfl(this.me.plural)+'</div>')
-        l('stats'+this.id).insertAdjacentHTML('beforeend', '<div id="statsBG'+this.id+'"></div>')
         l('stats'+this.id).insertAdjacentHTML('beforeend', '<div id="statsListing'+this.id+'"></div>')
         l('stats'+this.id).insertAdjacentHTML('beforeend', '<div id="statsVisual'+this.id+'"></div>')
 
@@ -156,8 +156,10 @@ BModify._Initialize = function(en) {
         str+='<style>'
         +'#resBar'+this.id+'{max-width:95%;margin:4px auto;height:16px;}'
         +'#resBarFull'+this.id+'{transform:scale(1,2);transform-origin:50% 0;height:50%;}'
-        +'#resBarText'+this.id+'#grimoireBarText{transform:scale(1,0.8);width:100%;position:absolute;left:0px;top:0px;text-align:center;color:#fff;text-shadow:-1px 1px #000,0px 0px 4px #000,0px 0px 6px #000;margin-top:2px;}'
-        +'#statsBG'+this.id+'{background:url('+Game.resPath+'img/shadedBorders.png),url('+Game.resPath+'img/darkNoise.jpg);background-size:100% 100%,auto;position:absolute;left:0px;right:0px;top:0px;bottom:16px;}'
+        +'#resBarText'+this.id+'{transform:scale(1,0.8);width:100%;position:absolute;left:0px;top:0px;text-align:center;color:#fff;text-shadow:-1px 1px #000,0px 0px 4px #000,0px 0px 6px #000;margin-top:2px;}'
+        +'#statsBG'+this.id+'{background:url('+Game.resPath+'img/shadedBorders.png),url('+Game.resPath+'img/darkNoise.jpg);background-size:33% 100%,auto;position:relative;left:0px;right:0px;top:0px;bottom:16px;}'
+        +'.separatorTop{width: 100%;height: 8px;background: url(img/panelHorizontal.png?v=2) repeat-x;background: url(img/panelGradientLeft.png) no-repeat top left, '
+        +'url(img/panelGradientRight.png) no-repeat top right, url(img/panelHorizontal.png?v=2) repeat-x;position: absolute;left: 0px;top: 0px;}'
         +'</style>';
         //str+='<div id="resBarIcon'+this.id+'" class="usesIcon shadowFilter lumpRefill" style="left:-40px;top:-17px;background-position:'+(-icon[0]*48)+'px '+(-icon[1]*48)+'px;">';
         str+='<div id="resBar'+this.id+'" class="smallFramed meterContainer" style="width:1px;">'
@@ -227,7 +229,7 @@ BModify._Initialize = function(en) {
             if (!Game.Tiers[this.me.tieredUpgrades[i].tier].special) {
                 var percentage = Math.min(0.4 + 0.1 * i, 1) * 100;
                 BModify.en.ue.appendToUpgradeDesc(this.me.tieredUpgrades[i], 
-                    "Total "+this.rsNames[0].toLowerCase()+" <b>"+percentage+"</b>.");
+                    "Total "+this.rsNames[0].toLowerCase()+" <b>+"+Beautify(percentage)+"%</b>.");
             }
         }
     }
