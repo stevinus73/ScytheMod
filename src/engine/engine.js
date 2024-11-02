@@ -23,13 +23,13 @@ IdlersPocket._Initialize = function () {
     IdlersPocket.saveCallbacks = [];
 
     IdlersPocket._save = function() {
-        this.saveCallbacks.forEach((c) => c());
-        return this._encryptVars();
+        IdlersPocket.saveCallbacks.forEach((c) => c());
+        return IdlersPocket._encryptVars();
     }
 
     IdlersPocket._load = function(str) {
-        this._decryptVars();
-        this.loadCallbacks.forEach((c) => c());
+        IdlersPocket._decryptVars();
+        IdlersPocket.loadCallbacks.forEach((c) => c());
     }
 
     IdlersPocket.vars = new Map();
