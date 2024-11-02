@@ -32,7 +32,7 @@ Research._Initialize = function(en) {
         this.priceR = priceR;
         this.requirements = requirements;
         this.onBuy = onBuy;
-        this.parents = parents;
+        this.parents = Array.from(parents, (i) => Research.upgrades[i]);
         this.sprite = sprite;
         this.x = x; // -1 to 1
         this.y = y; // -1 to 1
@@ -41,9 +41,9 @@ Research._Initialize = function(en) {
 
         this.canBuy = function() {
             var parentBuy = true;
-            for (var parent in this.parents) {
+            this.parents.forEach(function(parent) {
                 if (!parent.canBuy()) parentBuy = false;
-            }
+            });
             return (this.requirements() && parentBuy && (Research.research >= this.priceR) && !this.bought);
         }
 
@@ -70,11 +70,31 @@ Research._Initialize = function(en) {
         }
 
         this.getTooltip = function() {
-            var str = '';
-            str += '<div class="description"><div style="margin:6px 0px;font-size:14px;"><b>'+this.name+'</b></div>';
-            str += '<div style="margin:6px 0px;font-size:11px;">'+this.desc+'</div>';
-            str += '</div>';
-            return str;
+            var tags = [];
+            var price='';
+
+            tags.push(loc("[Tag]Tech",0,'Tech'),'#36a4ff');
+            if (this.bought) {
+                ariaText+='Owned. ';
+                tags.push(loc("Researched"),0);
+            }
+
+            var tagsStr='';
+			for (var i=0;i<tags.length;i+=2)
+			{
+				if (i%2==0) tagsStr+='<div class="tag" style="background-color:'+(tags[i+1]==0?'#fff':tags[i+1])+';">'+tags[i]+'</div>';
+			}
+
+            var cost=this.priceR;
+            price='<div style="float:right;text-align:right;"><span class="price">'+Beautify(Math.round(cost))+'</span></div>';
+            var tip=loc("Click to research.");
+
+            return '<div style="position:absolute;left:1px;top:1px;right:1px;bottom:1px;background:linear-gradient(125deg,rgba(50,40,40,1) 0%,rgba(50,40,40,0) 20%);mix-blend-mode:screen;z-index:1;"></div><div style="z-index:10;padding:8px 4px;min-width:350px;position:relative;" id="tooltipCrate">'+
+            '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;'+writeIcon(this.sprite)+'"></div>'+price+
+            '<div class="name">'+this.name+'</div>'+
+            tagsStr+
+            '<div class="line"></div><div class="description">'+this.desc+'</div></div>'+
+            (tip!=''?('<div class="line"></div><div style="font-size:10px;font-weight:bold;color:#999;text-align:center;padding-bottom:4px;line-height:100%;" class="crateTip">'+tip+'</div>'):'');
         }
 
         Research.id += 1;
@@ -126,17 +146,17 @@ Research._Initialize = function(en) {
         if (Game.keys[38]) this.userY -= 4;
         if (Game.keys[39]) this.userX += 4;
         if (Game.keys[40]) this.userY += 4;
-        if (userX < -1200) userX = -1200;
-        if (userY < -1200) userY = -1200;
-        if (userX >  1200) userX =  1200;
-        if (userY >  1200) userY =  1200;
+        if (this.userX < -1200) this.userX = -1200;
+        if (this.userY < -1200) this.userY = -1200;
+        if (this.userX >  1200) this.userX =  1200;
+        if (this.userY >  1200) this.userY =  1200;
     }
 
     
 
     function f(){return true;}
-    new Research.Tech("Magic mushrooms", "They make you magic!", 10, f, f, [], [23, 10], 0, 0);
-    new Research.Tech("Howdy!", "It's me. Flowery.", 10, f, f, [], [26, 11], -0.4, 0.6);
+    u = new Research.Tech("Magic mushrooms", "They make you magic!", 10, f, f, [], [23, 10], 0, 0); //0
+    v = new Research.Tech("Howdy!", "It's me. Flowery.", 10, f, f, [0], [26, 11], -0.4, 0.6); //1
 
     Research.en.saveCallback(function() {
 
