@@ -37,7 +37,7 @@ IdlersPocket._Initialize = function () {
 
     
     IdlersPocket._encryptVars = function() {
-        return Array.from(this.vars.values(), (v) => utf8_to_b64(v)).join("|");
+        return Array.from(this.vars.values(), (v) => utf8_to_b64(v.value)).join("|");
     }
     IdlersPocket._decryptVars = function(str) {
         Array.from(str.split("|"), (v) => b64_to_utf8(v)).forEach(function (item, index) {

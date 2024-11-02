@@ -254,7 +254,7 @@ BModify._Initialize = function(en) {
         }
 
         this.resourceMult = function() {
-            return Math.min(Math.pow(this.me.amount, 1.001) * this._ifactor(this.me.amount), 1);
+            return Math.max(Math.pow(this.me.amount, 1.001) * this._ifactor(this.me.amount), 1);
         }
     }
 
