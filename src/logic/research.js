@@ -69,8 +69,7 @@ Research._Initialize = function(en) {
             return '<div data-id="'+this.id+'" '+Game.clickStr+'="'+clickStr+'"'+
             ' class="'+classes+'" '+Game.getDynamicTooltip('function(){return mod.research.upgrades['+this.id+'].getTooltip()}', 'top', true)
             +'id="researchUp'+this.id+'" '+
-            'style="'+writeIcon(this.sprite)+'position:absolute;left:'+cX+'px;top:'+cY+'px;'+
-                (style||'')+'"></div>';
+            'style="'+writeIcon(this.sprite)+'position:absolute;left:'+cX+'px;top:'+cY+'px;"></div>';
         }
 
         this.getTooltip = function() {
