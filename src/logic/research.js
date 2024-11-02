@@ -59,8 +59,8 @@ Research._Initialize = function(en) {
         }
 
         this.draw = function() {
-            cX = (this.x + 1) * Research.canvas.width * 0.5 - Research.userX;
-            cY = (this.y + 1) * Research.canvas.height * 0.5 - Research.userY;
+            cX = (this.x + 1) * Research.container.clientWidth * 0.5 - Research.userX;
+            cY = (this.y + 1) * Research.container.clientHeight * 0.5 - Research.userY;
             var classes = 'crate upgrade heavenly';
             var clickStr = this.onBuy;
             var enabled = 0;
@@ -118,6 +118,7 @@ Research._Initialize = function(en) {
         //if (Game.drawT%2==0) {
             //this.upgrades.forEach(u => u.draw());
         //}
+        if (!this.researchOn) return;
         for (var t in this.tech) {
             this.container.insertAdjacentHTML('beforeend', t.draw());
         }
