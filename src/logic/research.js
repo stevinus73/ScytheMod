@@ -6,7 +6,7 @@ Research._Initialize = function(en) {
     var str = '';
     str += '<div class="smallFancyButton framed" id="researchButton" style="margin-top: 0px; position:relative;' 
     str += 'background: url(//cdn.dashnet.org/cookieclicker/img/shadedBorders.png),url(//cdn.dashnet.org/cookieclicker/img/BGgrimoire.jpg)" '
-    str += 'onclick="mod.research.switch()">'
+    str += 'onclick="mod.research.switch(-1)">'
     str += '<div>View Research</div></div>'
 
     l("buildingsMaster").insertAdjacentHTML('afterbegin', str);
@@ -19,8 +19,9 @@ Research._Initialize = function(en) {
     this.container = l("research");
 
 
-    Research._Switch = function() {
-        this.researchOn = !this.researchOn;
+    Research.switch = function(on) {
+        if (on == -1) on = !this.researchOn;
+        this.researchOn = on;
         if (this.researchOn) {
             this.container.style.display = "block";
             l("rows").style.display = "none";
@@ -31,6 +32,18 @@ Research._Initialize = function(en) {
             this.button.firstChild.textContent = "View Research";
         }
     }
+
+    Research.clear = function() {
+        this.switch(false);
+    }
+
+    Research.en.saveCallback(function() {
+        
+    })
+
+    Research.en.loadCallback(function() {
+
+    })
 }
 
 export { Research }
