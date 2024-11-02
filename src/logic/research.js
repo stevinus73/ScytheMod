@@ -13,12 +13,12 @@ Research._Initialize = function(en) {
     this.button = l("researchButton");
     this.researchOn = false;
     l("centerArea").insertAdjacentHTML('beforeend', 
-        '<style>#research{z-index: 1; position: absolute; inset: 40px 0px 0px; display: none;}</style>'
+        '<style>#research{z-index: 1; background: url("img/starbg.jpg"); position: absolute; inset: 40px 0px 0px; display: none;}</style>'
     )
     l("centerArea").insertAdjacentHTML('beforeend', '<div id="research"></div>')
     this.container = l("research");
     this.container.insertAdjacentHTML('beforeend', 
-        '<div id="researchContent" style="z-index: -1000; position: absolute; inset: 50px 0px 0px; background: url("img/starbg.jpg");"></div>'
+        '<div id="researchContent" style="position: absolute;"></div>'
     )
     this.content = l("researchContent");
     this.research = 1;
@@ -56,12 +56,12 @@ Research._Initialize = function(en) {
             Research.research -= this.priceR;
             this.bought = true;
             this.onBuy();
-            this.draw();
+            Research.draw();
         }
 
         this.draw = function() {
-            var cX = Research.content.offsetWidth  * 0.5 - Research.userX - 36;
-            var cY = Research.content.offsetHeight * 0.5 - Research.userY - 36;
+            var cX = Research.content.offsetWidth  * 0.5 - 36;
+            var cY = Research.content.offsetHeight * 0.5 - 36;
             var sX =  this.x * Research.content.offsetWidth  * 0.5 + cX;
             var sY = -this.y * Research.content.offsetHeight * 0.5 + cY;
             var classes = 'crate upgrade heavenly';
@@ -151,20 +151,18 @@ Research._Initialize = function(en) {
     Research.update = function() {
         if (Game.keys[37]) {
             this.userX -= 4;
-            Research.draw();
         }
         if (Game.keys[38]) {
             this.userY -= 4;
-            Research.draw();
         }
         if (Game.keys[39]) {
             this.userX += 4;
-            Research.draw();
         }
         if (Game.keys[40]) {
             this.userY += 4;
-            Research.draw();
         }
+        ts = 'translate('+Math.floor(-this.userX)+'px,'+Math.floor(-this.userY)+'px)';
+        this.content.style.transform = ts;
         if (this.userX < -1200) this.userX = -1200;
         if (this.userY < -1200) this.userY = -1200;
         if (this.userX >  1200) this.userX =  1200;
