@@ -283,11 +283,11 @@ BModify._Initialize = function(en) {
 
     BModify.en.loadCallback(function() {
         BModify.rsManagers.forEach(function(me) {
-            me.RhpS = BModify.en.getVar("RhpS"+me.id);
-            me.yield = BModify.en.getVar("yield"+me.id);
-            me.rsTotal = BModify.en.getVar("rsTotal"+me.id);
-            me.rsUsed = BModify.en.getVar("rsUsed"+me.id);
-            me.pause = (BModify.en.getVar("pause"+me.id) > 0) ? true: false;
+            // me.RhpS = BModify.en.getVar("RhpS"+me.id);
+            // me.yield = BModify.en.getVar("yield"+me.id);
+            // me.rsTotal = BModify.en.getVar("rsTotal"+me.id);
+            // me.rsUsed = BModify.en.getVar("rsUsed"+me.id);
+            // me.pause = (BModify.en.getVar("pause"+me.id) > 0) ? true: false;
         })
     })
 
