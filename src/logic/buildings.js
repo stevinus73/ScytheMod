@@ -42,6 +42,7 @@ BModify._Initialize = function(en) {
             return cps * dmult;
         }
 
+        // overwrites vanilla cps function for building
         this.me.cps = function(me) {
             return me.rsManager.getRawCpS();
         };
@@ -79,9 +80,10 @@ BModify._Initialize = function(en) {
             this.rsAvailable = this.rsTotal - this.rsUsed;
             this.update()
         }
-
+        
+        // decay factor applied to rhps
         this.decayedFactor = function() {
-            return this.me.amount * Math.pow(0.997, math.min(this.me.amount, 600));
+            return this.me.amount * Math.pow(0.997, Math.min(this.me.amount, 600));
         }
 
         // called once per Game.Logic loop
@@ -100,6 +102,30 @@ BModify._Initialize = function(en) {
             if (this.depleted) return;
             this.rsUsed += (this.RhpS / Game.fps) * this.decayedFactor();
         }
+
+        // resets everythin'
+        this.clear = function() {
+            this.baseYield = this.me.baseCps;
+            this.yield = this.baseYield / baseRhpS_C;
+            
+            this.baseRhpS = baseRhpS_C; // resource harvest rate
+            this.RhpS = this.baseRhpS;
+
+            this.rsTotal = this.baseRs;
+            this.rsUsed = 0;
+            this.rsAvailable = this.baseRs;
+
+            this.depleted = false;
+            this.pause = false;
+            this.statsView = false;
+
+            this.getStatDiv().style.display='none';
+        }
+
+
+        // whatever this is
+
+
 
         l("productMinigameButton"+this.id).insertAdjacentHTML('afterend', 
             '<div id="productStatsButton'+this.id+'" class="productButton" onclick="Game.ObjectsById['+this.id+'].rsManager.switchStats(-1)">View Stats</div>');
@@ -164,7 +190,7 @@ BModify._Initialize = function(en) {
         this.update = function() {
             str = '';
             var sty = this.depleted ? 'style="color:red"' : '';
-            str+='<div class="listing"> <b>'+this.rsNames[0]+' harvest rate ('+this.rsNames[2]+'/second) per '+this.me.dname.toLowerCase()+': </b>'+Beautify(this.RhpS, 1);
+            str+='<div class="listing"> <b>'+this.rsNames[0]+' harvest rate ('+this.rsNames[2]+'/second) per '+this.me.dname.toLowerCase()+': </b>'+Beautify(this.pause ? this.RhpS : 0, 1);
             str+=' ('+Beautify(this.RhpS * this.decayedFactor(), 1)+' for '+Beautify(this.me.amount)+' '+this.me.plural.toLowerCase()+')</div>';
             str+='<div class="listing"> <b>Base yield: </b>'+Beautify(this.yield, 1)+ " cookies/"+this.rsNames[1]+'</div>';
             str+='<div class="listing"> <b>Total amount of '+this.rsNames[0].toLowerCase()+':</b> '+Beautify(this.rsTotal) + " " + this.rsNames[2]+'</div>';
@@ -180,24 +206,6 @@ BModify._Initialize = function(en) {
 			    this.mbar.style.width='350px';
 		    }
 		    this.mbarFull.style.backgroundPosition=(-Game.T*0.5)+'px';
-        }
-
-        this.clear = function() {
-            this.baseYield = this.me.baseCps;
-            this.yield = this.baseYield / baseRhpS_C;
-            
-            this.baseRhpS = baseRhpS_C; // resource harvest rate
-            this.RhpS = this.baseRhpS;
-
-            this.rsTotal = this.baseRs;
-            this.rsUsed = 0;
-            this.rsAvailable = this.baseRs;
-
-            this.depleted = false;
-            this.pause = false;
-            this.statsView = false;
-
-            this.getStatDiv().style.display='none';
         }
     }
 
@@ -236,9 +244,9 @@ BModify._Initialize = function(en) {
     new BModify.RS_Manager(5,  66000, ["Interest", "dollar", "dollars"]);
     new BModify.RS_Manager(6,  62000, ["Artifact", "gram", "grams"]);
     new BModify.RS_Manager(7,  57000, ["Mana", "magic", "magic"]);
-    new BModify.RS_Manager(8,  51000, ["Planet matter", "earth mass", "earth masses"]);
-    new BModify.RS_Manager(9,  46000, ["Warped cookies", "aetheria", "aethereiars"]);
-    // Alchemy labs not included because they utilize a special mechanic
+    new BModify.RS_Manager(8,  51000, ["Planet matter", "earth mass", "earth masses"])
+    // Alchemy labs not included because they utilize a special mechanic;
+    new BModify.RS_Manager(10, 46000, ["Warped cookies", "aetheria", "aethereiars"]);
     new BModify.RS_Manager(11, 43000, ["Reachable times", "century", "centuries"]);
     new BModify.RS_Manager(12, 39000, ["Antimatter", "gram", "grams"]);
     new BModify.RS_Manager(13, 38000, ["Light", "photon", "photons"]);
@@ -247,7 +255,7 @@ BModify._Initialize = function(en) {
     new BModify.RS_Manager(16, 33000, ["Computational power", "operation", "operations"]);
     // Idleverses not included for the same reason as alchemy labs
     // Cortex bakers not included for similar reasons as the chancemaker
-    new BModify.RS_Manager(19, 29000, ["Clone DNA", "gene", "genes"]);
+    new BModify.RS_Manager(19, 29000, ["Clone energy", "gene", "genes"]);
 }
 
 
