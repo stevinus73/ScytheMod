@@ -17,7 +17,7 @@ Research._Initialize = function(en) {
     )
     l("centerArea").insertAdjacentHTML('beforeend', '<div id="research"></div>')
     this.container = l("research");
-    this.research = 0;
+    this.research = 1;
 
     this.upgrades = [];
     this.userX = 0;
@@ -44,10 +44,11 @@ Research._Initialize = function(en) {
             this.parents.forEach(function(parent) {
                 if (!parent.canBuy()) parentBuy = false;
             });
-            return (this.requirements() && parentBuy && (Research.research >= this.priceR) && !this.bought);
+            return (this.requirements() && parentBuy && (Research.research >= this.priceR));
         }
 
         this.buy = function() {
+            if ((!this.canBuy()) || this.bought) return;
             Research.research -= this.priceR;
             this.bought = true;
             this.onBuy();
@@ -59,7 +60,7 @@ Research._Initialize = function(en) {
             var sX =  this.x * Research.container.offsetWidth  * 0.5 + cX;
             var sY = -this.y * Research.container.offsetHeight * 0.5 + cY;
             var classes = 'crate upgrade heavenly';
-            var clickStr = this.onBuy;
+            var clickStr = 'mod.research.upgrades[' + this.id + '].buy()';
             var enabled = 0;
             if (this.bought) enabled=1;
             if (enabled) classes += ' enabled';
@@ -86,7 +87,9 @@ Research._Initialize = function(en) {
 			}
 
             var cost=this.priceR;
-            price='<div style="float:right;text-align:right;"><span class="price">'+Beautify(Math.round(cost))+'</span></div>';
+            price='<div style="float:right;text-align:right;"><span class="price'
+            +this.canBuy()?'':' disabled'+
+            +'">'+Beautify(Math.round(cost))+'</span></div>';
             var tip=loc("Click to research.");
 
             return '<div style="position:absolute;left:1px;top:1px;right:1px;bottom:1px;background:linear-gradient(125deg,rgba(50,40,40,1) 0%,rgba(50,40,40,0) 20%);mix-blend-mode:screen;z-index:1;"></div><div style="z-index:10;padding:8px 4px;min-width:350px;position:relative;" id="tooltipCrate">'+
@@ -142,10 +145,22 @@ Research._Initialize = function(en) {
     }
 
     Research.update = function() {
-        if (Game.keys[37]) this.userX -= 4;
-        if (Game.keys[38]) this.userY -= 4;
-        if (Game.keys[39]) this.userX += 4;
-        if (Game.keys[40]) this.userY += 4;
+        if (Game.keys[37]) {
+            this.userX -= 4;
+            Research.draw();
+        }
+        if (Game.keys[38]) {
+            this.userY -= 4;
+            Research.draw();
+        }
+        if (Game.keys[39]) {
+            this.userX += 4;
+            Research.draw();
+        }
+        if (Game.keys[40]) {
+            this.userY += 4;
+            Research.draw();
+        }
         if (this.userX < -1200) this.userX = -1200;
         if (this.userY < -1200) this.userY = -1200;
         if (this.userX >  1200) this.userX =  1200;
@@ -155,8 +170,8 @@ Research._Initialize = function(en) {
     
 
     function f(){return true;}
-    new Research.Tech("Magic mushrooms", "They make you magic!", 10, f, f, [], [23, 10], 0, 0); //0
-    new Research.Tech("Howdy!", "It's me. Flowery.", 10, f, f, [0], [26, 11], -0.4, 0.6); //1
+    new Research.Tech("Magic mushrooms", "They make you magic!", 0, f, f, [], [23, 10], 0, 0); //0
+    new Research.Tech("Howdy!", "It's me. Flowery.", 0, f, f, [0], [26, 11], -0.4, 0.6); //1
 
     Research.en.saveCallback(function() {
 
