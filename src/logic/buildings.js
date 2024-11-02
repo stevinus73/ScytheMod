@@ -32,11 +32,11 @@ BModify._Initialize = function(en) {
         this.pause = false;
         this.statsView = false;
 
-        BModify.en.newVar("RhpS"+me.id,  "float");
-        BModify.en.newVar("yield"+me.id, "float");
-        BModify.en.newVar("rsTotal"+me.id, "int");
-        BModify.en.newVar("rsUsed"+me.id,  "int");
-        BModify.en.newVar("pause"+me.id,   "int");
+        BModify.en.newVar("RhpS"+this.me.id,  "float");
+        BModify.en.newVar("yield"+this.me.id, "float");
+        BModify.en.newVar("rsTotal"+this.me.id, "int");
+        BModify.en.newVar("rsUsed"+this.me.id,  "int");
+        BModify.en.newVar("pause"+this.me.id,   "int");
 
         BModify.rsManagers.push(this);
 
