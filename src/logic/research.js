@@ -65,8 +65,10 @@ Research._Initialize = function(en) {
         }
 
         this.draw = function() {
-            var cX = (this.x + 1) * Research.container.clientWidth * 0.5 - Research.userX;
-            var cY = (this.y + 1) * Research.container.clientHeight * 0.5 - Research.userY;
+            var cX = Research.container.offsetWidth  * 0.5 - Research.userX;
+            var cY = Research.container.offsetHeight * 0.5 - Research.userY;
+            var sX = this.x * Research.container.offsetWidth  * 0.5 + cX;
+            var sY = this.y * Research.container.offsetHeight * 0.5 + cY;
             var classes = 'crate upgrade heavenly';
             var clickStr = this.onBuy;
             var enabled = 0;
@@ -75,15 +77,13 @@ Research._Initialize = function(en) {
             return '<div data-id="'+this.id+'" '+Game.clickStr+'="'+clickStr+'"'+
             ' class="'+classes+'" '+Game.getDynamicTooltip('function(){return mod.research.upgrades['+this.id+'].getTooltip()}', 'top', true)
             +'id="researchUp'+this.id+'" '+
-            'style="'+writeIcon(this.sprite)+'position:absolute;left:'+cX+'px;top:'+cY+'px;"></div>';
+            'style="'+writeIcon(this.sprite)+'position:absolute;left:'+sX+'px;top:'+sY+'px;"></div>';
         }
 
         this.getTooltip = function() {
             var str = '';
             str += '<div class="description"><div style="margin:6px 0px;font-size:14px;"><b>'+this.name+'</b></div>';
-            str += "<br />";
             str += '<div style="margin:6px 0px;font-size:11px;">'+this.desc+'</div>';
-            str += "<br />";
             str += '</div>';
             return str;
         }
@@ -122,23 +122,17 @@ Research._Initialize = function(en) {
     }
 
     Research.draw = function() {
-        // this.canvas.width = this.container.width;
-        // this.canvas.height = this.container.height;
-        //if (Game.drawT%2==0) {
-            //this.upgrades.forEach(u => u.draw());
-        //}
         if (!this.researchOn) return;
         var str = '';
-        for (var t in this.upgrades) {
-            str += t.draw();
-        }
+        this.upgrades.forEach((u) => str += u.draw())
         this.container.innerHTML = str;
     }
 
     
 
-    var f = function(){return true;}
+    function f(){return true;}
     new Research.Tech("Magic mushrooms", "They make you magic!", 10, f, f, [], [23, 10], 0, 0);
+    new Research.Tech("Howdy!", "It's me. Flowery.", 10, f, f, [], [26, 11], -0.4, 0.6);
 
     
 
