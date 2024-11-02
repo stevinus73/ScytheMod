@@ -52,15 +52,6 @@ BModify._Initialize = function(en) {
         this.me.cps = function(me) {
             return me.rsManager.getRawCpS();
         };
-
-        for (var i in this.me.tieredUpgrades) {
-            if (!Game.Tiers[this.me.tieredUpgrades[i].tier].special && Game.Has(this.me.tieredUpgrades[i].name)) {
-                var percentage = Math.min(0.5 + 0.1 * i, 1) * 100;
-                BModify.en.ue.appendToUpgradeDesc(this.me.tieredUpgrades[i], 
-                    "Total "+this.rsNames[0].toLowerCase()+" <b>"+percentage+"</b>.");
-            }
-        }
-
         // called once every calculateGains()
         this.recalculate = function() {
             var me = this.me;
@@ -70,7 +61,7 @@ BModify._Initialize = function(en) {
             for (var i in me.tieredUpgrades) {
                 if (!Game.Tiers[me.tieredUpgrades[i].tier].special && Game.Has(me.tieredUpgrades[i].name)) {
                     var tierMult=2; 
-                    var tierRsMult=Math.min(1.5 + 0.1 * i, 2);
+                    var tierRsMult=Math.min(1.4 + 0.1 * i, 2);
                     if (Game.ascensionMode!=1 && Game.Has(me.unshackleUpgrade) && Game.Has(Game.Tiers[me.tieredUpgrades[i].tier].unshackleUpgrade)) {
                         tierMult+=me.id==1?0.5:(20-me.id)*0.1;
                         tierRsMult+=me.id==1?0.25:(20-me.id)*0.05;
@@ -231,6 +222,14 @@ BModify._Initialize = function(en) {
 		    }
 		    this.mbarFull.style.backgroundPosition=(-Game.T*0.5)+'px';
         }
+
+        for (var i in this.me.tieredUpgrades) {
+            if (!Game.Tiers[this.me.tieredUpgrades[i].tier].special) {
+                var percentage = Math.min(0.4 + 0.1 * i, 1) * 100;
+                BModify.en.ue.appendToUpgradeDesc(this.me.tieredUpgrades[i], 
+                    "Total "+this.rsNames[0].toLowerCase()+" <b>"+percentage+"</b>.");
+            }
+        }
     }
 
     BModify.RS_Manager.prototype.getType = function () {
@@ -309,6 +308,15 @@ BModify._Initialize = function(en) {
     // Idleverses not included for the same reason as alchemy labs
     // Cortex bakers not included for similar reasons as the chancemaker
     new BModify.RS_Manager(19, 29000, ["Clone energy", "gene", "genes"]);
+
+    for (var i in this.me.tieredUpgrades) {
+        if (!Game.Tiers[this.me.tieredUpgrades[i].tier].special && Game.Has(this.me.tieredUpgrades[i].name)) {
+            var percentage = Math.min(0.5 + 0.1 * i, 1) * 100;
+            BModify.en.ue.appendToUpgradeDesc(this.me.tieredUpgrades[i], 
+                "Total "+this.rsNames[0].toLowerCase()+" <b>"+percentage+"</b>.");
+        }
+    }
+
 }
 
 
