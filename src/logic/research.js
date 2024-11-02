@@ -107,7 +107,7 @@ Research._Initialize = function(en) {
             this.button.firstChild.textContent = "View Research";
         }
     }
-    
+
     Research.clear = function() {
         this.switch(false);
     }
@@ -118,13 +118,9 @@ Research._Initialize = function(en) {
         //if (Game.drawT%2==0) {
             //this.upgrades.forEach(u => u.draw());
         //}
-        if (!this.researchOn) return;
-        str = '';
         for (var t in this.tech) {
-            str += t.draw();
+            this.container.insertAdjacentHTML('beforeend', t.draw());
         }
-
-        this.container.innerHTML = str;
     }
 
     var f = function(){return true;}
