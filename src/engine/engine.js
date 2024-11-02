@@ -28,7 +28,7 @@ IdlersPocket._Initialize = function () {
     }
 
     IdlersPocket._load = function(str) {
-        IdlersPocket._decryptVars();
+        IdlersPocket._decryptVars(str);
         IdlersPocket.loadCallbacks.forEach((c) => c());
     }
 
