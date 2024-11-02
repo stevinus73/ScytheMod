@@ -155,8 +155,8 @@ Research._Initialize = function(en) {
     
 
     function f(){return true;}
-    u = new Research.Tech("Magic mushrooms", "They make you magic!", 10, f, f, [], [23, 10], 0, 0); //0
-    v = new Research.Tech("Howdy!", "It's me. Flowery.", 10, f, f, [0], [26, 11], -0.4, 0.6); //1
+    new Research.Tech("Magic mushrooms", "They make you magic!", 10, f, f, [], [23, 10], 0, 0); //0
+    new Research.Tech("Howdy!", "It's me. Flowery.", 10, f, f, [0], [26, 11], -0.4, 0.6); //1
 
     Research.en.saveCallback(function() {
 
