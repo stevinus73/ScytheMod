@@ -73,10 +73,12 @@ Research._Initialize = function(en) {
         }
 
         this.getTooltip = function() {
-            return '<div class="description"><div style="margin:6px 0px;font-size:11px;"><b>'+this.name+'</b></div>'+
-						'<div style="margin:6px 0px;font-size:11px;">'+this.desc+'</div>'+
-						""+
-					'</div>';
+            var str = '';
+            str += '<div class="description"><div style="margin:6px 0px;font-size:14px;"><b>'+this.name+'</b></div>';
+            str += "<br />";
+            str += '<div style="margin:6px 0px;font-size:11px;">'+this.desc+'</div>';
+            str += "<br />";
+            str += '</div>';
         }
 
         Research.id += 1;
@@ -100,6 +102,7 @@ Research._Initialize = function(en) {
             this.container.style.display = "block";
             l("rows").style.display = "none";
             this.button.firstChild.textContent = "Close Research";
+            this.draw();
         } else {
             this.container.style.display = "none";
             l("rows").style.display = "block";
@@ -118,10 +121,14 @@ Research._Initialize = function(en) {
             //this.upgrades.forEach(u => u.draw());
         //}
         if (!this.researchOn) return;
+        var str = '';
         for (var t in this.tech) {
-            this.container.insertAdjacentHTML('beforeend', t.draw());
+            str += t.draw();
         }
+        this.container.innerHTML = str;
     }
+
+    
 
     var f = function(){return true;}
     new Research.Tech("Magic mushrooms", "They make you magic!", 10, f, f, [], [23, 10], 0, 0);
@@ -139,7 +146,7 @@ Research._Initialize = function(en) {
     })
 
     Game.registerHook('logic', function() {
-        Research.draw();
+        //Research.draw();
     });
 }
 
