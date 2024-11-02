@@ -121,7 +121,7 @@ Research._Initialize = function(en) {
         }
     }
 
-    f = function(){return true;}
+    var f = function(){return true;}
     new Tech("Magic mushrooms", "They make you magic!", 10, f, f, [], [23, 10], 0, 0);
 
     str = '';
