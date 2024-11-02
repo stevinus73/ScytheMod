@@ -22,16 +22,6 @@ IdlersPocket._Initialize = function () {
     IdlersPocket.loadCallbacks = [];
     IdlersPocket.saveCallbacks = [];
 
-    IdlersPocket._save = function() {
-        IdlersPocket.saveCallbacks.forEach((c) => c());
-        return IdlersPocket._encryptVars();
-    }
-
-    IdlersPocket._load = function(str) {
-        IdlersPocket._decryptVars(str);
-        IdlersPocket.loadCallbacks.forEach((c) => c());
-    }
-
     IdlersPocket.vars = new Map();
     IdlersPocket.var_ident = [];
 
@@ -137,6 +127,17 @@ IdlersPocket._Initialize = function () {
 
 IdlersPocket.LoadMod = function (name, init) {
     this._Initialize();
+
+    this._save = function() {
+        IdlersPocket.saveCallbacks.forEach((c) => c());
+        return IdlersPocket._encryptVars();
+    }
+
+    this._load = function(str) {
+        IdlersPocket._decryptVars(str);
+        IdlersPocket.loadCallbacks.forEach((c) => c());
+    }
+
     var mod = {
         init: function () {
             init();

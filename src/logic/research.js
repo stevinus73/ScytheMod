@@ -12,9 +12,12 @@ Research._Initialize = function(en) {
     l("buildingsMaster").insertAdjacentHTML('afterbegin', str);
     this.button = l("researchButton");
     this.researchOn = false;
+    l("centerArea").insertAdjacentHTML('beforeend', 
+        '<style>#research{background: url("img/starbg.jpg"); z-index: 1; position: absolute; inset: 40px 0px 0px;} #researchButton.hover{color:#fff;text-shadow:0px 1px 0px #999,0px 0px 4px #000;}</style>'
+    )
 
     l("centerArea").insertAdjacentHTML('beforeend', 
-        '<div id="research"></div>'
+        '<div id="research" style="z-index: 1; position: absolute; inset: 40px 0px 0px; "></div>'
     )
     this.container = l("research");
 
@@ -38,7 +41,7 @@ Research._Initialize = function(en) {
     }
 
     Research.en.saveCallback(function() {
-        
+
     })
 
     Research.en.loadCallback(function() {

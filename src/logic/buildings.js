@@ -244,17 +244,22 @@ BModify._Initialize = function(en) {
         this.me = Game.Objects['Idleverse'];
 
         this._ifactor = function(num) {
-            if (num == 1) return 1.5;
-            if (num == 2) return 2.25;
-            if (num == 3) return 2.625;
-            if (num == 4) return 2.8125;
-            if (num == 5) return 2.90625;
-            if (num >= 6) return 3.0;
-            return 1.0;
+            return 3 - (1.5 / Math.pow(2, num * 0.5));
         }
 
         this.resourceMult = function() {
-            return Math.max(Math.pow(this.me.amount, 1.001) * this._ifactor(this.me.amount), 1);
+            fact = 1.003;
+            if (Game.Has("Unshackled idleverses")) fact = 1.004;
+            return Math.max(Math.pow(fact, this.me.amount) * this._ifactor(this.me.amount), 1);
+        }
+
+        l("row17").insertAdjacentHTML('afterbegin', 
+            '<div class="listing" id="idleverseStat" style="position:absolute;color:rgb(36, 36, 36)"></div>'
+        )
+
+        this.getStat = function() {
+            l("idleverseStat").innerHTML = "<b>Total resource boost provided by " + this.me.amount + " idleverses:</b> "
+            + "x" + Beautify(this.resourceMult(), 3);
         }
     }
 
@@ -293,6 +298,7 @@ BModify._Initialize = function(en) {
 
     Game.registerHook('cps', function(cps) {
         BModify.Recalculate();
+        BModify.Idleverses.getStat();
         return cps;
     })
     Game.registerHook('logic', this.Logic);
