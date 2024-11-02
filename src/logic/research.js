@@ -13,10 +13,14 @@ Research._Initialize = function(en) {
     this.button = l("researchButton");
     this.researchOn = false;
     l("centerArea").insertAdjacentHTML('beforeend', 
-        '<style>#research{background: url("img/starbg.jpg"); z-index: 1; position: absolute; inset: 40px 0px 0px; display: none;}</style>'
+        '<style>#research{z-index: 1; position: absolute; inset: 40px 0px 0px; display: none;}</style>'
     )
     l("centerArea").insertAdjacentHTML('beforeend', '<div id="research"></div>')
     this.container = l("research");
+    this.container.insertAdjacentHTML('beforeend', 
+        '<div id="researchContent" style="z-index: -1000; position: absolute; inset: 50px 0px 0px; background: url("img/starbg.jpg");"></div>'
+    )
+    this.content = l("researchContent");
     this.research = 1;
 
     this.upgrades = [];
@@ -52,13 +56,14 @@ Research._Initialize = function(en) {
             Research.research -= this.priceR;
             this.bought = true;
             this.onBuy();
+            this.draw();
         }
 
         this.draw = function() {
-            var cX = Research.container.offsetWidth  * 0.5 - Research.userX - 36;
-            var cY = Research.container.offsetHeight * 0.5 - Research.userY - 36;
-            var sX =  this.x * Research.container.offsetWidth  * 0.5 + cX;
-            var sY = -this.y * Research.container.offsetHeight * 0.5 + cY;
+            var cX = Research.content.offsetWidth  * 0.5 - Research.userX - 36;
+            var cY = Research.content.offsetHeight * 0.5 - Research.userY - 36;
+            var sX =  this.x * Research.content.offsetWidth  * 0.5 + cX;
+            var sY = -this.y * Research.content.offsetHeight * 0.5 + cY;
             var classes = 'crate upgrade heavenly';
             var clickStr = 'mod.research.upgrades[' + this.id + '].buy()';
             var enabled = 0;
@@ -89,7 +94,7 @@ Research._Initialize = function(en) {
             price='<div style="float:right;text-align:right;"><span class="price'
             +this.canBuy()?'':' disabled'+
             +'">'+Beautify(Math.round(cost))+'</span></div>';
-            var tip=loc("Click to research.");
+            var tip=(this.canBuy() && !this.bought) ? loc("Click to research.") : "";
 
             return '<div style="position:absolute;left:1px;top:1px;right:1px;bottom:1px;background:linear-gradient(125deg,rgba(50,40,40,1) 0%,rgba(50,40,40,0) 20%);mix-blend-mode:screen;z-index:1;"></div><div style="z-index:10;padding:8px 4px;min-width:350px;position:relative;" id="tooltipCrate">'+
             '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;'+writeIcon(this.sprite)+'"></div>'+price+
@@ -140,7 +145,7 @@ Research._Initialize = function(en) {
         this.upgrades.forEach(function(u) {
             str += u.draw()
         })
-        this.container.innerHTML = str;
+        this.content.innerHTML = str;
     }
 
     Research.update = function() {
