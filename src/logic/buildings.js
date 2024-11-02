@@ -248,7 +248,7 @@ BModify._Initialize = function(en) {
         }
 
         this.resourceMult = function() {
-            fact = 1.003;
+            var fact = 1.003;
             if (Game.Has("Unshackled idleverses")) fact = 1.004;
             return Math.max(Math.pow(fact, this.me.amount) * this._ifactor(this.me.amount), 1);
         }
