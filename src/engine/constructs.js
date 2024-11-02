@@ -12,12 +12,21 @@ upgrade_engine.hupgrade_engine={};
 //       `);
 // }
 
-upgrade_engine.flavored_engine.addNewFlavoredCookie=function(cost, multiplier, info) {
-    //placeholder
+// upgrade_engine.flavored_engine.addNewFlavoredCookie=function(cost, multiplier, info) {
+//     //placeholder
 
-    magic();
+//     magic();
+// }
+
+//function magic() {
+//    LocalizeUpgradesAndAchievs();
+//}
+
+upgrade_engine.appendToUpgradeDesc = function(upgrade, newDesc) {
+    pos = upgrade.ddesc.indexOf("<q>");
+    upgrade.ddesc = [upgrade.ddesc.slice(0, position), " " + newDesc, upgrade.ddesc.slice(position)].join('');
 }
 
-function magic() {
-    LocalizeUpgradesAndAchievs();
+upgrade_engine.replaceUpgradeDesc = function(upgrade, newDesc) {
+    upgrade.ddesc = [newDesc, "<q>" + upgrade.ddesc.split("<q>")[1]].join('');
 }
