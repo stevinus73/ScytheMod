@@ -78,11 +78,11 @@ IdlersPocket._Initialize = function () {
     }
 
     IdlersPocket.loadCallback = function(callback) {
-        loadCallbacks.push(callback);
+        this.loadCallbacks.push(callback);
     }
 
     IdlersPocket.saveCallback = function(callback) {
-        saveCallbacks.push(callback);
+        this.saveCallbacks.push(callback);
     }
 
     /**
