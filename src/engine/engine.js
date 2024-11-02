@@ -41,8 +41,8 @@ IdlersPocket._Initialize = function () {
     }
     IdlersPocket._decryptVars = function(str) {
         Array.from(str.split("|"), (v) => b64_to_utf8(v)).forEach(function (item, index) {
-            parsed = 0;
-            n = this.vars.get(this.var_ident[index]);
+            var parsed = 0;
+            var n = this.vars.get(this.var_ident[index]);
             if (n.type == 'float') parsed = parseFloat(item);
             if (n.type == 'int') parsed = parseInt(item);
             n.value = parsed;

@@ -70,6 +70,7 @@ BModify._Initialize = function(en) {
                     rsmult*=tierRsMult;
                 }
             }
+            rsmult*=BModify.idleverse.resourceMult();
             for (var i in me.synergies) {
                 var syn=me.synergies[i];
                 if (Game.Has(syn.name)) {
@@ -145,9 +146,9 @@ BModify._Initialize = function(en) {
 
         this.getButton = function() { return l("productStatsButton"+this.id); }
         this.getStatDiv = function() { return l("rowStats"+this.id); }
-        this.getStatDiv().insertAdjacentHTML('beforeend', '<div class="separatorTop"/>')
         this.getStatDiv().insertAdjacentHTML('beforeend', '<div id="statsBG'+this.id+'"></div>')
         l('statsBG'+this.id).insertAdjacentHTML('beforeend', '<div id="stats'+this.id+'" class="subsection"></div>')
+        l('stats'+this.id).insertAdjacentHTML('beforeend', '<div class="separatorTop"/>')
         l('stats'+this.id).insertAdjacentHTML('beforeend', '<div class="title" style="position:relative">'+cfl(this.me.plural)+'</div>')
         l('stats'+this.id).insertAdjacentHTML('beforeend', '<div id="statsListing'+this.id+'"></div>')
         l('stats'+this.id).insertAdjacentHTML('beforeend', '<div id="statsVisual'+this.id+'"></div>')
@@ -204,9 +205,10 @@ BModify._Initialize = function(en) {
 
 
         this.update = function() {
+            this.draw();
             str = '';
             var sty = this.depleted ? 'style="color:red"' : '';
-            str+='<div class="listing"> <b>'+this.rsNames[0]+' harvest rate ('+this.rsNames[2]+'/second) per '+this.me.dname.toLowerCase()+': </b>'+Beautify(this.pause ? this.RhpS : 0, 1);
+            str+='<div class="listing"> <b>'+this.rsNames[0]+' harvest rate ('+this.rsNames[2]+'/second) per '+this.me.dname.toLowerCase()+': </b>'+Beautify(this.pause ? 0 : this.RhpS, 1);
             str+=' ('+Beautify(this.RhpS * this.decayedFactor(), 1)+' for '+Beautify(this.me.amount)+' '+this.me.plural.toLowerCase()+')</div>';
             str+='<div class="listing"> <b>Base yield: </b>'+Beautify(this.yield, 1)+ " cookies/"+this.rsNames[1]+'</div>';
             str+='<div class="listing"> <b>Total amount of '+this.rsNames[0].toLowerCase()+':</b> '+Beautify(this.rsTotal) + " " + this.rsNames[2]+'</div>';
@@ -240,6 +242,20 @@ BModify._Initialize = function(en) {
 
     BModify.Idleverses = function() {
         this.me = Game.Objects['Idleverse'];
+
+        this._ifactor = function(num) {
+            if (num == 1) return 1.5;
+            if (num == 2) return 2.25;
+            if (num == 3) return 2.625;
+            if (num == 4) return 2.8125;
+            if (num == 5) return 2.90625;
+            if (num >= 6) return 3.0;
+            return 1.0;
+        }
+
+        this.resourceMult = function() {
+            return Math.pow(this.me.amount, 1.001) * this._ifactor(this.me.amount);
+        }
     }
 
     BModify.Idleverses.prototype.getType = function () {
@@ -311,6 +327,7 @@ BModify._Initialize = function(en) {
     // Cortex bakers not included for similar reasons as the chancemaker
     new BModify.RS_Manager(19, 29000, ["Clone energy", "gene", "genes"]);
 
+    this.idleverse = new BModify.Idleverses();
 }
 
 
