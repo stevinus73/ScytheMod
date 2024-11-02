@@ -32,11 +32,11 @@ BModify._Initialize = function(en) {
         this.pause = false;
         this.statsView = false;
 
-        BModify.en.newVar("RhpS",  "float");
-        BModify.en.newVar("yield", "float");
-        BModify.en.newVar("rsTotal", "int");
-        BModify.en.newVar("rsUsed",  "int");
-        BModify.en.newVar("pause",   "int");
+        BModify.en.newVar("RhpS"+me.id,  "float");
+        BModify.en.newVar("yield"+me.id, "float");
+        BModify.en.newVar("rsTotal"+me.id, "int");
+        BModify.en.newVar("rsUsed"+me.id,  "int");
+        BModify.en.newVar("pause"+me.id,   "int");
 
         BModify.rsManagers.push(this);
 
@@ -251,7 +251,6 @@ BModify._Initialize = function(en) {
     BModify.Harvest = function() { this.rsManagers.forEach(mn => mn.harvest()) }
     BModify.Logic = function() {
         BModify.Harvest();
-        BModify.rsManagers.forEach(mn => mn.logic())
         BModify.rsManagers.forEach(mn => mn.draw())
     }
 
