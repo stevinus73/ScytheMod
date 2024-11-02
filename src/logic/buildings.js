@@ -309,14 +309,6 @@ BModify._Initialize = function(en) {
     // Cortex bakers not included for similar reasons as the chancemaker
     new BModify.RS_Manager(19, 29000, ["Clone energy", "gene", "genes"]);
 
-    for (var i in this.me.tieredUpgrades) {
-        if (!Game.Tiers[this.me.tieredUpgrades[i].tier].special && Game.Has(this.me.tieredUpgrades[i].name)) {
-            var percentage = Math.min(0.5 + 0.1 * i, 1) * 100;
-            BModify.en.ue.appendToUpgradeDesc(this.me.tieredUpgrades[i], 
-                "Total "+this.rsNames[0].toLowerCase()+" <b>"+percentage+"</b>.");
-        }
-    }
-
 }
 
 
