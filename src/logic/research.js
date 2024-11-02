@@ -65,8 +65,8 @@ Research._Initialize = function(en) {
         }
 
         this.draw = function() {
-            var cX = Research.container.offsetWidth  * 0.5 - Research.userX;
-            var cY = Research.container.offsetHeight * 0.5 - Research.userY;
+            var cX = Research.container.offsetWidth  * 0.5 - Research.userX - 36;
+            var cY = Research.container.offsetHeight * 0.5 - Research.userY - 36;
             var sX = this.x * Research.container.offsetWidth  * 0.5 + cX;
             var sY = this.y * Research.container.offsetHeight * 0.5 + cY;
             var classes = 'crate upgrade heavenly';
