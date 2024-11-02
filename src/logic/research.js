@@ -76,7 +76,6 @@ Research._Initialize = function(en) {
 
             tags.push(loc("[Tag]Tech",0,'Tech'),'#36a4ff');
             if (this.bought) {
-                ariaText+='Owned. ';
                 tags.push(loc("Researched"),0);
             }
 
