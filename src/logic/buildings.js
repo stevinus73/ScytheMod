@@ -88,9 +88,9 @@ BModify._Initialize = function(en) {
                 if (Research.hasTiered(this.id, 1)) rsmult*=2;
                 if (Research.hasTiered(this.id, 2)) rsmult*=2;
                 if (Research.hasTiered(this.id, 3)) rsmult*=2;
-                if (Research.hasTiered(this.id, 1)) yieldmult*=(1-0.05*this.id);
-                if (Research.hasTiered(this.id, 2)) yieldmult*=(1-0.05*this.id);
-                if (Research.hasTiered(this.id, 3)) yieldmult*=(1-0.05*this.id);
+                if (Research.hasTiered(this.id, 1)) yieldmult*=(2-0.05*this.id);
+                if (Research.hasTiered(this.id, 2)) yieldmult*=(2-0.05*this.id);
+                if (Research.hasTiered(this.id, 3)) yieldmult*=(2-0.05*this.id);
             }
 
             this.yield = this.baseYield * yieldmult;
@@ -266,6 +266,7 @@ BModify._Initialize = function(en) {
         this.resourceMult = function() {
             var fact = 1.003;
             if (Game.Has("Unshackled idleverses")) fact = 1.004;
+            if (!Research.Has("Galactica mindoris")) return 1;
             return Math.max(Math.pow(fact, this.me.amount) * this._ifactor(this.me.amount), 1);
         }
 
@@ -274,8 +275,10 @@ BModify._Initialize = function(en) {
         )
 
         this.getStat = function() {
-            l("idleverseStat").innerHTML = "<b>Total resource boost provided by " + this.me.amount + " idleverses:</b> "
+            if (Research.Has("Galactica mindoris")) {
+                l("idleverseStat").innerHTML = "<b>Total resource boost provided by " + this.me.amount + " idleverses:</b> "
             + "x" + Beautify(this.resourceMult(), 3);
+            }
         }
     }
 
@@ -343,11 +346,11 @@ BModify._Initialize = function(en) {
     new BModify.RS_Manager(12, 39000, ["Antimatter", "gram", "grams"]);
     new BModify.RS_Manager(13, 38000, ["Light", "photon", "photons"]);
     // Chancemakers not included for scientific reasons
-    new BModify.RS_Manager(15, 35000, ["Metafractal", "cookie", "cookies"]);
-    new BModify.RS_Manager(16, 33000, ["Computational power", "operation", "operations"]);
+    new BModify.RS_Manager(15, 35000, ["Metacookie", "cookie", "cookies"]);
+    new BModify.RS_Manager(16, 33000, ["Memory space", "operation", "operations"]);
     // Idleverses not included for the same reason as alchemy labs
     // Cortex bakers not included for similar reasons as the chancemaker
-    new BModify.RS_Manager(19, 29000, ["Clone energy", "gene", "genes"]);
+    new BModify.RS_Manager(19, 29000, ["Lifeforce", "pneuma", "pneumars"]);
 
     this.idleverse = new BModify.Idleverses();
 }

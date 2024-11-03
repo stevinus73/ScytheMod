@@ -344,11 +344,11 @@ Research._Initialize = function(en) {
     var tieredTree = function(i, tier, name, desc) {
         var me = Game.ObjectsById[i];
         var yieldPercent = 100 - 5 * i;
-        var d = cfl(me.plural)+" yield <b>"+Beautify(yieldPercent)+"</b> more. Resource space is <b>doubled</b>.";
+        var d = cfl(me.plural)+" yield <b>"+Beautify(yieldPercent)+"%</b> more. Resource space is <b>doubled</b>.";
         var hfunction = function() {return (me.amount >= (100 * tier))};
         var deps = [0];
         if (tier > 1) deps=[me.tieredResearch[tier-2].id];
-        me.tieredResearch.push(new Research.Tech(name, d+'<q>'+desc+'</q>', 60 + 20 * tier, hfunction, f, deps, [spr_ref[i], 21+tier], 0.6 * tier, 0));
+        me.tieredResearch.push(new Research.Tech(name, d+'<q>'+desc+'</q>', 30 + 20 * tier, hfunction, f, deps, [spr_ref[i], 21+tier], 0.6 * tier, 0));
     }
     Research.hasTiered = function(i, tier) {
         if (Game.ObjectsById[i].tieredResearch.length < tier) return false;
@@ -365,10 +365,10 @@ Research._Initialize = function(en) {
     buildingTree(1);
     buildingTree(2);
     function regrowthC(){return (Game.Objects['Farm'].amount >= 60)}
-    new Research.Tech("Regrowth", "Farms yield <b>three times</b> more. <div class=\"line\"></div> You can <b>reuse depleted land</b>, effectively ignoring resource depletion. <q>A masterful resource-saving invention! Wait, isn't this how agriculture is supposed to work? </q>", 340, regrowthC, f, [0], [2, 26], 0.8, 0.8); // 1
+    new Research.Tech("Regrowth", "Farms yield <b>three times</b> more. <div class=\"line\"></div> You can <b>reuse depleted land</b>, effectively ignoring resource depletion. <q>A masterful resource-saving invention! Wait, isn't this how agriculture is supposed to work? </q>", 230, regrowthC, f, [0], [2, 26], 0.8, 0.8); // 1
     tieredTree(2, 1, "Monocookie agriculture", "Gearing your farms to only cultivate cookies."); // 1
     tieredTree(2, 2, "Better hoes", "Actually, scratch that. Who would waste netherite on a hoe?"); // 2
-    tieredTree(2, 3, "Genetic splicers", "With these handy splicers, you can splice the best and most useful genes from other organisms directly into a cookie plant. For example, a carnivorous plant with the ability to speak has been created as a deterrent to greedy young kids.")
+    tieredTree(2, 3, "Radiative therapy", "Radiation increases the chance for cookie plants to mutate and become more useful. For example, a carnivorous plant with the ability to speak is already being used as a deterrent to greedy young kids.")
     buildingTree(3);
     tieredTree(3, 1, "Mineral scentilocation", "Recent advances have led to the creation of a machine that can detect tasty minerals via their natural scent-giving properties.") // 1
     tieredTree(3, 2, "Nanomining", "Scratch all the giant drills and pickaxes! The fabric of reality itself has been found to contain fundamental particles that can be made into cookies. This will surely have no unforeseen consequences on the stability of the universe, y'know?") // 2
@@ -388,10 +388,20 @@ Research._Initialize = function(en) {
     buildingTree(13);
     buildingTree(14);
     buildingTree(15);
+    tieredTree(15, 1, "Fractalized cookies", "If you look carefully enough at the edge of them, you'll find tiny cookies that look exactly the same as the big one.") // 1
+    tieredTree(15, 2, "Mathematics department", "Creating a pure math department for your research helps immensely with CpS. Not a sentence you'd expect to see.") // 2
+    tieredTree(15, 3, "Self-reflective material", "It's like the OBS screen effect when you don't have anything to show, but you put a cookie on it.") // 3
     buildingTree(16);
+    tieredTree(16, 1, "Multithreading", "Splits code into many different threads, which all produce cookies simultaneously.") // 1
+    tieredTree(16, 2, "If there was a computer for every atom of the observable universe, running 13.8 billion years from the Big Bang to the present day...", "...but you actually made them do that.") // 2
+    tieredTree(16, 3, "Cutting-edge AI compiler", "Let's face it, AIs can figure out how to allocate memory and run floating-point operations much better than we do nowadays.")
     buildingTree(17);
+    new Research.Tech("Galactica mindoris", "You gain <b>more resource space</b> the more idleverses you have. <q>Turns out there's a ton of room in idleverses!</q>", 410, f, f, [0], [33, 26], 0, 1.5);
     buildingTree(18);
     buildingTree(19);
+    tieredTree(19, 1, "DNA Splicers", "With these handy splicers, you can splice the best and most useful genes from other organisms directly into a clone.") // 1
+    tieredTree(19, 2, "Vitality transfer", "Transferring lifeforce between your clones makes it generally last longer.") // 2
+    tieredTree(19, 3, "Genetic clone selection", "Recloning the DNA of existing clones allows natural selection to take place, as due to errors in the gene copying mechanism, some clones are more efficient than others. Maybe, with enough time, they could even surpass you?") // 3
 
     this.setCurrTree("General");
 
