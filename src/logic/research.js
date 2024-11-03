@@ -170,12 +170,14 @@ Research._Initialize = function(en) {
         Research.trees[name] = this;
         this.upgrades = [];
         this.upgradesByName = {};
+        this.curr = false;
 
         this.getCrate = function() {
-            var classes = 'crate upgrade enabled';
-            var clickStr = 'mod.research.currTree=mod.research.trees['+this.name+'];mod.research.draw();';
-            return '<div data-id="'+this.tree.name+"tree"+'" '+Game.clickStr+'="'+clickStr+'"'+
-            ' class="'+classes+'" id="researchUp'+this.tree.name+this.id+'" '+
+            var classes = 'crate upgrade';
+            if (this.curr) classes += ' enabled';
+            var clickStr = 'mod.research.setCurrTree('+this.name+');mod.research.draw();';
+            return '<div data-id="'+this.name+"tree"+'" '+Game.clickStr+'="'+clickStr+'"'+
+            ' class="'+classes+'" id="researchTreeCrate'+this.name+'" '+
             'style="'+writeIcon(this.sprite)+'"></div>';
         }
 
@@ -268,6 +270,12 @@ Research._Initialize = function(en) {
         if (Game.onMenu != '') this.switch(false);
 
         this.num.textContent = this.research;
+    }
+
+    Research.setCurrTree = function(treeName) {
+        this.currTree.curr = false;
+        this.currTree = this.trees[treeName];
+        this.trees[treeName].curr = true;
     }
 
     Research.has = function(name) {
