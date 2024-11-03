@@ -88,9 +88,9 @@ BModify._Initialize = function(en) {
                 if (Research.hasTiered(this.id, 1)) rsmult*=2;
                 if (Research.hasTiered(this.id, 2)) rsmult*=2;
                 if (Research.hasTiered(this.id, 3)) rsmult*=2;
-                if (Research.hasTiered(this.id, 1)) yieldmult*=(100-5*this.id);
-                if (Research.hasTiered(this.id, 2)) yieldmult*=(100-5*this.id);
-                if (Research.hasTiered(this.id, 3)) yieldmult*=(100-5*this.id);
+                if (Research.hasTiered(this.id, 1)) yieldmult*=(1-0.05*this.id);
+                if (Research.hasTiered(this.id, 2)) yieldmult*=(1-0.05*this.id);
+                if (Research.hasTiered(this.id, 3)) yieldmult*=(1-0.05*this.id);
             }
 
             this.yield = this.baseYield * yieldmult;

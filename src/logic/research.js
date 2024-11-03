@@ -186,12 +186,12 @@ Research._Initialize = function(en) {
             if (this.curr) classes += ' enabled';
             var clickStr = `mod.research.setCurrTree('`+this.name+`');mod.research.draw();`;
             return '<div data-id="'+this.name+"tree"+'" '+Game.clickStr+'="'+clickStr+'"'+
-            ' class="'+classes+Game.getDynamicTooltip('mod.research.trees["'+this.name+'"].getTooltip', 'top', true)+'" id="researchTreeCrate'+this.name+'" '+
+            ' class="'+classes+'" '+Game.getDynamicTooltip('mod.research.trees["'+this.name+'"].getTooltip', 'top', true)+' id="researchTreeCrate'+this.name+'" '+
             'style="'+writeIcon(this.sprite)+'"></div>';
         }
 
         this.getTooltip = function() {
-            return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+loc("This is a research tree.<div class=\"line\"></div>Click on it to switch to this research tree.")+'</div>';
+            return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">This is a research tree.<div class=\"line\"></div>Click on it to switch to this research tree.</div>';
         }
 
         this.draw = function() {
@@ -348,7 +348,7 @@ Research._Initialize = function(en) {
         var hfunction = function() {return (me.amount >= (100 * tier))};
         var deps = [0];
         if (tier > 1) deps=[me.tieredResearch[tier-2].id];
-        me.tieredResearch.push(new Research.Tech(name, d+'<q>'+desc+'</q>', 60 + 20 * tier, hfunction, f, deps, [spr_ref[i], 21+tier], 0.6 * i, 0));
+        me.tieredResearch.push(new Research.Tech(name, d+'<q>'+desc+'</q>', 60 + 20 * tier, hfunction, f, deps, [spr_ref[i], 21+tier], 0.6 * tier, 0));
     }
     Research.hasTiered = function(i, tier) {
         if (Game.ObjectsById[i].tieredResearch.length < tier) return false;
