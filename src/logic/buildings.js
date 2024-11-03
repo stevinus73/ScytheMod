@@ -46,6 +46,7 @@ BModify._Initialize = function(en) {
             var dmult = 1;
             if (this.depleted || this.pause)
                 dmult = 0;
+            if ((this.id == 2) && Research.has("Regrowth")) dmult = 1;
             return cps * dmult;
         }
 
@@ -71,6 +72,8 @@ BModify._Initialize = function(en) {
                     rsmult*=tierRsMult;
                 }
             }
+
+
             rsmult*=BModify.idleverse.resourceMult();
             for (var i in me.synergies) {
                 var syn=me.synergies[i];
@@ -81,6 +84,8 @@ BModify._Initialize = function(en) {
             }
             if (me.fortune && Game.Has(me.fortune.name)) yieldmult*=1.07;
             if (me.grandma && Game.Has(me.grandma.name)) yieldmult*=(1+Game.Objects['Grandma'].amount*0.01*(1/(me.id-1)));
+            if ((this.id == 2) && Research.has("Regrowth")) yieldmult*=3;
+
             this.yield = this.baseYield * yieldmult;
             this.RhpS = this.baseRhpS * rhpsmult;
             this.rsTotal = this.baseRs * rsmult;
@@ -109,6 +114,7 @@ BModify._Initialize = function(en) {
                 return;
             }
             if (this.depleted) return;
+            if ((this.id == 2) && Research.has("Regrowth")) return;
             this.rsUsed += (this.RhpS / Game.fps) * this.decayedFactor();
         }
 
@@ -222,6 +228,7 @@ BModify._Initialize = function(en) {
         this.draw = function() {
 	    	if (Game.drawT%5==0) {
 	    		this.mbarFull.style.width=Math.round((this.rsAvailable/this.rsTotal)*100)+'%';
+                if ((this.id == 2) && Research.has("Regrowth")) this.mbar.style.background='lightGreen';
 			    this.mbar.style.width='350px';
                 this.mbarText.innerHTML=Beautify((this.rsAvailable/this.rsTotal)*100, 1)+'% left';
 		    }
