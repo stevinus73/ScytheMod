@@ -22,6 +22,8 @@ Research._Initialize = function(en) {
     )
     l("centerArea").insertAdjacentHTML('beforeend', '<div id="research"></div>')
     this.container = l("research");
+    this.container.insertAdjacentHTML('beforeend', '<div id="researchCrates"></div>')
+    this.crates = l("researchCrates");
     this.container.insertAdjacentHTML('beforeend', '<div id="researchContent" style="position: absolute;"></div>')
     this.content = l("researchContent");
     this.display = l("researchDisplay");
@@ -75,9 +77,10 @@ Research._Initialize = function(en) {
         }
 
         this.createLinks = function() {
+            if (!this.isAvailable()) return;
             var str = '';
             for (var ii in this.parents) {
-                if (this.parents[ii]!=-1 && (this.canBuy() || this.bought)) {
+                if (this.parents[ii]!=-1) {
                     var ppos = this.parents[ii].getPosition();
                     var mpos = this.getPosition();
                     var origX = ppos.posX+28;
@@ -101,13 +104,18 @@ Research._Initialize = function(en) {
             return {posX: sX, posY: sY};
         }
 
-        this.draw = function() {
+        this.isAvailable = function() {
             var available = false;
             this.parents.forEach(function(parent) {
                 if (parent.bought) available = true;
             });
             if (this.parents.length == 0) available = true;
             if (!this.requirements()) available = false;
+            return available;
+        }
+
+        this.draw = function() {
+            var available = this.isAvailable();
             var sX = this.getPosition().posX;
             var sY = this.getPosition().posY;
             var classes = 'crate upgrade heavenly';
@@ -153,13 +161,22 @@ Research._Initialize = function(en) {
         return 'TechUpgrade';
     }
 
-    Research.Tree = function(name) {
+    Research.Tree = function(name, sprite) {
         this.name = name;
+        this.sprite = sprite;
         Research.currTreeInit = name;
         this.id = 0;
         Research.trees[name] = this;
         this.upgrades = [];
         this.upgradesByName = {};
+
+        this.getCrate = function() {
+            var classes = 'crate upgrade enabled';
+            var clickStr = 'mod.research.currTree=mod.research.trees['+this.name+'];mod.research.draw();';
+            return '<div data-id="'+this.tree.name+"tree"+'" '+Game.clickStr+'="'+clickStr+'"'+
+            ' class="'+classes+'" id="researchUp'+this.tree.name+this.id+'" '+
+            'style="'+writeIcon(this.sprite)+'"></div>';
+        }
 
         this.draw = function() {
             var str = '';
@@ -195,6 +212,13 @@ Research._Initialize = function(en) {
             this.container.style.display = "none";
             l("rows").style.display = "block";
             this.button.firstChild.textContent = "View Research";
+            if (Game.onMenu == '') {
+                for (var i in Game.Objects) {
+                    var me = Game.Objects[i];
+                    me.toResize = true;
+                    if (me.minigame && me.minigame.onResize) me.minigame.onResize();
+                }
+            }
         }
     }
 
@@ -205,6 +229,9 @@ Research._Initialize = function(en) {
     Research.draw = function() {
         if (!this.researchOn) return;
         this.content.innerHTML = this.currTree.draw();
+        var crateStr = '';
+        this.trees.forEach((t) => crateStr += t.getCrate());
+        this.crates.innerHTML = crateStr;
     }
 
     Research.update = function() {
@@ -251,7 +278,7 @@ Research._Initialize = function(en) {
 
     function f(){return true;}
 
-    new Research.Tree("General");
+    new Research.Tree("General", [10, 0]);
 
     new Research.Tech("Research lab", "Unlocks the <b>Research tree</b>, where you can buy upgrades using research (the number in the top right corner). <div class=\"line\"></div> You gain research in a variety of ways. <div class=\"line\"></div> Research upgrades are kept across ascensions. <q>It's quite small, but so is your current business.</q>", 1, f, f, [], [9, 2], 0, 0); //0
     new Research.Tech("Plain cookie", "Cookie production multiplier <b>+5%</b>. <div class=\"line\"></div> Unlocks <b>new cookie upgrades</b> that appear once you have enough cookies. <q>We all gotta start somewhere. </q>", 50, f, f, [0], [2, 3], -0.4, 0.6); //1
@@ -259,15 +286,15 @@ Research._Initialize = function(en) {
     function has100Banks(){return (Game.Objects['Bank'].amount >= 100);}
     new Research.Tech("Cookie funding", "You gain <b>more research passively</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 330, has100Banks, f, [2], [26, 11], 0.5, -0.3); //3
 
-    new Research.Tree("Cursor");
+    new Research.Tree("Cursor", [0, 0]);
     function hcursor(){return (Game.Objects['Cursor'].amount >= 1)};
     new Research.Tech("Click research", "Unlocks the research tree for <b>cursors and clicking</b>.", 10, hcursor, f, [], [0, 0], 0, 0); //0
 
-    new Research.Tree("Grandma");
+    new Research.Tree("Grandma", [1, 0]);
     function hgrandma(){return (Game.Objects['Grandma'].amount >= 1)};
     new Research.Tech("Granny research", "Unlocks the research tree for <b>grandmas</b>.", 20, hgrandma, f, [], [1, 0], 0, 0); //0
 
-    new Research.Tree("Farm");
+    new Research.Tree("Farm", [2, 0]);
     function hfarm(){return (Game.Objects['Farm'].amount >= 1)};
     new Research.Tech("Farm research", "Unlocks the research tree for <b>farms</b>.", 30, hfarm, f, [], [2, 0], 0, 0); //0
 
