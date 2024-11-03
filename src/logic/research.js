@@ -111,6 +111,7 @@ Research._Initialize = function(en) {
             });
             if (this.parents.length == 0) available = true;
             if (!this.requirements()) available = false;
+            if (this.bought) available = true;
             return available;
         }
 
@@ -230,7 +231,9 @@ Research._Initialize = function(en) {
         if (!this.researchOn) return;
         this.content.innerHTML = this.currTree.draw();
         var crateStr = '';
-        this.trees.forEach((t) => crateStr += t.getCrate());
+        for (var i in this.trees) {
+            crateStr += this.trees[i].getCrate();
+        }
         this.crates.innerHTML = crateStr;
     }
 
