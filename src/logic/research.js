@@ -161,12 +161,13 @@ Research._Initialize = function(en) {
         if (Game.keys[40]) {
             this.userY += 4;
         }
-        ts = 'translate('+Math.floor(-this.userX)+'px,'+Math.floor(-this.userY)+'px)';
+        var ts = 'translate('+Math.floor(-this.userX)+'px,'+Math.floor(-this.userY)+'px)';
         this.content.style.transform = ts;
         if (this.userX < -1200) this.userX = -1200;
         if (this.userY < -1200) this.userY = -1200;
         if (this.userX >  1200) this.userX =  1200;
         if (this.userY >  1200) this.userY =  1200;
+        if (Game.onMenu != '') this.switch(false);
     }
 
     
