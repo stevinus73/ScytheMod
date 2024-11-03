@@ -274,7 +274,7 @@ Research._Initialize = function(en) {
     }
 
     Research.setCurrTree = function(treeName) {
-        this.currTree.curr = false;
+        if (this.currTree) this.currTree.curr = false;
         this.currTree = this.trees[treeName];
         this.trees[treeName].curr = true;
     }
