@@ -294,7 +294,7 @@ Research._Initialize = function(en) {
 
     function f(){return true;}
 
-    new Research.Tree("General", [10, 0]);
+    new Research.Tree("General", [10, 0], f);
 
     new Research.Tech("Research lab", "Unlocks the <b>Research tree</b>, where you can buy upgrades using research (the number in the top right corner). <div class=\"line\"></div> You gain research in a variety of ways. <div class=\"line\"></div> Research upgrades are kept across ascensions. <q>It's quite small, but so is your current business.</q>", 1, f, f, [], [9, 2], 0, 0); //0
     new Research.Tech("Plain cookie", "Cookie production multiplier <b>+5%</b>. <div class=\"line\"></div> Unlocks <b>new cookie upgrades</b> that appear once you have enough cookies. <q>We all gotta start somewhere. </q>", 50, f, f, [0], [2, 3], -0.4, 0.6); //1
@@ -302,21 +302,36 @@ Research._Initialize = function(en) {
     function has100Banks(){return (Game.Objects['Bank'].amount >= 100);}
     new Research.Tech("Cookie funding", "You gain <b>more research passively</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 330, has100Banks, f, [2], [26, 11], 0.5, -0.3); //3
 
-    function hcursor(){return (Game.Objects['Cursor'].amount >= 1)};
-    new Research.Tree("Cursor", [0, 0], hcursor);
-    new Research.Tech("Click research", "Unlocks the research tree for <b>cursors and clicking</b>.", 20, f, f, [], [0, 0], 0, 0); //0
+    spr_ref = [0,1,2,3,4,15,16,17,5,6,7,8,13,14,19,20,32,33,34,35];
+    var buildingTree = function(i) {
+        var me = Game.ObjectsById[i];
+        var hfunction = function() {return (me.amount >= 1)};
+        new Research.Tree(me.dname, [spr_ref[i], 0], hfunction);
+        var btext = me.plural;
+        if (i == 0) btext = "cursors and clicking";
+        new Research.Tech(me.dname+" research", "Unlocks the research tree for <b>"+btext+"</b>.", 20, f, f, [], [spr_ref[i], 0], 0, 0); //0
+    }
 
-    function hgrandma(){return (Game.Objects['Grandma'].amount >= 1)};
-    new Research.Tree("Grandma", [1, 0], hgrandma);
-    new Research.Tech("Granny research", "Unlocks the research tree for <b>grandmas</b>.", 20, f, f, [], [1, 0], 0, 0); //0
-
-    function hfarm(){return (Game.Objects['Farm'].amount >= 1)};
-    new Research.Tree("Farm", [2, 0], hfarm);
-    new Research.Tech("Farm research", "Unlocks the research tree for <b>farms</b>.", 20, f, f, [], [2, 0], 0, 0); //0
-
-    function hmine(){return (Game.Objects['Mine'].amount >= 1)};
-    new Research.Tree("Mine", [3, 0], hmine);
-    new Research.Tech("Mine research", "Unlocks the research tree for <b>mines</b>.", 20, f, f, [], [3, 0], 0, 0); //0
+    buildingTree(0);
+    buildingTree(1);
+    buildingTree(2);
+    buildingTree(3);
+    buildingTree(4);
+    buildingTree(5);
+    buildingTree(6);
+    buildingTree(7);
+    buildingTree(8);
+    buildingTree(9);
+    buildingTree(10);
+    buildingTree(11);
+    buildingTree(12);
+    buildingTree(13);
+    buildingTree(14);
+    buildingTree(15);
+    buildingTree(16);
+    buildingTree(17);
+    buildingTree(18);
+    buildingTree(19);
 
     this.setCurrTree("General");
 
