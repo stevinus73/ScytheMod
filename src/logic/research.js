@@ -87,7 +87,7 @@ Research._Initialize = function(en) {
                     var rot=-(Math.atan((targY-origY)/(origX-targX))/Math.PI)*180;
                     if (targX<=origX) rot+=180;
                     var dist=Math.floor(Math.sqrt((targX-origX)*(targX-origX)+(targY-origY)*(targY-origY)));
-                    str+='<div class="parentLink" id="researchLink'+this.id+'-'+ii+'" style="width:'+dist+'px;-webkit-transform:rotate('+rot+'deg);-moz-transform:rotate('+rot+'deg);-ms-transform:rotate('+rot+'deg);-o-transform:rotate('+rot+'deg);transform:rotate('+rot+'deg);left:'+(origX)+'px;top:'+(origY)+'px;"></div>';
+                    str+='<div class="parentLink" id="researchLink'+this.tree.name+this.id+'-'+ii+'" style="width:'+dist+'px;-webkit-transform:rotate('+rot+'deg);-moz-transform:rotate('+rot+'deg);-ms-transform:rotate('+rot+'deg);-o-transform:rotate('+rot+'deg);transform:rotate('+rot+'deg);left:'+(origX)+'px;top:'+(origY)+'px;"></div>';
                 }
             }
             return str;
@@ -111,13 +111,13 @@ Research._Initialize = function(en) {
             var sX = this.getPosition().posX;
             var sY = this.getPosition().posY;
             var classes = 'crate upgrade heavenly';
-            var clickStr = available ? 'mod.research.upgrades[' + this.id + '].buy()' : ''; 
+            var clickStr = available ? 'mod.research.currTree.upgrades[' + this.id + '].buy()' : ''; 
             var enabled = 0;
             if (this.bought) enabled=1;
             if (enabled) classes += ' enabled';
-            return '<div data-id="'+this.id+'" '+Game.clickStr+'="'+clickStr+'"'+
-            ' class="'+classes+'" '+Game.getDynamicTooltip('function(){return mod.research.upgrades['+this.id+'].getTooltip()}', 'top', true)
-            +'id="researchUp'+this.id+'" '+
+            return '<div data-id="'+this.tree.name+this.id+'" '+Game.clickStr+'="'+clickStr+'"'+
+            ' class="'+classes+'" '+Game.getDynamicTooltip('function(){return mod.research.currTree.upgrades['+this.id+'].getTooltip()}', 'top', true)
+            +'id="researchUp'+this.tree.name+this.id+'" '+
             'style="'+writeIcon(this.sprite)+'position:absolute;left:'+sX+'px;top:'+sY+'px;'+(available?'':'display:none;')+'"></div>';
         }
 
@@ -139,7 +139,7 @@ Research._Initialize = function(en) {
             price='<div style="float:right;text-align:right;"><span class="price research'+ (this.canBuy() ? '' : ' disabled') +'">'+Beautify(Math.round(cost))+'</span></div>';
             var tip=(this.canBuy() && !this.bought) ? loc("Click to research.") : "";
 
-            return '<div style="position:absolute;left:1px;top:1px;right:1px;bottom:1px;background:linear-gradient(125deg,rgba(50,40,40,1) 0%,rgba(50,40,40,0) 20%);mix-blend-mode:screen;z-index:1;"></div><div style="z-index:10;padding:8px 4px;min-width:350px;position:relative;" id="tooltipCrate">'+
+            return '<div style="position:absolute;left:1px;top:1px;right:1px;bottom:1px;background:linear-gradient(125deg,rgba(50,40,40,1) 0%,rgba(50,40,40,0) 20%);mix-blend-mode:screen;z-index:1;"></div><div style="z-index:10;padding:8px 4px;min-width:350px;position:relative;" id="tooltipCrate'+this.tree.name+this.id+'">'+
             '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;'+writeIcon(this.sprite)+'"></div>'+price+
             '<div class="name">'+this.name+'</div>'+tagsStr+
             '<div class="line"></div><div class="description">'+this.desc+'</div></div>'+
