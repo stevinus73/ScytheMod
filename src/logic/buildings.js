@@ -66,7 +66,7 @@ BModify._Initialize = function(en) {
                     var tierRsMult=Math.min(1.4 + 0.1 * i, 2);
                     if (Game.ascensionMode!=1 && Game.Has(me.unshackleUpgrade) && Game.Has(Game.Tiers[me.tieredUpgrades[i].tier].unshackleUpgrade)) {
                         tierMult+=me.id==1?0.5:(20-me.id)*0.1;
-                        tierRsMult+=me.id==1?0.25:(20-me.id)*0.05;
+                        tierRsMult+=me.id==1?0.5:(20-me.id)*0.1;
                     }
                     rhpsmult*=tierMult;
                     rsmult*=tierRsMult;
@@ -114,6 +114,8 @@ BModify._Initialize = function(en) {
                 if (!this.depleted) Game.recalculateGains = 1;
                 this.depleted = true;
             } else this.depleted = false;
+            this.rsAvailable = Math.max(this.rsAvailable, 0);
+            this.rsUsed = Math.min(this.rsUsed, this.rsTotal);
             if (this.pause) {
                 var rate = 0.00001;
                 this.rsUsed -= (rate / Game.fps) * this.rsTotal;
@@ -234,10 +236,10 @@ BModify._Initialize = function(en) {
 
         this.draw = function() {
 	    	if (Game.drawT%5==0) {
-	    		this.mbarFull.style.width=Math.round((this.rsAvailable/this.rsTotal)*100)+'%';
+	    		this.mbarFull.style.width=Math.max(Math.round((this.rsAvailable/this.rsTotal)*100), 0)+'%';
                 if ((this.id == 2) && Research.has("Regrowth")) this.mbar.style.background='lightGreen';
 			    this.mbar.style.width='350px';
-                this.mbarText.innerHTML=Beautify((this.rsAvailable/this.rsTotal)*100, 1)+'% left';
+                this.mbarText.innerHTML=Beautify(Math.max((this.rsAvailable/this.rsTotal)*100, 0), 1)+'% left';
 		    }
 		    this.mbarFull.style.backgroundPosition=(-Game.T*0.5)+'px';
         }
