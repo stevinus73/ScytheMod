@@ -126,7 +126,7 @@ Research._Initialize = function(en) {
             if (this.bought) enabled=1;
             if (enabled) classes += ' enabled';
             return '<div data-id="'+this.tree.name+this.id+'" '+Game.clickStr+'="'+clickStr+'"'+
-            ' class="'+classes+'" '+Game.getDynamicTooltip('function(){return mod.research.currTree.upgrades['+this.id+'].getTooltip()}', 'top', true)
+            ' class="'+classes+'" '+Game.getDynamicTooltip('mod.research.currTree.upgrades['+this.id+'].getTooltip', 'top', true)
             +'id="researchUp'+this.tree.name+this.id+'" '+
             'style="'+writeIcon(this.sprite)+'position:absolute;left:'+sX+'px;top:'+sY+'px;'+(available?'':'display:none;')+'"></div>';
         }
