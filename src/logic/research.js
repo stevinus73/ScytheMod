@@ -59,15 +59,41 @@ Research._Initialize = function(en) {
             Research.draw();
         }
 
+        this.createLinks = function() {
+            var str = '';
+            for (var ii in this.parents) {
+                if (this.parents[ii]!=-1 && (this.canBuy() || this.bought)) {
+                    var ppos = this.parents[ii].getPosition();
+                    var mpos = this.getPosition();
+                    var origX = ppos.posX+28;
+                    var origY = ppos.posY+28;
+                    var targX = mpos.posX+28;
+                    var targY = mpos.posY+28;
+                    var rot=-(Math.atan((targY-origY)/(origX-targX))/Math.PI)*180;
+                    if (targX<=origX) rot+=180;
+                    var dist=Math.floor(Math.sqrt((targX-origX)*(targX-origX)+(targY-origY)*(targY-origY)));
+                    str+='<div class="parentLink" id="researchLink'+this.id+'-'+ii+'" style="width:'+dist+'px;-webkit-transform:rotate('+rot+'deg);-moz-transform:rotate('+rot+'deg);-ms-transform:rotate('+rot+'deg);-o-transform:rotate('+rot+'deg);transform:rotate('+rot+'deg);left:'+(origX)+'px;top:'+(origY)+'px;"></div>';
+                }
+            }
+            return str;
+        }
+
+        this.getPosition = function() {
+            var cX = Research.container.offsetWidth  * 0.5 - 28;
+            var cY = Research.container.offsetHeight * 0.5 - 28;
+            var sX =  this.x * Research.container.offsetWidth  * 0.5 + cX;
+            var sY = -this.y * Research.container.offsetHeight * 0.5 + cY;
+            return {posX: sX, posY: sY};
+        }
+
         this.draw = function() {
             var available = false;
             this.parents.forEach(function(parent) {
                 if (parent.bought) available = true;
             });
-            var cX = Research.container.offsetWidth  * 0.5 - 36;
-            var cY = Research.container.offsetHeight * 0.5 - 36;
-            var sX =  this.x * Research.container.offsetWidth  * 0.5 + cX;
-            var sY = -this.y * Research.container.offsetHeight * 0.5 + cY;
+            if (this.parents.length == 0) available = true;
+            var sX = this.getPosition().posX;
+            var sY = this.getPosition().posY;
             var classes = 'crate upgrade heavenly';
             var clickStr = available ? 'mod.research.upgrades[' + this.id + '].buy()' : ''; 
             var enabled = 0;
@@ -147,7 +173,8 @@ Research._Initialize = function(en) {
         if (!this.researchOn) return;
         var str = '';
         this.upgrades.forEach(function(u) {
-            str += u.draw()
+            str += u.draw();
+            str += u.createLinks();
         })
         this.content.innerHTML = str;
     }
@@ -177,8 +204,8 @@ Research._Initialize = function(en) {
     
 
     function f(){return true;}
-    new Research.Tech("Magic mushrooms", "They make you magic!", 0, f, f, [], [23, 10], 0, 0); //0
-    new Research.Tech("Howdy!", "It's me. Flowery.", 0, f, f, [0], [26, 11], -0.4, 0.6); //1
+    new Research.Tech("Research lab", "Unlocks the Research tree.<q>It's quite small, but so is your current business.</q>", 0, f, f, [], [23, 10], 0, 0); //0
+    new Research.Tech("Howdy!", "It's me. Flowey.", 0, f, f, [0], [26, 11], -0.4, 0.6); //1
 
     Research.en.saveCallback(function() {
 
