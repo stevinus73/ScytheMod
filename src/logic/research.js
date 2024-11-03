@@ -31,6 +31,7 @@ Research._Initialize = function(en) {
     this.display.insertAdjacentHTML('beforeend', '<div id="researchAmount"></div>')
     this.num = l("researchAmount");
     this.research = 15;
+    this.nextResearch = 10 * 60;
 
     this.userX = 0;
     this.userY = 0;
@@ -271,6 +272,17 @@ Research._Initialize = function(en) {
         if (Game.onMenu != '') this.switch(false);
 
         this.num.textContent = this.research;
+
+        if (this.has("Interns")) {
+            this.nextResearch -= (1.0 / Game.fps);
+
+            if (this.nextResearch <= 0) {
+                this.research += 1;
+                var bmult = 1;
+                if (this.has("Cookie funding")) bmult += 0.007 * Game.Objects['Bank'].amount;
+                this.nextResearch = (10 * 60) / bmult;
+            }
+        }
     }
 
     Research.setCurrTree = function(treeName) {
@@ -298,9 +310,9 @@ Research._Initialize = function(en) {
 
     new Research.Tech("Research lab", "Unlocks the <b>Research tree</b>, where you can buy upgrades using research (the number in the top right corner). <div class=\"line\"></div> You gain research in a variety of ways. <div class=\"line\"></div> Research upgrades are kept across ascensions. <q>It's quite small, but so is your current business.</q>", 1, f, f, [], [9, 2], 0, 0); //0
     new Research.Tech("Plain cookie", "Cookie production multiplier <b>+5%</b>. <div class=\"line\"></div> Unlocks <b>new cookie upgrades</b> that appear once you have enough cookies. <q>We all gotta start somewhere. </q>", 50, f, f, [0], [2, 3], -0.4, 0.6); //1
-    new Research.Tech("Interns", "You <b>gain reseach passively</b>, at a rate of <b>1 research per 15 minutes</b>. <q>They do research for you when you're gone. Sure, they may just be drinking all the test tubes and fighting each other with meter sticks, but it's the effort that counts. </q>", 10, f, f, [0], [9, 0], 0.3, 0); //2
+    new Research.Tech("Interns", "You <b>gain research passively</b>, at a rate of <b>1 research every 10 minutes</b>. <q>They do research for you when you're gone. Sure, they may just be drinking all the test tubes and fighting each other with meter sticks, but it's the effort that counts. </q>", 10, f, f, [0], [9, 0], 0.3, 0); //2
     function has100Banks(){return (Game.Objects['Bank'].amount >= 100);}
-    new Research.Tech("Cookie funding", "You gain <b>more research passively</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 330, has100Banks, f, [2], [26, 11], 0.5, -0.3); //3
+    new Research.Tech("Cookie funding", "You passively gain research <b>faster</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 360, has100Banks, f, [2], [26, 11], 0.5, -0.3); //3
 
     var spr_ref = [0,1,2,3,4,15,16,17,5,6,7,8,13,14,19,20,32,33,34,35];
     var buildingTree = function(i) {
@@ -313,14 +325,16 @@ Research._Initialize = function(en) {
     }
 
     var hgolden = function() {return (Game.goldenClicks >= 7)};
-    new Research.Tech("Golden cookies", [27, 6], hgolden);
+    new Research.Tree("Golden cookies", [27, 6], hgolden);
 
     var hdragon = function() {return Game.Has('How to bake your dragon')};
-    new Research.Tech("Your cookie dragon", [30, 12], hdragon);
+    new Research.Tree("Your cookie dragon", [30, 12], hdragon);
 
     buildingTree(0);
     buildingTree(1);
     buildingTree(2);
+    function regrowthC(){return (Game.Objects['Farm'].amount >= 50)}
+    new Research.Tech("Regrowth", "Farms yield <b>three times</b> as much. <div class=\"line\"></div> You can <b>reuse depleted land</b>, effectively ignoring resource depletion. <q>A masterful resource-saving invention! Wait, isn't this how agriculture is supposed to work? </q>", 500, regrowthC, f, [0], [2, 26], 0.8, 0.8); // 1
     buildingTree(3);
     buildingTree(4);
     buildingTree(5);
@@ -348,6 +362,10 @@ Research._Initialize = function(en) {
     Research.en.loadCallback(function() {
 
     })
+
+    Game.registerHook('reincarnate', function() {
+
+    });
 
     Game.registerHook('logic', function() {
         Research.update();

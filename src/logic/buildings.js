@@ -1,3 +1,4 @@
+import {Research} from "./research.js"
 var BModify = {}
 
 const baseRhpS_C = 1;
