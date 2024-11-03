@@ -244,6 +244,7 @@ BModify._Initialize = function(en) {
         this.me = Game.Objects['Idleverse'];
 
         this._ifactor = function(num) {
+            if (num == 0) return 1;
             return 3 - (1.5 / Math.pow(2, num * 0.5));
         }
 

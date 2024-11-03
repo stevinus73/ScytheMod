@@ -26,6 +26,11 @@ Research._Initialize = function(en) {
     this.upgrades = [];
     this.userX = 0;
     this.userY = 0;
+    this.userXT = 0;
+    this.userYT = 0;
+    this.userDragX = 0;
+    this.userDragY = 0;
+    this.dragging = false;
     this.id = 0;
 
     Research.Tech = function(name, desc, priceR, requirements, onBuy, parents, sprite, x, y) {
@@ -102,7 +107,7 @@ Research._Initialize = function(en) {
             return '<div data-id="'+this.id+'" '+Game.clickStr+'="'+clickStr+'"'+
             ' class="'+classes+'" '+Game.getDynamicTooltip('function(){return mod.research.upgrades['+this.id+'].getTooltip()}', 'top', true)
             +'id="researchUp'+this.id+'" '+
-            'style="'+writeIcon(this.sprite)+'position:absolute;left:'+sX+'px;top:'+sY+'px;'+available?'':'display:none;'+'"></div>';
+            'style="'+writeIcon(this.sprite)+'position:absolute;left:'+sX+'px;top:'+sY+'px;'+(available?'':'display:none;')+'"></div>';
         }
 
         this.getTooltip = function() {
@@ -180,32 +185,50 @@ Research._Initialize = function(en) {
     }
 
     Research.update = function() {
-        if (Game.keys[37]) {
-            this.userX -= 4;
-        }
-        if (Game.keys[38]) {
-            this.userY -= 4;
-        }
-        if (Game.keys[39]) {
-            this.userX += 4;
-        }
-        if (Game.keys[40]) {
-            this.userY += 4;
-        }
+        if (Game.keys[37]) this.userXT -= 8;
+        if (Game.keys[38]) this.userYT -= 8;
+        if (Game.keys[39]) this.userXT += 8;
+        if (Game.keys[40]) this.userYT += 8;
+        if (this.userXT < -1200) this.userXT = -1200;
+        if (this.userYT < -1200) this.userYT = -1200;
+        if (this.userXT >  1200) this.userXT =  1200;
+        if (this.userYT >  1200) this.userYT =  1200;
+        this.userX += 0.5 * (this.userXT - this.userX);
+        this.userY += 0.5 * (this.userYT - this.userY);
+        if (Math.abs(this.userXT - this.userX) < 0.005) this.userX = this.userXT;
+        if (Math.abs(this.userYT - this.userY) < 0.005) this.userY = this.userYT;
+        if (Game.mouseDown && !Game.promptOn) {
+            if (!this.dragging) {
+                this.dragX = Game.mouseX;
+                this.dragY = Game.mouseY;
+            }
+            this.dragging = true;
+            this.userXT += (Game.mouseX - this.dragX);
+            this.userYT += (Game.mouseY - this.dragY);
+            this.dragX = Game.mouseX;
+            this.dragY = Game.mouseY;
+        } else this.dragging = false;
+        if (Game.Click || Game.promptOn) this.dragging = false;
+
         var ts = 'translate('+Math.floor(-this.userX)+'px,'+Math.floor(-this.userY)+'px)';
         this.content.style.transform = ts;
-        if (this.userX < -1200) this.userX = -1200;
-        if (this.userY < -1200) this.userY = -1200;
-        if (this.userX >  1200) this.userX =  1200;
-        if (this.userY >  1200) this.userY =  1200;
         if (Game.onMenu != '') this.switch(false);
+    }
+
+    Research.has = function(name) {
+        this.upgrades.forEach(function(tech) {
+            if ((tech.name == name) && tech.bought) return true;
+        })
+        return false;
     }
 
     
 
     function f(){return true;}
-    new Research.Tech("Research lab", "Unlocks the Research tree.<q>It's quite small, but so is your current business.</q>", 0, f, f, [], [23, 10], 0, 0); //0
-    new Research.Tech("Howdy!", "It's me. Flowey.", 0, f, f, [0], [26, 11], -0.4, 0.6); //1
+    new Research.Tech("Research lab", "Unlocks the <b>Research tree</b>, where you can buy upgrades using research (the number in the top right corner). <div class=\"line\"></div> You gain research in a variety of ways. <div class=\"line\"></div> Research upgrades are kept across ascensions. <q>It's quite small, but so is your current business.</q>", 1, f, f, [], [9, 2], 0, 0); //0
+    new Research.Tech("Plain cookie", "Cookie production multiplier <b>+5%</b>. <div class=\"line\"></div> Unlocks <b>new cookie upgrades</b> that appear once you have enough cookies. <q>We all gotta start somewhere. </q>", 0, f, f, [0], [3, 4], -0.4, 0.6); //1
+    new Research.Tech("Interns", "You <b>gain reseach passively</b>, at a rate of <b>1 research per 15 minutes</b>. <q>They do research for you when you're gone. Sure, they may just be drinking all the test tubes and fighting each other with meter sticks, but it's the effort that counts. </q>", 0, f, f, [0], [9, 3], 0, 0.3);
+    new Research.Tech("Cookie funding", "You gain <b>more research passively</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 0, f, f, [2], [26, 11], 0.5, -0.3); //3
 
     Research.en.saveCallback(function() {
 
