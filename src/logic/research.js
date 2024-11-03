@@ -30,8 +30,6 @@ Research._Initialize = function(en) {
     this.num = l("researchAmount");
     this.research = 15;
 
-    this.upgrades = [];
-    this.upgradesByName = {};
     this.userX = 0;
     this.userY = 0;
     this.userXT = 0;
@@ -39,22 +37,25 @@ Research._Initialize = function(en) {
     this.userDragX = 0;
     this.userDragY = 0;
     this.dragging = false;
-    this.id = 0;
+
+    this.trees = {};
+    this.currTreeInit = "";
 
     Research.Tech = function(name, desc, priceR, requirements, onBuy, parents, sprite, x, y) {
-        Research.upgrades.push(this);
-        Research.upgradesByName[name] = this;
+        this.tree = Research.trees[Research.currTreeInit];
+        this.tree.upgrades.push(this);
+        this.tree.upgradesByName[name] = this;
         this.name = name;
         this.desc = desc;
 
         this.priceR = priceR;
         this.requirements = requirements;
         this.onBuy = onBuy;
-        this.parents = Array.from(parents, (i) => Research.upgrades[i]);
+        this.parents = Array.from(parents, (i) => this.tree.upgrades[i]);
         this.sprite = sprite;
         this.x = x; // -1 to 1
         this.y = y; // -1 to 1
-        this.id = Research.id;
+        this.id = this.tree.id;
         this.bought = false;
 
         this.canBuy = function() {
@@ -106,6 +107,7 @@ Research._Initialize = function(en) {
                 if (parent.bought) available = true;
             });
             if (this.parents.length == 0) available = true;
+            if (!this.requirements()) available = false;
             var sX = this.getPosition().posX;
             var sY = this.getPosition().posY;
             var classes = 'crate upgrade heavenly';
@@ -144,20 +146,41 @@ Research._Initialize = function(en) {
             (tip!=''?('<div class="line"></div><div style="font-size:10px;font-weight:bold;color:#999;text-align:center;padding-bottom:4px;line-height:100%;" class="crateTip">'+tip+'</div>'):'');
         }
 
-        Research.id += 1;
+        this.tree.id += 1;
     }
 
     Research.Tech.prototype.getType = function () {
         return 'TechUpgrade';
     }
 
+    Research.Tree = function(name) {
+        this.name = name;
+        Research.currTreeInit = name;
+        this.id = 0;
+        Research.trees[name] = this;
+        this.upgrades = [];
+        this.upgradesByName = {};
+
+        this.draw = function() {
+            var str = '';
+            this.upgrades.forEach(function(u) {
+                str += u.draw();
+                str += u.createLinks();
+            })
+            return str;
+        }
+
+        this.has = function(name) {
+            var it = this.upgradesByName[name];
+            return (it?it.bought:false);
+        }
+    }
+
+    Research.Tree.prototype.getType = function () {
+        return 'TechTree';
+    }
+
     en.injectCode(Game.resize, 'Game.scale=scale;', 'mod.research.draw();', "after");
-
-
-
-
-
-
 
 
     Research.switch = function(on) {
@@ -181,12 +204,7 @@ Research._Initialize = function(en) {
 
     Research.draw = function() {
         if (!this.researchOn) return;
-        var str = '';
-        this.upgrades.forEach(function(u) {
-            str += u.draw();
-            str += u.createLinks();
-        })
-        this.content.innerHTML = str;
+        this.content.innerHTML = this.currTree.draw();
     }
 
     Research.update = function() {
@@ -223,17 +241,37 @@ Research._Initialize = function(en) {
     }
 
     Research.has = function(name) {
-        var it = this.upgradesByName[name];
-        return (it?it.bought:false);
+        for (var i in this.trees) {
+            if (this.trees[i].has(name)) return true;
+        }
+        return false;
     }
 
     
 
     function f(){return true;}
+
+    new Research.Tree("General");
+
     new Research.Tech("Research lab", "Unlocks the <b>Research tree</b>, where you can buy upgrades using research (the number in the top right corner). <div class=\"line\"></div> You gain research in a variety of ways. <div class=\"line\"></div> Research upgrades are kept across ascensions. <q>It's quite small, but so is your current business.</q>", 1, f, f, [], [9, 2], 0, 0); //0
-    new Research.Tech("Plain cookie", "Cookie production multiplier <b>+5%</b>. <div class=\"line\"></div> Unlocks <b>new cookie upgrades</b> that appear once you have enough cookies. <q>We all gotta start somewhere. </q>", 0, f, f, [0], [2, 3], -0.4, 0.6); //1
-    new Research.Tech("Interns", "You <b>gain reseach passively</b>, at a rate of <b>1 research per 15 minutes</b>. <q>They do research for you when you're gone. Sure, they may just be drinking all the test tubes and fighting each other with meter sticks, but it's the effort that counts. </q>", 0, f, f, [0], [9, 0], 0.3, 0);
-    new Research.Tech("Cookie funding", "You gain <b>more research passively</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 0, f, f, [2], [26, 11], 0.5, -0.3); //3
+    new Research.Tech("Plain cookie", "Cookie production multiplier <b>+5%</b>. <div class=\"line\"></div> Unlocks <b>new cookie upgrades</b> that appear once you have enough cookies. <q>We all gotta start somewhere. </q>", 50, f, f, [0], [2, 3], -0.4, 0.6); //1
+    new Research.Tech("Interns", "You <b>gain reseach passively</b>, at a rate of <b>1 research per 15 minutes</b>. <q>They do research for you when you're gone. Sure, they may just be drinking all the test tubes and fighting each other with meter sticks, but it's the effort that counts. </q>", 10, f, f, [0], [9, 0], 0.3, 0); //2
+    function has100Banks(){return (Game.Objects['Bank'].amount >= 100);}
+    new Research.Tech("Cookie funding", "You gain <b>more research passively</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 330, has100Banks, f, [2], [26, 11], 0.5, -0.3); //3
+
+    new Research.Tree("Cursor");
+    function hcursor(){return (Game.Objects['Cursor'].amount >= 1)};
+    new Research.Tech("Click research", "Unlocks the research tree for <b>cursors and clicking</b>.", 10, hcursor, f, [], [0, 0], 0, 0); //0
+
+    new Research.Tree("Grandma");
+    function hgrandma(){return (Game.Objects['Grandma'].amount >= 1)};
+    new Research.Tech("Granny research", "Unlocks the research tree for <b>grandmas</b>.", 20, hgrandma, f, [], [1, 0], 0, 0); //0
+
+    new Research.Tree("Farm");
+    function hfarm(){return (Game.Objects['Farm'].amount >= 1)};
+    new Research.Tech("Farm research", "Unlocks the research tree for <b>farms</b>.", 30, hfarm, f, [], [2, 0], 0, 0); //0
+
+    this.currTree = this.trees["General"];
 
     Research.en.saveCallback(function() {
 
