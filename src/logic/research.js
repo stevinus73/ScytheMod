@@ -177,7 +177,7 @@ Research._Initialize = function(en) {
             if (!this.requirements()) return '';
             var classes = 'crate upgrade';
             if (this.curr) classes += ' enabled';
-            var clickStr = 'mod.research.setCurrTree("'+this.name+'");mod.research.draw();';
+            var clickStr = `mod.research.setCurrTree('`+this.name+`');mod.research.draw();`;
             return '<div data-id="'+this.name+"tree"+'" '+Game.clickStr+'="'+clickStr+'"'+
             ' class="'+classes+'" id="researchTreeCrate'+this.name+'" '+
             'style="'+writeIcon(this.sprite)+'"></div>';
@@ -311,6 +311,12 @@ Research._Initialize = function(en) {
         if (i == 0) btext = "cursors and clicking";
         new Research.Tech(me.dname+" research", "Unlocks the research tree for <b>"+btext+"</b>.", 20, f, f, [], [spr_ref[i], 0], 0, 0); //0
     }
+
+    var hgolden = function() {return (Game.goldenClicks >= 7)};
+    new Research.Tech("Golden cookies", [27, 6], hgolden);
+
+    var hdragon = function() {return Game.Has('How to bake your dragon')};
+    new Research.Tech("Your cookie dragon", [30, 12], hdragon);
 
     buildingTree(0);
     buildingTree(1);
