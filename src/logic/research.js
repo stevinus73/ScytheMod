@@ -46,7 +46,7 @@ Research._Initialize = function(en) {
         this.canBuy = function() {
             var parentBuy = true;
             this.parents.forEach(function(parent) {
-                if (!parent.canBuy()) parentBuy = false;
+                if (!parent.bought) parentBuy = false;
             });
             return (this.requirements() && parentBuy && (Research.research >= this.priceR));
         }
@@ -60,19 +60,23 @@ Research._Initialize = function(en) {
         }
 
         this.draw = function() {
-            var cX = Research.content.offsetWidth  * 0.5 - 36;
-            var cY = Research.content.offsetHeight * 0.5 - 36;
-            var sX =  this.x * Research.content.offsetWidth  * 0.5 + cX;
-            var sY = -this.y * Research.content.offsetHeight * 0.5 + cY;
+            var available = false;
+            this.parents.forEach(function(parent) {
+                if (parent.bought) available = true;
+            });
+            var cX = Research.container.offsetWidth  * 0.5 - 36;
+            var cY = Research.container.offsetHeight * 0.5 - 36;
+            var sX =  this.x * Research.container.offsetWidth  * 0.5 + cX;
+            var sY = -this.y * Research.container.offsetHeight * 0.5 + cY;
             var classes = 'crate upgrade heavenly';
-            var clickStr = 'mod.research.upgrades[' + this.id + '].buy()';
+            var clickStr = available ? 'mod.research.upgrades[' + this.id + '].buy()' : ''; 
             var enabled = 0;
             if (this.bought) enabled=1;
             if (enabled) classes += ' enabled';
             return '<div data-id="'+this.id+'" '+Game.clickStr+'="'+clickStr+'"'+
             ' class="'+classes+'" '+Game.getDynamicTooltip('function(){return mod.research.upgrades['+this.id+'].getTooltip()}', 'top', true)
             +'id="researchUp'+this.id+'" '+
-            'style="'+writeIcon(this.sprite)+'position:absolute;left:'+sX+'px;top:'+sY+'px;"></div>';
+            'style="'+writeIcon(this.sprite)+'position:absolute;left:'+sX+'px;top:'+sY+'px;'+available?'':'display:none;'+'"></div>';
         }
 
         this.getTooltip = function() {
