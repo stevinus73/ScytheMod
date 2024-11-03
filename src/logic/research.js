@@ -8,22 +8,29 @@ Research._Initialize = function(en) {
     str += 'background: url(//cdn.dashnet.org/cookieclicker/img/shadedBorders.png),url(//cdn.dashnet.org/cookieclicker/img/BGgrimoire.jpg)" '
     str += 'onclick="mod.research.switch(-1)">'
     str += '<div>View Research</div></div>'
-
+    l("comments").insertAdjacentHTML('beforeend','<div id="researchDisplay"></div>')
     l("buildingsMaster").insertAdjacentHTML('afterbegin', str);
     this.button = l("researchButton");
     this.researchOn = false;
     l("centerArea").insertAdjacentHTML('beforeend', 
-        '<style>#research{z-index: 1; background: url("img/starbg.jpg"); position: absolute; inset: 40px 0px 0px; display: none;}</style>'
+        '<style>#research{z-index: 1; background: url("img/starbg.jpg"); position: absolute; inset: 40px 0px 0px; display: none;}'+
+        '#researchDisplay{cursor: pointer; position: absolute; right: -8px; bottom: -12px; width: 32px; height: 32px; z-index: 1000; filter:drop-shadow(0px 3px 2px #000); -webkit-filter:drop-shadow(0px 3px 2px #000);}'+
+        '#researchIcon{width: 48px; height: 48px; right: -8px; top: -8px; position: absolute; pointer-events: none;}'+
+        '#researchAmount{font-size: 12px; color: #6cf; position: absolute; right: 36px; top: 6px; text-align: right; width: 200px;}'+
+        '#researchButton{cursor: pointer;}</style>'
     )
     l("centerArea").insertAdjacentHTML('beforeend', '<div id="research"></div>')
     this.container = l("research");
-    this.container.insertAdjacentHTML('beforeend', 
-        '<div id="researchContent" style="position: absolute;"></div>'
-    )
+    this.container.insertAdjacentHTML('beforeend', '<div id="researchContent" style="position: absolute;"></div>')
     this.content = l("researchContent");
-    this.research = 1;
+    this.display = l("researchDisplay");
+    this.display.insertAdjacentHTML('beforeend', '<div id="researchIcon" class="usesIcon" style="'+writeIcon([9,0])+'"></div>')
+    this.display.insertAdjacentHTML('beforeend', '<div id="researchAmount"></div>')
+    this.num = l("researchAmount");
+    this.research = 15;
 
     this.upgrades = [];
+    this.upgradesByName = {};
     this.userX = 0;
     this.userY = 0;
     this.userXT = 0;
@@ -35,6 +42,7 @@ Research._Initialize = function(en) {
 
     Research.Tech = function(name, desc, priceR, requirements, onBuy, parents, sprite, x, y) {
         Research.upgrades.push(this);
+        Research.upgradesByName[name] = this;
         this.name = name;
         this.desc = desc;
 
@@ -203,8 +211,8 @@ Research._Initialize = function(en) {
                 this.dragY = Game.mouseY;
             }
             this.dragging = true;
-            this.userXT += (Game.mouseX - this.dragX);
-            this.userYT += (Game.mouseY - this.dragY);
+            this.userXT -= (Game.mouseX - this.dragX);
+            this.userYT -= (Game.mouseY - this.dragY);
             this.dragX = Game.mouseX;
             this.dragY = Game.mouseY;
         } else this.dragging = false;
@@ -213,21 +221,21 @@ Research._Initialize = function(en) {
         var ts = 'translate('+Math.floor(-this.userX)+'px,'+Math.floor(-this.userY)+'px)';
         this.content.style.transform = ts;
         if (Game.onMenu != '') this.switch(false);
+
+        this.num.textContent = this.research;
     }
 
     Research.has = function(name) {
-        this.upgrades.forEach(function(tech) {
-            if ((tech.name == name) && tech.bought) return true;
-        })
-        return false;
+        var it = this.upgradesByName[name];
+        return (it?it.bought:false);
     }
 
     
 
     function f(){return true;}
     new Research.Tech("Research lab", "Unlocks the <b>Research tree</b>, where you can buy upgrades using research (the number in the top right corner). <div class=\"line\"></div> You gain research in a variety of ways. <div class=\"line\"></div> Research upgrades are kept across ascensions. <q>It's quite small, but so is your current business.</q>", 1, f, f, [], [9, 2], 0, 0); //0
-    new Research.Tech("Plain cookie", "Cookie production multiplier <b>+5%</b>. <div class=\"line\"></div> Unlocks <b>new cookie upgrades</b> that appear once you have enough cookies. <q>We all gotta start somewhere. </q>", 0, f, f, [0], [3, 4], -0.4, 0.6); //1
-    new Research.Tech("Interns", "You <b>gain reseach passively</b>, at a rate of <b>1 research per 15 minutes</b>. <q>They do research for you when you're gone. Sure, they may just be drinking all the test tubes and fighting each other with meter sticks, but it's the effort that counts. </q>", 0, f, f, [0], [9, 3], 0, 0.3);
+    new Research.Tech("Plain cookie", "Cookie production multiplier <b>+5%</b>. <div class=\"line\"></div> Unlocks <b>new cookie upgrades</b> that appear once you have enough cookies. <q>We all gotta start somewhere. </q>", 0, f, f, [0], [2, 3], -0.4, 0.6); //1
+    new Research.Tech("Interns", "You <b>gain reseach passively</b>, at a rate of <b>1 research per 15 minutes</b>. <q>They do research for you when you're gone. Sure, they may just be drinking all the test tubes and fighting each other with meter sticks, but it's the effort that counts. </q>", 0, f, f, [0], [9, 0], 0.3, 0);
     new Research.Tech("Cookie funding", "You gain <b>more research passively</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 0, f, f, [2], [26, 11], 0.5, -0.3); //3
 
     Research.en.saveCallback(function() {
@@ -239,8 +247,17 @@ Research._Initialize = function(en) {
     })
 
     Game.registerHook('logic', function() {
-        //Research.draw();
         Research.update();
+    });
+
+    Game.registerHook('check', function() {
+        Research.draw();
+    });
+
+    Game.registerHook('cps', function(cps) {
+        var mult = 1;
+        if (Research.has("Plain cookie")) mult *= 1.05;
+        return cps * mult;
     });
 }
 
