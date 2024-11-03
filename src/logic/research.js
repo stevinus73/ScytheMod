@@ -180,8 +180,12 @@ Research._Initialize = function(en) {
             if (this.curr) classes += ' enabled';
             var clickStr = `mod.research.setCurrTree('`+this.name+`');mod.research.draw();`;
             return '<div data-id="'+this.name+"tree"+'" '+Game.clickStr+'="'+clickStr+'"'+
-            ' class="'+classes+'" id="researchTreeCrate'+this.name+'" '+
+            ' class="'+classes+Game.getDynamicTooltip('mod.research.trees['+this.name+'].getTooltip', 'top', true)+'" id="researchTreeCrate'+this.name+'" '+
             'style="'+writeIcon(this.sprite)+'"></div>';
+        }
+
+        this.getTooltip = function() {
+            return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+loc("This is a research tree.<div class=\"line\"></div>Click on it to switch to this research tree.")+'</div>';
         }
 
         this.draw = function() {
@@ -324,11 +328,11 @@ Research._Initialize = function(en) {
         new Research.Tech(me.dname+" research", "Unlocks the research tree for <b>"+btext+"</b>.", 20, f, f, [], [spr_ref[i], 0], 0, 0); //0
     }
 
-    var hgolden = function() {return (Game.goldenClicks >= 7)};
-    new Research.Tree("Golden cookies", [27, 6], hgolden);
+    // var hgolden = function() {return (Game.goldenClicks >= 7)};
+    // new Research.Tree("Golden cookies", [27, 6], hgolden);
 
-    var hdragon = function() {return Game.Has('How to bake your dragon')};
-    new Research.Tree("Your cookie dragon", [30, 12], hdragon);
+    // var hdragon = function() {return Game.Has('How to bake your dragon')};
+    // new Research.Tree("Your cookie dragon", [30, 12], hdragon);
 
     buildingTree(0);
     buildingTree(1);

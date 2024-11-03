@@ -123,10 +123,11 @@ IdlersPocket._Initialize = function () {
     IdlersPocket.Achievement.prototype.pushToFront = function (id, name, desc, icon, type, winCon) { }
 }
 
+IdlersPocket._Initialize();
+
 
 
 IdlersPocket.LoadMod = function (name, init) {
-    this._Initialize();
 
     this._save = function() {
         IdlersPocket.saveCallbacks.forEach((c) => c());
