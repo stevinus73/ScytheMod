@@ -77,8 +77,8 @@ Research._Initialize = function(en) {
         }
 
         this.createLinks = function() {
-            if (!this.isAvailable()) return;
             var str = '';
+            if (!this.isAvailable()) return str;
             for (var ii in this.parents) {
                 if (this.parents[ii]!=-1) {
                     var ppos = this.parents[ii].getPosition();
@@ -162,9 +162,10 @@ Research._Initialize = function(en) {
         return 'TechUpgrade';
     }
 
-    Research.Tree = function(name, sprite) {
+    Research.Tree = function(name, sprite, requirements) {
         this.name = name;
         this.sprite = sprite;
+        this.requirements = requirements;
         Research.currTreeInit = name;
         this.id = 0;
         Research.trees[name] = this;
@@ -173,9 +174,10 @@ Research._Initialize = function(en) {
         this.curr = false;
 
         this.getCrate = function() {
+            if (!this.requirements()) return '';
             var classes = 'crate upgrade';
             if (this.curr) classes += ' enabled';
-            var clickStr = 'mod.research.setCurrTree('+this.name+');mod.research.draw();';
+            var clickStr = 'mod.research.setCurrTree("'+this.name+'");mod.research.draw();';
             return '<div data-id="'+this.name+"tree"+'" '+Game.clickStr+'="'+clickStr+'"'+
             ' class="'+classes+'" id="researchTreeCrate'+this.name+'" '+
             'style="'+writeIcon(this.sprite)+'"></div>';
@@ -200,8 +202,7 @@ Research._Initialize = function(en) {
         return 'TechTree';
     }
 
-    en.injectCode(Game.resize, 'Game.scale=scale;', 'mod.research.draw();', "after");
-
+    Game.resize = en.injectCode(Game.resize, 'Game.scale=scale;', 'mod.research.draw();', "after");
 
     Research.switch = function(on) {
         if (on == -1) on = !this.researchOn;
@@ -285,6 +286,10 @@ Research._Initialize = function(en) {
         return false;
     }
 
+    Research.earnAchiev = function() {
+        this.research += 10;
+    }
+    Game.Win = en.injectCode(Game.Win, 'it.won=1;', 'mod.research.earnAchiev();', "after");
     
 
     function f(){return true;}
@@ -297,19 +302,23 @@ Research._Initialize = function(en) {
     function has100Banks(){return (Game.Objects['Bank'].amount >= 100);}
     new Research.Tech("Cookie funding", "You gain <b>more research passively</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 330, has100Banks, f, [2], [26, 11], 0.5, -0.3); //3
 
-    new Research.Tree("Cursor", [0, 0]);
     function hcursor(){return (Game.Objects['Cursor'].amount >= 1)};
-    new Research.Tech("Click research", "Unlocks the research tree for <b>cursors and clicking</b>.", 10, hcursor, f, [], [0, 0], 0, 0); //0
+    new Research.Tree("Cursor", [0, 0], hcursor);
+    new Research.Tech("Click research", "Unlocks the research tree for <b>cursors and clicking</b>.", 20, f, f, [], [0, 0], 0, 0); //0
 
-    new Research.Tree("Grandma", [1, 0]);
     function hgrandma(){return (Game.Objects['Grandma'].amount >= 1)};
-    new Research.Tech("Granny research", "Unlocks the research tree for <b>grandmas</b>.", 20, hgrandma, f, [], [1, 0], 0, 0); //0
+    new Research.Tree("Grandma", [1, 0], hgrandma);
+    new Research.Tech("Granny research", "Unlocks the research tree for <b>grandmas</b>.", 20, f, f, [], [1, 0], 0, 0); //0
 
-    new Research.Tree("Farm", [2, 0]);
     function hfarm(){return (Game.Objects['Farm'].amount >= 1)};
-    new Research.Tech("Farm research", "Unlocks the research tree for <b>farms</b>.", 30, hfarm, f, [], [2, 0], 0, 0); //0
+    new Research.Tree("Farm", [2, 0], hfarm);
+    new Research.Tech("Farm research", "Unlocks the research tree for <b>farms</b>.", 20, f, f, [], [2, 0], 0, 0); //0
 
-    this.currTree = this.trees["General"];
+    function hmine(){return (Game.Objects['Mine'].amount >= 1)};
+    new Research.Tree("Mine", [3, 0], hmine);
+    new Research.Tech("Mine research", "Unlocks the research tree for <b>mines</b>.", 20, f, f, [], [3, 0], 0, 0); //0
+
+    this.setCurrTree("General");
 
     Research.en.saveCallback(function() {
 
