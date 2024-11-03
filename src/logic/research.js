@@ -14,9 +14,10 @@ Research._Initialize = function(en) {
     this.researchOn = false;
     l("centerArea").insertAdjacentHTML('beforeend', 
         '<style>#research{z-index: 1; background: url("img/starbg.jpg"); position: absolute; inset: 40px 0px 0px; display: none;}'+
-        '#researchDisplay{cursor: pointer; position: absolute; right: -8px; bottom: -12px; width: 32px; height: 32px; z-index: 1000; filter:drop-shadow(0px 3px 2px #000); -webkit-filter:drop-shadow(0px 3px 2px #000);}'+
+        '#researchDisplay{cursor: pointer; position: absolute; right: 0px; bottom: -12px; width: 32px; height: 32px; z-index: 1000; filter:drop-shadow(0px 3px 2px #000); -webkit-filter:drop-shadow(0px 3px 2px #000);}'+
         '#researchIcon{width: 48px; height: 48px; right: -8px; top: -8px; position: absolute; pointer-events: none;}'+
         '#researchAmount{font-size: 12px; color: #6cf; position: absolute; right: 36px; top: 6px; text-align: right; width: 200px;}'+
+        '.research.price:before{width:48px;height:48px;left:-24px;top:-10px;background:url("img/icons.png");'+writeIcon([9,0])+'}'+
         '#researchButton{cursor: pointer;}</style>'
     )
     l("centerArea").insertAdjacentHTML('beforeend', '<div id="research"></div>')
@@ -128,21 +129,17 @@ Research._Initialize = function(en) {
             }
 
             var tagsStr='';
-			for (var i=0;i<tags.length;i+=2)
-			{
-				if (i%2==0) tagsStr+='<div class="tag" style="background-color:'+(tags[i+1]==0?'#fff':tags[i+1])+';">'+tags[i]+'</div>';
-			}
-
+            for (var i=0;i<tags.length;i+=2)
+            {
+                if (i%2==0) tagsStr+='<div class="tag" style="background-color:'+(tags[i+1]==0?'#fff':tags[i+1])+';">'+tags[i]+'</div>';
+            }
             var cost=this.priceR;
-            price='<div style="float:right;text-align:right;"><span class="price'
-            +this.canBuy()?'':' disabled'+
-            +'">'+Beautify(Math.round(cost))+'</span></div>';
+            price='<div style="float:right;text-align:right;"><span class="price research'+ (this.canBuy() ? '' : ' disabled') +'">'+Beautify(Math.round(cost))+'</span></div>';
             var tip=(this.canBuy() && !this.bought) ? loc("Click to research.") : "";
 
             return '<div style="position:absolute;left:1px;top:1px;right:1px;bottom:1px;background:linear-gradient(125deg,rgba(50,40,40,1) 0%,rgba(50,40,40,0) 20%);mix-blend-mode:screen;z-index:1;"></div><div style="z-index:10;padding:8px 4px;min-width:350px;position:relative;" id="tooltipCrate">'+
             '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;'+writeIcon(this.sprite)+'"></div>'+price+
-            '<div class="name">'+this.name+'</div>'+
-            tagsStr+
+            '<div class="name">'+this.name+'</div>'+tagsStr+
             '<div class="line"></div><div class="description">'+this.desc+'</div></div>'+
             (tip!=''?('<div class="line"></div><div style="font-size:10px;font-weight:bold;color:#999;text-align:center;padding-bottom:4px;line-height:100%;" class="crateTip">'+tip+'</div>'):'');
         }
