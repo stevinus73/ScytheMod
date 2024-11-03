@@ -266,7 +266,7 @@ BModify._Initialize = function(en) {
         this.resourceMult = function() {
             var fact = 1.003;
             if (Game.Has("Unshackled idleverses")) fact = 1.004;
-            if (!Research.Has("Galactica mindoris")) return 1;
+            if (!Research.has("Galactica mindoris")) return 1;
             return Math.max(Math.pow(fact, this.me.amount) * this._ifactor(this.me.amount), 1);
         }
 
@@ -275,7 +275,7 @@ BModify._Initialize = function(en) {
         )
 
         this.getStat = function() {
-            if (Research.Has("Galactica mindoris")) {
+            if (Research.has("Galactica mindoris")) {
                 l("idleverseStat").innerHTML = "<b>Total resource boost provided by " + this.me.amount + " idleverses:</b> "
             + "x" + Beautify(this.resourceMult(), 3);
             }
@@ -329,7 +329,20 @@ BModify._Initialize = function(en) {
     })
 
 
-
+    function replace(F) {
+        var fr = F;
+        fr = en.injectCode(F, "if (Game.Has('Unshackled cursors')) add*=	25;", "if (Game.Has('Unshackled cursors')) add*=	5;", "replace");
+        fr = en.injectCode(F, "if (Game.Has('Trillion fingers')) add*=		20;", "if (Game.Has('Trillion fingers')) add*=		10;", "replace");
+        fr = en.injectCode(F, "if (Game.Has('Quadrillion fingers')) add*=	20;", "if (Game.Has('Quadrillion fingers')) add*=	10;", "replace");
+        fr = en.injectCode(F, "if (Game.Has('Quintillion fingers')) add*=	20;", "if (Game.Has('Quintillion fingers')) add*=	10;", "replace");
+        return fr;
+    }
+    Game.mouseCpS = replace(Game.mouseCpS);
+    Game.Objects['Cursor'].cps = replace(Game.Objects['Cursor'].cps);
+    Game.NewUnshackleBuilding = en.injectCode(Game.newUnshackleBuilding, "getStrThousandFingersGain(25)", "getStrThousandFingersGain(5)", "replace");
+    Game.Upgrade['Trillion fingers'].ddesc = Game.Upgrade['Trillion fingers'].ddesc.replace("20", "10");
+    Game.Upgrade['Quadrillion fingers'].ddesc = Game.Upgrade['Quadrillion fingers'].ddesc.replace("20", "10");
+    Game.Upgrade['Quintillion fingers'].ddesc = Game.Upgrade['Quintillion fingers'].ddesc.replace("20", "10");
 
 
     // vals
