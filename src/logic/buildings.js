@@ -339,7 +339,7 @@ BModify._Initialize = function(en) {
     }
     Game.mouseCps = replace(Game.mouseCps);
     Game.Objects['Cursor'].cps = replace(Game.Objects['Cursor'].cps);
-    Game.NewUnshackleBuilding = en.injectCode(Game.NewUnshackleBuilding, "getStrThousandFingersGain(25)", "getStrThousandFingersGain(5)", "replace");
+    Game.Upgrades['Unshackled cursors'].ddesc = Game.Upgrades['Unshackled cursors'].ddesc.replace("25", "5");
     Game.Upgrades['Trillion fingers'].ddesc = Game.Upgrades['Trillion fingers'].ddesc.replace("20", "10");
     Game.Upgrades['Quadrillion fingers'].ddesc = Game.Upgrades['Quadrillion fingers'].ddesc.replace("20", "10");
     Game.Upgrades['Quintillion fingers'].ddesc = Game.Upgrades['Quintillion fingers'].ddesc.replace("20", "10");
