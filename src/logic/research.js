@@ -351,6 +351,7 @@ Research._Initialize = function(en) {
         me.tieredResearch.push(new Research.Tech(name, d+'<q>'+desc+'</q>', 60 + 20 * tier, hfunction, f, deps, [spr_ref[i], 21+tier], 0.6 * i, 0));
     }
     Research.hasTiered = function(i, tier) {
+        if (Game.ObjectsById[i].tieredResearch.length < tier) return false;
         return Game.ObjectsById[i].tieredResearch[tier-1].bought;
     }
 
