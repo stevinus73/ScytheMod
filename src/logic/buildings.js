@@ -72,8 +72,6 @@ BModify._Initialize = function(en) {
                     rsmult*=tierRsMult;
                 }
             }
-
-
             rsmult*=BModify.idleverse.resourceMult();
             for (var i in me.synergies) {
                 var syn=me.synergies[i];
@@ -85,6 +83,15 @@ BModify._Initialize = function(en) {
             if (me.fortune && Game.Has(me.fortune.name)) yieldmult*=1.07;
             if (me.grandma && Game.Has(me.grandma.name)) yieldmult*=(1+Game.Objects['Grandma'].amount*0.01*(1/(me.id-1)));
             if ((this.id == 2) && Research.has("Regrowth")) yieldmult*=3;
+
+            if (me.tieredResearch) {
+                if (Research.hasTiered(this.id, 1)) rsmult*=2;
+                if (Research.hasTiered(this.id, 2)) rsmult*=2;
+                if (Research.hasTiered(this.id, 3)) rsmult*=2;
+                if (Research.hasTiered(this.id, 1)) yieldmult*=(100-5*this.id);
+                if (Research.hasTiered(this.id, 2)) yieldmult*=(100-5*this.id);
+                if (Research.hasTiered(this.id, 3)) yieldmult*=(100-5*this.id);
+            }
 
             this.yield = this.baseYield * yieldmult;
             this.RhpS = this.baseRhpS * rhpsmult;

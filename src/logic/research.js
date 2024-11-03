@@ -1,5 +1,9 @@
 var Research = {};
 
+function cfl(val) {
+    return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+}
+
 Research._Initialize = function(en) {
     this.en = en;
 
@@ -40,6 +44,8 @@ Research._Initialize = function(en) {
     this.userDragX = 0;
     this.userDragY = 0;
     this.dragging = false;
+    
+    en.newVar("research", "int");
 
     this.trees = {};
     this.currTreeInit = "";
@@ -121,7 +127,7 @@ Research._Initialize = function(en) {
             var sX = this.getPosition().posX;
             var sY = this.getPosition().posY;
             var classes = 'crate upgrade heavenly';
-            var clickStr = available ? 'mod.research.currTree.upgrades[' + this.id + '].buy()' : ''; 
+            var clickStr = available ? 'mod.research.currTree.upgrades['+this.id+'].buy()' : ''; 
             var enabled = 0;
             if (this.bought) enabled=1;
             if (enabled) classes += ' enabled';
@@ -180,7 +186,7 @@ Research._Initialize = function(en) {
             if (this.curr) classes += ' enabled';
             var clickStr = `mod.research.setCurrTree('`+this.name+`');mod.research.draw();`;
             return '<div data-id="'+this.name+"tree"+'" '+Game.clickStr+'="'+clickStr+'"'+
-            ' class="'+classes+Game.getDynamicTooltip('mod.research.trees['+this.name+'].getTooltip', 'top', true)+'" id="researchTreeCrate'+this.name+'" '+
+            ' class="'+classes+Game.getDynamicTooltip('mod.research.trees["'+this.name+'"].getTooltip', 'top', true)+'" id="researchTreeCrate'+this.name+'" '+
             'style="'+writeIcon(this.sprite)+'"></div>';
         }
 
@@ -293,6 +299,12 @@ Research._Initialize = function(en) {
         if (this.currTree) this.currTree.curr = false;
         this.currTree = this.trees[treeName];
         this.trees[treeName].curr = true;
+        this.userX = 0;
+        this.userY = 0;
+        this.userXT = 0;
+        this.userYT = 0;
+        this.userDragX = 0;
+        this.userDragY = 0;
     }
 
     Research.has = function(name) {
@@ -326,6 +338,20 @@ Research._Initialize = function(en) {
         var btext = me.plural;
         if (i == 0) btext = "cursors and clicking";
         new Research.Tech(me.dname+" research", "Unlocks the research tree for <b>"+btext+"</b>.", 20, f, f, [], [spr_ref[i], 0], 0, 0); //0
+        me.tieredResearch = [];
+    }
+    // tier: 1, 2, 3
+    var tieredTree = function(i, tier, name, desc) {
+        var me = Game.ObjectsById[i];
+        var yieldPercent = 100 - 5 * i;
+        var d = cfl(me.plural)+" yield <b>"+Beautify(yieldPercent)+"</b> more. Resource space is <b>doubled</b>.";
+        var hfunction = function() {return (me.amount >= (100 * tier))};
+        var deps = [0];
+        if (tier > 1) deps=[me.tieredResearch[tier-2].id];
+        me.tieredResearch.push(new Research.Tech(name, d+'<q>'+desc+'</q>', 60 + 20 * tier, hfunction, f, deps, [spr_ref[i], 21+tier], 0.6 * i, 0));
+    }
+    Research.hasTiered = function(i, tier) {
+        return Game.ObjectsById[i].tieredResearch[tier-1].bought;
     }
 
     // var hgolden = function() {return (Game.goldenClicks >= 7)};
@@ -337,10 +363,19 @@ Research._Initialize = function(en) {
     buildingTree(0);
     buildingTree(1);
     buildingTree(2);
-    function regrowthC(){return (Game.Objects['Farm'].amount >= 50)}
-    new Research.Tech("Regrowth", "Farms yield <b>three times</b> as much. <div class=\"line\"></div> You can <b>reuse depleted land</b>, effectively ignoring resource depletion. <q>A masterful resource-saving invention! Wait, isn't this how agriculture is supposed to work? </q>", 500, regrowthC, f, [0], [2, 26], 0.8, 0.8); // 1
+    function regrowthC(){return (Game.Objects['Farm'].amount >= 60)}
+    new Research.Tech("Regrowth", "Farms yield <b>three times</b> more. <div class=\"line\"></div> You can <b>reuse depleted land</b>, effectively ignoring resource depletion. <q>A masterful resource-saving invention! Wait, isn't this how agriculture is supposed to work? </q>", 340, regrowthC, f, [0], [2, 26], 0.8, 0.8); // 1
+    tieredTree(2, 1, "Monocookie agriculture", "Gearing your farms to only cultivate cookies."); // 1
+    tieredTree(2, 2, "Better hoes", "Actually, scratch that. Who would waste netherite on a hoe?"); // 2
+    tieredTree(2, 3, "Genetic splicers", "With these handy splicers, you can splice the best and most useful genes from other organisms directly into a cookie plant. For example, a carnivorous plant with the ability to speak has been created as a deterrent to greedy young kids.")
     buildingTree(3);
+    tieredTree(3, 1, "Mineral scentilocation", "Recent advances have led to the creation of a machine that can detect tasty minerals via their natural scent-giving properties.") // 1
+    tieredTree(3, 2, "Nanomining", "Scratch all the giant drills and pickaxes! The fabric of reality itself has been found to contain fundamental particles that can be made into cookies. This will surely have no unforeseen consequences on the stability of the universe, y'know?") // 2
+    tieredTree(3, 3, "Quantum tunneling", "I... don't think that's what it's supposed to mean.") // 3
     buildingTree(4);
+    tieredTree(4, 1, "Caramel lubricant", "Cleans up those old gears and machines and gets them back to working in no time!") // 1
+    tieredTree(4, 2, "Fuel aeration", "A new mechanism that conserves fuel used while making it more powerful.") // 2
+    tieredTree(4, 3, "Brownian ratchet gears", "They run infinitely and infinitely, with absolutely no energy put in. I guess your cookies are breaking the laws of physics?")
     buildingTree(5);
     buildingTree(6);
     buildingTree(7);
@@ -359,16 +394,33 @@ Research._Initialize = function(en) {
 
     this.setCurrTree("General");
 
-    Research.en.saveCallback(function() {
+    for (var i in Research.trees) {
+        Research.trees[i].upgrades.forEach(function(up) {
+            en.newVar("research" + i + up.id, "int");
+        })
+    }
 
+    en.saveCallback(function() {
+        en.setVar("research", Research.research);
+        for (var i in Research.trees) {
+            Research.trees[i].upgrades.forEach(function(up) {
+                en.setVar("research" + i + up.id, up.bought ? 1 : 0);
+            })
+        }
     })
 
-    Research.en.loadCallback(function() {
-
+    en.loadCallback(function() {
+        Research.research = en.getVar("research");
+        for (var i in Research.trees) {
+            Research.trees[i].upgrades.forEach(function(up) {
+                n = en.getVar("research" + i + up.id);
+                if (n == 0) up.bought = false;
+                if (n == 1) up.bought = true;
+            })
+        }
     })
 
     Game.registerHook('reincarnate', function() {
-
     });
 
     Game.registerHook('logic', function() {
