@@ -302,7 +302,7 @@ Research._Initialize = function(en) {
     function has100Banks(){return (Game.Objects['Bank'].amount >= 100);}
     new Research.Tech("Cookie funding", "You gain <b>more research passively</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 330, has100Banks, f, [2], [26, 11], 0.5, -0.3); //3
 
-    spr_ref = [0,1,2,3,4,15,16,17,5,6,7,8,13,14,19,20,32,33,34,35];
+    var spr_ref = [0,1,2,3,4,15,16,17,5,6,7,8,13,14,19,20,32,33,34,35];
     var buildingTree = function(i) {
         var me = Game.ObjectsById[i];
         var hfunction = function() {return (me.amount >= 1)};
