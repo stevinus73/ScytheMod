@@ -267,11 +267,19 @@ BModify._Initialize = function(en) {
         this.getButton = function() { return l("grandmaSwitch"); }
         this.getStatDiv = function() { return l("grandmaManagerDiv"); }
 
+        var str = '';
+        str+='<style>'
+        +'.separatorTop{width: 100%;height: 8px;background: url(img/panelHorizontal.png?v=2) repeat-x;background: url(img/panelGradientLeft.png) no-repeat top left, '
+        +'url(img/panelGradientRight.png) no-repeat top right, url(img/panelHorizontal.png?v=2) repeat-x;position: absolute;left: 0px;top: 0px;}'
+        +'</style>';
+
         this.getStatDiv().insertAdjacentHTML('beforeend', '<div id="grandmaManagerBG"></div>')
         l('grandmaManagerBG').insertAdjacentHTML('beforeend', '<div id="grandmaManagerWrapper" class="subsection"></div>')
+        l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', str)
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div class="separatorTop"/>')
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div class="title" style="position:relative">'+cfl(this.me.plural)+'</div>')
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div id="grandmaManager"></div>')
+        
 
         this.switchStats = function(on) {
             if (on == -1) on = !this.statsView;
@@ -338,6 +346,7 @@ BModify._Initialize = function(en) {
     BModify.Logic = function() {
         BModify.Harvest();
         BModify.rsManagers.forEach(mn => mn.draw())
+        BModify.grandma.update();
     }
 
     BModify.en.saveCallback(function() {
