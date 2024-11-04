@@ -261,7 +261,7 @@ BModify._Initialize = function(en) {
         this.me = Game.Objects['Grandma'];
 
         l("productMinigameButton1").insertAdjacentHTML('afterend', 
-            '<div id="grandmaSwitch" class="productButton" onclick="mod.bModify.grandma.switchStats(-1)">View Stats</div>');
+            '<div id="grandmaSwitch" class="productButton" onclick="mod.bModify.grandma.switchStats(-1)">'+loc('View Manager')+'</div>');
         l("row1").insertAdjacentHTML('beforeend', '<div id="grandmaManagerDiv" style="display: none"></div>');
 
         this.getButton = function() { return l("grandmaSwitch"); }
@@ -269,6 +269,7 @@ BModify._Initialize = function(en) {
 
         var str = '';
         str+='<style>'
+        +'#grandmaManagerBG{background:url('+Game.resPath+'img/shadedBorders.png),url('+Game.resPath+'img/darkNoise.jpg);background-size:33% 100%,auto;position:relative;left:0px;right:0px;top:0px;bottom:16px;}'
         +'.separatorTop{width: 100%;height: 8px;background: url(img/panelHorizontal.png?v=2) repeat-x;background: url(img/panelGradientLeft.png) no-repeat top left, '
         +'url(img/panelGradientRight.png) no-repeat top right, url(img/panelHorizontal.png?v=2) repeat-x;position: absolute;left: 0px;top: 0px;}'
         +'</style>';
@@ -299,9 +300,9 @@ BModify._Initialize = function(en) {
             var remove = '';
             for (var i=2; i<20; i++) {
                 var me = Game.ObjectsById[i];
-                allocate = '<div class="smallFancyButton framed">Allocate</div>';
-                remove = '<div class="smallFancyButton framed">Remove</div>';
-                str += '<div class="listing"> Number of grandmas allocated for '+me.dname+': '+allocate+remove;
+                allocate = '<div class="smallFancyButton framed" style="width: 100px;">'+loc('Allocate')+'</div>';
+                remove = '<div class="smallFancyButton framed" style="width: 100px;">'+loc('Remove')+'</div>';
+                str += '<div class="listing"> '+loc('Number of grandmas allocated for')+' '+me.plural+': '+allocate + " 0 " + remove + '<small>'+loc('(max: 0)')+'<small/>';
                 str += '</div>';
             }
             l("grandmaManager").innerHTML = str;
@@ -329,7 +330,7 @@ BModify._Initialize = function(en) {
 
         this.getStat = function() {
             if (Research.has("Galactica mindoris")) {
-                l("idleverseStat").innerHTML = "<b>Total resource boost provided by " + this.me.amount + " idleverses:</b> "
+                l("idleverseStat").innerHTML = "<b>"+loc("Total resource boost provided by")+" "+this.me.amount+" idleverses:</b> "
             + "x" + Beautify(this.resourceMult(), 3);
             }
         }
