@@ -263,14 +263,15 @@ BModify._Initialize = function(en) {
         l("productMinigameButton1").insertAdjacentHTML('afterend', 
             '<div id="grandmaSwitch" class="productButton" onclick="mod.bModify.grandma.switchStats(-1)">View Stats</div>');
         l("row1").insertAdjacentHTML('beforeend', '<div id="grandmaManagerDiv" style="display: none"></div>');
+
+        this.getButton = function() { return l("grandmaSwitch"); }
+        this.getStatDiv = function() { return l("grandmaManagerDiv"); }
+
         this.getStatDiv().insertAdjacentHTML('beforeend', '<div id="grandmaManagerBG"></div>')
         l('grandmaManagerBG').insertAdjacentHTML('beforeend', '<div id="grandmaManagerWrapper" class="subsection"></div>')
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div class="separatorTop"/>')
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div class="title" style="position:relative">'+cfl(this.me.plural)+'</div>')
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div id="grandmaManager"></div>')
-
-        this.getButton = function() { return l("grandmaSwitch"); }
-        this.getStatDiv = function() { return l("grandmaManagerDiv"); }
 
         this.switchStats = function(on) {
             if (on == -1) on = !this.statsView;
@@ -286,9 +287,14 @@ BModify._Initialize = function(en) {
 
         this.update = function() {
             var str = '';
+            var allocate = '';
+            var remove = '';
             for (var i=2; i<20; i++) {
                 var me = Game.ObjectsById[i];
-                str += '<div class="listing"> Number of grandmas allocated for '+me.dname+': ';
+                allocate = '<div class="smallFancyButton framed">Allocate</div>';
+                remove = '<div class="smallFancyButton framed">Remove</div>';
+                str += '<div class="listing"> Number of grandmas allocated for '+me.dname+': '+allocate+remove;
+                str += '</div>';
             }
             l("grandmaManager").innerHTML = str;
         }
