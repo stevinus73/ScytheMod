@@ -390,7 +390,7 @@ Research._Initialize = function(en) {
     buildingTree(15);
     tieredTree(15, 1, "Fractalized cookies", "If you look carefully enough at the edge of them, you'll find tiny cookies that look exactly the same as the big one.") // 1
     tieredTree(15, 2, "Mathematics department", "Creating a pure math department for your research helps immensely with CpS. Not a sentence you'd expect to see.") // 2
-    tieredTree(15, 3, "Self-reflective material", "It's like the OBS screen effect when you don't have anything to show, but you put a cookie on it.") // 3
+    tieredTree(15, 3, "Self-reflective material", "It's like the OBS screen effect when you aren't recording anything, but you put a cookie on it.") // 3
     buildingTree(16);
     tieredTree(16, 1, "Multithreading", "Splits code into many different threads, which all produce cookies simultaneously.") // 1
     tieredTree(16, 2, "If there was a computer for every atom of the observable universe, running 13.8 billion years from the Big Bang to the present day...", "...but you actually made them do that.") // 2
@@ -424,7 +424,7 @@ Research._Initialize = function(en) {
         Research.research = en.getVar("research");
         for (var i in Research.trees) {
             Research.trees[i].upgrades.forEach(function(up) {
-                n = en.getVar("research" + i + up.id);
+                var n = en.getVar("research" + i + up.id);
                 if (n == 0) up.bought = false;
                 if (n == 1) up.bought = true;
             })

@@ -257,6 +257,43 @@ BModify._Initialize = function(en) {
         return 'RS_Manager';
     }
 
+    BModify.Grandmas = function() {
+        this.me = Game.Objects['Grandma'];
+
+        l("productMinigameButton1").insertAdjacentHTML('afterend', 
+            '<div id="grandmaSwitch" class="productButton" onclick="mod.bModify.grandma.switchStats(-1)">View Stats</div>');
+        l("row1").insertAdjacentHTML('beforeend', '<div id="grandmaManagerDiv" style="display: none"></div>');
+        this.getStatDiv().insertAdjacentHTML('beforeend', '<div id="grandmaManagerBG"></div>')
+        l('grandmaManagerBG').insertAdjacentHTML('beforeend', '<div id="grandmaManagerWrapper" class="subsection"></div>')
+        l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div class="separatorTop"/>')
+        l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div class="title" style="position:relative">'+cfl(this.me.plural)+'</div>')
+        l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div id="grandmaManager"></div>')
+
+        this.getButton = function() { return l("grandmaSwitch"); }
+        this.getStatDiv = function() { return l("grandmaManagerDiv"); }
+
+        this.switchStats = function(on) {
+            if (on == -1) on = !this.statsView;
+            this.statsView = on;
+            if (this.statsView) {
+                this.getStatDiv().style.display='block';
+                this.getButton().textContent = loc("Close Manager");
+            } else {
+                this.getStatDiv().style.display='none';
+                this.getButton().textContent = loc("View Manager");
+            }
+        }
+
+        this.update = function() {
+            var str = '';
+            for (var i=2; i<20; i++) {
+                var me = Game.ObjectsById[i];
+                str += '<div class="listing"> Number of grandmas allocated for '+me.dname+': ';
+            }
+            l("grandmaManager").innerHTML = str;
+        }
+    }
+
     BModify.Idleverses = function() {
         this.me = Game.Objects['Idleverse'];
 
@@ -368,6 +405,7 @@ BModify._Initialize = function(en) {
     new BModify.RS_Manager(19, 29000, ["Lifeforce", "pneuma", "pneumars"]);
 
     this.idleverse = new BModify.Idleverses();
+    this.grandma = new BModify.Grandmas();
 }
 
 
