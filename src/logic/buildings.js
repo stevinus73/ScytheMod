@@ -327,16 +327,16 @@ BModify._Initialize = function(en) {
                 if (Game.Has(me.grandma.name)) {
                     allocate = '<a class="smallFancyButton" onclick="mod.bModify.grandma.alloc('+i+')" style="width: 70px;">'+loc('Allocate')+'</a>';
                     remove = '<a class="smallFancyButton" onclick="mod.bModify.grandma.remove('+i+')" style="width: 70px;">'+loc('Remove')+'</a>';
-                    str += '<div class="listing"> '+loc('Number of grandmas allocated for');
+                    str += '<div class="listing" style="padding: 5px;"> '+loc('Number of grandmas allocated for');
                     str += ' <span style="right: 10px;position: absolute;">'+me.plural+': '+allocate + " " + this.grandmaAlloc[i] + " " + remove; 
-                    str += '<small>(max: '+this.maxGrandmas()+')</small></span>';
+                    str += '(max: '+this.maxGrandmas()+')</span>';
                     str += '</div>';
                 }
             }
             l("grandmaManager").innerHTML = str;
         }
 
-        this.me.sell = BModify.en.injectCode(this.me.sell, "success=1;", "if ((this.id == 1) && (mod.bModify.grandma.allocT == this.amount)) success=0;", "after");
+        this.me.sell = BModify.en.injectCode(this.me.sell, "price=Math.floor(price*giveBack);", "if ((this.id == 1) && (mod.bModify.grandma.allocT == this.amount)) break;", "after");
     }
 
     BModify.Idleverses = function() {
