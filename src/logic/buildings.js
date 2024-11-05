@@ -283,6 +283,7 @@ BModify._Initialize = function(en) {
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div id="grandmaManager"></div>')
         
         this.grandmaAlloc = new Array(18).fill(0);
+        this.allocT = 0;
 
         this.switchStats = function(on) {
             if (on == -1) on = !this.statsView;
@@ -297,17 +298,23 @@ BModify._Initialize = function(en) {
         }
 
         this.maxGrandmas = function(index) {
-            return 0;
+            return Math.ceil(this.me.amount * 0.05) + 5 * this.me.level;
         }
 
         this.alloc = function(index) {
+            if (this.allocT == this.me.amount) return;
             this.grandmaAlloc[index] += 1;
+            if (this.grandmaAlloc[index] > this.maxGrandmas(index)) {
+                this.grandmaAlloc[index] = this.maxGrandmas(index);
+            } else this.allocT += 1;
             this.update();
         }
 
         this.remove = function(index) {
             this.grandmaAlloc[index] -= 1;
-            if (this.grandmaAlloc[index] < 0) this.grandmaAlloc[index] = 0;
+            if (this.grandmaAlloc[index] < 0) {
+                this.grandmaAlloc[index] = 0;
+            } else this.allocT -= 1;
             this.update();
         }
 
@@ -328,6 +335,8 @@ BModify._Initialize = function(en) {
             }
             l("grandmaManager").innerHTML = str;
         }
+
+        this.me.sell = BModify.en.injectCode(this.me.sell, "success=1;", "if ((this.id == 1) && (mod.bModify.grandma.allocT == this.amount)) success=0;", "after");
     }
 
     BModify.Idleverses = function() {
