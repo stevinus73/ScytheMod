@@ -300,9 +300,10 @@ BModify._Initialize = function(en) {
             var remove = '';
             for (var i=2; i<20; i++) {
                 var me = Game.ObjectsById[i];
-                allocate = '<a class="smallFancyButton" style="width: 100px;">'+loc('Allocate')+'</a>';
-                remove = '<a class="smallFancyButton" style="width: 100px;">'+loc('Remove')+'</a>';
-                str += '<div class="listing"> '+loc('Number of grandmas allocated for')+' '+me.plural+': '+allocate + " 0 " + remove + '<small>'+loc('(max: 0)')+'<small/>';
+                allocate = '<a class="smallFancyButton" style="width: 70px;">'+loc('Allocate')+'</a>';
+                remove = '<a class="smallFancyButton" style="width: 70px;">'+loc('Remove')+'</a>';
+                str += '<div class="listing"> '+loc('Number of grandmas allocated for');
+                str += ' <span style="text-align: right">'+me.plural+': '+allocate + " 0 " + remove + '<small>'+loc('(max: 0)')+'</small></span>';
                 str += '</div>';
             }
             l("grandmaManager").innerHTML = str;
