@@ -281,7 +281,7 @@ BModify._Initialize = function(en) {
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div class="title" style="position:relative">'+cfl(this.me.plural)+'</div>')
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div id="grandmaManager"></div>')
         
-        this.grandmaAlloc = Array.from({length:17},(e,i)=>0)
+        this.grandmaAlloc = new Array(18).fill(0);
 
         this.switchStats = function(on) {
             if (on == -1) on = !this.statsView;
@@ -316,14 +316,12 @@ BModify._Initialize = function(en) {
             var remove = '';
             for (var i=2; i<20; i++) {
                 var me = Game.ObjectsById[i];
-                if (Game.Has(me.grandma.name)) {
-                    allocate = '<a class="smallFancyButton" onclick="mod.bModify.grandma.alloc('+i+')" style="width: 70px;">'+loc('Allocate')+'</a>';
-                    remove = '<a class="smallFancyButton" onclick="mod.bModify.grandma.remove('+i+')" style="width: 70px;">'+loc('Remove')+'</a>';
-                    str += '<div class="listing" style="margin-top: 8px;"> '+loc('Number of grandmas allocated for');
-                    str += ' <span style="right: 10px; position: absolute;">'+me.plural+': '+allocate + " " + this.grandmaAlloc[i] + " " + remove; 
-                    str += '<small>(max: '+this.maxGrandmas()+')</small></span>';
-                    str += '</div>';
-                }
+                allocate = '<a class="smallFancyButton" onclick="mod.bModify.grandma.alloc('+i+')" style="width: 70px;">'+loc('Allocate')+'</a>';
+                remove = '<a class="smallFancyButton" onclick="mod.bModify.grandma.remove('+i+')" style="width: 70px;">'+loc('Remove')+'</a>';
+                str += '<div class="listing" style="margin-top: 8px;"> '+loc('Number of grandmas allocated for');
+                str += ' <span style="right: 10px;">'+me.plural+': '+allocate + " " + this.grandmaAlloc[i-2] + " " + remove; 
+                str += '<small>(max: '+this.maxGrandmas()+')</small></span>';
+                str += '</div>';
             }
             l("grandmaManager").innerHTML = str;
         }
