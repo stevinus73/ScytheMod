@@ -124,7 +124,7 @@ BModify._Initialize = function(en) {
             }
             if (this.depleted) return;
             if ((this.id == 2) && Research.has("Regrowth")) return;
-            this.rsUsed += (this.RhpS / Game.fps) * this.decayedFactor();
+            //this.rsUsed += (this.RhpS / Game.fps) * this.decayedFactor();
         }
 
         // resets everythin'
@@ -281,6 +281,7 @@ BModify._Initialize = function(en) {
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div class="title" style="position:relative">'+cfl(this.me.plural)+'</div>')
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div id="grandmaManager"></div>')
         
+        this.grandmaAlloc = Array.from({length:17},(e,i)=>0)
 
         this.switchStats = function(on) {
             if (on == -1) on = !this.statsView;
@@ -294,16 +295,35 @@ BModify._Initialize = function(en) {
             }
         }
 
+        this.maxGrandmas = function(index) {
+            return 0;
+        }
+
+        this.alloc = function(index) {
+            this.grandmaAlloc += 1;
+            this.update();
+        }
+
+        this.remove = function(index) {
+            this.grandmaAlloc -= 1;
+            if (this.grandmaAlloc < 0) this.grandmaAlloc = 0;
+            this.update();
+        }
+
         this.update = function() {
             var str = '';
             var allocate = '';
             var remove = '';
             for (var i=2; i<20; i++) {
                 var me = Game.ObjectsById[i];
-                allocate = '<a class="smallFancyButton" style="width: 70px;">'+loc('Allocate')+'</a>';
-                remove = '<a class="smallFancyButton" style="width: 70px;">'+loc('Remove')+'</a>';
-                str += '<div class="listing"> '+loc('Number of grandmas allocated for')+' <span style="right: 10px; position: absolute;">'+me.plural+': '+allocate + " 0 " + remove + '<small>'+loc('(max: 0)')+'</small></span>';
-                str += '</div>';
+                if (Game.Has(me.grandma.name)) {
+                    allocate = '<a class="smallFancyButton" onclick="mod.bModify.grandma.alloc('+i+')" style="width: 70px;">'+loc('Allocate')+'</a>';
+                    remove = '<a class="smallFancyButton" onclick="mod.bModify.grandma.remove('+i+')" style="width: 70px;">'+loc('Remove')+'</a>';
+                    str += '<div class="listing" style="margin-top: 8px;"> '+loc('Number of grandmas allocated for');
+                    str += ' <span style="right: 10px; position: absolute;">'+me.plural+': '+allocate + " " + this.grandmaAlloc[i] + " " + remove; 
+                    str += '<small>(max: '+this.maxGrandmas()+')</small></span>';
+                    str += '</div>';
+                }
             }
             l("grandmaManager").innerHTML = str;
         }
@@ -347,7 +367,6 @@ BModify._Initialize = function(en) {
     BModify.Logic = function() {
         BModify.Harvest();
         BModify.rsManagers.forEach(mn => mn.draw())
-        BModify.grandma.update();
     }
 
     BModify.en.saveCallback(function() {
@@ -378,6 +397,7 @@ BModify._Initialize = function(en) {
     Game.registerHook('logic', this.Logic);
     Game.registerHook('check', function() {
         BModify.rsManagers.forEach(mn => mn.update())
+        BModify.grandma.update()
     })
     Game.registerHook('reincarnate', function() {
         BModify.rsManagers.forEach(mn => mn.clear())
