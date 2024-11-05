@@ -61,12 +61,13 @@ BModify._Initialize = function(en) {
             var rsmult=1;
             var yieldmult=1;
             for (var i in me.tieredUpgrades) {
+                var num = Math.min(1.4 + 0.1 * i, 2);
                 if (!Game.Tiers[me.tieredUpgrades[i].tier].special && Game.Has(me.tieredUpgrades[i].name)) {
                     var tierMult=2; 
-                    var tierRsMult=Math.min(1.4 + 0.1 * i, 2);
+                    var tierRsMult=num;
                     if (Game.ascensionMode!=1 && Game.Has(me.unshackleUpgrade) && Game.Has(Game.Tiers[me.tieredUpgrades[i].tier].unshackleUpgrade)) {
                         tierMult+=me.id==1?0.5:(20-me.id)*0.1;
-                        tierRsMult+=me.id==1?0.5:(20-me.id)*0.1;
+                        tierRsMult+=(me.id==1?0.5:(20-me.id)*0.1)*0.5*num;
                     }
                     rhpsmult*=tierMult;
                     rsmult*=tierRsMult;
@@ -314,14 +315,16 @@ BModify._Initialize = function(en) {
             var str = '';
             var allocate = '';
             var remove = '';
-            for (var i=2; i<20; i++) {
-                var me = Game.ObjectsById[i];
-                allocate = '<a class="smallFancyButton" onclick="mod.bModify.grandma.alloc('+i+')" style="width: 70px;">'+loc('Allocate')+'</a>';
-                remove = '<a class="smallFancyButton" onclick="mod.bModify.grandma.remove('+i+')" style="width: 70px;">'+loc('Remove')+'</a>';
-                str += '<div class="listing"> '+loc('Number of grandmas allocated for');
-                str += ' <span style="right: 10px;position: absolute;">'+me.plural+': '+allocate + " " + this.grandmaAlloc[i-2] + " " + remove; 
-                str += '<small>(max: '+this.maxGrandmas()+')</small></span>';
-                str += '</div>';
+            for (var i=0; i<18; i++) {
+                var me = Game.ObjectsById[i+2];
+                if (Game.Has(me.grandma.name)) {
+                    allocate = '<a class="smallFancyButton" onclick="mod.bModify.grandma.alloc('+i+')" style="width: 70px;">'+loc('Allocate')+'</a>';
+                    remove = '<a class="smallFancyButton" onclick="mod.bModify.grandma.remove('+i+')" style="width: 70px;">'+loc('Remove')+'</a>';
+                    str += '<div class="listing"> '+loc('Number of grandmas allocated for');
+                    str += ' <span style="right: 10px;position: absolute;">'+me.plural+': '+allocate + " " + this.grandmaAlloc[i] + " " + remove; 
+                    str += '<small>(max: '+this.maxGrandmas()+')</small></span>';
+                    str += '</div>';
+                }
             }
             l("grandmaManager").innerHTML = str;
         }

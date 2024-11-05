@@ -289,7 +289,7 @@ Research._Initialize = function(en) {
             if (this.nextResearch <= 0) {
                 this.research += 1;
                 var bmult = 1;
-                if (this.has("Cookie funding")) bmult += 0.007 * Game.Objects['Bank'].amount;
+                if (this.has("Cookie funding")) bmult += 0.002 * Game.Objects['Bank'].amount;
                 this.nextResearch = (10 * 60) / bmult;
             }
         }
@@ -308,6 +308,7 @@ Research._Initialize = function(en) {
     }
 
     Research.has = function(name) {
+        if (Game.ascensionMode != 0) return false;
         for (var i in this.trees) {
             if (this.trees[i].has(name)) return true;
         }
@@ -345,7 +346,7 @@ Research._Initialize = function(en) {
         var me = Game.ObjectsById[i];
         var yieldPercent = 100 - 5 * i;
         var d = cfl(me.plural)+" yield <b>"+Beautify(yieldPercent)+"%</b> more. Resource space is <b>doubled</b>.";
-        var hfunction = function() {return (me.amount >= (100 * tier))};
+        var hfunction = function() {return (me.amount >= (100 + 100 * tier))};
         var deps = [0];
         if (tier > 1) deps=[me.tieredResearch[tier-2].id];
         me.tieredResearch.push(new Research.Tech(name, d+'<q>'+desc+'</q>', 30 + 20 * tier, hfunction, f, deps, [spr_ref[i], 21+tier], 0.6 * tier, 0));
@@ -432,6 +433,8 @@ Research._Initialize = function(en) {
     })
 
     Game.registerHook('reincarnate', function() {
+        if (Game.ascensionMode == 0) this.button.style.display = 'block';
+        else this.button.style.display = 'none';
     });
 
     Game.registerHook('logic', function() {
