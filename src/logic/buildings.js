@@ -300,13 +300,13 @@ BModify._Initialize = function(en) {
         }
 
         this.alloc = function(index) {
-            this.grandmaAlloc += 1;
+            this.grandmaAlloc[index] += 1;
             this.update();
         }
 
         this.remove = function(index) {
-            this.grandmaAlloc -= 1;
-            if (this.grandmaAlloc < 0) this.grandmaAlloc = 0;
+            this.grandmaAlloc[index] -= 1;
+            if (this.grandmaAlloc[index] < 0) this.grandmaAlloc[index] = 0;
             this.update();
         }
 
@@ -318,8 +318,8 @@ BModify._Initialize = function(en) {
                 var me = Game.ObjectsById[i];
                 allocate = '<a class="smallFancyButton" onclick="mod.bModify.grandma.alloc('+i+')" style="width: 70px;">'+loc('Allocate')+'</a>';
                 remove = '<a class="smallFancyButton" onclick="mod.bModify.grandma.remove('+i+')" style="width: 70px;">'+loc('Remove')+'</a>';
-                str += '<div class="listing" style="margin-top: 8px;"> '+loc('Number of grandmas allocated for');
-                str += ' <span style="right: 10px;">'+me.plural+': '+allocate + " " + this.grandmaAlloc[i-2] + " " + remove; 
+                str += '<div class="listing"> '+loc('Number of grandmas allocated for');
+                str += ' <span style="right: 10px;position: absolute;">'+me.plural+': '+allocate + " " + this.grandmaAlloc[i-2] + " " + remove; 
                 str += '<small>(max: '+this.maxGrandmas()+')</small></span>';
                 str += '</div>';
             }
