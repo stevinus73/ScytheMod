@@ -300,8 +300,8 @@ BModify._Initialize = function(en) {
             var remove = '';
             for (var i=2; i<20; i++) {
                 var me = Game.ObjectsById[i];
-                allocate = '<div class="smallFancyButton framed" style="width: 100px;">'+loc('Allocate')+'</div>';
-                remove = '<div class="smallFancyButton framed" style="width: 100px;">'+loc('Remove')+'</div>';
+                allocate = '<a class="smallFancyButton" style="width: 100px;">'+loc('Allocate')+'</div>';
+                remove = '<a class="smallFancyButton" style="width: 100px;">'+loc('Remove')+'</div>';
                 str += '<div class="listing"> '+loc('Number of grandmas allocated for')+' '+me.plural+': '+allocate + " 0 " + remove + '<small>'+loc('(max: 0)')+'<small/>';
                 str += '</div>';
             }
