@@ -1,6 +1,6 @@
 import {BModify} from "./buildings.js"
 import {Research} from "./research.js"
-import {General}  from  "./general.js"
+import {General} from "./modgeneral.js"
 
 var mod = {}
 
