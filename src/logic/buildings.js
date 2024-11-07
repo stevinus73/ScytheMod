@@ -33,11 +33,11 @@ BModify._Initialize = function(en) {
         this.pause = false;
         this.statsView = false;
 
-        BModify.en.newVar("RhpS"+this.me.id,  "float");
-        BModify.en.newVar("yield"+this.me.id, "float");
-        BModify.en.newVar("rsTotal"+this.me.id, "int");
-        BModify.en.newVar("rsUsed"+this.me.id,  "int");
-        BModify.en.newVar("pause"+this.me.id,   "int");
+        en.newVar("RhpS"+this.me.id,  "float");
+        en.newVar("yield"+this.me.id, "float");
+        en.newVar("rsTotal"+this.me.id, "int");
+        en.newVar("rsUsed"+this.me.id,  "int");
+        en.newVar("pause"+this.me.id,   "int");
 
         BModify.rsManagers.push(this);
 
@@ -144,7 +144,7 @@ BModify._Initialize = function(en) {
             this.pause = false;
             this.statsView = false;
 
-            this.getStatDiv().style.display='none';
+            this.statDiv.style.display='none';
         }
 
 
@@ -161,9 +161,9 @@ BModify._Initialize = function(en) {
         )
 
 
-        this.getButton = function() { return l("productStatsButton"+this.id); }
-        this.getStatDiv = function() { return l("rowStats"+this.id); }
-        this.getStatDiv().insertAdjacentHTML('beforeend', '<div id="statsBG'+this.id+'"></div>')
+        this.activButton = l("productStatsButton"+this.id); 
+        this.statDiv = l("rowStats"+this.id); 
+        this.statDiv.insertAdjacentHTML('beforeend', '<div id="statsBG'+this.id+'"></div>')
         l('statsBG'+this.id).insertAdjacentHTML('beforeend', '<div id="stats'+this.id+'" class="subsection"></div>')
         l('stats'+this.id).insertAdjacentHTML('beforeend', '<div class="separatorTop"/>')
         l('stats'+this.id).insertAdjacentHTML('beforeend', '<div class="title" style="position:relative">'+cfl(this.me.plural)+'</div>')
@@ -195,11 +195,11 @@ BModify._Initialize = function(en) {
             if (on == -1) on = !this.statsView;
             this.statsView = on;
             if (this.statsView) {
-                this.getStatDiv().style.display='block';
-                this.getButton().textContent = loc("Close Stats");
+                this.statDiv.style.display='block';
+                this.activButton.textContent = loc("Close Stats");
             } else {
-                this.getStatDiv().style.display='none';
-                this.getButton().textContent = loc("View Stats");
+                this.statDiv.style.display='none';
+                this.activButton.textContent = loc("View Stats");
             }
         }   
 
@@ -214,10 +214,10 @@ BModify._Initialize = function(en) {
             Game.recalculateGains = 1;
         }
         
-        this.me.switchMinigame = BModify.en.injectCode(this.me.switchMinigame, `l('row'+this.id).classList.add('onMinigame');`,
+        this.me.switchMinigame = en.injectCode(this.me.switchMinigame, `l('row'+this.id).classList.add('onMinigame');`,
             `this.rsManager.getStatDiv().style.display='none';`, "after");
 
-        this.me.switchMinigame = BModify.en.injectCode(this.me.switchMinigame, `l('row'+this.id).classList.remove('onMinigame');`,
+        this.me.switchMinigame = en.injectCode(this.me.switchMinigame, `l('row'+this.id).classList.remove('onMinigame');`,
             `this.rsManager.getStatDiv().style.display=this.rsManager.statsView ? 'block' : 'none';`, "after");
 
 
@@ -248,7 +248,7 @@ BModify._Initialize = function(en) {
         for (var i in this.me.tieredUpgrades) {
             if (!Game.Tiers[this.me.tieredUpgrades[i].tier].special) {
                 var percentage = Math.min(0.4 + 0.1 * i, 1) * 100;
-                BModify.en.ue.appendToUpgradeDesc(this.me.tieredUpgrades[i], 
+                en.ue.appendToUpgradeDesc(this.me.tieredUpgrades[i], 
                     "Total "+this.rsNames[0].toLowerCase()+" <b>+"+Beautify(percentage)+"%</b>.");
             }
         }
@@ -265,8 +265,8 @@ BModify._Initialize = function(en) {
             '<div id="grandmaSwitch" class="productButton" onclick="mod.bModify.grandma.switchStats(-1)">'+loc('View Manager')+'</div>');
         l("row1").insertAdjacentHTML('beforeend', '<div id="grandmaManagerDiv" style="display: none"></div>');
 
-        this.getButton = function() { return l("grandmaSwitch"); }
-        this.getStatDiv = function() { return l("grandmaManagerDiv"); }
+        this.activButton = l("grandmaSwitch"); 
+        this.statDiv = l("grandmaManagerDiv"); 
 
         var str = '';
         str+='<style>'
@@ -275,7 +275,7 @@ BModify._Initialize = function(en) {
         +'url(img/panelGradientRight.png) no-repeat top right, url(img/panelHorizontal.png?v=2) repeat-x;position: absolute;left: 0px;top: 0px;}'
         +'</style>';
 
-        this.getStatDiv().insertAdjacentHTML('beforeend', '<div id="grandmaManagerBG"></div>')
+        this.statDiv.insertAdjacentHTML('beforeend', '<div id="grandmaManagerBG"></div>')
         l('grandmaManagerBG').insertAdjacentHTML('beforeend', '<div id="grandmaManagerWrapper" class="subsection"></div>')
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', str)
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div class="separatorTop"/>')
@@ -289,11 +289,11 @@ BModify._Initialize = function(en) {
             if (on == -1) on = !this.statsView;
             this.statsView = on;
             if (this.statsView) {
-                this.getStatDiv().style.display='block';
-                this.getButton().textContent = loc("Close Manager");
+                this.statDiv.style.display='block';
+                this.activButton.textContent = loc("Close Manager");
             } else {
-                this.getStatDiv().style.display='none';
-                this.getButton().textContent = loc("View Manager");
+                this.statDiv.style.display='none';
+                this.activButton.textContent = loc("View Manager");
             }
         }
 
@@ -336,7 +336,7 @@ BModify._Initialize = function(en) {
             l("grandmaManager").innerHTML = str;
         }
 
-        this.me.sell = BModify.en.injectCode(this.me.sell, "price=Math.floor(price*giveBack);", "if ((this.id == 1) && (mod.bModify.grandma.allocT == this.amount)) break;", "after");
+        this.me.sell = en.injectCode(this.me.sell, "price=Math.floor(price*giveBack);", "if ((this.id == 1) && (mod.bModify.grandma.allocT == this.amount)) break;", "after");
     }
 
     BModify.Idleverses = function() {
@@ -379,23 +379,23 @@ BModify._Initialize = function(en) {
         BModify.rsManagers.forEach(mn => mn.draw())
     }
 
-    BModify.en.saveCallback(function() {
+    en.saveCallback(function() {
         BModify.rsManagers.forEach(function(me) {
-            BModify.en.setVar("RhpS"+me.id, me.RhpS);
-            BModify.en.setVar("yield"+me.id, me.yield);
-            BModify.en.setVar("rsTotal"+me.id, me.rsTotal);
-            BModify.en.setVar("rsUsed"+me.id, me.rsUsed);
-            BModify.en.setVar("pause"+me.id, me.pause ? 0 : 1);
+            en.setVar("RhpS"+me.id, me.RhpS);
+            en.setVar("yield"+me.id, me.yield);
+            en.setVar("rsTotal"+me.id, me.rsTotal);
+            en.setVar("rsUsed"+me.id, me.rsUsed);
+            en.setVar("pause"+me.id, me.pause ? 0 : 1);
         })
     })
 
-    BModify.en.loadCallback(function() {
+    en.loadCallback(function() {
         BModify.rsManagers.forEach(function(me) {
-            me.RhpS = BModify.en.getVar("RhpS"+me.id);
-            me.yield = BModify.en.getVar("yield"+me.id);
-            me.rsTotal = BModify.en.getVar("rsTotal"+me.id);
-            me.rsUsed = BModify.en.getVar("rsUsed"+me.id);
-            me.pause = (BModify.en.getVar("pause"+me.id) > 0) ? true: false;
+            me.RhpS = en.getVar("RhpS"+me.id);
+            me.yield = en.getVar("yield"+me.id);
+            me.rsTotal = en.getVar("rsTotal"+me.id);
+            me.rsUsed = en.getVar("rsUsed"+me.id);
+            me.pause = (en.getVar("pause"+me.id) > 0) ? true: false;
         })
     })
 
@@ -412,22 +412,6 @@ BModify._Initialize = function(en) {
     Game.registerHook('reincarnate', function() {
         BModify.rsManagers.forEach(mn => mn.clear())
     })
-
-
-    function replace(F) {
-        var fr = F;
-        fr = en.injectCode(F, "if (Game.Has('Unshackled cursors')) add*=	25;", "if (Game.Has('Unshackled cursors')) add*=	5;", "replace");
-        fr = en.injectCode(F, "if (Game.Has('Trillion fingers')) add*=		20;", "if (Game.Has('Trillion fingers')) add*=		10;", "replace");
-        fr = en.injectCode(F, "if (Game.Has('Quadrillion fingers')) add*=	20;", "if (Game.Has('Quadrillion fingers')) add*=	10;", "replace");
-        fr = en.injectCode(F, "if (Game.Has('Quintillion fingers')) add*=	20;", "if (Game.Has('Quintillion fingers')) add*=	10;", "replace");
-        return fr;
-    }
-    Game.mouseCps = replace(Game.mouseCps);
-    Game.Objects['Cursor'].cps = replace(Game.Objects['Cursor'].cps);
-    Game.Upgrades['Unshackled cursors'].ddesc = Game.Upgrades['Unshackled cursors'].ddesc.replace("25", "5");
-    Game.Upgrades['Trillion fingers'].ddesc = Game.Upgrades['Trillion fingers'].ddesc.replace("20", "10");
-    Game.Upgrades['Quadrillion fingers'].ddesc = Game.Upgrades['Quadrillion fingers'].ddesc.replace("20", "10");
-    Game.Upgrades['Quintillion fingers'].ddesc = Game.Upgrades['Quintillion fingers'].ddesc.replace("20", "10");
 
 
     // vals

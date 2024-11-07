@@ -11,6 +11,14 @@ IdlersPocket._Initialize = function () {
 
     IdlersPocket.injectCode = injectCode;
     IdlersPocket.injectCodes = injectCodes;
+    // honestly I don't really know too much about injectCode so I'm just making this for convenience
+    IdlersPocket.injectMult = function(func, inject, ord) {
+        var ret = func;
+        inject.forEach(function(code) {
+            ret = this.injectCode(ret, code[0], code[1], ord);
+        })
+        return ret;
+    }
     IdlersPocket.shim = shimmer_engine;
     IdlersPocket.be = building_engine;
     IdlersPocket.ue = upgrade_engine;
