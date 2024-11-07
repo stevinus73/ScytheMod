@@ -15,7 +15,7 @@ IdlersPocket._Initialize = function () {
     IdlersPocket.injectMult = function(func, inject, ord) {
         var ret = func;
         inject.forEach(function(code) {
-            ret = this.injectCode(ret, code[0], code[1], ord);
+            ret = IdlersPocket.injectCode(ret, code[0], code[1], ord);
         })
         return ret;
     }
