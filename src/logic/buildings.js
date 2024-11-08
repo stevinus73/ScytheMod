@@ -95,11 +95,12 @@ BModify._Initialize = function(en) {
                 if (Research.hasTiered(this.id, 2)) yieldmult*=(2-0.05*this.id);
                 if (Research.hasTiered(this.id, 3)) yieldmult*=(2-0.05*this.id);
             }
-
-            var godLvl=Game.hasGod('industry');
-            if (godLvl==1) rhpsmult*=1.3;
-            if (godLvl==2) rhpsmult*=1.2;
-            if (godLvl==3) rhpsmult*=1.1;
+            if (Game.hasGod) {
+                var godLvl=Game.hasGod('industry');
+                if (godLvl==1) rhpsmult*=1.3;
+                if (godLvl==2) rhpsmult*=1.2;
+                if (godLvl==3) rhpsmult*=1.1;
+            }
 
             this.yield = this.baseYield * yieldmult;
             this.RhpS = this.baseRhpS * rhpsmult;
@@ -232,11 +233,11 @@ BModify._Initialize = function(en) {
             this.draw();
             str = '';
             var sty = this.depleted ? 'style="color:red"' : '';
-            str+='<div class="listing"> <b>'+this.rsNames[0]+' harvest rate ('+this.rsNames[2]+'/second) per '+this.me.dname.toLowerCase()+': </b>'+Beautify(this.pause ? 0 : this.RhpS, 1);
+            str+='<div class="listing"> <b>'+this.rsNames[0]+' use rate ('+this.rsNames[2]+'/second) per '+this.me.dname.toLowerCase()+': </b>'+Beautify(this.pause ? 0 : this.RhpS, 1);
             str+=' ('+Beautify(this.RhpS * this.decayedFactor(), 1)+' for '+Beautify(this.me.amount)+' '+this.me.plural.toLowerCase()+')</div>';
             str+='<div class="listing"> <b>Base yield: </b>'+Beautify(this.yield, 1)+ " cookies/"+this.rsNames[1]+'</div>';
             str+='<div class="listing"> <b>Total amount of '+this.rsNames[0].toLowerCase()+':</b> '+Beautify(this.rsTotal) + " " + this.rsNames[2]+'</div>';
-            str+='<div class="listing"> <b>Harvested '+this.rsNames[0].toLowerCase()+' so far:</b> '+Beautify(this.rsUsed) + " " + this.rsNames[2]+'</div>';
+            str+='<div class="listing"> <b>Used '+this.rsNames[0].toLowerCase()+' so far:</b> '+Beautify(this.rsUsed) + " " + this.rsNames[2]+'</div>';
             str+='<div class="listing" '+sty+'> <b>Base CpS:</b> '+Beautify(this.getRawCpS(), 1)+" cookies/second"+'</div>';
             str+='<div class="listing" '+sty+'> <b>CpS:</b> '+Beautify(this.me.storedTotalCps*Game.globalCpsMult, 1)+" cookies/second"+'</div>';
             l('statsListing'+this.id).innerHTML = str;
@@ -434,11 +435,11 @@ BModify._Initialize = function(en) {
     new BModify.RS_Manager(11, 43000, ["Reachable times", "century", "centuries"]);
     new BModify.RS_Manager(12, 39000, ["Antimatter", "gram", "grams"]);
     new BModify.RS_Manager(13, 38000, ["Light", "photon", "photons"]);
-    // Chancemakers not included for scientific reasons
+    // Chancemakers not included for scientific reasons + minigame
     new BModify.RS_Manager(15, 35000, ["Metacookie", "cookie", "cookies"]);
-    new BModify.RS_Manager(16, 33000, ["Memory space", "operation", "operations"]);
+    new BModify.RS_Manager(16, 33000, ["Memory", "byte", "bytes"]);
     // Idleverses not included for the same reason as alchemy labs
-    // Cortex bakers not included for similar reasons as the chancemaker
+    new BModify.RS_Manager(18, 31000, ["Neural space", "megaparsec", "megaparsecs"]);
     new BModify.RS_Manager(19, 29000, ["Lifeforce", "pneuma", "pneumars"]);
 
     this.idleverse = new BModify.Idleverses();

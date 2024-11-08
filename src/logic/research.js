@@ -332,6 +332,7 @@ Research._Initialize = function(en) {
     new Research.Tech("Cookie funding", "You passively gain research <b>faster</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 360, has100Banks, f, [2], [26, 11], 0.5, -0.3); //3
 
     var spr_ref = [0,1,2,3,4,15,16,17,5,6,7,8,13,14,19,20,32,33,34,35];
+    var tier_ref = [21,26,27];
     var buildingTree = function(i) {
         var me = Game.ObjectsById[i];
         var hfunction = function() {return (me.amount >= 1)};
@@ -349,7 +350,7 @@ Research._Initialize = function(en) {
         var hfunction = function() {return (me.amount >= (100 + 100 * tier))};
         var deps = [0];
         if (tier > 1) deps=[me.tieredResearch[tier-2].id];
-        me.tieredResearch.push(new Research.Tech(name, d+'<q>'+desc+'</q>', 30 + 20 * tier, hfunction, f, deps, [spr_ref[i], 21+tier], 0.6 * tier, 0));
+        me.tieredResearch.push(new Research.Tech(name, d+'<q>'+desc+'</q>', 30 + 20 * tier, hfunction, f, deps, [spr_ref[i], tier_ref[tier-1]], 0.6 * tier, 0));
     }
     Research.hasTiered = function(i, tier) {
         if (Game.ObjectsById[i].tieredResearch.length < tier) return false;
@@ -366,7 +367,7 @@ Research._Initialize = function(en) {
     buildingTree(1);
     buildingTree(2);
     function regrowthC(){return (Game.Objects['Farm'].amount >= 60)}
-    new Research.Tech("Regrowth", "Farms yield <b>three times</b> more. <div class=\"line\"></div> You can <b>reuse depleted land</b>, effectively ignoring resource depletion. <q>A masterful resource-saving invention! Wait, isn't this how agriculture is supposed to work? </q>", 230, regrowthC, f, [0], [2, 26], 0.8, 0.8); // 1
+    new Research.Tech("Regrowth", "Farms yield <b>three times</b> more. <div class=\"line\"></div> You can <b>reuse depleted land</b>, effectively ignoring resource depletion. <q>A masterful resource-saving invention! Wait, isn't this how agriculture is supposed to work? </q>", 230, regrowthC, f, [0], [2, 35], 0.8, 0.8); // 1
     tieredTree(2, 1, "Monocookie agriculture", "Gearing your farms to only cultivate cookies."); // 1
     tieredTree(2, 2, "Better hoes", "Actually, scratch that. Who would waste netherite on a hoe?"); // 2
     tieredTree(2, 3, "Radiative therapy", "Radiation increases the chance for cookie plants to mutate and become more useful. For example, a carnivorous plant with the ability to speak is already being used as a deterrent to greedy young kids.")
@@ -377,9 +378,18 @@ Research._Initialize = function(en) {
     buildingTree(4);
     tieredTree(4, 1, "Caramel lubricant", "Cleans up those old gears and machines and gets them back to working in no time!") // 1
     tieredTree(4, 2, "Fuel aeration", "A new mechanism that conserves fuel used while making it more powerful.") // 2
-    tieredTree(4, 3, "Brownian ratchet gears", "They run infinitely and infinitely, with absolutely no energy put in. I guess your cookies are breaking the laws of physics?")
+    tieredTree(4, 3, "Brownian ratchet gears", "They run infinitely and infinitely, with absolutely no energy put in. I guess your cookies are breaking the laws of physics?") // 3
     buildingTree(5);
+    tieredTree(5, 1, "Cookiecoin", "Your new cookie-themed crypto currency, to make cookies off of all those crypto nerds.") // 1
+    tieredTree(5, 2, "Financial gobbledygook", "This makes your banking system more legitimate and less likely to get investigated by those pesky government agents.") // 2
+    tieredTree(5, 3, "Shinier vaults", "Highly inviting for potential burglars! This leads to all your money being stolen by-wait, where were we, again?") // 3
     buildingTree(6);
+    function hasPantheon(){return (Game.Objects['Temple'].minigame)}
+    new Research.Tech("Polytheism", "Decreases worship slot refill time by <b>25%</b>.<q>Worshipping all of your gods at once makes them more willing to cooperate.</q>", 50, hasPantheon, f, [0], [11, 6], 0, 0.5);
+    new Research.Tech("Creation star", "All buildings are <b>5%</b> cheaper.<q>Warning: do not touch.</q>", 75, hasPantheon, f, [1], [26, 18], 0.5, 1.0);
+    tieredTree(6, 1, "Summoning artifacts", "Mysteriously shiny artifacts that trick people into giving them a handshake, therefore forfeiting their soul to the devils within.")
+    tieredTree(6, 2, "Holy light of cookie heaven", "Its gleam descends down upon you whereever you go, a true indicator of the gods' pleasure.")
+    tieredTree(6, 3, "Lovecraftian mythos", "If we feed them cookies, we should be able to get them to like us.")
     buildingTree(7);
     buildingTree(8);
     buildingTree(9);
@@ -395,9 +405,9 @@ Research._Initialize = function(en) {
     buildingTree(16);
     tieredTree(16, 1, "Multithreading", "Splits code into many different threads, which all produce cookies simultaneously.") // 1
     tieredTree(16, 2, "If there was a computer for every atom of the observable universe, running 13.8 billion years from the Big Bang to the present day...", "...but you actually made them do that.") // 2
-    tieredTree(16, 3, "Cutting-edge AI compiler", "Let's face it, AIs can figure out how to allocate memory and run floating-point operations much better than we do nowadays.")
+    tieredTree(16, 3, "Cutting-edge AI compiler", "Let's face it, AIs can figure out how to allocate memory and run floating-point operations efficiently much better than we do.") // 3
     buildingTree(17);
-    new Research.Tech("Galactica mindoris", "You gain <b>more resource space</b> the more idleverses you have. <q>Turns out there's a ton of room in idleverses!</q>", 410, f, f, [0], [33, 26], 0, 1.5);
+    new Research.Tech("Galactica mindoris", "You gain <b>more resource space</b> the more idleverses you have. <q>Turns out there's a ton of room in idleverses!</q>", 410, f, f, [0], [33, 35], 0, 1.5);
     buildingTree(18);
     buildingTree(19);
     tieredTree(19, 1, "DNA Splicers", "With these handy splicers, you can splice the best and most useful genes from other organisms directly into a clone.") // 1
