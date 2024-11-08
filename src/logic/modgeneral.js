@@ -22,19 +22,23 @@ General._Initialize = function(en) {
     Game.Upgrades['Quintillion fingers'].ddesc = Game.Upgrades['Quintillion fingers'].ddesc.replace("20", "10");
 
     /**
-     * Temple name changes (uses eval but this shouldn't really matter due to Game.loadMinigames rarely being called)
+     * Temple name changes + effect deletion (uses eval but this shouldn't really matter due to Game.loadMinigames rarely being called)
      */
     General.TempleRename = function() {
         if (Game.Objects.Temple.minigame) { 
             var m = Game.Objects.Temple.minigame;
-            m.gods['industry'].desc1 = '<span class="green">'+loc("Increases resource harvest rate by %1%.",30)+'</span>';
-            m.gods['industry'].desc2 = '<span class="green">'+loc("Increases resource harvest rate by %1%.",20)+'</span>';
-            m.gods['industry'].desc3 = '<span class="green">'+loc("Increases resource harvest rate by %1%.",10)+'</span>';
+            m.gods['industry'].desc1 = '<span class="green">Increases resource harvest rate by 30%.</span>';
+            m.gods['industry'].desc2 = '<span class="green">Increases resource harvest rate by 20%.</span>';
+            m.gods['industry'].desc3 = '<span class="green">Increases resource harvest rate by 10%.</span>';
             eval("Game.Objects.Temple.godTooltip="+Game.Objects.Temple.godTooltip.toString().replace('{',"{M=Game.Objects.Temple.minigame;"));
             eval("Game.Objects.Temple.slotTooltip="+Game.Objects.Temple.slotTooltip.toString().replace('{',"{M=Game.Objects.Temple.minigame;"));
         }
     }
     this.TempleRename();
     Game.scriptLoaded = en.injectCode(Game.scriptLoaded, "who.minigame.launch();", "\n\tif(who.id==6){mod.general.TempleRename();}", "after");
+    
+    // delete the old effect
+    Game.CalculateGains = en.injectCode(Game.CalculateGains, "var godLvl=Game.hasGod('industry');", "var godLvl=0;", "replace");
+    Game.shimmerTypes.golden.getTimeMod = en.injectCode(Game.shimmerTypes.golden.getTimeMod, "var godLvl=Game.hasGod('industry');", "var godLvl=0;", "replace");
 }
 export { General }

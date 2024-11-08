@@ -74,6 +74,7 @@ BModify._Initialize = function(en) {
                 }
             }
             rsmult*=BModify.idleverse.resourceMult();
+
             for (var i in me.synergies) {
                 var syn=me.synergies[i];
                 if (Game.Has(syn.name)) {
@@ -81,6 +82,7 @@ BModify._Initialize = function(en) {
                     else if (syn.buildingTie2.name==me.name) yieldmult*=(1+0.001*syn.buildingTie1.amount);
                 }
             }
+
             if (me.fortune && Game.Has(me.fortune.name)) yieldmult*=1.07;
             if (me.grandma && Game.Has(me.grandma.name)) yieldmult*=(1+Game.Objects['Grandma'].amount*0.01*(1/(me.id-1)));
             if ((this.id == 2) && Research.has("Regrowth")) yieldmult*=3;
@@ -93,6 +95,11 @@ BModify._Initialize = function(en) {
                 if (Research.hasTiered(this.id, 2)) yieldmult*=(2-0.05*this.id);
                 if (Research.hasTiered(this.id, 3)) yieldmult*=(2-0.05*this.id);
             }
+
+            var godLvl=Game.hasGod('industry');
+            if (godLvl==1) rhpsmult*=1.3;
+            if (godLvl==2) rhpsmult*=1.2;
+            if (godLvl==3) rhpsmult*=1.1;
 
             this.yield = this.baseYield * yieldmult;
             this.RhpS = this.baseRhpS * rhpsmult;
