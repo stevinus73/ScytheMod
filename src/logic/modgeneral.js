@@ -30,8 +30,11 @@ General._Initialize = function(en) {
             m.gods['industry'].desc1 = '<span class="green">Increases resource harvest rate by 30%.</span>';
             m.gods['industry'].desc2 = '<span class="green">Increases resource harvest rate by 20%.</span>';
             m.gods['industry'].desc3 = '<span class="green">Increases resource harvest rate by 10%.</span>';
-            eval("Game.Objects.Temple.godTooltip="+Game.Objects.Temple.godTooltip.toString().replace('{',"{M=Game.Objects.Temple.minigame;"));
-            eval("Game.Objects.Temple.slotTooltip="+Game.Objects.Temple.slotTooltip.toString().replace('{',"{M=Game.Objects.Temple.minigame;"));
+            m.gods['creation'].desc1 = '<span class="green">Increases yield by 8%.</span> <span class="red">Decreases resource harvest rate by 25%.</span>';
+            m.gods['creation'].desc2 = '<span class="green">Increases yield by 6%.</span> <span class="red">Decreases resource harvest rate by 20%.</span>';
+            m.gods['creation'].desc3 = '<span class="green">Increases yield by 4%.</span> <span class="red">Decreases resource harvest rate by 15%.</span>';
+            eval("Game.Objects.Temple.minigame.godTooltip="+Game.Objects.Temple.minigame.godTooltip.toString().replace('{',"{M=Game.Objects.Temple.minigame;"));
+            eval("Game.Objects.Temple.minigame.slotTooltip="+Game.Objects.Temple.minigame.slotTooltip.toString().replace('{',"{M=Game.Objects.Temple.minigame;"));
         }
     }
     this.TempleRename();
@@ -40,5 +43,7 @@ General._Initialize = function(en) {
     // delete the old effect
     Game.CalculateGains = en.injectCode(Game.CalculateGains, "var godLvl=Game.hasGod('industry');", "var godLvl=0;", "replace");
     Game.shimmerTypes.golden.getTimeMod = en.injectCode(Game.shimmerTypes.golden.getTimeMod, "var godLvl=Game.hasGod('industry');", "var godLvl=0;", "replace");
+    Game.GetHeavenlyMultiplier = en.injectCode(Game.GetHeavenlyMultiplier, "var godLvl=Game.hasGod('creation');", "var godLvl=0;", "replace");
+    Game.modifyBuildingPrice = en.injectCode(Game.modifyBuildingPrice, "var godLvl=Game.hasGod('creation');", "var godLvl=0;", "replace");
 }
 export { General }

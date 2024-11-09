@@ -100,6 +100,10 @@ BModify._Initialize = function(en) {
                 if (godLvl==1) rhpsmult*=1.3;
                 if (godLvl==2) rhpsmult*=1.2;
                 if (godLvl==3) rhpsmult*=1.1;
+                var godLvl=Game.hasGod('creation');
+                if (godLvl==1) {rhpsmult*=0.75;yieldmult*=1.08;}
+                if (godLvl==2) {rhpsmult*=0.80;yieldmult*=1.06;}
+                if (godLvl==3) {rhpsmult*=0.85;yieldmult*=1.04;}
             }
 
             this.yield = this.baseYield * yieldmult;

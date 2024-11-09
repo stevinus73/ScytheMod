@@ -187,7 +187,7 @@ Research._Initialize = function(en) {
         this.curr = false;
 
         this.getCrate = function() {
-            if (!this.requirements()) return '';
+            if (!(this.requirements() && Research.has("Research lab"))) return '';
             var classes = 'crate upgrade';
             if (this.curr) classes += ' enabled';
             var clickStr = `mod.research.setCurrTree('`+this.name+`');mod.research.draw();`;
@@ -400,6 +400,9 @@ Research._Initialize = function(en) {
     function hasPantheon(){return (Game.Objects['Temple'].minigame)}
     new Research.Tech("Polytheism", "Decreases worship slot refill time by <b>25%</b>.<q>Worshipping all of your gods at once makes them more willing to cooperate.</q>", 50, hasPantheon, f, [0], [11, 6], 0, 0.5);
     new Research.Tech("Creation star", "All buildings are <b>5%</b> cheaper.<q>Warning: do not touch.</q>", 75, hasPantheon, f, [1], [26, 18], 0.5, 1.0);
+    Game.modifyBuildingPrice = en.injectCode(Game.modifyBuildingPrice, "if (building.fortune && Game.Has(building.fortune.name)) price*=0.93;",
+        '\n\tif (mod.research.has("Creation star")) price*=0.95;'
+    )
     tieredTree(6, 1, "Summoning artifacts", "Mysteriously shiny artifacts that trick people into giving them a handshake, therefore forfeiting their soul to the devils within.")
     tieredTree(6, 2, "Holy light of cookie heaven", "Its gleam descends down upon you whereever you go, a true indicator of the gods' pleasure.")
     tieredTree(6, 3, "Lovecraftian mythos", "If we feed them cookies, we should be able to get them to like us.")
