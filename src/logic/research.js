@@ -140,7 +140,7 @@ Research._Initialize = function(en) {
             if (this.bought) enabled=1;
             if (enabled) classes += ' enabled';
             return '<div data-id="'+this.tree.name+this.id+'" '+Game.clickStr+'="'+clickStr+'"'+
-            ' class="'+classes+'" '+Game.getDynamicTooltip('mod.research.trees['+tname+'].upgrades['+this.id+'].getTooltip', 
+            ' class="'+classes+'" '+Game.getDynamicTooltip('mod.research.trees["'+tname+'"].upgrades['+this.id+'].getTooltip', 
                 'top', true)
             +'id="researchUp'+this.tree.name+this.id+'" '+
             'style="'+writeIcon(this.sprite)+'position:absolute;left:'+sX+'px;top:'+sY+'px;'+(available?'':'display:none;')+'"></div>';
@@ -195,7 +195,9 @@ Research._Initialize = function(en) {
             if (this.curr) classes += ' enabled';
             var clickStr = `mod.research.setCurrTree('`+this.name+`');mod.research.draw();`;
             return '<div data-id="'+this.name+"tree"+'" '+Game.clickStr+'="'+clickStr+'"'+
-            ' class="'+classes+'" id="researchTreeCrate'+this.name+'" '+
+            ' class="'+classes+'" '+Game.getDynamicTooltip('mod.research.trees["'+this.name+'"].getTooltip', 
+                'top', true)
+            +' id="researchTreeCrate'+this.name+'" '+
             'style="'+writeIcon(this.sprite)+'"></div>';
         }
 
