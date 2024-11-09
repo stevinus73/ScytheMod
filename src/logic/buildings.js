@@ -294,7 +294,7 @@ BModify._Initialize = function(en) {
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', str)
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div class="separatorTop"/>')
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div class="title" style="position:relative">'+cfl(this.me.plural)+'</div>')
-        l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div id="grandmaManager"></div>')
+        l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div id="grandmaManager" style="overflow:auto"></div>')
         
         this.grandmaAlloc = new Array(18).fill(0);
         this.allocT = 0;
@@ -362,7 +362,7 @@ BModify._Initialize = function(en) {
                 if (Game.Has(me.grandma.name)) {
                     allocate = '<a class="smallFancyButton" onclick="mod.bModify.grandma.alloc('+i+')" style="width: 70px;">'+loc('Allocate')+'</a>';
                     remove = '<a class="smallFancyButton" onclick="mod.bModify.grandma.remove('+i+')" style="width: 70px;">'+loc('Remove')+'</a>';
-                    str += '<div class="listing"><span style="float: left;>Number of grandmas allocated for </span>';
+                    str += '<div class="listing"><span style="float: left;">Number of grandmas allocated for </span>';
                     str += ' <span style="float: right;">'+me.plural+': '+allocate + " " + this.grandmaAlloc[i] + " " + remove; 
                     str += '(max: '+this.maxGrandmas()+')</span>';
                     str += '</div>';
