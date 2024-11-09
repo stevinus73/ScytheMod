@@ -138,11 +138,11 @@ Research._Initialize = function(en) {
             var tname = Research.currTree.name;
             var enabled = 0;
             if (this.bought) enabled=1;
-            if (enabled) classes += ' enabled';
+            if (enabled) classes += ' enabled'; //trees["'+tname+'"]
             return '<div data-id="'+this.tree.name+this.id+'" '+Game.clickStr+'="'+clickStr+'"'+
-            ' class="'+classes+'" '+Game.getDynamicTooltip('function(){return mod.research.trees["'+tname+'"].upgrades['+this.id+'].getTooltip()}', 
+            ' class="'+classes+'" '+Game.getDynamicTooltip('function(){return mod.research.currTree.upgrades['+this.id+'].getTooltip()}', 
                 'top', true)
-            +'id="researchUp'+this.tree.name+this.id+'" '+
+            +' id="researchUp'+this.tree.name+this.id+'" '+
             'style="'+writeIcon(this.sprite)+'position:absolute;left:'+sX+'px;top:'+sY+'px;'+(available?'':'display:none;')+'"></div>';
         }
 
