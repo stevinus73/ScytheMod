@@ -34,7 +34,7 @@ Research._Initialize = function(en) {
     this.display.insertAdjacentHTML('beforeend', '<div id="researchIcon" class="usesIcon" style="'+writeIcon([9,0])+'"></div>')
     this.display.insertAdjacentHTML('beforeend', '<div id="researchAmount"></div>')
     this.num = l("researchAmount");
-    this.research = 15;
+    this.research = 0;
     this.nextResearch = 10 * 60;
 
     this.userX = 0;
@@ -72,12 +72,18 @@ Research._Initialize = function(en) {
             this.parents.forEach(function(parent) {
                 if (!parent.bought) parentBuy = false;
             });
-            return (this.requirements() && parentBuy && (Research.research >= this.priceR));
+            return (this.requirements() && parentBuy && (Research.research >= this.getPrice()));
+        }
+
+        this.getPrice = function() {
+            var priceMult = 1;
+            if (Research.has("Better application forms")) priceMult *= 0.9;
+            return Math.round(this.priceR * priceMult);
         }
 
         this.buy = function() {
             if ((!this.canBuy()) || this.bought) return;
-            Research.research -= this.priceR;
+            Research.research -= this.getPrice();
             this.bought = true;
             this.onBuy();
             Research.draw();
@@ -151,7 +157,7 @@ Research._Initialize = function(en) {
             {
                 if (i%2==0) tagsStr+='<div class="tag" style="background-color:'+(tags[i+1]==0?'#fff':tags[i+1])+';">'+tags[i]+'</div>';
             }
-            var cost=this.priceR;
+            var cost=this.getPrice();
             price='<div style="float:right;text-align:right;"><span class="price research'+ (this.canBuy() ? '' : ' disabled') +'">'+Beautify(Math.round(cost))+'</span></div>';
             var tip=(this.canBuy() && !this.bought) ? loc("Click to research.") : "";
 
@@ -315,21 +321,29 @@ Research._Initialize = function(en) {
         return false;
     }
 
-    Research.earnAchiev = function() {
-        this.research += 10;
+    Research.earnResearch = function(num) {
+        var mult = 1;
+        if (this.has("Supercomputers")) mult *= 1.1;
+        this.research += Math.round(num * mult);
     }
-    Game.Win = en.injectCode(Game.Win, 'it.won=1;', 'mod.research.earnAchiev();', "after");
-    
+    Game.Win = en.injectCode(Game.Win, 'it.won=1;', 'mod.research.earnResearch(10);', "after");
 
     function f(){return true;}
+    function breq(building, reqNum){return Game.Objects[building].amount >= reqNum;}
 
     new Research.Tree("General", [10, 0], f);
 
     new Research.Tech("Research lab", "Unlocks the <b>Research tree</b>, where you can buy upgrades using research (the number in the top right corner). <div class=\"line\"></div> You gain research in a variety of ways. <div class=\"line\"></div> Research upgrades are kept across ascensions. <q>It's quite small, but so is your current business.</q>", 1, f, f, [], [9, 2], 0, 0); //0
-    new Research.Tech("Plain cookie", "Cookie production multiplier <b>+5%</b>. <div class=\"line\"></div> Unlocks <b>new cookie upgrades</b> that appear once you have enough cookies. <q>We all gotta start somewhere. </q>", 50, f, f, [0], [2, 3], -0.4, 0.6); //1
+    new Research.Tech("Plain cookie", "Cookie production multiplier <b>+5%</b>. <div class=\"line\"></div> Unlocks <b>new cookie upgrades</b> that appear once you have enough cookies. <q>We all gotta start somewhere. </q>", 50, f, f, [0], [2, 3], -0.2, 0.5); //1
     new Research.Tech("Interns", "You <b>gain research passively</b>, at a rate of <b>1 research every 10 minutes</b>. <q>They do research for you when you're gone. Sure, they may just be drinking all the test tubes and fighting each other with meter sticks, but it's the effort that counts. </q>", 10, f, f, [0], [9, 0], 0.3, 0); //2
-    function has100Banks(){return (Game.Objects['Bank'].amount >= 100);}
-    new Research.Tech("Cookie funding", "You passively gain research <b>faster</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 360, has100Banks, f, [2], [26, 11], 0.5, -0.3); //3
+    new Research.Tech("Better application forms", "Research costs <b>10%</b> less.", 100, f, f, [2], [9, 1], 0.6, 0);
+    function has500Achievs(){return (Game.AchievementsOwned >= 500)}
+    new Research.Tech("Kitten scientists", "You gain <b>more CpS</b> the more milk you have.", 999, has500Achievs, f, [1], [18, 21], -0.6, 0.4);
+    Game.CalculateGains = en.injectCode(Game.CalculateGains, `if (Game.Has('Fortune #103')) catMult*=(1+Game.milkProgress*0.05*milkMult);`,
+        `\n\tif (mod.research.has('Kitten scientists')) catMult*=(1+Game.milkProgress*0.10*milkMult)`, "after"
+    )
+    new Research.Tech("Supercomputers", "Direct research gains <b>+10%</b>. <q>To be fair, they take up a lot of space.</q>", 230, () => breq('Javascript console', 100), f, [0], [32, 0], -0.15, -0.15);
+    new Research.Tech("Cookie funding", "You passively gain research <b>faster</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 150, () => breq('Bank', 250), f, [2], [26, 11], 0.5, -0.3); //3
 
     var spr_ref = [0,1,2,3,4,15,16,17,5,6,7,8,13,14,19,20,32,33,34,35];
     var tier_ref = [21,26,27];
@@ -366,8 +380,7 @@ Research._Initialize = function(en) {
     buildingTree(0);
     buildingTree(1);
     buildingTree(2);
-    function regrowthC(){return (Game.Objects['Farm'].amount >= 60)}
-    new Research.Tech("Regrowth", "Farms yield <b>three times</b> more. <div class=\"line\"></div> You can <b>reuse depleted land</b>, effectively ignoring resource depletion. <q>A masterful resource-saving invention! Wait, isn't this how agriculture is supposed to work? </q>", 230, regrowthC, f, [0], [2, 35], 0.8, 0.8); // 1
+    new Research.Tech("Regrowth", "Farms yield <b>three times</b> more. <div class=\"line\"></div> You can <b>reuse depleted land</b>, effectively ignoring resource depletion. <q>A masterful resource-saving invention! Wait, isn't this how agriculture is supposed to work? </q>", 230, () => breq('Farm', 75), f, [0], [2, 35], 0.8, 0.8); // 1
     tieredTree(2, 1, "Monocookie agriculture", "Gearing your farms to only cultivate cookies."); // 1
     tieredTree(2, 2, "Better hoes", "Actually, scratch that. Who would waste netherite on a hoe?"); // 2
     tieredTree(2, 3, "Radiative therapy", "Radiation increases the chance for cookie plants to mutate and become more useful. For example, a carnivorous plant with the ability to speak is already being used as a deterrent to greedy young kids.")
