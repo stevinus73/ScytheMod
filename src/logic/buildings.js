@@ -84,7 +84,9 @@ BModify._Initialize = function(en) {
             }
 
             if (me.fortune && Game.Has(me.fortune.name)) yieldmult*=1.07;
-            if (me.grandma && Game.Has(me.grandma.name)) yieldmult*=(1+Game.Objects['Grandma'].amount*0.01*(1/(me.id-1)));
+            if (me.grandma && Game.Has(me.grandma.name) && BModify.grandma) {
+                yieldmult*=(1+BModify.grandma.grandmaAlloc[me.id-2]*0.2*(1/(me.id-1)));
+            }
             if ((this.id == 2) && Research.has("Regrowth")) yieldmult*=3;
 
             if (me.tieredResearch) {
@@ -330,10 +332,13 @@ BModify._Initialize = function(en) {
             this.update();
         }
 
+        this.cpsGrandmas = function() {return this.me.amount - this.allocT;}
+
         this.update = function() {
             var str = '';
             var allocate = '';
             var remove = '';
+            str += '<div class="listing">Number of grandmas allocated in total: ' + this.allocT + '</div>';
             for (var i=0; i<18; i++) {
                 var me = Game.ObjectsById[i+2];
                 if (Game.Has(me.grandma.name)) {
@@ -345,10 +350,19 @@ BModify._Initialize = function(en) {
                     str += '</div>';
                 }
             }
+            str += '<div class="listing">Number of grandmas used for cookie production: ' + this.cpsGrandmas + '</div>';
             l("grandmaManager").innerHTML = str;
         }
 
         this.me.sell = en.injectCode(this.me.sell, "price=Math.floor(price*giveBack);", "if ((this.id == 1) && (mod.bModify.grandma.allocT == this.amount)) break;", "after");
+        Game.CalculateGains = en.injectCode(Game.CalculateGains, "me.storedTotalCps=me.amount*me.storedCps;",
+            "\n\tif(me.id == 1) me.storedTotalCps=mod.bModify.grandma.cpsGrandmas()*me.storedCps;", "after"
+        )
+        Game.GetTieredCpsMult = en.injectCode(Game.GetTieredCpsMult, 
+            "mult*=(1+Game.Objects['Grandma'].amount*0.01*(1/(me.id-1)));",
+            "mult*=(1+BModify.grandma.grandmaAlloc[me.id-2]*0.2*(1/(me.id-1)));", 
+            "replace"
+        );
     }
 
     BModify.Idleverses = function() {
