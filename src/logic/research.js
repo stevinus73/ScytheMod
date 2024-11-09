@@ -135,12 +135,12 @@ Research._Initialize = function(en) {
             var sY = this.getPosition().posY;
             var classes = 'crate upgrade heavenly';
             var clickStr = available ? 'mod.research.currTree.upgrades['+this.id+'].buy()' : ''; 
+            var tname = Research.currTree.name;
             var enabled = 0;
             if (this.bought) enabled=1;
             if (enabled) classes += ' enabled';
             return '<div data-id="'+this.tree.name+this.id+'" '+Game.clickStr+'="'+clickStr+'"'+
-            ' class="'+classes+'" '+Game.getDynamicTooltip(
-                '(mod.research.currTree.upgrades['+this.id+'] ? mod.research.currTree.upgrades['+this.id+'].getTooltip : "")', 
+            ' class="'+classes+'" '+Game.getDynamicTooltip('mod.research.trees['+tname+'].upgrades['+this.id+'].getTooltip', 
                 'top', true)
             +'id="researchUp'+this.tree.name+this.id+'" '+
             'style="'+writeIcon(this.sprite)+'position:absolute;left:'+sX+'px;top:'+sY+'px;'+(available?'':'display:none;')+'"></div>';
