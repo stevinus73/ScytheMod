@@ -312,7 +312,7 @@ BModify._Initialize = function(en) {
         }
 
         this.maxGrandmas = function(index) {
-            return Math.ceil(this.me.amount * 0.05) + 5 * this.me.level;
+            return Math.ceil(this.me.amount * 0.05) + 3 * this.me.level;
         }
 
         this.alloc = function(index) {
@@ -332,6 +332,22 @@ BModify._Initialize = function(en) {
             this.update();
         }
 
+        this.canSell = function() {
+            var popup = "Can't sell any more grandmas!";
+            if (this.allocT == this.me.amount) {
+                Game.Popup(popup, Game.mouseX, Game.mouseY);
+                return false;
+            }
+            var max = Math.ceil((this.me.amount-1) * 0.05) + 3 * this.me.level;
+            for (var i=0; i<18;i++){
+                if (this.grandmaAlloc[i] > max) {
+                    Game.Popup(popup, Game.mouseX, Game.mouseY);
+                    return false;
+                }
+            }
+            return true;
+        }
+
         this.cpsGrandmas = function() {return this.me.amount - this.allocT;}
 
         this.update = function() {
@@ -344,7 +360,7 @@ BModify._Initialize = function(en) {
                 if (Game.Has(me.grandma.name)) {
                     allocate = '<a class="smallFancyButton" onclick="mod.bModify.grandma.alloc('+i+')" style="width: 70px;">'+loc('Allocate')+'</a>';
                     remove = '<a class="smallFancyButton" onclick="mod.bModify.grandma.remove('+i+')" style="width: 70px;">'+loc('Remove')+'</a>';
-                    str += '<div class="listing" style="padding: 5px;"> '+loc('Number of grandmas allocated for');
+                    str += '<div class="listing" style="padding: 5px;"><span style="left:10px;position:absolute;">Number of grandmas allocated for </span>';
                     str += ' <span style="right: 10px;position: absolute;">'+me.plural+': '+allocate + " " + this.grandmaAlloc[i] + " " + remove; 
                     str += '(max: '+this.maxGrandmas()+')</span>';
                     str += '</div>';
@@ -354,7 +370,7 @@ BModify._Initialize = function(en) {
             l("grandmaManager").innerHTML = str;
         }
 
-        this.me.sell = en.injectCode(this.me.sell, "price=Math.floor(price*giveBack);", "if ((this.id == 1) && (mod.bModify.grandma.allocT == this.amount)) break;", "after");
+        this.me.sell = en.injectCode(this.me.sell, "price=Math.floor(price*giveBack);", "if ((this.id == 1) && (!mod.bModify.grandma.canSell())) break;", "after");
         Game.CalculateGains = en.injectCode(Game.CalculateGains, "me.storedTotalCps=me.amount*me.storedCps;",
             "\n\tif(me.id == 1) me.storedTotalCps=mod.bModify.grandma.cpsGrandmas()*me.storedCps;", "after"
         )
