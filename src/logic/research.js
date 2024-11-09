@@ -202,7 +202,8 @@ Research._Initialize = function(en) {
         }
 
         this.getTooltip = function() {
-            return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">This is a research tree.<div class="line"></div>Click on it to switch to this research tree.</div>';
+            return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">This is the '+this.name+
+            ' research tree.<div class="line"></div>Click on it to switch to this research tree.</div>';
         }
 
         this.draw = function() {

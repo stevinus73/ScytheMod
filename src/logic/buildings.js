@@ -350,7 +350,7 @@ BModify._Initialize = function(en) {
                     str += '</div>';
                 }
             }
-            str += '<div class="listing">Number of grandmas used for cookie production: ' + this.cpsGrandmas + '</div>';
+            str += '<div class="listing">Number of grandmas used for cookie production: ' + this.cpsGrandmas() + '</div>';
             l("grandmaManager").innerHTML = str;
         }
 
