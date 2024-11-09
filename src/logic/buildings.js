@@ -362,8 +362,8 @@ BModify._Initialize = function(en) {
                 if (Game.Has(me.grandma.name)) {
                     allocate = '<a class="smallFancyButton" onclick="mod.bModify.grandma.alloc('+i+')" style="width: 70px;">'+loc('Allocate')+'</a>';
                     remove = '<a class="smallFancyButton" onclick="mod.bModify.grandma.remove('+i+')" style="width: 70px;">'+loc('Remove')+'</a>';
-                    str += '<div class="listing"><span style="left:10px;position:absolute;padding: 5px;">Number of grandmas allocated for </span>';
-                    str += ' <span style="right: 10px;position: absolute;padding:5px;">'+me.plural+': '+allocate + " " + this.grandmaAlloc[i] + " " + remove; 
+                    str += '<div class="listing"><span style="left:10px;position:absolute;padding: 20px;">Number of grandmas allocated for </span>';
+                    str += ' <span style="right: 10px;position: absolute;padding:20px;">'+me.plural+': '+allocate + " " + this.grandmaAlloc[i] + " " + remove; 
                     str += '(max: '+this.maxGrandmas()+')</span>';
                     str += '</div>';
                 }
