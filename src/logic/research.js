@@ -87,6 +87,7 @@ Research._Initialize = function(en) {
             this.bought = true;
             this.onBuy();
             Research.draw();
+            Game.recalculateGains = 1;
         }
 
         this.createLinks = function() {
@@ -187,17 +188,17 @@ Research._Initialize = function(en) {
         this.curr = false;
 
         this.getCrate = function() {
-            if (!(this.requirements() && Research.has("Research lab"))) return '';
+            if (!this.requirements()) return '';
             var classes = 'crate upgrade';
             if (this.curr) classes += ' enabled';
             var clickStr = `mod.research.setCurrTree('`+this.name+`');mod.research.draw();`;
             return '<div data-id="'+this.name+"tree"+'" '+Game.clickStr+'="'+clickStr+'"'+
-            ' class="'+classes+'" '+Game.getDynamicTooltip('mod.research.trees["'+this.name+'"].getTooltip', 'top', true)+' id="researchTreeCrate'+this.name+'" '+
+            ' class="'+classes+'" id="researchTreeCrate'+this.name+'" '+
             'style="'+writeIcon(this.sprite)+'"></div>';
         }
 
         this.getTooltip = function() {
-            return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">This is a research tree.<div class=\"line\"></div>Click on it to switch to this research tree.</div>';
+            return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">This is a research tree.<div class="line"></div>Click on it to switch to this research tree.</div>';
         }
 
         this.draw = function() {
@@ -349,7 +350,7 @@ Research._Initialize = function(en) {
     var tier_ref = [21,26,27];
     var buildingTree = function(i) {
         var me = Game.ObjectsById[i];
-        var hfunction = function() {return (me.amount >= 1)};
+        var hfunction = function() {return (me.amount >= 1) && Research.has("Research lab")};
         new Research.Tree(me.dname, [spr_ref[i], 0], hfunction);
         var btext = me.plural;
         if (i == 0) btext = "cursors and clicking";
