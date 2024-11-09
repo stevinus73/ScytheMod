@@ -231,10 +231,10 @@ BModify._Initialize = function(en) {
         }
         
         this.me.switchMinigame = en.injectCode(this.me.switchMinigame, `l('row'+this.id).classList.add('onMinigame');`,
-            `this.rsManager.getStatDiv().style.display='none';`, "after");
+            `this.rsManager.statDiv.style.display='none';`, "after");
 
         this.me.switchMinigame = en.injectCode(this.me.switchMinigame, `l('row'+this.id).classList.remove('onMinigame');`,
-            `this.rsManager.getStatDiv().style.display=this.rsManager.statsView ? 'block' : 'none';`, "after");
+            `this.rsManager.statDiv.style.display=this.rsManager.statsView ? 'block' : 'none';`, "after");
 
 
         this.update = function() {
