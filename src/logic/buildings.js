@@ -12,6 +12,8 @@ BModify._Initialize = function(en) {
     //Game.UpdateMenu = en.injectCode(Game.UpdateMenu, "(dropMult!=1", `'<div class="listing"><b>'+loc("Missed golden cookies:")+'</b> '+Beautify(Game.missedGoldenClicks)+'</div>' + `, "before")
     this.rsManagers = [];
 
+    var spr_ref = [0,1,2,3,4,15,16,17,5,6,7,8,13,14,19,20,32,33,34,35];
+
     BModify.RS_Manager = function(id, baseRS, rsNames) {
         this.id = id;
         this.me = Game.ObjectsById[this.id];
@@ -362,8 +364,8 @@ BModify._Initialize = function(en) {
                 if (Game.Has(me.grandma.name)) {
                     allocate = '<a class="smallFancyButton" onclick="mod.bModify.grandma.alloc('+i+')" style="width: 70px;">'+loc('Allocate')+'</a>';
                     remove = '<a class="smallFancyButton" onclick="mod.bModify.grandma.remove('+i+')" style="width: 70px;">'+loc('Remove')+'</a>';
-                    str += '<div class="listing"><div class="icon" style="float:left;'+writeIcon([0,0])+'"></div>';
-                    str += me.plural+': '+allocate + " " + this.grandmaAlloc[i] + " " + remove; 
+                    str += '<div class="listing">'+tinyIcon([spr_ref[i+2],0]);
+                    str += ': '+allocate + " " + this.grandmaAlloc[i] + " " + remove; 
                     str += '(max: '+this.maxGrandmas()+')';
                     str += '</div>';
                 }
