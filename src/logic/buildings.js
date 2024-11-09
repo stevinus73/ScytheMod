@@ -360,7 +360,7 @@ BModify._Initialize = function(en) {
         )
         Game.GetTieredCpsMult = en.injectCode(Game.GetTieredCpsMult, 
             "mult*=(1+Game.Objects['Grandma'].amount*0.01*(1/(me.id-1)));",
-            "mult*=(1+BModify.grandma.grandmaAlloc[me.id-2]*0.2*(1/(me.id-1)));", 
+            "mult*=(1+mod.bModify.grandma.grandmaAlloc[me.id-2]*0.2*(1/(me.id-1)));", 
             "replace"
         );
     }
