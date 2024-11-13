@@ -134,8 +134,8 @@ BModify._Initialize = function(en) {
             this.rsAvailable = Math.max(this.rsAvailable, 0);
             this.rsUsed = Math.min(this.rsUsed, this.rsTotal);
             if (this.pause) {
-                var rate = 0.00001;
-                this.rsUsed -= (rate / Game.fps) * this.rsTotal;
+                var rate = 0.1+(this.rsAvailable/this.rsTotal)*0.1;
+                this.rsUsed -= (rate / (Game.fps * 60 * 60)) * this.rsTotal;
                 this.rsUsed = Math.max(this.rsUsed, 0);
                 return;
             }
@@ -382,7 +382,12 @@ BModify._Initialize = function(en) {
             "mult*=(1+Game.Objects['Grandma'].amount*0.01*(1/(me.id-1)));",
             "mult*=(1+mod.bModify.grandma.grandmaAlloc[me.id-2]*0.2*(1/(me.id-1)));", 
             "replace"
-        );
+        )
+        this.me.tooltip = en.injectCode(this.me.tooltip,
+            "var mult=me.amount*0.01*(1/(other.id-1));",
+            "var mult=1+mod.bModify.grandma.grandmaAlloc[other.id-2]*0.2*(1/(other.id-1));", 
+            "replace"
+        )
     }
 
     BModify.Idleverses = function() {
