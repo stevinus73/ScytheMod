@@ -141,7 +141,7 @@ BModify._Initialize = function(en) {
             }
             if (this.depleted) return;
             if ((this.id == 2) && Research.has("Regrowth")) return;
-            //this.rsUsed += (this.RhpS / Game.fps) * this.decayedFactor();
+            this.rsUsed += (this.RhpS / Game.fps) * this.decayedFactor();
         }
 
         // resets everythin'

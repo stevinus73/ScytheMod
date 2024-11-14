@@ -263,6 +263,11 @@ Research._Initialize = function(en) {
         this.crates.innerHTML = crateStr;
     }
 
+    Research.bounds = function(x, y) {
+        var c = Research.container;
+        return (c.offsetLeft <= x <= c.offsetLeft+c.offsetWidth) && (c.offsetRight <= y <= c.offsetRight+c.offsetHeight);
+    }
+
     Research.update = function() {
         if (Game.keys[37]) this.userXT -= 8;
         if (Game.keys[38]) this.userYT -= 8;
@@ -276,7 +281,7 @@ Research._Initialize = function(en) {
         this.userY += 0.5 * (this.userYT - this.userY);
         if (Math.abs(this.userXT - this.userX) < 0.005) this.userX = this.userXT;
         if (Math.abs(this.userYT - this.userY) < 0.005) this.userY = this.userYT;
-        if (Game.mouseDown && !Game.promptOn) {
+        if (Game.mouseDown && !Game.promptOn && this.bounds(Game.mouseX, Game.mouseY)) {
             if (!this.dragging) {
                 this.dragX = Game.mouseX;
                 this.dragY = Game.mouseY;
@@ -341,6 +346,9 @@ Research._Initialize = function(en) {
 
     new Research.Tech("Research lab", "Unlocks the <b>Research tree</b>, where you can buy upgrades using research (the number in the top right corner). <div class=\"line\"></div> You gain research in a variety of ways. <div class=\"line\"></div> Research upgrades are kept across ascensions. <q>It's quite small, but so is your current business.</q>", 1, f, f, [], [9, 2], 0, 0); //0
     new Research.Tech("Plain cookie", "Cookie production multiplier <b>+5%</b>. <div class=\"line\"></div> Unlocks <b>new cookie upgrades</b> that appear once you have enough cookies. <q>We all gotta start somewhere. </q>", 50, f, f, [0], [2, 3], -0.2, 0.5); //1
+    Game.NewUpgradeCookie = en.injectCode(Game.NewUpgradeCookie, "if (obj.require) toPush.require=obj.require;",
+        'toPush.require=function(){return mod.research.has("Plain cookie") && (obj.require ? obj.require : true)}', "replace"
+    )
     new Research.Tech("Interns", "You <b>gain research passively</b>, at a rate of <b>1 research every 10 minutes</b>. <q>They do research for you when you're gone. Sure, they may just be drinking all the test tubes and fighting each other with meter sticks, but it's the effort that counts. </q>", 10, f, f, [0], [9, 0], 0.3, 0); //2
     new Research.Tech("Better application forms", "Research costs <b>10%</b> less.", 100, f, f, [2], [9, 1], 0.6, 0);
     function has500Achievs(){return (Game.AchievementsOwned >= 500)}
@@ -376,12 +384,6 @@ Research._Initialize = function(en) {
         if (Game.ObjectsById[i].tieredResearch.length < tier) return false;
         return Game.ObjectsById[i].tieredResearch[tier-1].bought;
     }
-
-    // var hgolden = function() {return (Game.goldenClicks >= 7)};
-    // new Research.Tree("Golden cookies", [27, 6], hgolden);
-
-    // var hdragon = function() {return Game.Has('How to bake your dragon')};
-    // new Research.Tree("Your cookie dragon", [30, 12], hdragon);
 
     buildingTree(0);
     buildingTree(1);
