@@ -263,10 +263,10 @@ Research._Initialize = function(en) {
         this.crates.innerHTML = crateStr;
     }
 
-    Research.bounds = function(x, y) {
-        var c = Research.container;
-        return (c.offsetLeft <= x <= c.offsetLeft+c.offsetWidth) && (c.offsetRight <= y <= c.offsetRight+c.offsetHeight);
-    }
+    // Research.bounds = function(x, y) {
+    //     var c = Research.container;
+    //     return (c.offsetLeft <= x <= c.offsetLeft+c.offsetWidth) && (c.offsetRight <= y <= c.offsetRight+c.offsetHeight);
+    // }
 
     Research.update = function() {
         if (Game.keys[37]) this.userXT -= 8;
@@ -281,7 +281,7 @@ Research._Initialize = function(en) {
         this.userY += 0.5 * (this.userYT - this.userY);
         if (Math.abs(this.userXT - this.userX) < 0.005) this.userX = this.userXT;
         if (Math.abs(this.userYT - this.userY) < 0.005) this.userY = this.userYT;
-        if (Game.mouseDown && !Game.promptOn && this.bounds(Game.mouseX, Game.mouseY)) {
+        if (Game.mouseDown && !Game.promptOn) {
             if (!this.dragging) {
                 this.dragX = Game.mouseX;
                 this.dragY = Game.mouseY;
