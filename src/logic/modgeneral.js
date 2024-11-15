@@ -27,12 +27,12 @@ General._Initialize = function(en) {
     General.TempleRename = function() {
         if (Game.Objects.Temple.minigame) { 
             var m = Game.Objects.Temple.minigame;
-            m.gods['industry'].desc1 = '<span class="green">Increases resource harvest rate by 30%.</span>';
-            m.gods['industry'].desc2 = '<span class="green">Increases resource harvest rate by 20%.</span>';
-            m.gods['industry'].desc3 = '<span class="green">Increases resource harvest rate by 10%.</span>';
-            m.gods['creation'].desc1 = '<span class="green">Increases yield by 8%.</span> <span class="red">Decreases resource harvest rate by 25%.</span>';
-            m.gods['creation'].desc2 = '<span class="green">Increases yield by 6%.</span> <span class="red">Decreases resource harvest rate by 20%.</span>';
-            m.gods['creation'].desc3 = '<span class="green">Increases yield by 4%.</span> <span class="red">Decreases resource harvest rate by 15%.</span>';
+            m.gods['industry'].desc1 = '<span class="green">Increases resource use rate by 30%.</span>';
+            m.gods['industry'].desc2 = '<span class="green">Increases resource use rate by 20%.</span>';
+            m.gods['industry'].desc3 = '<span class="green">Increases resource use rate by 10%.</span>';
+            m.gods['creation'].desc1 = '<span class="green">Increases yield by 8%.</span> <span class="red">Decreases resource use rate by 25%.</span>';
+            m.gods['creation'].desc2 = '<span class="green">Increases yield by 6%.</span> <span class="red">Decreases resource use rate by 20%.</span>';
+            m.gods['creation'].desc3 = '<span class="green">Increases yield by 4%.</span> <span class="red">Decreases resource use rate by 15%.</span>';
             eval("Game.Objects.Temple.minigame.godTooltip="+Game.Objects.Temple.minigame.godTooltip.toString().replace('{',"{M=Game.Objects.Temple.minigame;"));
             eval("Game.Objects.Temple.minigame.slotTooltip="+Game.Objects.Temple.minigame.slotTooltip.toString().replace('{',"{M=Game.Objects.Temple.minigame;"));
         }
