@@ -320,8 +320,8 @@ Research._Initialize = function(en) {
         this.userY = 0;
         this.userXT = 0;
         this.userYT = 0;
-        this.userDragX = 0;
-        this.userDragY = 0;
+        this.dragX = 0;
+        this.dragY = 0;
     }
 
     Research.has = function(name) {
