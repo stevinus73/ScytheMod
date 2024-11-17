@@ -415,6 +415,14 @@ BModify._Initialize = function(en) {
             + "x" + Beautify(this.resourceMult(), 3);
             }
         }
+
+        this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);", 
+            [
+                'if (Research.hasTiered(17, 0)) mult*=1.3;',
+                'if (Research.hasTiered(17, 0)) mult*=1.3;',
+                'if (Research.hasTiered(17, 0)) mult*=1.3;'
+            ]
+        )
     }
 
     BModify.Idleverses.prototype.getType = function () {

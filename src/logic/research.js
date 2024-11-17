@@ -17,7 +17,7 @@ Research._Initialize = function(en) {
     this.button = l("researchButton");
     this.researchOn = false;
     l("centerArea").insertAdjacentHTML('beforeend', 
-        '<style>#research{z-index: 1; background: url("img/starbg.jpg"); position: absolute; inset: 40px 0px 0px; display: none;}'+
+        '<style>#research{z-index: 1; background: url("img/starbg.jpg"); position: absolute; inset: 40px 0px 0px; display: none; cursor: move;}'+
         '#researchDisplay{cursor: pointer; position: absolute; right: 0px; bottom: -12px; width: 32px; height: 32px; z-index: 1000; filter:drop-shadow(0px 3px 2px #000); -webkit-filter:drop-shadow(0px 3px 2px #000);}'+
         '#researchIcon{width: 48px; height: 48px; right: -8px; top: -8px; position: absolute; pointer-events: none;}'+
         '#researchAmount{font-size: 12px; color: #6cf; position: absolute; right: 36px; top: 6px; text-align: right; width: 200px;}'+
@@ -281,7 +281,7 @@ Research._Initialize = function(en) {
         this.userY += 0.5 * (this.userYT - this.userY);
         if (Math.abs(this.userXT - this.userX) < 0.005) this.userX = this.userXT;
         if (Math.abs(this.userYT - this.userY) < 0.005) this.userY = this.userYT;
-        if (Game.mouseDown && !Game.promptOn) {
+        if (Game.mouseDown && !Game.promptOn && this.container.matches(":hover")) {
             if (!this.dragging) {
                 this.dragX = Game.mouseX;
                 this.dragY = Game.mouseY;
@@ -340,6 +340,7 @@ Research._Initialize = function(en) {
     Game.Win = en.injectCode(Game.Win, 'it.won=1;', 'mod.research.earnResearch(10);', "after");
 
     function f(){return true;}
+    function req(amnt, reqNum) {return amnt >= reqNum;}
     function breq(building, reqNum){return Game.Objects[building].amount >= reqNum;}
 
     new Research.Tree("General", [10, 0], f);
@@ -371,14 +372,15 @@ Research._Initialize = function(en) {
         me.tieredResearch = [];
     }
     // tier: 1, 2, 3
-    var tieredTree = function(i, tier, name, desc) {
+    var tieredTreeG = function(i, tier, name, desc, spc) {
         var me = Game.ObjectsById[i];
-        var yieldPercent = 100 - 5 * i;
-        var d = cfl(me.plural)+" yield <b>"+Beautify(yieldPercent)+"%</b> more. Resource space is <b>doubled</b>.";
         var hfunction = function() {return (me.amount >= (100 + 100 * tier))};
         var deps = [0];
         if (tier > 1) deps=[me.tieredResearch[tier-2].id];
-        me.tieredResearch.push(new Research.Tech(name, d+'<q>'+desc+'</q>', 30 + 20 * tier, hfunction, f, deps, [spr_ref[i], tier_ref[tier-1]], 0.6 * tier, 0));
+        me.tieredResearch.push(new Research.Tech(name, spc+'<q>'+desc+'</q>', 30 + 20 * tier, hfunction, f, deps, [spr_ref[i], tier_ref[tier-1]], 0.6 * tier, 0));
+    }
+    var tieredTree = function(i, tier, name, desc) {
+        tieredTreeG(i, tier, name, desc, cfl(Game.ObjectsById[i].plural)+" yield <b>"+Beautify(100-5*i)+"%</b> more. Resource space is <b>doubled</b>.");
     }
     Research.hasTiered = function(i, tier) {
         if (Game.ObjectsById[i].tieredResearch.length < tier) return false;
@@ -386,7 +388,28 @@ Research._Initialize = function(en) {
     }
 
     buildingTree(0);
+    tieredTreeG(0, 1, "Flex gloves", "Trendy, and in style!", "Cursors are <b>25%</b> more efficient."); // 1
+    tieredTreeG(0, 2, "Rocket propulsor", "Slams at lightning-speed into the cookie.", "Cursors are <b>25%</b> more efficient."); // 2
+    tieredTreeG(0, 3, "Autoclicker", "Huh, wonder why I never thought of this before.", "Cursors are <b>25%</b> more efficient."); // 3
+    Game.Objects.Cursor.cps = en.injectChain(Game.Objects.Cursor.cps, "mult*=Game.eff('cursorCps');",
+        [
+            'if (mod.research.has("Flex gloves")) mult*=1.25;',
+            'if (mod.research.has("Rocket propulsor")) mult*=1.25;',
+            'if (mod.research.has("Autoclicker")) mult*=1.25;'
+        ]
+    )
+    new Research.Tech("Fourth-dimensional workarounds", "Clicking is <b>6%</b> more powerful.", 35, () => breq(Game.cookieClicks, 500), f, [0], [1, 6], 0.3, 0.3); // 4
+    new Research.Tech("Cybernetic fingers", "Clicking is <b>6%</b> more powerful. <q>Clink, clink.</q>", 70, () => breq(Game.cookieClicks, 1000), f, [4], [12, 1], 0.6, 0.5); // 5
+    new Research.Tech("Repeated electrical shock", "Clicking is <b>6%</b> more powerful. <q>Ow. Ow. Ow.</q>", 105, () => breq(Game.cookieClicks, 2500), f, [5], [12, 2], 0.9, 0.6); // 6
+    Game.mouseCps = en.injectChain(Game.mouseCps, "if (Game.Has('Dragon claw')) mult*=1.03;",
+        [
+            'if (mod.research.has("Fourth-dimensional workarounds")) mult*=1.06;',
+            'if (mod.research.has("Cybernetic fingers")) mult*=1.06;',
+            'if (mod.research.has("Repeated electrical shock")) mult*=1.06;'
+        ]
+    )
     buildingTree(1);
+
     buildingTree(2);
     new Research.Tech("Regrowth", "Farms yield <b>three times</b> more. <div class=\"line\"></div> You can <b>reuse depleted land</b>, effectively ignoring resource depletion. <q>A masterful resource-saving invention! Wait, isn't this how agriculture is supposed to work? </q>", 230, () => breq('Farm', 75), f, [0], [2, 35], 0.8, 0.8); // 1
     tieredTree(2, 1, "Monocookie agriculture", "Gearing your farms to only cultivate cookies."); // 1
@@ -406,22 +429,53 @@ Research._Initialize = function(en) {
     tieredTree(5, 3, "Shinier vaults", "Highly inviting for potential burglars! This leads to all your money being stolen by-wait, where were we, again?") // 3
     buildingTree(6);
     function hasPantheon(){return (Game.Objects['Temple'].minigame)}
-    new Research.Tech("Polytheism", "Decreases worship slot refill time by <b>25%</b>.<q>Worshipping all of your gods at once makes them more willing to cooperate.</q>", 50, hasPantheon, f, [0], [11, 6], 0, 0.5);
-    new Research.Tech("Creation star", "All buildings are <b>5%</b> cheaper.<q>Warning: do not touch.</q>", 75, hasPantheon, f, [1], [26, 18], 0.5, 1.0);
+    new Research.Tech("Polytheism", "Decreases worship slot refill time by <b>25%</b>.<q>Worshipping all of your gods at once makes them more willing to cooperate.</q>", 50, hasPantheon, f, [0], [11, 6], 0, 0.5); // 1
+    new Research.Tech("Creation star", "All buildings are <b>5%</b> cheaper.<q>Warning: do not touch.</q>", 75, hasPantheon, f, [1], [26, 18], 0.3, 0.8); // 2
     Game.modifyBuildingPrice = en.injectCode(Game.modifyBuildingPrice, "if (building.fortune && Game.Has(building.fortune.name)) price*=0.93;",
         '\n\tif (mod.research.has("Creation star")) price*=0.95;', "after"
     )
-    tieredTree(6, 1, "Summoning artifacts", "Mysteriously shiny artifacts that trick people into giving them a handshake, therefore forfeiting their soul to the devils within.")
-    tieredTree(6, 2, "Holy light of cookie heaven", "Its gleam descends down upon you whereever you go, a true indicator of the gods' pleasure.")
-    tieredTree(6, 3, "Lovecraftian mythos", "If we feed them cookies, we should be able to get them to like us.")
+    new Research.Tech("Holiday coupon", "All upgrades are <b>10%</b> cheaper if a season is currently active.<q>Big discount! You can't miss out!</b>", 75, hasPantheon, f, [1], [26, 17], 0, 0.9); // 3
+    Game.Upgrade.prototype.getPrice = en.injectCode(Game.Upgrade.prototype.getPrice, "if (Game.hasBuff('Haggler\'s misery')) price*=1.02;",
+        '\n\tif (mod.research.has("Holiday savings") && Game.season!="") price*=0.9;', "after"
+    )
+    Research.numWrinklers = function() {
+        var n=0;
+        for (var i in Game.wrinklers) {
+            if (Game.wrinklers[i].phase>0) n++;
+        }
+        return n;
+    }
+    new Research.Tech("Tooth of the wyrm", "Wrath cookies spawn <b>3%</b> more often per wrinkler present.", 75, hasPantheon, f, [1], [27, 13], -0.3, 0.8); // 4
+    Game.shimmerTypes.golden.getTimeMod = en.injectCode(Game.shimmerTypes.golden.getTimeMod, "if (Game.Has('Gold hoard')) m=0.01;",
+        '\n\tif (mod.research.has("Tooth of the wyrm") && me.wrath) m*=(1-0.03*mod.research.numWrinklers());', "after"
+    )
+    tieredTree(6, 1, "Summoning artifacts", "Mysteriously shiny artifacts that trick people into giving them a handshake, therefore forfeiting their soul to the devils within.") // 5
+    tieredTree(6, 2, "Holy light of cookie heaven", "Psst, don't tell people it's just a lightbulb suspended above you with strings.") // 6
+    tieredTree(6, 3, "Lovecraftian mythos", "If we feed them cookies, we should be able to get them to like us.") // 7
     buildingTree(7);
+    tieredTree(7, 1, "Magic-made wands", "Generates a perpetual cycle of usage and creation.") // 1
+    tieredTree(7, 2, "Broomsticks", "Old cliche, but still works for the most part.") // 2
+    tieredTree(7, 3, "The science of magic", "Back in my day, people were claiming magic was actually electromagnetic waves! What schauffish baloney!") // 3
     buildingTree(8);
+    tieredTree(8, 1, "Nuclear boosters", "...") // 1
+    tieredTree(8, 2, "Cosmic trade routes", "Conveniently, they only trade cookies, and they also happen to be non-voluntary one-way roads towards your cookie empire.") // 2
+    tieredTree(8, 3, "Ignoring the laws of physics", "Works like a charm! Every science fiction writer always does this!") // 3
     buildingTree(9);
+    tieredTree(9, 1, "Purification gas", "You can spray it over literally anything, and the result will always be better.") // 1
+    tieredTree(9, 2, "Philosopher's dough", "The ultimate goal of alchemical science, finally achieved!")
+    tieredTree(9, 3, "Nuclear transmutation", "Transmutation can actually be performed with scientific (yuck) means. You can change gold into carbon by removing 73 protons and 112 neutrons. Shouldn't be that difficult, actually.") // 3
     buildingTree(10);
+    tieredTree(10, 1, "Backwords cookie-summoning chants", "One popular chant goes 'Seikooc em evig! SEIKOOC EM EVIG!'.") // 1
+    tieredTree(10, 2, "Rift between rifts", "Congrats, you've managed to create a portal that connects to the weird void between cookie-filled dimensions. In practice, you can just use this as your new headquarters. As if your employees WANTED to see their families again! Hah!") // 2
+    tieredTree(10, 3, "The demon that comes when they call its name", "So I can just say Jauthemazbal and he'll be summ-OH GOD") // 3
     buildingTree(11);
+
     buildingTree(12);
+
     buildingTree(13);
+
     buildingTree(14);
+
     buildingTree(15);
     tieredTree(15, 1, "Fractalized cookies", "If you look carefully enough at the edge of them, you'll find tiny cookies that look exactly the same as the big one.") // 1
     tieredTree(15, 2, "Mathematics department", "Creating a pure math department for your research helps immensely with CpS. Not a sentence you'd expect to see.") // 2
@@ -432,7 +486,11 @@ Research._Initialize = function(en) {
     tieredTree(16, 3, "Cutting-edge AI compiler", "Let's face it, AIs can figure out how to allocate memory and run floating-point operations efficiently much better than we do.") // 3
     buildingTree(17);
     new Research.Tech("Galactica mindoris", "You gain <b>more resource space</b> the more idleverses you have. <q>Turns out there's a ton of room in idleverses!</q>", 410, f, f, [0], [33, 35], 0, 1.5);
+    tieredTreeG(17, 1, "Converter", "A machine to convert all matter in an idleverse to cookies. Don't tell any Cookieclysm devs.", "Idleverses are <b>30%</b> more efficient.") // 1
+    tieredTreeG(17, 2, "Testing worlds", "You've managed to repurpose some of your idleverses as multiverse-size guinea pigs for experiments with stuff. Good thing those lawyers have been strangely quiet recently.", "Idleverses are <b>30%</b> more efficient.") // 2
+    tieredTreeG(17, 3, "The marble ball conjecture", "The marble ball conjecture states that our entire multiverse may be only the size of a small marble ball in another multiverse. This means you have even more dimensions to take over.", "Idleverses are <b>30%</b> more efficient.") // 3
     buildingTree(18);
+
     buildingTree(19);
     tieredTree(19, 1, "DNA Splicers", "With these handy splicers, you can splice the best and most useful genes from other organisms directly into a clone.") // 1
     tieredTree(19, 2, "Vitality transfer", "Transferring lifeforce between your clones makes it generally last longer.") // 2

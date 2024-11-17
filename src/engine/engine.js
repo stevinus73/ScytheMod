@@ -19,6 +19,15 @@ IdlersPocket._Initialize = function () {
         })
         return ret;
     }
+    IdlersPocket.injectChain = function(func, begin, chain) {
+        var ret = func;
+        var last = begin;
+        chain.forEach(function(code) {
+            ret = IdlersPocket.injectCode(ret, last, "\n\t"+code, "after");
+            last = ret;
+        })
+        return ret;
+    }
     IdlersPocket.shim = shimmer_engine;
     IdlersPocket.be = building_engine;
     IdlersPocket.ue = upgrade_engine;
