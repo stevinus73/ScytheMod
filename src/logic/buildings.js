@@ -1,4 +1,3 @@
-import {Research} from "./research.js"
 var BModify = {}
 
 const baseRhpS_C = 1;
@@ -7,7 +6,7 @@ function cfl(val) {
     return String(val).charAt(0).toUpperCase() + String(val).slice(1);
 }
 
-BModify._Initialize = function(en) {
+BModify._Initialize = function(en, Research) {
     this.en = en;
     //Game.UpdateMenu = en.injectCode(Game.UpdateMenu, "(dropMult!=1", `'<div class="listing"><b>'+loc("Missed golden cookies:")+'</b> '+Beautify(Game.missedGoldenClicks)+'</div>' + `, "before")
     this.rsManagers = [];
@@ -418,7 +417,7 @@ BModify._Initialize = function(en) {
         )
 
         this.getStat = function() {
-            if (Research.has("Galactica mindoris")) {
+            if (hasTech("Galactica mindoris")) {
                 l("idleverseStat").innerHTML = "<b>"+loc("Total resource boost provided by")+" "+this.me.amount+" idleverses:</b> "
             + "x" + Beautify(this.resourceMult(), 3);
             }

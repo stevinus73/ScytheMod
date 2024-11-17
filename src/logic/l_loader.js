@@ -9,9 +9,9 @@ mod.Init = function(engine) {
     this.research = Research;
     this.research._Initialize(en);
     this.bModify = BModify;
-    this.bModify._Initialize(en);
+    this.bModify._Initialize(en, this.research);
     this.general = General;
-    this.general._Initialize(en);
+    this.general._Initialize(en, this.research);
 }
 
 export { mod }

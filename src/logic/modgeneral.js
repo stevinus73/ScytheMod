@@ -1,6 +1,6 @@
 var General = {}
 
-General._Initialize = function(en) {
+General._Initialize = function(en, Research) {
     this.en = en;
 
     /**
