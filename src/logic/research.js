@@ -86,7 +86,7 @@ Research._Initialize = function(en) {
             if ((!this.canBuy()) || this.bought) return;
             Research.research -= this.getPrice();
             this.bought = true;
-            this.onBuy();
+            //this.onBuy();
             Research.draw();
             Game.recalculateGains = 1;
         }
@@ -167,13 +167,13 @@ Research._Initialize = function(en) {
             return '<div style="position:absolute;left:1px;top:1px;right:1px;bottom:1px;background:linear-gradient(125deg,rgba(50,40,40,1) 0%,rgba(50,40,40,0) 20%);mix-blend-mode:screen;z-index:1;"></div><div style="z-index:10;padding:8px 4px;min-width:350px;position:relative;" id="tooltipCrate">'+
             '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;'+writeIcon(this.sprite)+'"></div>'+(this.req?price:'')+
             '<div class="name">'+(this.req?this.name:'???')+'</div>'+tagsStr+
-            '<div class="line"></div><div class="description">'+(this.req?this.desc:"You must " +''+" to unlock this research upgrade.")+'</div></div>'+
+            '<div class="line"></div><div class="description">'+(this.req?this.desc:"You must " +this.requirements.reqDesc+" to unlock this research upgrade.")+'</div></div>'+
             (tip!=''?('<div class="line"></div><div style="font-size:10px;font-weight:bold;color:#999;text-align:center;padding-bottom:4px;line-height:100%;" class="crateTip">'+tip+'</div>'):'');
         }
 
         this.check = function() {
-            if (this.requirements()) {
-                if (!this.req) Game.Notify("Unlocked new research!", "Check your research trees!", [9, 0]);
+            if (this.requirements.reqFunc()) {
+                if (!this.req && (this.requirements.reqDesc!='')) Game.Notify("Unlocked new research!", "Check your research trees!", [9, 0]);
                 this.req = true;
             }
         }
@@ -341,9 +341,13 @@ Research._Initialize = function(en) {
     }
     Game.Win = en.injectCode(Game.Win, 'it.won=1;', 'mod.research.earnResearch(10);', "after");
 
-    function f(){return true;}
-    function req(amnt, reqNum) {return amnt >= reqNum;}
-    function breq(building, reqNum){return Game.Objects[building].amount >= reqNum;}
+    f={reqFunc:function(){return true;},reqDesc:''};
+    function req(amnt, reqNum, amntN) {
+        return {reqFunc:function(){return amnt >= reqNum;},reqDesc:"get "+reqNum+" "+amntN};
+    }
+    function breq(building, reqNum){
+        return req(Game.Objects[building], reqNum, Game.Objects[building].plural);
+    }
 
     new Research.Tree("General", [10, 0], f);
 
@@ -354,12 +358,12 @@ Research._Initialize = function(en) {
     )
     new Research.Tech("Interns", "You <b>gain research passively</b>, at a rate of <b>1 research every 10 minutes</b>. <q>They do research for you when you're gone. Sure, they may just be drinking all the test tubes and fighting each other with meter sticks, but it's the effort that counts. </q>", 10, f, f, [0], [9, 0], 0.3, 0); //2
     new Research.Tech("Better application forms", "Research costs <b>10%</b> less.", 100, f, f, [2], [9, 1], 0.6, 0);
-    new Research.Tech("Kitten scientists", "You gain <b>more CpS</b> the more milk you have.", 999, () => req(Game.AchievementsOwned, 500), f, [1], [18, 21], -0.6, 0.4);
+    new Research.Tech("Kitten scientists", "You gain <b>more CpS</b> the more milk you have.", 999, req(Game.AchievementsOwned, 600, "achievements"), f, [1], [18, 21], -0.6, 0.4);
     Game.CalculateGains = en.injectCode(Game.CalculateGains, `if (Game.Has('Fortune #103')) catMult*=(1+Game.milkProgress*0.05*milkMult);`,
         `\n\tif (mod.research.has('Kitten scientists')) catMult*=(1+Game.milkProgress*0.10*milkMult)`, "after"
     )
-    new Research.Tech("Supercomputers", "Direct research gains <b>+10%</b>. <q>To be fair, they take up a lot of space.</q>", 230, () => breq('Javascript console', 100), f, [0], [32, 0], -0.15, -0.15);
-    new Research.Tech("Cookie funding", "You passively gain research <b>faster</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 150, () => breq('Bank', 250), f, [2], [26, 11], 0.5, -0.3); //3
+    new Research.Tech("Supercomputers", "Direct research gains <b>+10%</b>. <q>To be fair, they take up a lot of space.</q>", 230, breq('Javascript console', 100), f, [0], [32, 0], -0.15, -0.15);
+    new Research.Tech("Cookie funding", "You passively gain research <b>faster</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 150, breq('Bank', 250), f, [2], [26, 11], 0.5, -0.3); //3
 
     var spr_ref = [0,1,2,3,4,15,16,17,5,6,7,8,13,14,19,20,32,33,34,35];
     var tier_ref = [21,26,27];
@@ -400,9 +404,9 @@ Research._Initialize = function(en) {
             'if (mod.research.has("Autoclicker")) mult*=1.25;'
         ]
     )
-    new Research.Tech("Fourth-dimensional workarounds", "Clicking is <b>6%</b> more powerful.", 35, () => req(Game.cookieClicks, 500), f, [0], [1, 6], 0.3, 0.3); // 4
-    new Research.Tech("Cybernetic fingers", "Clicking is <b>6%</b> more powerful. <q>Clink, clink.</q>", 70, () => req(Game.cookieClicks, 1000), f, [4], [12, 1], 0.6, 0.5); // 5
-    new Research.Tech("Repeated electrical shock", "Clicking is <b>6%</b> more powerful. <q>Ow. Ow. Ow.</q>", 105, () => req(Game.cookieClicks, 2500), f, [5], [12, 2], 0.9, 0.6); // 6
+    new Research.Tech("Fourth-dimensional workarounds", "Clicking is <b>6%</b> more powerful.", 35, req(Game.cookieClicks, 500, "cookie clicks"), f, [0], [1, 6], 0.3, 0.3); // 4
+    new Research.Tech("Cybernetic fingers", "Clicking is <b>6%</b> more powerful. <q>Clink, clink.</q>", 70, req(Game.cookieClicks, 1000, "cookie clicks"), f, [4], [12, 1], 0.6, 0.5); // 5
+    new Research.Tech("Repeated electrical shock", "Clicking is <b>6%</b> more powerful. <q>Ow. Ow. Ow.</q>", 105, req(Game.cookieClicks, 2500, "cookie clicks"), f, [5], [12, 2], 0.9, 0.6); // 6
     Game.mouseCps = en.injectChain(Game.mouseCps, "if (Game.Has('Dragon claw')) mult*=1.03;",
         [
             'if (mod.research.has("Fourth-dimensional workarounds")) mult*=1.06;',
@@ -413,7 +417,7 @@ Research._Initialize = function(en) {
     buildingTree(1);
     
     buildingTree(2);
-    new Research.Tech("Regrowth", "Farms yield <b>three times</b> more. <div class=\"line\"></div> You can <b>reuse depleted land</b>, effectively ignoring resource depletion. <q>A masterful resource-saving invention! Wait, isn't this how agriculture is supposed to work? </q>", 230, () => breq('Farm', 75), f, [0], [2, 35], 0.8, 0.8); // 1
+    new Research.Tech("Regrowth", "Farms yield <b>three times</b> more. <div class=\"line\"></div> You can <b>reuse depleted land</b>, effectively ignoring resource depletion. <q>A masterful resource-saving invention! Wait, isn't this how agriculture is supposed to work? </q>", 230, breq('Farm', 75), f, [0], [2, 35], 0.8, 0.8); // 1
     tieredTree(2, 1, "Monocookie agriculture", "Gearing your farms to only cultivate cookies."); // 1
     tieredTree(2, 2, "Better hoes", "Actually, scratch that. Who would waste netherite on a hoe?"); // 2
     tieredTree(2, 3, "Radiative therapy", "Radiation increases the chance for cookie plants to mutate and become more useful. For example, a carnivorous plant with the ability to speak is already being used as a deterrent to greedy young kids.")
@@ -430,7 +434,10 @@ Research._Initialize = function(en) {
     tieredTree(5, 2, "Financial gobbledygook", "This makes your banking system more legitimate and less likely to get investigated by those pesky government agents.") // 2
     tieredTree(5, 3, "Shinier vaults", "Highly inviting for potential burglars! This leads to all your money being stolen by-wait, where were we, again?") // 3
     buildingTree(6);
-    function hasPantheon(){return (Game.Objects['Temple'].minigame)}
+    var hasPantheon={
+        reqFunc: function(){return Game.Objects.Temple.minigame},
+        reqDesc: "unlock the Pantheon"
+    }
     new Research.Tech("Polytheism", "Decreases worship slot refill time by <b>25%</b>.<q>Worshipping all of your gods at once makes them more willing to cooperate.</q>", 50, hasPantheon, f, [0], [11, 6], 0, 0.5); // 1
     new Research.Tech("Creation star", "All buildings are <b>5%</b> cheaper.<q>Warning: do not touch.</q>", 75, hasPantheon, f, [1], [26, 18], 0.3, 0.8); // 2
     Game.modifyBuildingPrice = en.injectCode(Game.modifyBuildingPrice, "if (building.fortune && Game.Has(building.fortune.name)) price*=0.93;",
