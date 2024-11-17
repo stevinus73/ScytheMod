@@ -379,7 +379,7 @@ Research._Initialize = function(en) {
     // tier: 1, 2, 3
     var tieredTreeG = function(i, tier, name, desc, spc) {
         var me = Game.ObjectsById[i];
-        var hfunction = function() {return (me.amount >= (100 + 100 * tier))};
+        var hfunction = breq(me.name, 100 + 100*tier);
         var deps = [0];
         if (tier > 1) deps=[me.tieredResearch[tier-2].id];
         me.tieredResearch.push(new Research.Tech(name, spc+'<q>'+desc+'</q>', 30 + 20 * tier, hfunction, f, deps, [spr_ref[i], tier_ref[tier-1]], 0.6 * tier, 0));
