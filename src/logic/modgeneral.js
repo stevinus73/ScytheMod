@@ -44,7 +44,7 @@ General._Initialize = function(en) {
                 'else if (M.swaps==1) t=1000*60*60*4;', 
                 'else if (M.swaps==1) t=1000*60*60*4;\n\tif (mod.research.has("Polytheism")) t*=0.75;')
             );
-            eval("Game.Objects.Temple.minigame.logic="+Game.Objects.Temple.minigame.draw.toString().replace(
+            eval("Game.Objects.Temple.minigame.logic="+Game.Objects.Temple.minigame.logic.toString().replace(
                 'else if (M.swaps==1) t=1000*60*60*4;', 
                 'else if (M.swaps==1) t=1000*60*60*4;\n\tif (mod.research.has("Polytheism")) t*=0.75;')
             );
