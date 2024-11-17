@@ -383,6 +383,7 @@ Research._Initialize = function(en) {
         tieredTreeG(i, tier, name, desc, cfl(Game.ObjectsById[i].plural)+" yield <b>"+Beautify(100-5*i)+"%</b> more. Resource space is <b>doubled</b>.");
     }
     Research.hasTiered = function(i, tier) {
+        if (!Game.ObjectsById[i].tieredResearch) return false;
         if (Game.ObjectsById[i].tieredResearch.length < tier) return false;
         return Game.ObjectsById[i].tieredResearch[tier-1].bought;
     }
