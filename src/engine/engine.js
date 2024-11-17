@@ -24,7 +24,7 @@ IdlersPocket._Initialize = function () {
         var last = begin;
         chain.forEach(function(code) {
             ret = IdlersPocket.injectCode(ret, last, "\n\t"+code, "after");
-            last = ret;
+            last = code;
         })
         return ret;
     }
