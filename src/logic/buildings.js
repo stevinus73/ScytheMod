@@ -417,7 +417,7 @@ BModify._Initialize = function(en, Research) {
         )
 
         this.getStat = function() {
-            if (hasTech("Galactica mindoris")) {
+            if (Research.has("Galactica mindoris")) {
                 l("idleverseStat").innerHTML = "<b>"+loc("Total resource boost provided by")+" "+this.me.amount+" idleverses:</b> "
             + "x" + Beautify(this.resourceMult(), 3);
             }
