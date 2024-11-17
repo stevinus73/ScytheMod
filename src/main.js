@@ -1,5 +1,7 @@
 var src="https://stevinus73.github.io/ScytheMod/";
 var CodeUrl = function(url) {return src+"src/"+url};
+var ImageUrl = function(url) {return src+"img/"+url};
+var Icons = ImageUrl("icons.png");
 
 var script=document.querySelector('script[src="'+CodeUrl("main.js")+'"]');
 script.setAttribute('type','module');
