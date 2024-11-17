@@ -28,6 +28,9 @@ IdlersPocket._Initialize = function () {
         })
         return ret;
     }
+    IdlersPocket.addLoc = function(loc1, loc2) {
+        locStrings[loc1] = loc2 ?? loc1;
+    }
     IdlersPocket.shim = shimmer_engine;
     IdlersPocket.be = building_engine;
     IdlersPocket.ue = upgrade_engine;

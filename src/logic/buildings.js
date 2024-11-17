@@ -487,8 +487,8 @@ BModify._Initialize = function(en, Research) {
     new BModify.RS_Manager(5,  66000, ["Interest", "dollar", "dollars"]);
     new BModify.RS_Manager(6,  62000, ["Artifact", "gram", "grams"]);
     new BModify.RS_Manager(7,  57000, ["Mana", "magic", "magic"]);
-    new BModify.RS_Manager(8,  51000, ["Planet matter", "earth mass", "earth masses"])
-    // Alchemy labs not included because they utilize a special mechanic;
+    new BModify.RS_Manager(8,  51000, ["Planet matter", "earth mass", "earth masses"]);
+    new BModify.RS_Manager(9,  49000, ["Gold", "gram", "grams"]);
     new BModify.RS_Manager(10, 46000, ["Warped cookies", "aetheria", "aethereiars"]);
     new BModify.RS_Manager(11, 43000, ["Reachable times", "century", "centuries"]);
     new BModify.RS_Manager(12, 39000, ["Antimatter", "gram", "grams"]);

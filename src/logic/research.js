@@ -59,6 +59,7 @@ Research._Initialize = function(en) {
 
         this.priceR = priceR;
         this.requirements = requirements;
+        this.req = false;
         this.onBuy = onBuy;
         this.parents = Array.from(parents, (i) => this.tree.upgrades[i]);
         this.sprite = sprite;
@@ -72,7 +73,7 @@ Research._Initialize = function(en) {
             this.parents.forEach(function(parent) {
                 if (!parent.bought) parentBuy = false;
             });
-            return (this.requirements() && parentBuy && (Research.research >= this.getPrice()));
+            return (this.req && parentBuy && (Research.research >= this.getPrice()));
         }
 
         this.getPrice = function() {
@@ -124,7 +125,7 @@ Research._Initialize = function(en) {
                 if (parent.bought) available = true;
             });
             if (this.parents.length == 0) available = true;
-            if (!this.requirements()) available = false;
+            // if (!this.req) available = false;
             if (this.bought) available = true;
             return available;
         }
@@ -151,9 +152,8 @@ Research._Initialize = function(en) {
             var price='';
 
             tags.push(loc("[Tag]Tech",0,'Tech'),'#36a4ff');
-            if (this.bought) {
-                tags.push(loc("Researched"),0);
-            }
+            if (this.bought) tags.push(loc("Researched"),0);
+            if (!this.req) tags.push(loc("Locked"),0);
 
             var tagsStr='';
             for (var i=0;i<tags.length;i+=2)
@@ -163,12 +163,19 @@ Research._Initialize = function(en) {
             var cost=this.getPrice();
             price='<div style="float:right;text-align:right;"><span class="price research'+ (this.canBuy() ? '' : ' disabled') +'">'+Beautify(Math.round(cost))+'</span></div>';
             var tip=(this.canBuy() && !this.bought) ? loc("Click to research.") : "";
-
+            if (!this.req) tip=loc("This upgrade hasn't been unlocked yet.");
             return '<div style="position:absolute;left:1px;top:1px;right:1px;bottom:1px;background:linear-gradient(125deg,rgba(50,40,40,1) 0%,rgba(50,40,40,0) 20%);mix-blend-mode:screen;z-index:1;"></div><div style="z-index:10;padding:8px 4px;min-width:350px;position:relative;" id="tooltipCrate">'+
-            '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;'+writeIcon(this.sprite)+'"></div>'+price+
-            '<div class="name">'+this.name+'</div>'+tagsStr+
-            '<div class="line"></div><div class="description">'+this.desc+'</div></div>'+
+            '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;'+writeIcon(this.sprite)+'"></div>'+(this.req?price:'')+
+            '<div class="name">'+(this.req?this.name:'???')+'</div>'+tagsStr+
+            '<div class="line"></div><div class="description">'+(this.req?this.desc:"You must " +''+" to unlock this research upgrade.")+'</div></div>'+
             (tip!=''?('<div class="line"></div><div style="font-size:10px;font-weight:bold;color:#999;text-align:center;padding-bottom:4px;line-height:100%;" class="crateTip">'+tip+'</div>'):'');
+        }
+
+        this.check = function() {
+            if (this.requirements()) {
+                if (!this.req) Game.Notify("Unlocked new research!", "Check your research trees!", [9, 0]);
+                this.req = true;
+            }
         }
 
         this.tree.id += 1;
@@ -262,11 +269,6 @@ Research._Initialize = function(en) {
         }
         this.crates.innerHTML = crateStr;
     }
-
-    // Research.bounds = function(x, y) {
-    //     var c = Research.container;
-    //     return (c.offsetLeft <= x <= c.offsetLeft+c.offsetWidth) && (c.offsetRight <= y <= c.offsetRight+c.offsetHeight);
-    // }
 
     Research.update = function() {
         if (Game.keys[37]) this.userXT -= 8;
@@ -409,7 +411,7 @@ Research._Initialize = function(en) {
         ]
     )
     buildingTree(1);
-
+    
     buildingTree(2);
     new Research.Tech("Regrowth", "Farms yield <b>three times</b> more. <div class=\"line\"></div> You can <b>reuse depleted land</b>, effectively ignoring resource depletion. <q>A masterful resource-saving invention! Wait, isn't this how agriculture is supposed to work? </q>", 230, () => breq('Farm', 75), f, [0], [2, 35], 0.8, 0.8); // 1
     tieredTree(2, 1, "Monocookie agriculture", "Gearing your farms to only cultivate cookies."); // 1
@@ -469,7 +471,9 @@ Research._Initialize = function(en) {
     tieredTree(10, 2, "Rift between rifts", "Congrats, you've managed to create a portal that connects to the weird void between cookie-filled dimensions. In practice, you can just use this as your new headquarters. As if your employees WANTED to see their families again! Hah!") // 2
     tieredTree(10, 3, "The demon that comes when they call its name", "So I can just say [redacted] and he'll be summ-OH GOD") // 3
     buildingTree(11);
-
+    tieredTree(11, 1, "Twin cookies paradox", "If you leave one cookie in a time machine and another cookie on Earth, the time machine cookie will be more cookie than cookie cookie cookie.") // 1
+    tieredTree(11, 2, "Stealth operations", "You can use your newfound time powers to hijack cookie production chains from the very beginning of the universe.") // 2
+    tieredTree(11, 3, "To the very end of the universe", "Man, it is really dark out here.") // 3
     buildingTree(12);
 
     buildingTree(13);
@@ -537,6 +541,11 @@ Research._Initialize = function(en) {
 
     Game.registerHook('check', function() {
         Research.draw();
+        for (var i in Research.trees) {
+            Research.trees[i].upgrades.forEach(function(up) {
+                up.check();
+            })
+        }
     });
 
     Game.registerHook('cps', function(cps) {
