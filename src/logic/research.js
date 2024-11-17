@@ -341,7 +341,7 @@ Research._Initialize = function(en) {
     }
     Game.Win = en.injectCode(Game.Win, 'it.won=1;', 'mod.research.earnResearch(10);', "after");
 
-    f={reqFunc:function(){return true;},reqDesc:''};
+    var f={reqFunc:function(){return true;},reqDesc:''};
     function req(amnt, reqNum, amntN) {
         return {reqFunc:function(){return amnt >= reqNum;},reqDesc:"get "+reqNum+" "+amntN};
     }
@@ -363,7 +363,7 @@ Research._Initialize = function(en) {
         `\n\tif (mod.research.has('Kitten scientists')) catMult*=(1+Game.milkProgress*0.10*milkMult)`, "after"
     )
     new Research.Tech("Supercomputers", "Direct research gains <b>+10%</b>. <q>To be fair, they take up a lot of space.</q>", 230, breq('Javascript console', 100), f, [0], [32, 0], -0.15, -0.15);
-    new Research.Tech("Cookie funding", "You passively gain research <b>faster</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 150, breq('Bank', 250), f, [2], [26, 11], 0.5, -0.3); //3
+    new Research.Tech("Cookie funding", "You passively gain research <b>faster</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 150, breq('Bank', 250), f, [2], [15, 16], 0.5, -0.3); //3
 
     var spr_ref = [0,1,2,3,4,15,16,17,5,6,7,8,13,14,19,20,32,33,34,35];
     var tier_ref = [21,26,27];
