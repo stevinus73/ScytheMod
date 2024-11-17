@@ -11,6 +11,23 @@ IdlersPocket._Initialize = function () {
 
     IdlersPocket.injectCode = injectCode;
     IdlersPocket.injectCodes = injectCodes;
+    // honestly I don't really know too much about injectCode so I'm just making this for convenience
+    IdlersPocket.injectMult = function(func, inject, ord) {
+        var ret = func;
+        inject.forEach(function(code) {
+            ret = IdlersPocket.injectCode(ret, code[0], code[1], ord);
+        })
+        return ret;
+    }
+    IdlersPocket.injectChain = function(func, begin, chain) {
+        var ret = func;
+        var last = begin;
+        chain.forEach(function(code) {
+            ret = IdlersPocket.injectCode(ret, last, "\n\t"+code, "after");
+            last = code;
+        })
+        return ret;
+    }
     IdlersPocket.shim = shimmer_engine;
     IdlersPocket.be = building_engine;
     IdlersPocket.ue = upgrade_engine;
@@ -22,27 +39,17 @@ IdlersPocket._Initialize = function () {
     IdlersPocket.loadCallbacks = [];
     IdlersPocket.saveCallbacks = [];
 
-    IdlersPocket._save = function() {
-        IdlersPocket.saveCallbacks.forEach((c) => c());
-        return IdlersPocket._encryptVars();
-    }
-
-    IdlersPocket._load = function(str) {
-        IdlersPocket._decryptVars(str);
-        IdlersPocket.loadCallbacks.forEach((c) => c());
-    }
-
     IdlersPocket.vars = new Map();
     IdlersPocket.var_ident = [];
 
     
     IdlersPocket._encryptVars = function() {
-        return Array.from(this.vars.values(), (v) => utf8_to_b64(v)).join("|");
+        return Array.from(this.vars.values(), (v) => utf8_to_b64(v.value)).join("|");
     }
     IdlersPocket._decryptVars = function(str) {
         Array.from(str.split("|"), (v) => b64_to_utf8(v)).forEach(function (item, index) {
             var parsed = 0;
-            var n = this.vars.get(this.var_ident[index]);
+            var n = IdlersPocket.vars.get(IdlersPocket.var_ident[index]);
             if (n.type == 'float') parsed = parseFloat(item);
             if (n.type == 'int') parsed = parseInt(item);
             n.value = parsed;
@@ -133,10 +140,22 @@ IdlersPocket._Initialize = function () {
     IdlersPocket.Achievement.prototype.pushToFront = function (id, name, desc, icon, type, winCon) { }
 }
 
+IdlersPocket._Initialize();
+
 
 
 IdlersPocket.LoadMod = function (name, init) {
-    this._Initialize();
+
+    this._save = function() {
+        IdlersPocket.saveCallbacks.forEach((c) => c());
+        return IdlersPocket._encryptVars();
+    }
+
+    this._load = function(str) {
+        IdlersPocket._decryptVars(str);
+        IdlersPocket.loadCallbacks.forEach((c) => c());
+    }
+
     var mod = {
         init: function () {
             init();
