@@ -115,8 +115,8 @@ Research._Initialize = function(en) {
         this.getPosition = function() {
             var cX = Research.container.offsetWidth  * 0.5 - 28;
             var cY = Research.container.offsetHeight * 0.5 - 28;
-            var sX =  this.x * 150 + cX;
-            var sY = -this.y * 150 + cY;
+            var sX =  this.x * 500 + cX;
+            var sY = -this.y * 500 + cY;
             return {posX: sX, posY: sY};
         }
 
@@ -400,9 +400,9 @@ Research._Initialize = function(en) {
     tieredTreeG(0, 3, "Autoclicker", "Huh, wonder why I never thought of this before.", "Cursors are <b>25%</b> more efficient."); // 3
     Game.Objects.Cursor.cps = en.injectChain(Game.Objects.Cursor.cps, "mult*=Game.eff('cursorCps');",
         [
-            'if (mod.research.has("Flex gloves")) mult*=1.25;',
-            'if (mod.research.has("Rocket propulsor")) mult*=1.25;',
-            'if (mod.research.has("Autoclicker")) mult*=1.25;'
+            'if (mod.research.hasTiered(0, 1)) mult*=1.25;',
+            'if (mod.research.hasTiered(0, 2)) mult*=1.25;',
+            'if (mod.research.hasTiered(0, 3)) mult*=1.25;'
         ]
     )
     new Research.Tech("Fourth-dimensional workarounds", "Clicking is <b>6%</b> more powerful.", 30, req(Game.cookieClicks, 500, "cookie clicks"), f, [0], [1, 6], 0.3, 0.3); // 4
@@ -498,9 +498,9 @@ Research._Initialize = function(en) {
     tieredTreeG(14, 3, "The law of large numbers of cookies", "States that the more cookies you have, the more luck you're bound to get.", "Chancemakers are <b>27%</b> more efficient. Golden cookie gains <b>+27%</b>.") // 3
     Game.shimmerTypes.golden.popFunc = en.injectChain(Game.shimmerTypes.golden.popFunc, "if (Game.Has('Dragon fang')) mult*=1.03;",
         [
-            'if (mod.research.has("Luck in the air")) mult*=1.77;',
-            'if (mod.research.has("Loaded dice")) mult*=1.27;',
-            'if (mod.research.has("The law of large numbers of cookies")) mult*=1.27;',
+            'if (mod.research.hasTiered(14, 1)) mult*=1.77;',
+            'if (mod.research.hasTiered(14, 2)) mult*=1.27;',
+            'if (mod.research.hasTiered(14, 3)) mult*=1.27;',
         ]
     )
     Game.Objects.Chancemaker.cps = en.injectChain(Game.Objects.Chancemaker.cps, "mult*=Game.magicCpS(me.name);", 
