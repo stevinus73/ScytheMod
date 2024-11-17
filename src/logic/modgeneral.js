@@ -29,15 +29,6 @@ General._Initialize = function(en) {
      * Temple name changes + effect deletion (uses eval but this shouldn't really matter due to Game.loadMinigames rarely being called)
      */
 
-    General.swapTime = function(swapsLeft) {
-        var mult = 1;
-        if (mod.research.has("Polytheism")) mult*=0.75;
-        if (swapsLeft == 0) return mult*60*60*16;
-        if (swapsLeft == 1) return mult*60*60*4;
-        if (swapsLeft == 2) return mult*60*60;
-        return 0;
-    }
-
     General.TempleRename = function() {
         if (Game.Objects.Temple.minigame) { 
             var m = Game.Objects.Temple.minigame;

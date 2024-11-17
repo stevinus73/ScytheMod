@@ -352,8 +352,7 @@ Research._Initialize = function(en) {
     )
     new Research.Tech("Interns", "You <b>gain research passively</b>, at a rate of <b>1 research every 10 minutes</b>. <q>They do research for you when you're gone. Sure, they may just be drinking all the test tubes and fighting each other with meter sticks, but it's the effort that counts. </q>", 10, f, f, [0], [9, 0], 0.3, 0); //2
     new Research.Tech("Better application forms", "Research costs <b>10%</b> less.", 100, f, f, [2], [9, 1], 0.6, 0);
-    function has500Achievs(){return (Game.AchievementsOwned >= 500)}
-    new Research.Tech("Kitten scientists", "You gain <b>more CpS</b> the more milk you have.", 999, has500Achievs, f, [1], [18, 21], -0.6, 0.4);
+    new Research.Tech("Kitten scientists", "You gain <b>more CpS</b> the more milk you have.", 999, () => req(Game.AchievementsOwned, 500), f, [1], [18, 21], -0.6, 0.4);
     Game.CalculateGains = en.injectCode(Game.CalculateGains, `if (Game.Has('Fortune #103')) catMult*=(1+Game.milkProgress*0.05*milkMult);`,
         `\n\tif (mod.research.has('Kitten scientists')) catMult*=(1+Game.milkProgress*0.10*milkMult)`, "after"
     )
@@ -399,9 +398,9 @@ Research._Initialize = function(en) {
             'if (mod.research.has("Autoclicker")) mult*=1.25;'
         ]
     )
-    new Research.Tech("Fourth-dimensional workarounds", "Clicking is <b>6%</b> more powerful.", 35, () => breq(Game.cookieClicks, 500), f, [0], [1, 6], 0.3, 0.3); // 4
-    new Research.Tech("Cybernetic fingers", "Clicking is <b>6%</b> more powerful. <q>Clink, clink.</q>", 70, () => breq(Game.cookieClicks, 1000), f, [4], [12, 1], 0.6, 0.5); // 5
-    new Research.Tech("Repeated electrical shock", "Clicking is <b>6%</b> more powerful. <q>Ow. Ow. Ow.</q>", 105, () => breq(Game.cookieClicks, 2500), f, [5], [12, 2], 0.9, 0.6); // 6
+    new Research.Tech("Fourth-dimensional workarounds", "Clicking is <b>6%</b> more powerful.", 35, () => req(Game.cookieClicks, 500), f, [0], [1, 6], 0.3, 0.3); // 4
+    new Research.Tech("Cybernetic fingers", "Clicking is <b>6%</b> more powerful. <q>Clink, clink.</q>", 70, () => req(Game.cookieClicks, 1000), f, [4], [12, 1], 0.6, 0.5); // 5
+    new Research.Tech("Repeated electrical shock", "Clicking is <b>6%</b> more powerful. <q>Ow. Ow. Ow.</q>", 105, () => req(Game.cookieClicks, 2500), f, [5], [12, 2], 0.9, 0.6); // 6
     Game.mouseCps = en.injectChain(Game.mouseCps, "if (Game.Has('Dragon claw')) mult*=1.03;",
         [
             'if (mod.research.has("Fourth-dimensional workarounds")) mult*=1.06;',
@@ -468,7 +467,7 @@ Research._Initialize = function(en) {
     buildingTree(10);
     tieredTree(10, 1, "Backwords cookie-summoning chants", "One popular chant goes 'Seikooc em evig! SEIKOOC EM EVIG!'.") // 1
     tieredTree(10, 2, "Rift between rifts", "Congrats, you've managed to create a portal that connects to the weird void between cookie-filled dimensions. In practice, you can just use this as your new headquarters. As if your employees WANTED to see their families again! Hah!") // 2
-    tieredTree(10, 3, "The demon that comes when they call its name", "So I can just say Jauthemazbal and he'll be summ-OH GOD") // 3
+    tieredTree(10, 3, "The demon that comes when they call its name", "So I can just say [redacted] and he'll be summ-OH GOD") // 3
     buildingTree(11);
 
     buildingTree(12);
@@ -491,7 +490,9 @@ Research._Initialize = function(en) {
     tieredTreeG(17, 2, "Testing worlds", "You've managed to repurpose some of your idleverses as multiverse-size guinea pigs for experiments with stuff. Good thing those lawyers have been strangely quiet recently.", "Idleverses are <b>30%</b> more efficient.") // 2
     tieredTreeG(17, 3, "The marble ball conjecture", "The marble ball conjecture states that our entire multiverse may be only the size of a small marble ball in another multiverse. This means you have even more dimensions to take over.", "Idleverses are <b>30%</b> more efficient.") // 3
     buildingTree(18);
-
+    tieredTree(18, 1, "Headspace expansion", "With all those problems about space, you figured your cortex bakers can probably just think up more space.") // 1
+    tieredTree(18, 2, "Cerebral lubricant", "You don't want all those big brains getting in themselves' way, do you?") // 2
+    tieredTree(18, 3, "Imagination", "The ultimate power. Your cortex bakers don't have very much of it, but you can just spike some imagination juice into their drinks. After all, anything is possible when you IMAGINIZE it!") // 3
     buildingTree(19);
     tieredTree(19, 1, "DNA Splicers", "With these handy splicers, you can splice the best and most useful genes from other organisms directly into a clone.") // 1
     tieredTree(19, 2, "Vitality transfer", "Transferring lifeforce between your clones makes it generally last longer.") // 2

@@ -301,6 +301,8 @@ BModify._Initialize = function(en) {
         this.grandmaAlloc = new Array(18).fill(0);
         this.allocT = 0;
 
+        for (var i=0;i<18;i++) en.newVar("grandmaAlloc"+i, "int");
+
         this.switchStats = function(on) {
             if (on == -1) on = !this.statsView;
             this.statsView = on;
@@ -388,6 +390,12 @@ BModify._Initialize = function(en) {
             "var mult=1+mod.bModify.grandma.grandmaAlloc[other.id-2]*0.2*(1/(other.id-1));", 
             "replace"
         )
+        en.saveCallback(function() {
+            for (var i=0;i<18;i++) en.setVar("grandmaAlloc"+i, BModify.grandma.grandmaAlloc[i]);
+        })
+        en.loadCallback(function() {
+            for (var i=0;i<18;i++) BModify.grandma.grandmaAlloc[i] = en.getVar("grandmaAlloc"+i);
+        })
     }
 
     BModify.Idleverses = function() {
@@ -418,9 +426,9 @@ BModify._Initialize = function(en) {
 
         this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);", 
             [
-                'if (mod.research.hasTiered(17, 0)) mult*=1.3;',
                 'if (mod.research.hasTiered(17, 1)) mult*=1.3;',
-                'if (mod.research.hasTiered(17, 2)) mult*=1.3;'
+                'if (mod.research.hasTiered(17, 2)) mult*=1.3;',
+                'if (mod.research.hasTiered(17, 3)) mult*=1.3;'
             ]
         )
     }
