@@ -406,8 +406,8 @@ Research._Initialize = function(en) {
         ]
     )
     new Research.Tech("Fourth-dimensional workarounds", "Clicking is <b>6%</b> more powerful.", 30, req(Game.cookieClicks, 500, "cookie clicks"), f, [0], [1, 6], 0.3, 0.3); // 4
-    new Research.Tech("Cybernetic fingers", "Clicking is <b>6%</b> more powerful. <q>Clink, clink.</q>", 50, req(Game.cookieClicks, 1000, "cookie clicks"), f, [4], [12, 1], 0.6, 0.5); // 5
-    new Research.Tech("Repeated electrical shock", "Clicking is <b>6%</b> more powerful. <q>Ow. Ow. Ow.</q>", 70, req(Game.cookieClicks, 2500, "cookie clicks"), f, [5], [12, 2], 0.9, 0.6); // 6
+    new Research.Tech("Cybernetic fingers", "Clicking is <b>6%</b> more powerful. <q>Clink, clink.</q>", 50, req(Game.cookieClicks, 1000, "cookie clicks"), f, [4], [12, 1], 0.5, 0.6); // 5
+    new Research.Tech("Repeated electrical shock", "Clicking is <b>6%</b> more powerful. <q>Ow. Ow. Ow.</q>", 70, req(Game.cookieClicks, 2500, "cookie clicks"), f, [5], [12, 2], 0.6, 0.9); // 6
     Game.mouseCps = en.injectChain(Game.mouseCps, "if (Game.Has('Dragon claw')) mult*=1.03;",
         [
             'if (mod.research.has("Fourth-dimensional workarounds")) mult*=1.06;',
