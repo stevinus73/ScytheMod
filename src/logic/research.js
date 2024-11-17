@@ -197,7 +197,7 @@ Research._Initialize = function(en) {
         this.curr = false;
 
         this.getCrate = function() {
-            if (!this.requirements()) return '';
+            if (!this.requirements.reqFunc()) return '';
             var classes = 'crate upgrade';
             if (this.curr) classes += ' enabled';
             var clickStr = `mod.research.setCurrTree('`+this.name+`');mod.research.draw();`;
@@ -443,7 +443,7 @@ Research._Initialize = function(en) {
     Game.modifyBuildingPrice = en.injectCode(Game.modifyBuildingPrice, "if (building.fortune && Game.Has(building.fortune.name)) price*=0.93;",
         '\n\tif (mod.research.has("Creation star")) price*=0.95;', "after"
     )
-    new Research.Tech("Holiday coupon", "All upgrades are <b>10%</b> cheaper if a season is currently active.<q>Big discount! You can't miss out!</b>", 75, hasPantheon, f, [1], [26, 17], 0, 0.9); // 3
+    new Research.Tech("Holiday coupon", "All upgrades are <b>10%</b> cheaper if a season is currently active.<q>Big discount! You can't miss out!</b>", 75, hasPantheon, f, [1], [25, 18], 0, 0.9); // 3
     Game.Upgrade.prototype.getPrice = en.injectCode(Game.Upgrade.prototype.getPrice, "if (Game.hasBuff('Haggler\'s misery')) price*=1.02;",
         '\n\tif (mod.research.has("Holiday savings") && Game.season!="") price*=0.9;', "after"
     )
@@ -454,7 +454,7 @@ Research._Initialize = function(en) {
         }
         return n;
     }
-    new Research.Tech("Tooth of the wyrm", "Wrath cookies spawn <b>3%</b> more often per wrinkler present.", 75, hasPantheon, f, [1], [27, 13], -0.3, 0.8); // 4
+    new Research.Tech("Tooth of the wyrm", "Wrath cookies spawn <b>3%</b> more often per wrinkler present.", 75, hasPantheon, f, [1], [21, 19], -0.3, 0.8); // 4
     Game.shimmerTypes.golden.getTimeMod = en.injectCode(Game.shimmerTypes.golden.getTimeMod, "if (Game.Has('Gold hoard')) m=0.01;",
         '\n\tif (mod.research.has("Tooth of the wyrm") && me.wrath) m*=(1-0.03*mod.research.numWrinklers());', "after"
     )
@@ -482,7 +482,9 @@ Research._Initialize = function(en) {
     tieredTree(11, 2, "Stealth operations", "You can use your newfound time powers to hijack cookie production chains from the very beginning of the universe.") // 2
     tieredTree(11, 3, "To the very end of the universe", "Man, it is really dark out here.") // 3
     buildingTree(12);
-
+    tieredTree(12, 1, "Grand unified theory of milk", "According to one GUT, milk is a substance created in the Big Bang by the breaking apart of special molecules called chiptraeons.") // 1
+    tieredTree(12, 2, "Entanglement", "It could theoretically allow communication between objects faster than the speed of light, and by extension, cookie production faster than the speed of light.") // 2
+    tieredTree(12, 3, "The larger scale", "Take a step back. Know that all the weird cookie particles combine to make effects on the large scale that are easier to understand.") // 3
     buildingTree(13);
 
     buildingTree(14);
