@@ -197,7 +197,7 @@ Research._Initialize = function(en) {
         this.curr = false;
 
         this.getCrate = function() {
-            if (!this.requirements.reqFunc()) return '';
+            if (!this.requirements()) return '';
             var classes = 'crate upgrade';
             if (this.curr) classes += ' enabled';
             var clickStr = `mod.research.setCurrTree('`+this.name+`');mod.research.draw();`;
@@ -349,7 +349,7 @@ Research._Initialize = function(en) {
         return req(Game.Objects[building], reqNum, Game.Objects[building].plural);
     }
 
-    new Research.Tree("General", [10, 0], f);
+    new Research.Tree("General", [10, 0], function(){return true;});
 
     new Research.Tech("Research lab", "Unlocks the <b>Research tree</b>, where you can buy upgrades using research (the number in the top right corner). <div class=\"line\"></div> You gain research in a variety of ways. <div class=\"line\"></div> Research upgrades are kept across ascensions. <q>It's quite small, but so is your current business.</q>", 1, f, f, [], [9, 2], 0, 0); //0
     new Research.Tech("Plain cookie", "Cookie production multiplier <b>+5%</b>. <div class=\"line\"></div> Unlocks <b>new cookie upgrades</b> that appear once you have enough cookies. <q>We all gotta start somewhere. </q>", 50, f, f, [0], [2, 3], -0.2, 0.5); //1
@@ -443,7 +443,7 @@ Research._Initialize = function(en) {
     Game.modifyBuildingPrice = en.injectCode(Game.modifyBuildingPrice, "if (building.fortune && Game.Has(building.fortune.name)) price*=0.93;",
         '\n\tif (mod.research.has("Creation star")) price*=0.95;', "after"
     )
-    new Research.Tech("Holiday coupon", "All upgrades are <b>10%</b> cheaper if a season is currently active.<q>Big discount! You can't miss out!</b>", 75, hasPantheon, f, [1], [25, 18], 0, 0.9); // 3
+    new Research.Tech("Holiday coupon", "All upgrades are <b>10%</b> cheaper if a season is currently active.<q>Big discount! You can't miss out!</q>", 75, hasPantheon, f, [1], [25, 18], 0, 0.9); // 3
     Game.Upgrade.prototype.getPrice = en.injectCode(Game.Upgrade.prototype.getPrice, "if (Game.hasBuff('Haggler\'s misery')) price*=1.02;",
         '\n\tif (mod.research.has("Holiday savings") && Game.season!="") price*=0.9;', "after"
     )
