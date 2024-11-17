@@ -13,6 +13,7 @@ Research._Initialize = function(en) {
     str += 'onclick="mod.research.switch(-1)">'
     str += '<div>View Research</div></div>'
     l("comments").insertAdjacentHTML('beforeend','<div id="researchDisplay"></div>')
+    l("buildingsMaster").style.zIndex=2;
     l("buildingsMaster").insertAdjacentHTML('afterbegin', str);
     this.button = l("researchButton");
     this.researchOn = false;
@@ -205,7 +206,7 @@ Research._Initialize = function(en) {
             ' class="'+classes+'" '+Game.getDynamicTooltip(`mod.research.trees['`+this.name+`'].getTooltip`, 
                 'top', true)
             +' id="researchTreeCrate'+this.name+'" '+
-            'style="'+writeIcon(this.sprite)+'"></div>';
+            'style="'+writeIcon(this.sprite)+' z-index:2;"></div>';
         }
 
         this.getTooltip = function() {
