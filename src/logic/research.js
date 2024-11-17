@@ -115,8 +115,8 @@ Research._Initialize = function(en) {
         this.getPosition = function() {
             var cX = Research.container.offsetWidth  * 0.5 - 28;
             var cY = Research.container.offsetHeight * 0.5 - 28;
-            var sX =  this.x * Research.container.offsetWidth  * 0.5 + cX;
-            var sY = -this.y * Research.container.offsetHeight * 0.5 + cY;
+            var sX =  this.x * 150 + cX;
+            var sY = -this.y * 150 + cY;
             return {posX: sX, posY: sY};
         }
 
@@ -174,7 +174,7 @@ Research._Initialize = function(en) {
 
         this.check = function() {
             if (this.requirements.reqFunc()) {
-                if (!this.req && (this.requirements.reqDesc!='')) Game.Notify("Unlocked new research!", "Check your research trees!", [9, 0]);
+                if (!this.req && this.requirements.reqDesc) Game.Notify("Unlocked new research!", "Check your research trees!", [9, 0]);
                 this.req = true;
             }
         }
@@ -405,9 +405,9 @@ Research._Initialize = function(en) {
             'if (mod.research.has("Autoclicker")) mult*=1.25;'
         ]
     )
-    new Research.Tech("Fourth-dimensional workarounds", "Clicking is <b>6%</b> more powerful.", 35, req(Game.cookieClicks, 500, "cookie clicks"), f, [0], [1, 6], 0.3, 0.3); // 4
-    new Research.Tech("Cybernetic fingers", "Clicking is <b>6%</b> more powerful. <q>Clink, clink.</q>", 70, req(Game.cookieClicks, 1000, "cookie clicks"), f, [4], [12, 1], 0.6, 0.5); // 5
-    new Research.Tech("Repeated electrical shock", "Clicking is <b>6%</b> more powerful. <q>Ow. Ow. Ow.</q>", 105, req(Game.cookieClicks, 2500, "cookie clicks"), f, [5], [12, 2], 0.9, 0.6); // 6
+    new Research.Tech("Fourth-dimensional workarounds", "Clicking is <b>6%</b> more powerful.", 30, req(Game.cookieClicks, 500, "cookie clicks"), f, [0], [1, 6], 0.3, 0.3); // 4
+    new Research.Tech("Cybernetic fingers", "Clicking is <b>6%</b> more powerful. <q>Clink, clink.</q>", 50, req(Game.cookieClicks, 1000, "cookie clicks"), f, [4], [12, 1], 0.6, 0.5); // 5
+    new Research.Tech("Repeated electrical shock", "Clicking is <b>6%</b> more powerful. <q>Ow. Ow. Ow.</q>", 70, req(Game.cookieClicks, 2500, "cookie clicks"), f, [5], [12, 2], 0.9, 0.6); // 6
     Game.mouseCps = en.injectChain(Game.mouseCps, "if (Game.Has('Dragon claw')) mult*=1.03;",
         [
             'if (mod.research.has("Fourth-dimensional workarounds")) mult*=1.06;',
@@ -416,7 +416,9 @@ Research._Initialize = function(en) {
         ]
     )
     buildingTree(1);
-    
+    tieredTreeG(1, 1, "Jumbo rolling pins", "Really helps them get to work.", "Grandmas are <b>25%</b> more efficient."); // 1
+    tieredTreeG(1, 2, "Hair whitener", "Studies show that the whiter the grandmas' hair are, the older they are, and therefore, the more powerful they are.", "Grandmas are <b>25%</b> more efficient.") // 2
+    tieredTreeG(1, 3, "Other people's grandmas", "You sure do seem to have a lot of grandmas. But! If you pull grandmas from other people, you might be able to get even more grandmas.", "Grandmas are <b>25%</b> more efficient.") // 3
     buildingTree(2);
     new Research.Tech("Regrowth", "Farms yield <b>three times</b> more. <div class=\"line\"></div> You can <b>reuse depleted land</b>, effectively ignoring resource depletion. <q>A masterful resource-saving invention! Wait, isn't this how agriculture is supposed to work? </q>", 230, breq('Farm', 75), f, [0], [2, 35], 0.8, 0.8); // 1
     tieredTree(2, 1, "Monocookie agriculture", "Gearing your farms to only cultivate cookies."); // 1
@@ -487,9 +489,27 @@ Research._Initialize = function(en) {
     tieredTree(12, 2, "Entanglement", "It could theoretically allow communication between objects faster than the speed of light, and by extension, cookie production faster than the speed of light.") // 2
     tieredTree(12, 3, "The larger scale", "Take a step back. Know that all the weird cookie particles combine to make effects on the large scale that are easier to understand.") // 3
     buildingTree(13);
-
+    tieredTree(13, 1, "It's all light and mirrors", "Well, that's surprising.") // 1
+    tieredTree(13, 2, "Dyson spheres", "You know, all that light stars produce is practically wasted. It would have much more use if you used futuristic panels to harness it all and convert it into cookies.") // 2
+    tieredTree(13, 3, "Pair instability", "It turns out, that according to new scientific developments, light harnessed by prisms can become so powerful that its energy is temporarily drained towards the production of cookies. This, of course, means more cookies.") // 3
     buildingTree(14);
-
+    tieredTreeG(14, 1, "Luck in the air", "Literally!", "Chancemakers are <b>77%</b> more efficient. Golden cookie gains <b>+77%</b>.") // 1
+    tieredTreeG(14, 2, "Loaded dice", "Can also be used to annoy people at DnD games.", "Chancemakers are <b>27%</b> more efficient. Golden cookie gains <b>+27%</b>.") // 2
+    tieredTreeG(14, 3, "The law of large numbers of cookies", "States that the more cookies you have, the more luck you're bound to get.", "Chancemakers are <b>27%</b> more efficient. Golden cookie gains <b>+27%</b>.") // 3
+    Game.shimmerTypes.golden.popFunc = en.injectChain(Game.shimmerTypes.golden.popFunc, "if (Game.Has('Dragon fang')) mult*=1.03;",
+        [
+            'if (mod.research.has("Luck in the air")) mult*=1.77;',
+            'if (mod.research.has("Loaded dice")) mult*=1.27;',
+            'if (mod.research.has("The law of large numbers of cookies")) mult*=1.27;',
+        ]
+    )
+    Game.Objects.Chancemaker.cps = en.injectChain(Game.Objects.Chancemaker.cps, "mult*=Game.magicCpS(me.name);", 
+        [
+            'if (mod.research.hasTiered(14, 1)) mult*=1.77;',
+            'if (mod.research.hasTiered(14, 2)) mult*=1.27;',
+            'if (mod.research.hasTiered(14, 3)) mult*=1.27;'
+        ]
+    )
     buildingTree(15);
     tieredTree(15, 1, "Fractalized cookies", "If you look carefully enough at the edge of them, you'll find tiny cookies that look exactly the same as the big one.") // 1
     tieredTree(15, 2, "Mathematics department", "Creating a pure math department for your research helps immensely with CpS. Not a sentence you'd expect to see.") // 2

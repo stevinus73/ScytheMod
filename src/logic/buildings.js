@@ -395,6 +395,14 @@ BModify._Initialize = function(en, Research) {
         en.loadCallback(function() {
             for (var i=0;i<18;i++) BModify.grandma.grandmaAlloc[i] = en.getVar("grandmaAlloc"+i);
         })
+
+        this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);", 
+            [
+                'if (mod.research.hasTiered(1, 1)) mult*=1.25;',
+                'if (mod.research.hasTiered(1, 2)) mult*=1.25;',
+                'if (mod.research.hasTiered(1, 3)) mult*=1.25;'
+            ]
+        )
     }
 
     BModify.Idleverses = function() {
