@@ -406,9 +406,9 @@ BModify._Initialize = function(en, Research) {
 
         this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);", 
             [
-                'if (mod.research.hasTiered(1, 1)) mult*=1.25;',
-                'if (mod.research.hasTiered(1, 2)) mult*=1.25;',
-                'if (mod.research.hasTiered(1, 3)) mult*=1.25;'
+                'if (mod.research.hasTiered(1, 1)) mult*=1.15;',
+                'if (mod.research.hasTiered(1, 2)) mult*=1.15;',
+                'if (mod.research.hasTiered(1, 3)) mult*=1.15;'
             ]
         )
     }

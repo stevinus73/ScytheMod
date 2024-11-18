@@ -416,9 +416,9 @@ Research._Initialize = function(en) {
         ]
     )
     buildingTree(1);
-    tieredTreeG(1, 1, "Jumbo rolling pins", "Really helps them get to work.", "Grandmas are <b>25%</b> more efficient."); // 1
-    tieredTreeG(1, 2, "Hair whitener", "Studies show that the whiter the grandmas' hair are, the older they are, and therefore, the more powerful they are.", "Grandmas are <b>25%</b> more efficient.") // 2
-    tieredTreeG(1, 3, "Other people's grandmas", "You sure do seem to have a lot of grandmas. But! If you pull grandmas from other people, you might be able to get even more grandmas.", "Grandmas are <b>25%</b> more efficient.") // 3
+    tieredTreeG(1, 1, "Jumbo rolling pins", "Really helps them get to work.", "Grandmas are <b>15%</b> more efficient."); // 1
+    tieredTreeG(1, 2, "Hair whitener", "Studies show that the whiter the grandmas' hair are, the older they are, and therefore, the more powerful they are.", "Grandmas are <b>15%</b> more efficient.") // 2
+    tieredTreeG(1, 3, "Other people's grandmas", "You sure do seem to have a lot of grandmas. But! If you pull grandmas from other people, you might be able to get even more grandmas.", "Grandmas are <b>15%</b> more efficient.") // 3
     buildingTree(2);
     new Research.Tech("Regrowth", "Farms yield <b>three times</b> more. <div class=\"line\"></div> You can <b>reuse depleted land</b>, effectively ignoring resource depletion. <q>A masterful resource-saving invention! Wait, isn't this how agriculture is supposed to work? </q>", 230, breq('Farm', 75), f, [0], [2, 35], 0.8, 0.8); // 1
     tieredTree(2, 1, "Monocookie agriculture", "Gearing your farms to only cultivate cookies."); // 1
