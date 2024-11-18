@@ -131,16 +131,17 @@ BModify._Initialize = function(en, Research) {
                 this.depleted = true;
             } else this.depleted = false;
             this.rsAvailable = Math.max(this.rsAvailable, 0);
-            this.rsUsed = Math.min(this.rsUsed, this.rsTotal);
             if (this.pause) {
                 var rate = 0.1+(this.rsAvailable/this.rsTotal)*0.1;
                 this.rsUsed -= (rate / (Game.fps * 60 * 60)) * this.rsTotal;
                 this.rsUsed = Math.max(this.rsUsed, 0);
                 return;
+            } else {
+                this.rsUsed += (this.RhpS / Game.fps) * this.decayedFactor();
             }
+            this.rsUsed = Math.min(this.rsUsed, this.rsTotal);
             if (this.depleted) return;
             if ((this.id == 2) && Research.has("Regrowth")) return;
-            this.rsUsed += (this.RhpS / Game.fps) * this.decayedFactor();
         }
 
         // resets everythin'
@@ -156,10 +157,8 @@ BModify._Initialize = function(en, Research) {
             this.rsAvailable = this.baseRs;
 
             this.depleted = false;
-            this.pause = false;
-            this.statsView = false;
-
-            this.statDiv.style.display='none';
+            this.switch(false);
+            this.switchStats(false);
         }
 
 
@@ -355,6 +354,13 @@ BModify._Initialize = function(en, Research) {
 
         this.cpsGrandmas = function() {return this.me.amount - this.allocT;}
 
+        this.clear = function() {
+            for (var i=0; i<18;i++){
+                this.grandmaAlloc[i]=0;
+                this.allocT=0;
+            }
+        }
+
         this.update = function() {
             var str = '';
             var allocate = '';
@@ -391,9 +397,11 @@ BModify._Initialize = function(en, Research) {
         )
         en.saveCallback(function() {
             for (var i=0;i<18;i++) en.setVar("grandmaAlloc"+i, BModify.grandma.grandmaAlloc[i]);
+            en.setVar("allocT", BModify.grandma.allocT);
         })
         en.loadCallback(function() {
             for (var i=0;i<18;i++) BModify.grandma.grandmaAlloc[i] = en.getVar("grandmaAlloc"+i);
+            BModify.grandma.allocT = en.getVar("allocT");
         })
 
         this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);", 
@@ -483,8 +491,9 @@ BModify._Initialize = function(en, Research) {
         BModify.rsManagers.forEach(mn => mn.update())
         BModify.grandma.update()
     })
-    Game.registerHook('reincarnate', function() {
+    Game.registerHook('reset', function() {
         BModify.rsManagers.forEach(mn => mn.clear())
+        BModify.grandma.clear()
     })
 
 

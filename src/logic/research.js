@@ -344,10 +344,10 @@ Research._Initialize = function(en) {
 
     var f={reqFunc:function(){return true;},reqDesc:''};
     function req(amnt, reqNum, amntN) {
-        return {reqFunc:function(){return amnt >= reqNum;},reqDesc:"get "+reqNum+" "+amntN};
+        return {reqFunc:function(){return amnt() >= reqNum;},reqDesc:"get "+reqNum+" "+amntN};
     }
     function breq(building, reqNum){
-        return req(Game.Objects[building].amount, reqNum, Game.Objects[building].plural);
+        return req(function(){return Game.Objects[building].amount}, reqNum, Game.Objects[building].plural);
     }
 
     new Research.Tree("General", [10, 0], function(){return true;});
@@ -359,7 +359,7 @@ Research._Initialize = function(en) {
     )
     new Research.Tech("Interns", "You <b>gain research passively</b>, at a rate of <b>1 research every 10 minutes</b>. <q>They do research for you when you're gone. Sure, they may just be drinking all the test tubes and fighting each other with meter sticks, but it's the effort that counts. </q>", 10, f, f, [0], [9, 0], 0.3, 0); //2
     new Research.Tech("Better application forms", "Research costs <b>10%</b> less.", 100, f, f, [2], [9, 1], 0.6, 0);
-    new Research.Tech("Kitten scientists", "You gain <b>more CpS</b> the more milk you have.", 999, req(Game.AchievementsOwned, 600, "achievements"), f, [1], [18, 21], -0.6, 0.4);
+    new Research.Tech("Kitten scientists", "You gain <b>more CpS</b> the more milk you have.", 999, req(() => Game.AchievementsOwned, 600, "achievements"), f, [1], [18, 21], -0.6, 0.4);
     Game.CalculateGains = en.injectCode(Game.CalculateGains, `if (Game.Has('Fortune #103')) catMult*=(1+Game.milkProgress*0.05*milkMult);`,
         `\n\tif (mod.research.has('Kitten scientists')) catMult*=(1+Game.milkProgress*0.10*milkMult)`, "after"
     )
@@ -405,9 +405,9 @@ Research._Initialize = function(en) {
             'if (mod.research.hasTiered(0, 3)) mult*=1.25;'
         ]
     )
-    new Research.Tech("Fourth-dimensional workarounds", "Clicking is <b>6%</b> more powerful.", 30, req(Game.cookieClicks, 500, "cookie clicks"), f, [0], [1, 6], 0.3, 0.3); // 4
-    new Research.Tech("Cybernetic fingers", "Clicking is <b>6%</b> more powerful. <q>Clink, clink.</q>", 50, req(Game.cookieClicks, 1000, "cookie clicks"), f, [4], [12, 1], 0.5, 0.6); // 5
-    new Research.Tech("Repeated electrical shock", "Clicking is <b>6%</b> more powerful. <q>Ow. Ow. Ow.</q>", 70, req(Game.cookieClicks, 2500, "cookie clicks"), f, [5], [12, 2], 0.6, 0.9); // 6
+    new Research.Tech("Fourth-dimensional workarounds", "Clicking is <b>6%</b> more powerful.", 30, req(() => Game.cookieClicks, 500, "cookie clicks"), f, [0], [1, 6], 0.3, 0.3); // 4
+    new Research.Tech("Cybernetic fingers", "Clicking is <b>6%</b> more powerful. <q>Clink, clink.</q>", 50, req(() => Game.cookieClicks, 1000, "cookie clicks"), f, [4], [12, 1], 0.5, 0.6); // 5
+    new Research.Tech("Repeated electrical shock", "Clicking is <b>6%</b> more powerful. <q>Ow. Ow. Ow.</q>", 70, req(() => Game.cookieClicks, 2500, "cookie clicks"), f, [5], [12, 2], 0.6, 0.9); // 6
     Game.mouseCps = en.injectChain(Game.mouseCps, "if (Game.Has('Dragon claw')) mult*=1.03;",
         [
             'if (mod.research.has("Fourth-dimensional workarounds")) mult*=1.06;',
@@ -559,6 +559,15 @@ Research._Initialize = function(en) {
             })
         }
     })
+
+    Game.registerHook('reset', function(wipe) {
+        if (wipe) {
+            Research.research = 0;
+            for (var i in Research.trees) {
+                Research.trees[i].upgrades.bought = false;
+            }
+        }
+    });
 
     Game.registerHook('reincarnate', function() {
         if (Game.ascensionMode == 0) this.button.style.display = 'block';
