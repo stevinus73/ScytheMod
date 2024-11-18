@@ -309,7 +309,7 @@ Research._Initialize = function(en) {
             if (this.nextResearch <= 0) {
                 this.research += 1;
                 var bmult = 1;
-                if (this.has("Cookie funding")) bmult += 0.002 * Game.Objects['Bank'].amount;
+                if (this.has("Cookie funding")) bmult += 0.0015 * Game.Objects['Bank'].amount;
                 this.nextResearch = (10 * 60) / bmult;
             }
         }
@@ -338,33 +338,38 @@ Research._Initialize = function(en) {
     Research.earnResearch = function(num) {
         var mult = 1;
         if (this.has("Supercomputers")) mult *= 1.1;
+        if (this.has("Thinktank")) mult *= 1.1;
         this.research += Math.round(num * mult);
     }
     Game.Win = en.injectCode(Game.Win, 'it.won=1;', 'mod.research.earnResearch(10);', "after");
+    
 
     var f={reqFunc:function(){return true;},reqDesc:''};
     function req(amnt, reqNum, amntN) {
         return {reqFunc:function(){return amnt() >= reqNum;},reqDesc:"get "+reqNum+" "+amntN};
     }
     function breq(building, reqNum){
-        return req(function(){return Game.Objects[building].amount}, reqNum, Game.Objects[building].plural);
+        return req(() => Game.Objects[building].amount, reqNum, Game.Objects[building].plural);
     }
 
     new Research.Tree("General", [10, 0], function(){return true;});
 
-    new Research.Tech("Research lab", "Unlocks the <b>Research tree</b>, where you can buy upgrades using research (the number in the top right corner). <div class=\"line\"></div> You gain research in a variety of ways. <div class=\"line\"></div> Research upgrades are kept across ascensions. <q>It's quite small, but so is your current business.</q>", 1, f, f, [], [1, 0, Icons], 0, 0); //0
+    new Research.Tech("Research lab", "Unlocks the <b>Research tree</b>, where you can buy upgrades using research (the number in the top right corner). <div class=\"line\"></div>"+
+        " You gain research in a variety of ways, such as earning achievements. <div class=\"line\"></div>"+
+        " Research upgrades are kept across ascensions. <q>It's quite small, but so is your current business.</q>", 1, f, f, [], [1, 0, Icons], 0, 0); //0
     new Research.Tech("Plain cookie", "Cookie production multiplier <b>+5%</b>. <div class=\"line\"></div> Unlocks <b>new cookie upgrades</b> that appear once you have enough cookies. <q>We all gotta start somewhere. </q>", 50, f, f, [0], [2, 3], -0.2, 0.5); //1
     Game.NewUpgradeCookie = en.injectCode(Game.NewUpgradeCookie, "if (obj.require) toPush.require=obj.require;",
         'toPush.require=function(){return mod.research.has("Plain cookie") && (obj.require ? obj.require : true)}', "replace"
     )
     new Research.Tech("Interns", "You <b>gain research passively</b>, at a rate of <b>1 research every 10 minutes</b>. <q>They do research for you when you're gone. Sure, they may just be drinking all the test tubes and fighting each other with meter sticks, but it's the effort that counts. </q>", 10, f, f, [0], [9, 0], 0.3, 0); //2
-    new Research.Tech("Better application forms", "Research costs <b>10%</b> less.", 100, f, f, [2], [9, 1], 0.6, 0);
-    new Research.Tech("Kitten scientists", "You gain <b>more CpS</b> the more milk you have.", 999, req(() => Game.AchievementsOwned, 600, "achievements"), f, [1], [18, 21], -0.6, 0.4);
+    new Research.Tech("Better application forms", "Research costs <b>10%</b> less.", 100, f, f, [2], [9, 1], 0.6, 0); //3
+    new Research.Tech("Kitten scientists", "You gain <b>more CpS</b> the more milk you have.", 999, req(() => Game.AchievementsOwned, 500, "achievements"), f, [1], [18, 21], -0.6, 0.4); //4
     Game.CalculateGains = en.injectCode(Game.CalculateGains, `if (Game.Has('Fortune #103')) catMult*=(1+Game.milkProgress*0.05*milkMult);`,
-        `\n\tif (mod.research.has('Kitten scientists')) catMult*=(1+Game.milkProgress*0.10*milkMult)`, "after"
+        `\n\tif (mod.research.has('Kitten scientists')) catMult*=(1+Game.milkProgress*0.05*milkMult)`, "after"
     )
-    new Research.Tech("Supercomputers", "Direct research gains <b>+10%</b>. <q>To be fair, they take up a lot of space.</q>", 230, breq('Javascript console', 100), f, [0], [32, 0], -0.15, -0.15);
-    new Research.Tech("Cookie funding", "You passively gain research <b>faster</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 150, breq('Bank', 250), f, [2], [2, 0, Icons], 0.5, -0.3); //3
+    new Research.Tech("Supercomputers", "Direct research gains <b>+10%</b>. <q>To be fair, they take up a lot of space.</q>", 130, breq('Javascript console', 100), f, [0], [32, 0], -0.15, -0.15); //5
+    new Research.Tech("Thinktank", "Direct research gains <b>+10%</b>. <q>Big brains think together!</q>", 200, breq('Cortex baker', 200), f, [5], [34, 0], -0.3, -0.5); // 6
+    new Research.Tech("Cookie funding", "You passively gain research <b>faster</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 150, breq('Bank', 250), f, [2], [2, 0, Icons], 0.5, -0.3); //7
 
     var spr_ref = [0,1,2,3,4,15,16,17,5,6,7,8,13,14,19,20,32,33,34,35];
     var tier_ref = [21,26,27];
@@ -419,6 +424,11 @@ Research._Initialize = function(en) {
     tieredTreeG(1, 1, "Jumbo rolling pins", "Really helps them get to work.", "Grandmas are <b>15%</b> more efficient."); // 1
     tieredTreeG(1, 2, "Hair whitener", "Studies show that the whiter the grandmas' hair are, the older they are, and therefore, the more powerful they are.", "Grandmas are <b>15%</b> more efficient.") // 2
     tieredTreeG(1, 3, "Other people's grandmas", "You sure do seem to have a lot of grandmas. But! If you pull grandmas from other people, you might be able to get even more grandmas.", "Grandmas are <b>15%</b> more efficient.") // 3
+    var unlockGP = {reqFunc: function(){return Game.Objects['Grandma'].amount>=6 && Game.HasAchiev('Elder')}, reqDesc: "have <b>7 different grandma types</b>"}
+    new Research.Tech("Bingo center/Research facility", "Grandma-operated science lab and leisure club. <b>This will unlock the Bingo center/Research facility upgrade in the Store.</b> <q>What could possibly keep those grandmothers in check?...<br>Bingo.</q>", 40, unlockGP, f, [0], [11, 9], 0.4, 0.4);
+    Game.Logic = en.injectCode(Game.Logic, "if (Game.Objects['Grandma'].amount>=6 && !Game.Has('Bingo center/Research facility') && Game.HasAchiev('Elder'))", 
+        "if (mod.research.has('Bingo center/Research facility')) && !Game.Has('Bingo center/Research facility'))", "replace"
+    )
     buildingTree(2);
     new Research.Tech("Regrowth", "Farms yield <b>three times</b> more. <div class=\"line\"></div> You can <b>reuse depleted land</b>, effectively ignoring resource depletion. <q>A masterful resource-saving invention! Wait, isn't this how agriculture is supposed to work? </q>", 230, breq('Farm', 75), f, [0], [2, 35], 0.8, 0.8); // 1
     tieredTree(2, 1, "Monocookie agriculture", "Gearing your farms to only cultivate cookies."); // 1
