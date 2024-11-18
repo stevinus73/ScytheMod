@@ -347,7 +347,7 @@ Research._Initialize = function(en) {
         return {reqFunc:function(){return amnt >= reqNum;},reqDesc:"get "+reqNum+" "+amntN};
     }
     function breq(building, reqNum){
-        return req(Game.Objects[building], reqNum, Game.Objects[building].plural);
+        return req(Game.Objects[building].amount, reqNum, Game.Objects[building].plural);
     }
 
     new Research.Tree("General", [10, 0], function(){return true;});
