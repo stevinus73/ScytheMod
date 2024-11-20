@@ -161,7 +161,6 @@ BModify._Initialize = function(en, Research) {
             this.switchStats(false);
         }
 
-
         // whatever this is
 
 
@@ -187,8 +186,11 @@ BModify._Initialize = function(en, Research) {
         var str = '';
         str+='<style>'
         +'#resBar'+this.id+'{max-width:95%;margin:4px auto;height:16px;}'
+        +'.resBarRefill{cursor:pointer;width:48px;height:48px;position:absolute;z-index:1000;transition:transform 0.05s;transform:scale(0.8);}'
+        +'.resBarRefill:hover{transform:scale(1.3);}'
+        +'.resBarRefill{transform.scale(0.7);'
         +'#resBarRefillL'+this.id+'{left:-40px;top:-17px;'+writeIcon([0, 0, Icons])+'}'
-        +'#resBarRefillR'+this.id+'{right:-40px;top:-17px;'+writeIcon([2, 0, Icons])+'}'
+        +'#resBarRefillR'+this.id+'{left:340px;top:-17px;'+writeIcon([2, 0, Icons])+'}' // not fully sure why right:-40px doesn't work; think it's something about overriding
         +'#resBarFull'+this.id+'{transform:scale(1,2);transform-origin:50% 0;height:50%;}'
         +'#resBarText'+this.id+'{transform:scale(1,0.8);width:100%;position:absolute;left:0px;top:0px;text-align:center;color:#fff;text-shadow:-1px 1px #000,0px 0px 4px #000,0px 0px 6px #000;margin-top:2px;}'
         +'#resBarInfo'+this.id+'{text-align:center;font-size:11px;margin-top:12px;color:rgba(255,255,255,0.75);text-shadow:-1px 1px 0px #000;}'
@@ -196,10 +198,9 @@ BModify._Initialize = function(en, Research) {
         +'.separatorTop{width: 100%;height: 8px;background: url(img/panelHorizontal.png?v=2) repeat-x;background: url(img/panelGradientLeft.png) no-repeat top left, '
         +'url(img/panelGradientRight.png) no-repeat top right, url(img/panelHorizontal.png?v=2) repeat-x;position: absolute;left: 0px;top: 0px;}'
         +'</style>';
-        //str+='<div id="resBarIcon'+this.id+'" class="usesIcon shadowFilter lumpRefill" style="left:-40px;top:-17px;background-position:'+(-icon[0]*48)+'px '+(-icon[1]*48)+'px;">';
         str+='<div id="resBar'+this.id+'" class="smallFramed meterContainer" style="width:1px;">'
-        str+='<div id="resBarRefillL'+this.id+'" class="shadowFilter lumpRefill"></div>'
-        str+='<div id="resBarRefillR'+this.id+'" class="shadowFilter lumpRefill"></div>'
+        str+='<div id="resBarRefillL'+this.id+'"'+Game.getDynamicTooltip('Game.ObjectsById['+this.id+'].rsManager.refillTooltipL', 'this')+' class="shadowFilter resBarRefill"></div>'
+        str+='<div id="resBarRefillR'+this.id+'"'+Game.getDynamicTooltip('Game.ObjectsById['+this.id+'].rsManager.refillTooltipR', 'this')+' class="shadowFilter resBarRefill"></div>'
         str+='<div id="resBarFull'+this.id+'" class="meter filling" style="width:1px;"></div>'
         str+='<div id="resBarText'+this.id+'" class="titleFont"></div>'
         str+='<div id="resBarInfo'+this.id+'"></div>'
@@ -210,6 +211,8 @@ BModify._Initialize = function(en, Research) {
         this.mbar = l("resBar"+this.id);
         this.mbarText = l("resBarText"+this.id);
         this.mbarInfo = l("resBarInfo"+this.id);
+        this.refillL = l("resBarRefillL"+this.id);
+        this.refillR = l("resBarRefillR"+this.id);
 
         this.switchStats = function(on) {
             if (this.me.onMinigame) return;
@@ -256,6 +259,34 @@ BModify._Initialize = function(en, Research) {
             l('statsListing'+this.id).innerHTML = str;
         }
 
+        // will be implemented soon
+        this.refillTooltipL = function() {
+            var str = "Click to refill available resources by 35% and prevent depletion for 1 minute for 1 power click.";
+            str += "<small>(not yet implemented)</small>";
+            return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;" id="tooltipRefill">'+str+'</div>';
+        }
+
+        // will be implemented soon
+        this.refillTooltipR = function() {
+            var str = "Click to refill available resources by 50% for $500,000.";
+            str += "<small>(not yet implemented)</small>";
+            return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;" id="tooltipRefill">'+str+'</div>';
+        }
+
+        AddEvent(this.refillL,'click',function(){
+            var me = Game.ObjectsById[id].rsManager;
+            
+            console.log("Refill L");
+            PlaySound('snd/pop'+Math.floor(Math.random()*3+1)+'.mp3',0.75);
+        });
+
+        AddEvent(this.refillR,'click',function(){
+            var me = Game.ObjectsById[id].rsManager;
+            
+            console.log("Refill R");
+            PlaySound('snd/pop'+Math.floor(Math.random()*3+1)+'.mp3',0.75);
+        });
+
         this.draw = function() {
 	    	if (Game.drawT%5==0) {
 	    		this.mbarFull.style.width=Math.max(Math.round((this.rsAvailable/this.rsTotal)*100), 0)+'%';
@@ -263,7 +294,8 @@ BModify._Initialize = function(en, Research) {
 			    this.mbar.style.width='350px';
                 this.mbarText.innerHTML=Beautify(Math.max((this.rsAvailable/this.rsTotal)*100, 0), 1)+'% left';
                 if (this.depleted) this.mbarInfo.innerHTML='This resource has been depleted. :(';
-                else if (this.paused) this.mbarInfo.innerHTML='Currently paused';
+                else if (this.pause) this.mbarInfo.innerHTML='Currently paused';
+                else if ((this.id == 2) && Research.has("Regrowth")) this.mbarInfo.innerHTML='Regrowth is currently active.';
                 else this.mbarInfo.innerHTML='Depletion rate: -'+Beautify(Math.max((this.RhpS/this.rsTotal)*100, 0), 2)+'%/s (-'
                     +Beautify(Math.max((this.RhpS/this.rsTotal)*100*60, 0), 2)+'%/min)';
 		    }
@@ -311,6 +343,7 @@ BModify._Initialize = function(en, Research) {
         this.allocT = 0;
 
         for (var i=0;i<18;i++) en.newVar("grandmaAlloc"+i, "int");
+        en.newVar("allocT", "int");
 
         this.switchStats = function(on) {
             if (on == -1) on = !this.statsView;
