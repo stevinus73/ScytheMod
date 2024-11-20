@@ -187,22 +187,29 @@ BModify._Initialize = function(en, Research) {
         var str = '';
         str+='<style>'
         +'#resBar'+this.id+'{max-width:95%;margin:4px auto;height:16px;}'
+        +'#resBarRefillL'+this.id+'{left:-40px;top:-17px;'+writeIcon([0, 0, Icons])+'}'
+        +'#resBarRefillR'+this.id+'{right:-40px;top:-17px;'+writeIcon([2, 0, Icons])+'}'
         +'#resBarFull'+this.id+'{transform:scale(1,2);transform-origin:50% 0;height:50%;}'
         +'#resBarText'+this.id+'{transform:scale(1,0.8);width:100%;position:absolute;left:0px;top:0px;text-align:center;color:#fff;text-shadow:-1px 1px #000,0px 0px 4px #000,0px 0px 6px #000;margin-top:2px;}'
+        +'#resBarInfo'+this.id+'{text-align:center;font-size:11px;margin-top:12px;color:rgba(255,255,255,0.75);text-shadow:-1px 1px 0px #000;}'
         +'#statsBG'+this.id+'{background:url('+Game.resPath+'img/shadedBorders.png),url('+Game.resPath+'img/darkNoise.jpg);background-size:33% 100%,auto;position:relative;left:0px;right:0px;top:0px;bottom:16px;}'
         +'.separatorTop{width: 100%;height: 8px;background: url(img/panelHorizontal.png?v=2) repeat-x;background: url(img/panelGradientLeft.png) no-repeat top left, '
         +'url(img/panelGradientRight.png) no-repeat top right, url(img/panelHorizontal.png?v=2) repeat-x;position: absolute;left: 0px;top: 0px;}'
         +'</style>';
         //str+='<div id="resBarIcon'+this.id+'" class="usesIcon shadowFilter lumpRefill" style="left:-40px;top:-17px;background-position:'+(-icon[0]*48)+'px '+(-icon[1]*48)+'px;">';
         str+='<div id="resBar'+this.id+'" class="smallFramed meterContainer" style="width:1px;">'
+        str+='<div id="resBarRefillL'+this.id+'" class="shadowFilter lumpRefill"></div>'
+        str+='<div id="resBarRefillR'+this.id+'" class="shadowFilter lumpRefill"></div>'
         str+='<div id="resBarFull'+this.id+'" class="meter filling" style="width:1px;"></div>'
         str+='<div id="resBarText'+this.id+'" class="titleFont"></div>'
+        str+='<div id="resBarInfo'+this.id+'"></div>'
         str+='</div>'
         l('statsVisual'+this.id).innerHTML = str;
 
         this.mbarFull = l("resBarFull"+this.id);
         this.mbar = l("resBar"+this.id);
         this.mbarText = l("resBarText"+this.id);
+        this.mbarInfo = l("resBarInfo"+this.id);
 
         this.switchStats = function(on) {
             if (this.me.onMinigame) return;
@@ -255,6 +262,10 @@ BModify._Initialize = function(en, Research) {
                 if ((this.id == 2) && Research.has("Regrowth")) this.mbar.style.background='lightGreen';
 			    this.mbar.style.width='350px';
                 this.mbarText.innerHTML=Beautify(Math.max((this.rsAvailable/this.rsTotal)*100, 0), 1)+'% left';
+                if (this.depleted) this.mbarInfo.innerHTML='This resource has been depleted. :(';
+                else if (this.paused) this.mbarInfo.innerHTML='Currently paused';
+                else this.mbarInfo.innerHTML='Depletion rate: -'+Beautify(Math.max((this.RhpS/this.rsTotal)*100, 0), 2)+'%/s (-'
+                    +Beautify(Math.max((this.RhpS/this.rsTotal)*100*60, 0), 2)+'%/min)';
 		    }
 		    this.mbarFull.style.backgroundPosition=(-Game.T*0.5)+'px';
         }
