@@ -276,7 +276,7 @@ BModify._Initialize = function(en, Research) {
         this.refillTooltipR = function() {
             if (!Game.Objects.Bank.minigame) return '';
             var col = (Game.Objects.Bank.minigame.profit >= this.refillPrice()) ? '#73f21e' : '#f21e3c';
-            var str = "Click to refill available resources by 50% for <span style='color:"+col+";'>"+this.refillPrice()+"</span>";
+            var str = "Click to refill available resources by 50% for <span style='color:"+col+";'>$"+this.refillPrice()+"</span>";
             return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;" id="tooltipRefill">'+str+'</div>';
         }
 
@@ -291,8 +291,8 @@ BModify._Initialize = function(en, Research) {
             if (!Game.Objects.Bank.minigame) return;
             var me = Game.ObjectsById[id].rsManager;
             var mini = Game.Objects.Bank.minigame;
-            if (true){ //mini.profit >= this.refillPrice()) {
-                mini.profit -= this.refillPrice();
+            if (mini.profit >= me.refillPrice()) {
+                mini.profit -= me.refillPrice();
                 me.rsUsed -= 0.5 * me.rsTotal;
                 me.rsUsed = Math.max(me.rsUsed, 0);
                 me.rsAvailable = me.rsTotal - me.rsUsed;
