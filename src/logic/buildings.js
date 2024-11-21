@@ -188,7 +188,7 @@ BModify._Initialize = function(en, Research) {
         +'#resBar'+this.id+'{max-width:95%;margin:4px auto;height:16px;}'
         +'.resBarRefill{cursor:pointer;width:48px;height:48px;position:absolute;z-index:1000;transition:transform 0.05s;transform:scale(0.8);}'
         +'.resBarRefill:hover{transform:scale(1.3);}'
-        +'.resBarRefill{transform.scale(0.7);'
+        +'.resBarRefill:active{transform.scale(0.7);}'
         +'#resBarRefillL'+this.id+'{left:-40px;top:-17px;'+writeIcon([0, 0, Icons])+'}'
         +'#resBarRefillR'+this.id+'{left:340px;top:-17px;'+writeIcon([2, 0, Icons])+'}' // not fully sure why right:-40px doesn't work; think it's something about overriding
         +'#resBarFull'+this.id+'{transform:scale(1,2);transform-origin:50% 0;height:50%;}'
@@ -257,6 +257,8 @@ BModify._Initialize = function(en, Research) {
             str+='<div class="listing" '+sty+'> <b>Base CpS:</b> '+Beautify(this.getRawCpS(), 1)+" cookies/second"+'</div>';
             str+='<div class="listing" '+sty+'> <b>CpS:</b> '+Beautify(this.me.storedTotalCps*Game.globalCpsMult, 1)+" cookies/second"+'</div>';
             l('statsListing'+this.id).innerHTML = str;
+            if (Game.Objects.Bank.minigame) this.refillR.style.display='inline';
+            else this.refillR.style.display='none';
         }
 
         // will be implemented soon
@@ -266,10 +268,15 @@ BModify._Initialize = function(en, Research) {
             return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;" id="tooltipRefill">'+str+'</div>';
         }
 
-        // will be implemented soon
+        this.refillPrice = function() {
+            var price = 300000+Math.min(Game.Objects.Cursor.level, 12) * 25000;
+            if (this.depleted) price *= 2.5;
+            return price;
+        }
         this.refillTooltipR = function() {
-            var str = "Click to refill available resources by 50% for $500,000.";
-            str += "<small>(not yet implemented)</small>";
+            if (!Game.Objects.Bank.minigame) return '';
+            var col = (Game.Objects.Bank.minigame.profit >= this.refillPrice()) ? '#73f21e' : '#f21e3c';
+            var str = "Click to refill available resources by 50% for <span style='color:"+col+";'>"+this.refillPrice()+"</span>";
             return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;" id="tooltipRefill">'+str+'</div>';
         }
 
@@ -281,10 +288,18 @@ BModify._Initialize = function(en, Research) {
         });
 
         AddEvent(this.refillR,'click',function(){
+            if (!Game.Objects.Bank.minigame) return;
             var me = Game.ObjectsById[id].rsManager;
-            
-            console.log("Refill R");
-            PlaySound('snd/pop'+Math.floor(Math.random()*3+1)+'.mp3',0.75);
+            var mini = Game.Objects.Bank.minigame;
+            if (true){ //mini.profit >= this.refillPrice()) {
+                mini.profit -= this.refillPrice();
+                me.rsUsed -= 0.5 * me.rsTotal;
+                me.rsUsed = Math.max(me.rsUsed, 0);
+                me.rsAvailable = me.rsTotal - me.rsUsed;
+                me.update();
+                Game.recalculateGains = 1;
+                PlaySound('snd/pop'+Math.floor(Math.random()*3+1)+'.mp3',0.75);
+            }
         });
 
         this.draw = function() {
@@ -293,7 +308,7 @@ BModify._Initialize = function(en, Research) {
                 if ((this.id == 2) && Research.has("Regrowth")) this.mbar.style.background='lightGreen';
 			    this.mbar.style.width='350px';
                 this.mbarText.innerHTML=Beautify(Math.max((this.rsAvailable/this.rsTotal)*100, 0), 1)+'% left';
-                if (this.depleted) this.mbarInfo.innerHTML='This resource has been depleted. :(';
+                if (this.depleted) this.mbarInfo.innerHTML='This resource has been depleted';
                 else if (this.pause) this.mbarInfo.innerHTML='Currently paused';
                 else if ((this.id == 2) && Research.has("Regrowth")) this.mbarInfo.innerHTML='Regrowth is currently active.';
                 else this.mbarInfo.innerHTML='Depletion rate: -'+Beautify(Math.max((this.RhpS/this.rsTotal)*100, 0), 2)+'%/s (-'
