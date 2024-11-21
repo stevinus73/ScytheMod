@@ -263,8 +263,8 @@ BModify._Initialize = function(en, Research) {
 
         // will be implemented soon
         this.refillTooltipL = function() {
-            var str = "Click to refill available resources by 35% and prevent depletion for 1 minute for 1 power click.";
-            str += "<small>(not yet implemented)</small>";
+            var str = "Click to <b>refill available resources by 35%</b> and prevent depletion for <b>1 minute</b> for ??? power clicks.";
+            str += "<br><small>(not yet implemented)</small>";
             return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;" id="tooltipRefill">'+str+'</div>';
         }
 
@@ -276,7 +276,7 @@ BModify._Initialize = function(en, Research) {
         this.refillTooltipR = function() {
             if (!Game.Objects.Bank.minigame) return '';
             var col = (Game.Objects.Bank.minigame.profit >= this.refillPrice()) ? '#73f21e' : '#f21e3c';
-            var str = "Click to refill available resources by 50% for <span style='color:"+col+";'>$"+this.refillPrice()+"</span>";
+            var str = "Click to <b>refill available resources by 50%</b> for <span style='color:"+col+";'>$"+this.refillPrice()+"</span>";
             return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;" id="tooltipRefill">'+str+'</div>';
         }
 
@@ -311,8 +311,9 @@ BModify._Initialize = function(en, Research) {
                 if (this.depleted) this.mbarInfo.innerHTML='This resource has been depleted';
                 else if (this.pause) this.mbarInfo.innerHTML='Currently paused';
                 else if ((this.id == 2) && Research.has("Regrowth")) this.mbarInfo.innerHTML='Regrowth is currently active.';
-                else this.mbarInfo.innerHTML='Depletion rate: -'+Beautify(Math.max((this.RhpS/this.rsTotal)*100, 0), 2)+'%/s (-'
-                    +Beautify(Math.max((this.RhpS/this.rsTotal)*100*60, 0), 2)+'%/min)';
+                else this.mbarInfo.innerHTML='Depletion rate: -'
+                    +Beautify(Math.max(((this.RhpS*this.decayedFactor())/this.rsTotal)*100, 0), 2)+'%/s (-'
+                    +Beautify(Math.max(((this.RhpS*this.decayedFactor())/this.rsTotal)*100*60, 0), 2)+'%/min)';
 		    }
 		    this.mbarFull.style.backgroundPosition=(-Game.T*0.5)+'px';
         }
