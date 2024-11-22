@@ -254,8 +254,10 @@ BModify._Initialize = function(en, Research) {
             var sty = '';
             if (this.pause) sty='style="color:cyan"';
             if (this.depleted) sty='style="color:red"';
-            str+='<div class="listing"> <b>'+this.rsNames[0]+' use rate ('+this.rsNames[2]+'/second) per '+this.me.dname.toLowerCase()+': </b>'+Beautify(this.pause ? 0 : this.RhpS, 1);
-            str+=' ('+Beautify(this.RhpS * this.decayedFactor(), 1)+' for '+Beautify(this.me.amount)+' '+this.me.plural.toLowerCase()+')</div>';
+            str+='<div class="listing" '+sty+'> <b>'+this.rsNames[0]+' use rate ('+this.rsNames[2]+'/second) per '+this.me.dname.toLowerCase()+': </b>'+
+                Beautify((this.pause || this.depleted) ? 0 : this.RhpS*(this.interest>0?1.5:1), 1);
+            str+=' ('+Beautify(this.RhpS * this.decayedFactor()*(this.interest>0?1.5:1), 1)+' for '+Beautify(this.me.amount)+' '+this.me.plural.toLowerCase();
+            str+=')'+(((this.interest>0)&&(!this.pause)&&(!this.depleted))?' <span class="red">(50% faster due to interest)</span>':'')+'</div>';
             str+='<div class="listing"> <b>Base yield: </b>'+Beautify(this.yield, 1)+ " cookies/"+this.rsNames[1]+'</div>';
             str+='<div class="listing"> <b>Total amount of '+this.rsNames[0].toLowerCase()+':</b> '+Beautify(this.rsTotal) + " " + this.rsNames[2]+'</div>';
             str+='<div class="listing"> <b>Used '+this.rsNames[0].toLowerCase()+' so far:</b> '+Beautify(this.rsUsed) + " " + this.rsNames[2]+'</div>';
@@ -274,10 +276,9 @@ BModify._Initialize = function(en, Research) {
         }
 
         this.refillPrice = function() {
-            // var price = 300000+Math.min(Game.Objects.Cursor.level, 12) * 25000;
-            // if (this.depleted) price *= 2.5;
-            // return price;
-            return 0; /* testing */
+            var price = 300000+Math.min(Game.Objects.Cursor.level, 12) * 25000;
+            if (this.depleted) price *= 2.5;
+            return price;
         }
         this.refillTooltipR = function() {
             if (!Game.Objects.Bank.minigame) return '';
@@ -301,7 +302,6 @@ BModify._Initialize = function(en, Research) {
             if (!Game.Objects.Bank.minigame) return;
             var me = Game.ObjectsById[id].rsManager;
             var mini = Game.Objects.Bank.minigame;
-            console.log("Refill R");
             if ((mini.profit >= me.refillPrice()) && (BModify.bankRefill<=0)) {
                 mini.profit -= me.refillPrice();
                 me.rsUsed -= 0.5 * me.rsTotal;
