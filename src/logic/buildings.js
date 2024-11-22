@@ -10,6 +10,7 @@ BModify._Initialize = function(en, Research) {
     this.en = en;
     //Game.UpdateMenu = en.injectCode(Game.UpdateMenu, "(dropMult!=1", `'<div class="listing"><b>'+loc("Missed golden cookies:")+'</b> '+Beautify(Game.missedGoldenClicks)+'</div>' + `, "before")
     this.rsManagers = [];
+    this.bankRefill = 0;
 
     var spr_ref = [0,1,2,3,4,15,16,17,5,6,7,8,13,14,19,20,32,33,34,35];
 
@@ -251,7 +252,7 @@ BModify._Initialize = function(en, Research) {
             this.draw();
             str = '';
             var sty = '';
-            if (this.paused) sty='style="color:cyan"';
+            if (this.pause) sty='style="color:cyan"';
             if (this.depleted) sty='style="color:red"';
             str+='<div class="listing"> <b>'+this.rsNames[0]+' use rate ('+this.rsNames[2]+'/second) per '+this.me.dname.toLowerCase()+': </b>'+Beautify(this.pause ? 0 : this.RhpS, 1);
             str+=' ('+Beautify(this.RhpS * this.decayedFactor(), 1)+' for '+Beautify(this.me.amount)+' '+this.me.plural.toLowerCase()+')</div>';
@@ -281,10 +282,10 @@ BModify._Initialize = function(en, Research) {
         this.refillTooltipR = function() {
             if (!Game.Objects.Bank.minigame) return '';
             var col = (Game.Objects.Bank.minigame.profit >= this.refillPrice()) ? '#73f21e' : '#f21e3c';
-            var str = "Click to <b>refill available resources by 50%</b> for <span style='color:"+col+";'>$"+this.refillPrice()+"</span>";
+            var str = "Click to <b>refill available resources by 50%</b> for <span style='color:"+col+";'>$"+this.refillPrice()+"</span>.";
             str += "<br>However, this will cause resources to deplete <b>50%</b> faster for <b>20 minutes</b> without any CpS boost.";
 
-            str += (this.interest>0?"<br><small class='red'>(usable again in "+Game.sayTime(this.interest+Game.fps, -1)+")</small>"
+            str += (BModify.bankRefill>0?"<br><small class='red'>(usable again in "+Game.sayTime(BModify.bankRefill+Game.fps, -1)+")</small>"
                 :"<br><small>(Cooldown time upon use: "+(this.depleted?"<span class='red'>3 hours</span>":"1 hour")+")</small>");
             return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;" id="tooltipRefill">'+str+'</div>';
         }
@@ -300,14 +301,16 @@ BModify._Initialize = function(en, Research) {
             if (!Game.Objects.Bank.minigame) return;
             var me = Game.ObjectsById[id].rsManager;
             var mini = Game.Objects.Bank.minigame;
-            if ((mini.profit >= me.refillPrice()) && (this.interest<=0)) {
+            console.log("Refill R");
+            if ((mini.profit >= me.refillPrice()) && (BModify.bankRefill<=0)) {
                 mini.profit -= me.refillPrice();
                 me.rsUsed -= 0.5 * me.rsTotal;
                 me.rsUsed = Math.max(me.rsUsed, 0);
                 me.rsAvailable = me.rsTotal - me.rsUsed;
                 me.update();
                 Game.recalculateGains = 1;
-                this.interest = Game.fps * 60 * (this.depleted ? 180 : 60);
+                BModify.bankRefill = Game.fps * 60 * (me.depleted ? 180 : 60);
+                me.interest = Game.fps * 60 * 20;
                 PlaySound('snd/pop'+Math.floor(Math.random()*3+1)+'.mp3',0.75);
             }
         });
@@ -530,7 +533,8 @@ BModify._Initialize = function(en, Research) {
     BModify.Harvest = function() { this.rsManagers.forEach(mn => mn.harvest()) }
     BModify.Logic = function() {
         BModify.Harvest();
-        BModify.rsManagers.forEach(mn => mn.draw())
+        BModify.rsManagers.forEach(mn => mn.draw());
+        if (BModify.bankRefill>0) BModify.bankRefill--;
     }
 
     en.saveCallback(function() {
@@ -566,6 +570,7 @@ BModify._Initialize = function(en, Research) {
     Game.registerHook('reset', function() {
         BModify.rsManagers.forEach(mn => mn.clear())
         BModify.grandma.clear()
+        BModify.bankRefill=0;
     })
 
 
