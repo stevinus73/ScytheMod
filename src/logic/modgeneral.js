@@ -50,13 +50,29 @@ General._Initialize = function(en, Research) {
             // );
         }
     }
+    General.GrimoireRename = function() {
+        if (Game.Objects['Wizard tower'].minigame) { 
+            var m = Game.Objects['Wizard tower'].minigame;
+            // m.spells['summon crafty pixies'].desc = "Resources are used up 50% slower, without any CpS decrease for 1 minute.";
+            // m.spells['summon crafty pixies'].failDesc = "Resources are used up 25% faster, without any CpS increase for 1 hour.";
+        }
+    }
     this.TempleRename();
+    this.GrimoireRename();
     Game.scriptLoaded = en.injectCode(Game.scriptLoaded, "who.minigame.launch();", "\n\tif(who.id==6){mod.general.TempleRename();}", "after");
+    Game.scriptLoaded = en.injectCode(Game.scriptLoaded, "who.minigame.launch();", "\n\tif(who.id==7){mod.general.GrimoireRename();}", "after");
     
     // delete the old effect
     Game.CalculateGains = en.injectCode(Game.CalculateGains, "var godLvl=Game.hasGod('industry');", "var godLvl=0;", "replace");
     Game.shimmerTypes.golden.getTimeMod = en.injectCode(Game.shimmerTypes.golden.getTimeMod, "var godLvl=Game.hasGod('industry');", "var godLvl=0;", "replace");
     Game.GetHeavenlyMultiplier = en.injectCode(Game.GetHeavenlyMultiplier, "var godLvl=Game.hasGod('creation');", "var godLvl=0;", "replace");
     Game.modifyBuildingPrice = en.injectCode(Game.modifyBuildingPrice, "var godLvl=Game.hasGod('creation');", "var godLvl=0;", "replace");
+
+
+    Game.updateBuffs = en.injectCode(Game.updateBuffs, 
+        "l('buffPieTimer'+buff.id).style.backgroundPosition=(-Math.floor(T%18))*48+'px '+(-Math.floor(T/18))*48+'px';",
+        "\n\t\t\tvar desc=buff.type.func(buff.time, buff.arg1, buff.arg2, buff.arg3).desc;"+
+        "\n\t\t\tl('buff'+buff.id).innerHTML=l('buff'+buff.id).innerHTML.replace(buff.desc, desc);", "after"
+    )
 }
 export { General }
