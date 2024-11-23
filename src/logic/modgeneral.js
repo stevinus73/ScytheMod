@@ -68,11 +68,15 @@ General._Initialize = function(en, Research) {
     Game.GetHeavenlyMultiplier = en.injectCode(Game.GetHeavenlyMultiplier, "var godLvl=Game.hasGod('creation');", "var godLvl=0;", "replace");
     Game.modifyBuildingPrice = en.injectCode(Game.modifyBuildingPrice, "var godLvl=Game.hasGod('creation');", "var godLvl=0;", "replace");
 
-
-    Game.updateBuffs = en.injectCode(Game.updateBuffs, 
-        "l('buffPieTimer'+buff.id).style.backgroundPosition=(-Math.floor(T%18))*48+'px '+(-Math.floor(T/18))*48+'px';",
-        "\n\t\t\tvar desc=buff.type.func(buff.time, buff.arg1, buff.arg2, buff.arg3).desc;"+
-        "\n\t\t\tl('buff'+buff.id).innerHTML=l('buff'+buff.id).innerHTML.replace(buff.desc, desc);", "after"
+    General.buffTooltip = function(buff) {
+        var desc=buff.type.func((buff.time/Game.fps), buff.arg1, buff.arg2, buff.arg3).desc; // might not be the best way to do this
+        return '<div class="prompt" style="min-width:200px;text-align:center;font-size:11px;margin:8px 0px;" id="tooltipBuff"><h3>'+buff.dname+'</h3><div class="line"></div>'+desc+'</div>';
+    }
+    Game.gainBuff = en.injectCode(Game.gainBuff, "Game.getTooltip(", "Game.getDynamicTooltip(", "replace")
+    Game.gainBuff = en.injectCode(Game.gainBuff, 
+        `'<div class="prompt" style="min-width:200px;text-align:center;font-size:11px;margin:8px 0px;" id="tooltipBuff"><h3>'+buff.dname+'</h3><div class="line"></div>'+buff.desc+'</div>'`, 
+        `function(){return mod.general.buffTooltip(buff);}`, 
+        "replace"
     )
 }
 export { General }
