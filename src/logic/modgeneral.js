@@ -75,7 +75,7 @@ General._Initialize = function(en, Research) {
     Game.gainBuff = en.injectCode(Game.gainBuff, "Game.getTooltip(", "Game.getDynamicTooltip(", "replace")
     Game.gainBuff = en.injectCode(Game.gainBuff, 
         `'<div class="prompt" style="min-width:200px;text-align:center;font-size:11px;margin:8px 0px;" id="tooltipBuff"><h3>'+buff.dname+'</h3><div class="line"></div>'+buff.desc+'</div>'`, 
-        `function(){return mod.general.buffTooltip(buff);}`, 
+        `"function(){return mod.general.buffTooltip(Game.buffs['"+buff.id+"']);}"`, 
         "replace"
     )
 }
