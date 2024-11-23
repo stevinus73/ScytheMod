@@ -69,13 +69,14 @@ General._Initialize = function(en, Research) {
     Game.modifyBuildingPrice = en.injectCode(Game.modifyBuildingPrice, "var godLvl=Game.hasGod('creation');", "var godLvl=0;", "replace");
 
     General.buffTooltip = function(buff) {
+        if (!buff) return;
         var desc=buff.type.func((buff.time/Game.fps), buff.arg1, buff.arg2, buff.arg3).desc; // might not be the best way to do this
         return '<div class="prompt" style="min-width:200px;text-align:center;font-size:11px;margin:8px 0px;" id="tooltipBuff"><h3>'+buff.dname+'</h3><div class="line"></div>'+desc+'</div>';
     }
     Game.gainBuff = en.injectCode(Game.gainBuff, "Game.getTooltip(", "Game.getDynamicTooltip(", "replace")
     Game.gainBuff = en.injectCode(Game.gainBuff, 
         `'<div class="prompt" style="min-width:200px;text-align:center;font-size:11px;margin:8px 0px;" id="tooltipBuff"><h3>'+buff.dname+'</h3><div class="line"></div>'+buff.desc+'</div>'`, 
-        `"function(){return mod.general.buffTooltip(Game.buffs['"+buff.id+"']);}"`, 
+        `"function(){return mod.general.buffTooltip(Game.buffs['"+buff.name+"']);}"`, 
         "replace"
     )
 }
