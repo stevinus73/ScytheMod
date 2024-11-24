@@ -13,17 +13,17 @@ General._Initialize = function(en, Research) {
             ["if (Game.Has('Trillion fingers')) add*=		20;", "if (Game.Has('Trillion fingers')) add*=		10;"],
             ["if (Game.Has('Quadrillion fingers')) add*=	20;", "if (Game.Has('Quadrillion fingers')) add*=	10;"],
             ["if (Game.Has('Quintillion fingers')) add*=	20;", "if (Game.Has('Quintillion fingers')) add*=	10;"],
-             ["if (Game.Has('Sextillion fingers')) add*=	20;", "if (Game.Has('Sextillion fingers')) add*=	10;"],
-             ["if (Game.Has('Septillion fingers')) add*=	20;", "if (Game.Has('Septillion fingers')) add*=	10;"]], "replace");
+             ["if (Game.Has('Sextillion fingers')) add*=	20;", "if (Game.Has('Sextillion fingers')) add*=	15;"],
+             ["if (Game.Has('Septillion fingers')) add*=	20;", "if (Game.Has('Septillion fingers')) add*=	15;"]], "replace");
     }
     Game.mouseCps = fingersNerf(Game.mouseCps);
     Game.Objects['Cursor'].cps = fingersNerf(Game.Objects['Cursor'].cps);
-    Game.Upgrades['Unshackled cursors'].ddesc = Game.Upgrades['Unshackled cursors'].ddesc.replace("25", "5");
-    Game.Upgrades['Trillion fingers'].ddesc = Game.Upgrades['Trillion fingers'].ddesc.replace("20", "10");
-    Game.Upgrades['Quadrillion fingers'].ddesc = Game.Upgrades['Quadrillion fingers'].ddesc.replace("20", "10");
-    Game.Upgrades['Quintillion fingers'].ddesc = Game.Upgrades['Quintillion fingers'].ddesc.replace("20", "10");
-    Game.Upgrades['Sextillion fingers'].ddesc = Game.Upgrades['Sextillion fingers'].ddesc.replace("20", "10");
-    Game.Upgrades['Septillion fingers'].ddesc = Game.Upgrades['Septillion fingers'].ddesc.replace("20", "10");
+    en.ue.strReplace(Game.Upgrades['Unshackled cursors'], "25", "5");
+    en.ue.strReplace(Game.Upgrades['Trillion fingers'], "20", "10");
+    en.ue.strReplace(Game.Upgrades['Quadrillion fingers'], "20", "10");
+    en.ue.strReplace(Game.Upgrades['Quintillion fingers'], "20", "10");
+    en.ue.strReplace(Game.Upgrades['Sextillion fingers'], "20", "15");
+    en.ue.strReplace(Game.Upgrades['Septillion fingers'], "20", "15");
 
     /**
      * Temple name changes + effect deletion (uses eval but this shouldn't really matter due to Game.loadMinigames rarely being called)

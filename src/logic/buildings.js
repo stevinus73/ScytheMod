@@ -14,6 +14,13 @@ BModify._Initialize = function(en, Research) {
 
     var spr_ref = [0,1,2,3,4,15,16,17,5,6,7,8,13,14,19,20,32,33,34,35];
 
+    en.ue.addUpgrade("Lateral expansions", "Increases all resource space by <b>50%</b>. <q>One of those fancy business words.</q>", 
+        1e10, [0, 1, Icons], 13000, {unlockAt: 1e9});
+    en.ue.addUpgrade("Growth ray", "Increases all resource space by <b>50%</b>. <q>Pew! Pew! Pew!</q>", 
+        1e13, [0, 3, Icons], 13000, {unlockAt:1e12});
+    en.ue.addUpgrade("Shrink ray", "Increases all resource space by <b>50%</b>. <q>So actually, if you make your buildings smaller, then I guess there's more resource in a way?</q>", 
+        1e16, [0, 2, Icons], 13000, {unlockAt:1e15});
+
     BModify.RS_Manager = function(id, baseRS, rsNames) {
         this.id = id;
         this.me = Game.ObjectsById[this.id];
@@ -110,6 +117,9 @@ BModify._Initialize = function(en, Research) {
                 if (godLvl==2) {rhpsmult*=0.80;yieldmult*=1.06;}
                 if (godLvl==3) {rhpsmult*=0.85;yieldmult*=1.04;}
             }
+            if (Game.Has("Lateral expansions")) rsmult*=1.5;
+            if (Game.Has("Growth ray")) rsmult*=1.5;
+            if (Game.Has("Shrink ray")) rsmult*=1.5;
 
             this.yield = this.baseYield * yieldmult;
             this.RhpS = this.baseRhpS * rhpsmult;
@@ -336,7 +346,7 @@ BModify._Initialize = function(en, Research) {
         for (var i in this.me.tieredUpgrades) {
             if (!Game.Tiers[this.me.tieredUpgrades[i].tier].special) {
                 var percentage = Math.min(0.4 + 0.1 * i, 1) * 100;
-                en.ue.appendToUpgradeDesc(this.me.tieredUpgrades[i], 
+                en.ue.appendToDesc(this.me.tieredUpgrades[i], 
                     "Total "+this.rsNames[0].toLowerCase()+" <b>+"+Beautify(percentage)+"%</b>.");
             }
         }
@@ -493,7 +503,7 @@ BModify._Initialize = function(en, Research) {
 
         this._ifactor = function(num) {
             if (num == 0) return 1;
-            return 3 - (1.5 / Math.pow(2, num * 0.5));
+            return 2 - Math.max((1 / Math.pow(2, num * 0.5)),0.001);
         }
 
         this.resourceMult = function() {
@@ -527,7 +537,14 @@ BModify._Initialize = function(en, Research) {
         return 'Idleverse_Manager';
     }
 
+    BModify.Mines = function() {
+        this.me = Game.Objects['Mine'];
+        this.rs = this.me.rsManager;
+    }
 
+    BModify.Mines.prototype.getType = function () {
+        return 'Mine_Mini';
+    }
 
     BModify.Recalculate = function() { this.rsManagers.forEach(mn => mn.recalculate()) }
     BModify.Harvest = function() { this.rsManagers.forEach(mn => mn.harvest()) }
@@ -596,6 +613,7 @@ BModify._Initialize = function(en, Research) {
 
     this.idleverse = new BModify.Idleverses();
     this.grandma = new BModify.Grandmas();
+    this.mine = new BModify.Mines();
 }
 
 

@@ -1,6 +1,6 @@
 import {injectCode, injectCodes} from "./utils.js";
 import { shimmer_engine } from "./shimmers.js";
-import { building_engine, upgrade_engine } from "./constructs.js";
+import { building_engine, achiev_engine, upgrade_engine, Process } from "./constructs.js";
 import "./cps.js";
 import "./constructs.js";
 
@@ -34,6 +34,7 @@ IdlersPocket._Initialize = function () {
     IdlersPocket.shim = shimmer_engine;
     IdlersPocket.be = building_engine;
     IdlersPocket.ue = upgrade_engine;
+    IdlersPocket.process = Process;
 
     /**
      * STORAGE
@@ -168,6 +169,10 @@ IdlersPocket.LoadMod = function (name, init) {
         load: this._load
     }
     Game.registerMod(name, mod);
+}
+
+IdlersPocket.Process = function() {
+    this.Process();
 }
 
 export { IdlersPocket };
