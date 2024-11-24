@@ -639,11 +639,11 @@ BModify._Initialize = function(en, Research) {
 
     BModify.Recalculate = function() { 
         this.rsManagers.forEach(mn => mn.recalculate()) 
-        this.mines.ores.forEach(mn => mn.recalculate())
+        this.mine.ores.forEach(mn => mn.recalculate())
     }
     BModify.Harvest = function() { 
         this.rsManagers.forEach(mn => mn.harvest()) 
-        this.mines.ores.forEach(mn => mn.harvest())
+        this.mine.ores.forEach(mn => mn.harvest())
     }
     BModify.Logic = function() {
         BModify.Harvest()

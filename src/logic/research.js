@@ -35,6 +35,7 @@ Research._Initialize = function(en) {
     this.display.insertAdjacentHTML('beforeend', '<div id="researchIcon" class="usesIcon" style="'+writeIcon([1, 0, Icons])+'"></div>')
     this.display.insertAdjacentHTML('beforeend', '<div id="researchAmount"></div>')
     this.num = l("researchAmount");
+    this.numUpgrades = 0;
     this.research = 0;
     this.nextResearch = 10 * 60;
 
@@ -47,6 +48,8 @@ Research._Initialize = function(en) {
     this.dragging = false;
     
     en.newVar("research", "int");
+    en.ae.newAchievement("Doctorate", "Research <b>20 upgrades</b>.", [1, 0, Icons], "Oft we mar what's well", {});
+    en.ae.newAchievement("Researcher", "Research <b>50 upgrades</b>.", [9, 1], "Oft we mar what's well", {});
 
     this.trees = {};
     this.currTreeInit = "";
@@ -87,6 +90,7 @@ Research._Initialize = function(en) {
             if ((!this.canBuy()) || this.bought) return;
             Research.research -= this.getPrice();
             this.bought = true;
+            Research.numUpgrades++;
             //this.onBuy();
             Research.draw();
             Game.recalculateGains = 1;
@@ -165,7 +169,7 @@ Research._Initialize = function(en) {
             price='<div style="float:right;text-align:right;"><span class="price research'+ (this.canBuy() ? '' : ' disabled') +'">'+Beautify(Math.round(cost))+'</span></div>';
             var tip=(this.canBuy() && !this.bought) ? loc("Click to research.") : "";
             if (!this.req) tip=loc("This upgrade hasn't been unlocked yet.");
-            return '<div style="position:absolute;left:1px;top:1px;right:1px;bottom:1px;background:linear-gradient(125deg,rgba(50,40,40,1) 0%,rgba(50,40,40,0) 20%);mix-blend-mode:screen;z-index:1;"></div><div style="z-index:10;padding:8px 4px;min-width:350px;position:relative;" id="tooltipCrate">'+
+            return '<div style="position:absolute;left:1px;top:1px;right:1px;bottom:1px;background:linear-gradient(125deg,rgba(54,164,255,1) 0%,rgba(54,164,255,0) 20%);mix-blend-mode:screen;z-index:1;"></div><div style="z-index:10;padding:8px 4px;min-width:350px;position:relative;" id="tooltipCrate">'+
             '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;'+writeIcon(this.sprite)+'"></div>'+(this.req?price:'')+
             '<div class="name">'+(this.req?this.name:'???')+'</div>'+tagsStr+
             '<div class="line"></div><div class="description">'+(this.req?this.desc:"You must " +this.requirements.reqDesc+" to unlock this research upgrade.")+'</div></div>'+
@@ -363,7 +367,7 @@ Research._Initialize = function(en) {
     )
     new Research.Tech("Interns", "You <b>gain research passively</b>, at a rate of <b>1 research every 10 minutes</b>. <q>They do research for you when you're gone. Sure, they may just be drinking all the test tubes and fighting each other with meter sticks, but it's the effort that counts. </q>", 10, f, f, [0], [9, 0], 0.3, 0); //2
     new Research.Tech("Better application forms", "Research costs <b>10%</b> less.", 100, f, f, [2], [9, 1], 0.6, 0); //3
-    new Research.Tech("Kitten scientists", "You gain <b>more CpS</b> the more milk you have.", 999, req(() => Game.AchievementsOwned, 500, "achievements"), f, [1], [18, 21], -0.6, 0.4); //4
+    new Research.Tech("Kitten scientists", "You gain <b>more CpS</b> the more milk you have.<q>science is a natural for meow</q>", 999, req(() => Game.AchievementsOwned, 500, "achievements"), f, [1], [18, 21], -0.6, 0.4); //4
     Game.CalculateGains = en.injectCode(Game.CalculateGains, `if (Game.Has('Fortune #103')) catMult*=(1+Game.milkProgress*0.05*milkMult);`,
         `\n\tif (mod.research.has('Kitten scientists')) catMult*=(1+Game.milkProgress*0.05*milkMult)`, "after"
     )
@@ -576,6 +580,7 @@ Research._Initialize = function(en) {
             for (var i in Research.trees) {
                 Research.trees[i].upgrades.bought = false;
             }
+            Research.numUpgrades = 0;
         }
     });
 
@@ -595,6 +600,8 @@ Research._Initialize = function(en) {
                 up.check();
             })
         }
+        if (Research.numUpgrades>=20) Game.Win("Doctorate");
+        if (Research.numUpgrades>=50) Game.Win("Researcher");
     });
 
     Game.registerHook('cps', function(cps) {

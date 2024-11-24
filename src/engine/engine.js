@@ -106,47 +106,6 @@ IdlersPocket._Initialize = function () {
      * (work on later)
      */
 
-    IdlersPocket.achievements = [];
-    IdlersPocket.nameToId = {};
-    IdlersPocket.Achievement = function (id, name, desc, icon, type, winCon) {
-        this.id = id;
-        this.name = name;
-        this.desc = desc;
-        this.icon = icon;
-        this.type = type;
-        if (winCon) this.winCon = winCon;
-        return this;
-    }
-
-    IdlersPocket.Achievement.prototype.getType = function () {
-        return 'achievement';
-    }
-
-    
-
-    IdlersPocket._CreateAchievement = function (id, name, desc, icon, type, winCon) {
-
-    }
-
-    IdlersPocket._LoadAchievements = function () {
-        var curr;
-        var ach;
-        Object.keys(Game.Achievements).forEach(function (key) {
-            curr = Game.Achievements[key];
-            ach = new this.Achievement(
-                curr.order, curr.name, curr.desc, curr.icon.curr.pool
-            )
-            ach.won = curr.won;
-            this.achievements.push(ach);
-        });
-        this.achievements.sort((a, b) => a.id - b.id);
-        this.achievements.forEach(ach => this.nameToId[ach.name] = ach.id);
-    }
-
-    IdlersPocket.AddAchievement = function (prev, name, desc, icon, winCon) { }
-
-
-    IdlersPocket.Achievement.prototype.pushToFront = function (id, name, desc, icon, type, winCon) { }
 }
 
 IdlersPocket._Initialize();

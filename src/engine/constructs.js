@@ -2,26 +2,21 @@ import {injectCode, injectCodes} from "./utils.js";
 
 var building_engine={};
 var achiev_engine={};
+achiev_engine.achievementQueue = [];
+
+achiev_engine.AddAchievement = function (name, desc, icon, prev, other) { 
+    this.achievementQueue.push({
+        name: name,
+        desc: desc,
+        icon: icon,
+        prev: prev,
+        other: other
+    })
+}
+
 var upgrade_engine={};
 upgrade_engine.flavored_engine={};
 upgrade_engine.hupgrade_engine={};
-
-// building_engine.injectBuildingCpSMult=function(building,injectedCode){
-//     return Function(`
-//         ${Game.Objects[building].cps.toString().replace(`var mult=1`,
-//         `var mult=1;`+injectedCode)}();
-//       `);
-// }
-
-// upgrade_engine.flavored_engine.addNewFlavoredCookie=function(cost, multiplier, info) {
-//     //placeholder
-
-//     magic();
-// }
-
-//function magic() {
-//    LocalizeUpgradesAndAchievs();
-//}
 
 upgrade_engine.replaceQueue = [];
 upgrade_engine.upgradeQueue = [];
@@ -58,12 +53,19 @@ upgrade_engine.strReplace = function(upgrade, find, replace) {
 
 var Process = function() {
     upgrade_engine.upgradeQueue.forEach(function(upgrade) {
-        new Game.Upgrade(upgrade.name, upgrade.desc, upgrade.price, upgrade.icon);
+        upgrade.me = new Game.Upgrade(upgrade.name, upgrade.desc, upgrade.price, upgrade.icon);
         for (var i in upgrade.other) { // transfer
             Game.last[i] = upgrade.other[i];
         }
         if (Game.last.unlockAt) Game.UnlockAt.push({cookies: Game.last.unlockAt, name: upgrade.name});
         Game.last.order = upgrade.order + Game.last.id*0.001;
+    })
+    achiev_engine.achievementQueue.forEach(function(achiev) {
+        achiev.me = new Game.Achievement(achiev.name, achiev.desc, achiev.icon);
+        for (var i in achiev.other) { // transfer
+            Game.last[i] = achiev.other[i];
+        }
+        Game.last.order = Game.Achievements[achiev.prev].order + Game.last.id*0.001;
     })
     LocalizeUpgradesAndAchievs();
     upgrade_engine.replaceQueue.forEach(function(repl) {
