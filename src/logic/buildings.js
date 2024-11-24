@@ -616,7 +616,7 @@ BModify._Initialize = function(en, Research) {
         new this.Ore(77000, 1, "Gold ore", "Gold", [0, 0]);
 
         en.saveCallback(function() {
-            BModify.mines.ores.forEach(function(me) {
+            BModify.mine.ores.forEach(function(me) {
                 en.setVar("RhpS"+me.name,    me.RhpS);
                 en.setVar("oreH"+me.name,    me.oreH);
                 en.setVar("rsTotal"+me.name, me.rsTotal);
@@ -624,7 +624,7 @@ BModify._Initialize = function(en, Research) {
             })
         })
         en.loadCallback(function() {
-            BModify.mines.ores.forEach(function(me) {
+            BModify.mine.ores.forEach(function(me) {
                 me.RhpS =    en.getVar("RhpS"+me.name,    me.RhpS);
                 me.oreH =    en.getVar("oreH"+me.name,    me.oreH);
                 me.rsTotal = en.getVar("rsTotal"+me.name, me.rsTotal);
@@ -648,7 +648,7 @@ BModify._Initialize = function(en, Research) {
     BModify.Logic = function() {
         BModify.Harvest()
         BModify.rsManagers.forEach(mn => mn.draw())
-        BModify.mines.ores.forEach(mn => mn.draw())
+        BModify.mine.ores.forEach(mn => mn.draw())
         if (BModify.bankRefill>0) BModify.bankRefill--
     }
 
@@ -683,12 +683,12 @@ BModify._Initialize = function(en, Research) {
     Game.registerHook('check', function() {
         BModify.rsManagers.forEach(mn => mn.update())
         BModify.grandma.update()
-        BModify.mines.ores.forEach(mn => mn.update())
+        BModify.mine.ores.forEach(mn => mn.update())
     })
     Game.registerHook('reset', function() {
         BModify.rsManagers.forEach(mn => mn.clear())
         BModify.grandma.clear()
-        BModify.mines.ores.forEach(mn => mn.clear())
+        BModify.mine.ores.forEach(mn => mn.clear())
         BModify.bankRefill=0
     })
 
