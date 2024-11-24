@@ -20,6 +20,8 @@ BModify._Initialize = function(en, Research) {
         1e13, [0, 3, Icons], 13000, {unlockAt:1e12});
     en.ue.addUpgrade("Shrink ray", "Increases all resource space by <b>50%</b>. <q>So actually, if you make your buildings smaller, then I guess there's more resource in a way?</q>", 
         1e16, [0, 2, Icons], 13000, {unlockAt:1e15});
+    
+    en.newVar("bankRefill", "int");
 
     BModify.RS_Manager = function(id, baseRS, rsNames) {
         this.id = id;
@@ -142,7 +144,10 @@ BModify._Initialize = function(en, Research) {
                 if (!this.depleted) Game.recalculateGains = 1;
                 this.depleted = true;
             } else this.depleted = false;
+            this.rsUsed = Math.min(this.rsUsed, this.rsTotal);
             this.rsAvailable = Math.max(this.rsAvailable, 0);
+            if ((this.id == 2) && Research.has("Regrowth")) return;
+            if (this.depleted) return;
             if (this.pause) {
                 var rate = 0.1+(this.rsAvailable/this.rsTotal)*0.1;
                 this.rsUsed -= (rate / (Game.fps * 60 * 60)) * this.rsTotal;
@@ -151,9 +156,6 @@ BModify._Initialize = function(en, Research) {
             } else {
                 this.rsUsed += (this.RhpS / Game.fps) * this.decayedFactor() * (this.interest>0?1.5:1);
             }
-            this.rsUsed = Math.min(this.rsUsed, this.rsTotal);
-            if (this.depleted) return;
-            if ((this.id == 2) && Research.has("Regrowth")) return;
         }
 
         // resets everythin'
@@ -486,7 +488,7 @@ BModify._Initialize = function(en, Research) {
         })
         en.loadCallback(function() {
             for (var i=0;i<18;i++) BModify.grandma.grandmaAlloc[i] = en.getVar("grandmaAlloc"+i);
-            BModify.grandma.allocT = en.getVar("allocT");
+            BModify.grandma.allocT = en.getVar("allocT", BModify.grandma.allocT);
         })
 
         this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);", 
@@ -540,38 +542,136 @@ BModify._Initialize = function(en, Research) {
     BModify.Mines = function() {
         this.me = Game.Objects['Mine'];
         this.rs = this.me.rsManager;
+        this.ores = [];
+        
+
+        BModify.Mines.Ore = function(baseRs, baseRhpS, name1, name2, sprite) {
+            this.rsTotal = baseRs;
+            this.rsUsed = 0;
+            this.oreH = 0;
+            this.rsAvailable = baseRs;
+            this.RhpS = baseRhpS;
+
+            en.newVar("RhpS"+name2,  "float");
+            en.newVar("rsTotal"+name2, "int");
+            en.newVar("rsUsed"+name2,  "int");
+            en.newVar("oreH"+name2,    "int");
+
+            this.oreName = name1;
+            this.name = name2;
+
+            this.unlocked = false;
+            this.depleted = false;
+
+            this.recalculate = function() {
+                var rhpsmult = 1;
+                var rsmult = 1;
+
+
+
+                this.RhpS = baseRhpS * rhpsmult;
+                this.rsTotal = baseRs * rsmult;
+                this.rsAvailable = this.rsTotal - this.rsUsed;
+            }
+
+            this.harvest = function() {
+                this.rsAvailable = this.rsTotal - this.rsUsed;
+                if (this.rsAvailable <= 0) {
+                    this.depleted = true;
+                } else this.depleted = false;
+                this.rsUsed = Math.min(this.rsUsed, this.rsTotal);
+                this.rsAvailable = Math.max(this.rsAvailable, 0);
+                if (this.depleted) return;
+                this.rsUsed += (this.RhpS / Game.fps);
+                this.oreH += (this.RhpS / Game.fps);
+            }
+
+            this.clear = function() {
+                this.rsTotal = baseRs;
+                this.rsUsed = 0;
+                this.oreH = 0;
+                this.rsAvailable = baseRs;
+                this.RhpS = baseRhpS;
+
+                this.baseRhpS = baseRhpS;
+                this.baseRs = baseRs;
+                this.unlocked = false;
+            }
+
+            this.update = function() {
+
+            }
+
+            this.draw = function() {
+
+            }
+
+            BModify.Mines.ores[name2] = this;
+        }
+
+        BModify.Mines.Ore.prototype.getType = function() {
+            return 'Mine_Ore';
+        }
+
+        new this.Ore(77000, 1, "Gold ore", "Gold", [0, 0]);
+
+        en.saveCallback(function() {
+            BModify.mines.ores.forEach(function(me) {
+                en.setVar("RhpS"+me.name,    me.RhpS);
+                en.setVar("oreH"+me.name,    me.oreH);
+                en.setVar("rsTotal"+me.name, me.rsTotal);
+                en.setVar("rsUsed"+me.name,  me.rsUsed);
+            })
+        })
+        en.loadCallback(function() {
+            BModify.mines.ores.forEach(function(me) {
+                me.RhpS =    en.getVar("RhpS"+me.name,    me.RhpS);
+                me.oreH =    en.getVar("oreH"+me.name,    me.oreH);
+                me.rsTotal = en.getVar("rsTotal"+me.name, me.rsTotal);
+                me.rsUsed =  en.getVar("rsUsed"+me.name,  me.rsUsed);
+            })
+        })
     }
 
     BModify.Mines.prototype.getType = function () {
         return 'Mine_Mini';
     }
 
-    BModify.Recalculate = function() { this.rsManagers.forEach(mn => mn.recalculate()) }
-    BModify.Harvest = function() { this.rsManagers.forEach(mn => mn.harvest()) }
+    BModify.Recalculate = function() { 
+        this.rsManagers.forEach(mn => mn.recalculate()) 
+        this.mines.ores.forEach(mn => mn.recalculate())
+    }
+    BModify.Harvest = function() { 
+        this.rsManagers.forEach(mn => mn.harvest()) 
+        this.mines.ores.forEach(mn => mn.harvest())
+    }
     BModify.Logic = function() {
-        BModify.Harvest();
-        BModify.rsManagers.forEach(mn => mn.draw());
-        if (BModify.bankRefill>0) BModify.bankRefill--;
+        BModify.Harvest()
+        BModify.rsManagers.forEach(mn => mn.draw())
+        BModify.mines.ores.forEach(mn => mn.draw())
+        if (BModify.bankRefill>0) BModify.bankRefill--
     }
 
     en.saveCallback(function() {
         BModify.rsManagers.forEach(function(me) {
-            en.setVar("RhpS"+me.id, me.RhpS);
-            en.setVar("yield"+me.id, me.yield);
+            en.setVar("RhpS"+me.id,    me.RhpS);
+            en.setVar("yield"+me.id,   me.yield);
             en.setVar("rsTotal"+me.id, me.rsTotal);
-            en.setVar("rsUsed"+me.id, me.rsUsed);
-            en.setVar("pause"+me.id, me.pause ? 1 : 0);
+            en.setVar("rsUsed"+me.id,  me.rsUsed);
+            en.setVar("pause"+me.id,   me.pause ? 1 : 0);
         })
+        en.setVar("bankRefill", BModify.bankRefill);
     })
 
     en.loadCallback(function() {
         BModify.rsManagers.forEach(function(me) {
-            me.RhpS = en.getVar("RhpS"+me.id);
-            me.yield = en.getVar("yield"+me.id);
-            me.rsTotal = en.getVar("rsTotal"+me.id);
-            me.rsUsed = en.getVar("rsUsed"+me.id);
-            me.pause = (en.getVar("pause"+me.id) > 0) ? true: false;
+            me.RhpS =    en.getVar("RhpS"+me.id,    me.RhpS);
+            me.yield =   en.getVar("yield"+me.id,   me.yield);
+            me.rsTotal = en.getVar("rsTotal"+me.id, me.rsTotal);
+            me.rsUsed =  en.getVar("rsUsed"+me.id,  me.rsUsed);
+            me.pause =  (en.getVar("pause"+me.id,   me.pause) > 0) ? true: false;
         })
+        BModify.bankRefill = en.getVar("bankRefill", BModify.bankRefill);
     })
 
     Game.registerHook('cps', function(cps) {
@@ -583,11 +683,13 @@ BModify._Initialize = function(en, Research) {
     Game.registerHook('check', function() {
         BModify.rsManagers.forEach(mn => mn.update())
         BModify.grandma.update()
+        BModify.mines.ores.forEach(mn => mn.update())
     })
     Game.registerHook('reset', function() {
         BModify.rsManagers.forEach(mn => mn.clear())
         BModify.grandma.clear()
-        BModify.bankRefill=0;
+        BModify.mines.ores.forEach(mn => mn.clear())
+        BModify.bankRefill=0
     })
 
 

@@ -77,6 +77,7 @@ IdlersPocket._Initialize = function () {
      * @param {any} value - value of variable 
      */
     IdlersPocket.setVar = function (name, value) {
+        if (!this.vars.has(name)) return;
         this.vars.get(name).value = value;
     }
 
@@ -84,7 +85,11 @@ IdlersPocket._Initialize = function () {
      * Returns the value of the variable corresponding to the name.
      * @param {string} name - name of variable 
      */
-    IdlersPocket.getVar = function (name) {
+    IdlersPocket.getVar = function (name, fb) {
+        if (!this.vars.has(name)) {
+            if (fb!==undefined) return fb; 
+            else return 0;
+        }
         return this.vars.get(name).value;
     }
 
