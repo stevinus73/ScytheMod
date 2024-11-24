@@ -62,6 +62,7 @@ var Process = function() {
         for (var i in upgrade.other) { // transfer
             Game.last[i] = upgrade.other[i];
         }
+        if (Game.last.unlockAt) Game.UnlockAt.push({cookies: Game.last.unlockAt, name: upgrade.name});
         Game.last.order = upgrade.order + Game.last.id*0.001;
     })
     LocalizeUpgradesAndAchievs();
