@@ -33,6 +33,7 @@ IdlersPocket._Initialize = function () {
     }
     IdlersPocket.shim = shimmer_engine;
     IdlersPocket.be = building_engine;
+    IdlersPocket.ae = achiev_engine;
     IdlersPocket.ue = upgrade_engine;
     IdlersPocket._Process = Process;
 
