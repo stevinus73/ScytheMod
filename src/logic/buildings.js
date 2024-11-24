@@ -560,7 +560,7 @@ BModify._Initialize = function(en, Research) {
             en.setVar("yield"+me.id, me.yield);
             en.setVar("rsTotal"+me.id, me.rsTotal);
             en.setVar("rsUsed"+me.id, me.rsUsed);
-            en.setVar("pause"+me.id, me.pause ? 0 : 1);
+            en.setVar("pause"+me.id, me.pause ? 1 : 0);
         })
     })
 
