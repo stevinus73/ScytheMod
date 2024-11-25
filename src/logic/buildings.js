@@ -15,11 +15,11 @@ BModify._Initialize = function(en, Research) {
     var spr_ref = [0,1,2,3,4,15,16,17,5,6,7,8,13,14,19,20,32,33,34,35];
 
     en.ue.addUpgrade("Lateral expansions", "Increases all resource space by <b>50%</b>. <q>One of those fancy business words.</q>", 
-        1e10, [0, 1, Icons], 13000, {unlockAt: 1e9});
+        1e10, [0, 0, Icons], 13000, {unlockAt: 1e9});
     en.ue.addUpgrade("Growth ray", "Increases all resource space by <b>50%</b>. <q>Pew! Pew! Pew!</q>", 
-        1e13, [0, 3, Icons], 13000, {unlockAt:1e12});
+        1e13, [0, 2, Icons], 13000, {unlockAt:1e12});
     en.ue.addUpgrade("Shrink ray", "Increases all resource space by <b>50%</b>. <q>So actually, if you make your buildings smaller, then I guess there's more resource in a way?</q>", 
-        1e16, [0, 2, Icons], 13000, {unlockAt:1e15});
+        1e16, [0, 1, Icons], 13000, {unlockAt:1e15});
     
     en.newVar("bankRefill", "int");
 
@@ -204,7 +204,7 @@ BModify._Initialize = function(en, Research) {
         +'.resBarRefill{cursor:pointer;width:48px;height:48px;position:absolute;z-index:1000;transition:transform 0.05s;transform:scale(0.8);}'
         +'.resBarRefill:hover{transform:scale(1.3);}'
         +'.resBarRefill:active{transform.scale(0.7);}'
-        +'#resBarRefillL'+this.id+'{left:-40px;top:-17px;'+writeIcon([0, 0, Icons])+'}'
+        +'#resBarRefillL'+this.id+'{left:-40px;top:-17px;'+writeIcon([3, 0, Icons])+'}'
         +'#resBarRefillR'+this.id+'{left:340px;top:-17px;'+writeIcon([2, 0, Icons])+'}' // not fully sure why right:-40px doesn't work; think it's something about overriding
         +'#resBarFull'+this.id+'{transform:scale(1,2);transform-origin:50% 0;height:50%;}'
         +'#resBarText'+this.id+'{transform:scale(1,0.8);width:100%;position:absolute;left:0px;top:0px;text-align:center;color:#fff;text-shadow:-1px 1px #000,0px 0px 4px #000,0px 0px 6px #000;margin-top:2px;}'
