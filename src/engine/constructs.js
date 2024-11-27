@@ -4,7 +4,7 @@ var building_engine={};
 var achiev_engine={};
 achiev_engine.achievementQueue = [];
 
-achiev_engine.AddAchievement = function (name, desc, icon, prev, other) { 
+achiev_engine.addAchievement = function (name, desc, icon, prev, other) { 
     this.achievementQueue.push({
         name: name,
         desc: desc,

@@ -48,8 +48,8 @@ Research._Initialize = function(en) {
     this.dragging = false;
     
     en.newVar("research", "int");
-    en.ae.newAchievement("Doctorate", "Research <b>20 upgrades</b>.", [1, 0, Icons], "Oft we mar what's well", {});
-    en.ae.newAchievement("Researcher", "Research <b>50 upgrades</b>.", [9, 1], "Oft we mar what's well", {});
+    en.ae.addAchievement("Doctorate", "Research <b>20 upgrades</b>.", [1, 0, Icons], "Oft we mar what's well", {});
+    en.ae.addAchievement("Researcher", "Research <b>50 upgrades</b>.", [9, 1], "Oft we mar what's well", {});
 
     this.trees = {};
     this.currTreeInit = "";

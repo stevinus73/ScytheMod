@@ -12,6 +12,8 @@ BModify._Initialize = function(en, Research) {
     this.rsManagers = [];
     this.bankRefill = 0;
 
+    this.totalDp = 0; // used for achievs
+
     var spr_ref = [0,1,2,3,4,15,16,17,5,6,7,8,13,14,19,20,32,33,34,35];
 
     en.ue.addUpgrade("Lateral expansions", "Increases all resource space by <b>50%</b>. <q>One of those fancy business words.</q>", 
@@ -20,6 +22,13 @@ BModify._Initialize = function(en, Research) {
         1e13, [0, 2, Icons], 13000, {unlockAt:1e12});
     en.ue.addUpgrade("Shrink ray", "Increases all resource space by <b>50%</b>. <q>So actually, if you make your buildings smaller, then I guess there's more resource in a way?</q>", 
         1e16, [0, 1, Icons], 13000, {unlockAt:1e15});
+    
+    en.ae.addAchievement("Harvester", "Deplete <b>50,000</b> units of resource in total.",
+        [0, 0, Icons], "Septcentennial", {});
+    en.ae.addAchievement("Industrializer", "Deplete <b>100,000</b> units of resource in total.",
+        [0, 2, Icons], "Septcentennial", {});
+    en.ae.addAchievement("Climate change", "Deplete <b>200,000</b> units of resource in total. <q>Guys, it exists.</q>",
+        [0, 1, Icons], "Septcentennial", {});
     
     en.newVar("bankRefill", "int");
 
@@ -154,7 +163,9 @@ BModify._Initialize = function(en, Research) {
                 this.rsUsed = Math.max(this.rsUsed, 0);
                 return;
             } else {
-                this.rsUsed += (this.RhpS / Game.fps) * this.decayedFactor() * (this.interest>0?1.5:1);
+                var dep = (this.RhpS / Game.fps) * this.decayedFactor() * (this.interest>0?1.5:1);
+                this.rsUsed += dep;
+                BModify.totalDp += dep;
             }
         }
 
@@ -182,8 +193,13 @@ BModify._Initialize = function(en, Research) {
 
         l("productMinigameButton"+this.id).insertAdjacentHTML('afterend', 
             '<div id="productStatsButton'+this.id+'" class="productButton" onclick="Game.ObjectsById['+this.id+'].rsManager.switchStats(-1)">View Stats</div>');
-        l("productMinigameButton"+this.id).insertAdjacentHTML('afterend', 
-            '<div id="pauseButton'+this.id+'" class="productButton" onclick="Game.ObjectsById['+this.id+'].rsManager.switch(-1)">Pause</div>');
+        // l("productMinigameButton"+this.id).insertAdjacentHTML('afterend', 
+        //     '<div id="pauseButton'+this.id+'" class="productButton" onclick="Game.ObjectsById['+this.id+'].rsManager.switch(-1)">Pause</div>');
+        l("row"+this.id).insertAdjacentHTML('beforeend',
+            '<a id="pauseButton'+this.id+'" class="smallFancyButton framed" style="position:absolute;z-index:10;right:8px;bottom:22px;"'+
+            ' onclick="Game.ObjectsById['+this.id+'].rsManager.switch(-1)">'+loc("Pause")+'</a>'
+        )
+        
         l("row"+this.id).insertAdjacentHTML('beforeend', 
             '<div id="rowStats'+this.id+'" style="display: none"></div>'
         )
@@ -516,14 +532,14 @@ BModify._Initialize = function(en, Research) {
         }
 
         l("row17").insertAdjacentHTML('afterbegin', 
-            '<div class="listing" id="idleverseStat" style="position:absolute;color:rgb(36, 36, 36)"></div>'
+            '<div class="listing" id="idleverseStat" style="position:absolute;color:rgb(36, 36, 36)" class="onlyOnCanvas"></div>'
         )
 
         this.getStat = function() {
             if (Research.has("Galactica mindoris")) {
                 l("idleverseStat").innerHTML = "<b>"+loc("Total resource boost provided by")+" "+this.me.amount+" idleverses:</b> "
             + "x" + Beautify(this.resourceMult(), 3);
-            }
+            } else l("idleverseStat").innerHTML = "<b>You do not have the Galactica mindoris research upgrade, and are gaining no resource space from idleverses.</b>"
         }
 
         this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);", 
@@ -581,6 +597,7 @@ BModify._Initialize = function(en, Research) {
                 } else this.depleted = false;
                 this.rsUsed = Math.min(this.rsUsed, this.rsTotal);
                 this.rsAvailable = Math.max(this.rsAvailable, 0);
+                if (!this.unlocked) return;
                 if (this.depleted) return;
                 this.rsUsed += (this.RhpS / Game.fps);
                 this.oreH += (this.RhpS / Game.fps);
@@ -684,12 +701,17 @@ BModify._Initialize = function(en, Research) {
         BModify.rsManagers.forEach(mn => mn.update())
         BModify.grandma.update()
         BModify.mine.ores.forEach(mn => mn.update())
+
+        if (BModify.totalDp >= 50000) Game.Win("Harvester") 
+        if (BModify.totalDp >= 100000) Game.Win("Industrializer")
+        if (BModify.totalDp >= 200000) Game.Win("Climate change")
     })
     Game.registerHook('reset', function() {
         BModify.rsManagers.forEach(mn => mn.clear())
         BModify.grandma.clear()
         BModify.mine.ores.forEach(mn => mn.clear())
         BModify.bankRefill=0
+        BModify.totalDp=0
     })
 
 
