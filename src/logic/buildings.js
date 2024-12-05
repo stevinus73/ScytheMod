@@ -630,7 +630,7 @@ BModify._Initialize = function(en, Research) {
             return 'Mine_Ore';
         }
 
-        new this.Ore(77000, 1, "Gold ore", "Gold", [0, 0]);
+        new BModify.Mines.Ore(77000, 1, "Gold ore", "Gold", [0, 0]);
 
         en.saveCallback(function() {
             BModify.mine.ores.forEach(function(me) {
