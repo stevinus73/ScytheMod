@@ -562,7 +562,7 @@ BModify._Initialize = function(en, Research) {
         this.ores = [];
         this.id = 0;
 
-        BModify.Mines.Ore = function(baseRs, baseRhpS, name1, name2, sprite) {
+        this.Ore = function(baseRs, baseRhpS, name1, name2, sprite) {
             this.rsTotal = baseRs;
             this.rsUsed = 0;
             this.oreH = 0;
