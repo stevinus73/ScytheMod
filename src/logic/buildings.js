@@ -559,7 +559,7 @@ BModify._Initialize = function(en, Research) {
         this.me = Game.Objects['Mine'];
         this.rs = this.me.rsManager;
         this.ores = [];
-        
+        this.id = 0;
 
         BModify.Mines.Ore = function(baseRs, baseRhpS, name1, name2, sprite) {
             this.rsTotal = baseRs;
@@ -567,6 +567,7 @@ BModify._Initialize = function(en, Research) {
             this.oreH = 0;
             this.rsAvailable = baseRs;
             this.RhpS = baseRhpS;
+            this.id = BModify.id;
 
             en.newVar("RhpS"+name2,  "float");
             en.newVar("rsTotal"+name2, "int");
@@ -623,7 +624,8 @@ BModify._Initialize = function(en, Research) {
 
             }
 
-            BModify.Mines.ores[name2] = this;
+            BModify.Mines.ores.push(this);
+            BModify.id++;
         }
 
         BModify.Mines.Ore.prototype.getType = function() {
