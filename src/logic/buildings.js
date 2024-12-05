@@ -556,6 +556,7 @@ BModify._Initialize = function(en, Research) {
     }
 
     BModify.Mines = function() {
+        var me = this;
         this.me = Game.Objects['Mine'];
         this.rs = this.me.rsManager;
         this.ores = [];
@@ -567,7 +568,7 @@ BModify._Initialize = function(en, Research) {
             this.oreH = 0;
             this.rsAvailable = baseRs;
             this.RhpS = baseRhpS;
-            this.id = BModify.id;
+            this.id = me.id;
 
             en.newVar("RhpS"+name2,  "float");
             en.newVar("rsTotal"+name2, "int");
@@ -624,15 +625,15 @@ BModify._Initialize = function(en, Research) {
 
             }
 
-            BModify.Mines.ores.push(this);
-            BModify.id++;
+            me.ores.push(this);
+            me.id++;
         }
 
-        BModify.Mines.Ore.prototype.getType = function() {
+        this.Ore.prototype.getType = function() {
             return 'Mine_Ore';
         }
 
-        new BModify.Mines.Ore(77000, 1, "Gold ore", "Gold", [0, 0]);
+        new this.Ore(77000, 1, "Gold ore", "Gold", [0, 0]);
 
         en.saveCallback(function() {
             BModify.mine.ores.forEach(function(me) {
