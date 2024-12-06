@@ -37,7 +37,7 @@ Clicks._Initialize = function(en, Research) {
 
     // show click display
     en.injectCode(Game.Draw, `l('cookies').innerHTML=str;`, 
-        `str=str+'<div style="font-size:50%">(clicks left: '+mod.clicks.clicks+' out of '+mod.clicks.maxClicks+')</div>'\n\t\t`, 
+        `str=str+'<div style="font-size:50%">(clicks left: ')</div>;`, 
         "before");
     
     en.injectMult(Game.ClickCookie, 
