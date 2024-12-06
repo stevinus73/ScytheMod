@@ -35,12 +35,13 @@ Clicks._Initialize = function(en, Research) {
     }
 
     // show click display
-    en.injectFunc(Game.Draw, `l('cookies').innerHTML=str;`, 
+    en.injectCode(Game.Draw, `l('cookies').innerHTML=str;`, 
         `str=str+'<div style="font-size:50%">(clicks left: '+mod.clicks.clicks+'/'+mod.clicks.maxClicks+')')</div>'\n\t\t`, 
         "before");
     
-    en.injectFunc(Game.ClickCookie, "|| Game.T<3 ", "|| !mod.clicks.hasClicksLeft() ", "after");
-    en.injectFunc(Game.ClickCOokie, "Game.loseShimmeringVeil('click');", "\n\t\tmod.clicks.drainClick();", "after");
+    en.injectMult(Game.ClickCookie, 
+        [["|| Game.T<3 ", "|| !mod.clicks.hasClicksLeft() "]
+        ,["Game.loseShimmeringVeil('click');", "\n\t\tmod.clicks.drainClick();"]], "after");
 
     Game.registerHook('cps', function(cps) {
         Clicks.Recalculate();
