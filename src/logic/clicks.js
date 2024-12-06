@@ -36,9 +36,9 @@ Clicks._Initialize = function(en, Research) {
     }
 
     // show click display
-    en.injectCode(Game.Draw, `+Beautify(Game.cookiesPs*(1-Game.cpsSucked),1)+'</div>';`, 
-        `str=str+'<div style="font-size:50%">(clicks left: '+mod.clicks.clicks+'/'+mod.clicks.maxClicks+')'</div>'\n\t\t`, 
-        "after");
+    en.injectCode(Game.Draw, `l('cookies').innerHTML=str;`, 
+        `str=str+'<div style="font-size:50%">(clicks left: '+mod.clicks.clicks+'\/'+mod.clicks.maxClicks+')'</div>'\n\t\t`, 
+        "before");
     
     en.injectMult(Game.ClickCookie, 
         [["|| Game.T<3 ", "|| !mod.clicks.hasClicksLeft() "]
