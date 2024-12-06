@@ -31,13 +31,14 @@ Clicks._Initialize = function(en, Research) {
             // regenerate a click
             this.clicks++;
             this.clicks=Math.min(this.clicks, this.maxClicks);
+            this.regenTimer=Game.fps*60;
         }
     }
 
     // show click display
-    en.injectCode(Game.Draw, `l('cookies').innerHTML=str;`, 
+    en.injectCode(Game.Draw, `+Beautify(Game.cookiesPs*(1-Game.cpsSucked),1)+'</div>';`, 
         `str=str+'<div style="font-size:50%">(clicks left: '+mod.clicks.clicks+'/'+mod.clicks.maxClicks+')'</div>'\n\t\t`, 
-        "before");
+        "after");
     
     en.injectMult(Game.ClickCookie, 
         [["|| Game.T<3 ", "|| !mod.clicks.hasClicksLeft() "]
