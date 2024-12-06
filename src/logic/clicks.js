@@ -17,19 +17,36 @@ Clicks._Initialize = function(en, Research) {
     }
 
     Clicks.drainClick = function() {
-
+        this.clicks--;
+        this.regenTimer=Game.fps*60;
     }
 
     Clicks.hasClicksLeft = function() {
-
+        return (clicks > 0);
     }
 
     Clicks.logic = function() {
         if (this.regenTimer>0) this.regenTimer--;
         else {
-
+            // regenerate a click
+            this.clicks++;
+            this.clicks=Math.min(this.clicks, this.maxClicks);
         }
     }
+
+    // show click display
+    en.injectFunc(Game.Draw, `l('cookies').innerHTML=str;`, 
+        `str=str+'<div style="font-size:50%">(clicks left: '+mod.clicks.clicks+'/'+mod.clicks.maxClicks+')')</div>'\n\t\t`, 
+        "before");
+    
+    en.injectFunc(Game.ClickCookie, "|| Game.T<3 ", "|| !mod.clicks.hasClicksLeft() ", "after");
+    en.injectFunc(Game.ClickCOokie, "Game.loseShimmeringVeil('click');", "\n\t\tmod.clicks.drainClick();", "after");
+
+    Game.registerHook('cps', function(cps) {
+        Clicks.Recalculate();
+        return cps;
+    })
+    Game.registerHook('logic', this.Logic);
 }
 
 export { Clicks }
