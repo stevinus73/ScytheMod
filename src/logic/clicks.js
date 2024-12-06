@@ -40,9 +40,8 @@ Clicks._Initialize = function(en, Research) {
         `str=str+'<div style="font-size:50%">(clicks left: '+mod.clicks.clicks+' out of '+mod.clicks.maxClicks+')</div>';`, 
         "before");
     
-    Game.ClickCookie = en.injectMult(Game.ClickCookie, 
-        [["|| Game.T<3 ", "|| !mod.clicks.hasClicksLeft() "]
-        ,["Game.loseShimmeringVeil('click');", "\n\t\tmod.clicks.drainClick();"]], "after");
+    Game.ClickCookie = en.injectCode(Game.ClickCookie, "|| Game.T<3 ", "|| !mod.clicks.hasClicksLeft() ", "after");
+    Game.ClickCookie = en.injectCode(Game.ClickCookie, "Game.loseShimmeringVeil('click');", "\n\t\tmod.clicks.drainClick();", "after");
     
     Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
         `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
