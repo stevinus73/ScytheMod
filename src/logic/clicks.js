@@ -36,21 +36,21 @@ Clicks._Initialize = function(en, Research) {
     }
 
     // show click display
-    en.injectCode(Game.Draw, `l('cookies').innerHTML=str;`, 
-        `str=str+'<div style="font-size:50%">asdf</div>';`, 
+    Game.Draw = en.injectCode(Game.Draw, `l('cookies').innerHTML=str;`, 
+        `str=str+'<div style="font-size:50%">(clicks left: '+mod.clicks.clicks+' out of '+mod.clicks.maxClicks+')'</div>'\n\t\t`, 
         "before");
     
-    en.injectMult(Game.ClickCookie, 
+    Game.ClickCookie = en.injectMult(Game.ClickCookie, 
         [["|| Game.T<3 ", "|| !mod.clicks.hasClicksLeft() "]
         ,["Game.loseShimmeringVeil('click');", "\n\t\tmod.clicks.drainClick();"]], "after");
     
-    en.injectCode(Game.UpdateMenu,
+    Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
         `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
         `\n\t\t'<div class="listing"><b>Cookie clicks left:</b> '+Beautify(mod.clicks.clicks)+'</div>'+`, "after"
     )
 
     Game.registerHook('cps', function(cps) {
-        Clicks.recalculate();
+        Clicks.Recalculate();
         return cps;
     })
     Game.registerHook('logic', this.logic);
