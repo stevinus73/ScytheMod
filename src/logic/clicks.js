@@ -50,7 +50,7 @@ Clicks._Initialize = function(en, Research) {
     )
 
     Game.registerHook('cps', function(cps) {
-        Clicks.Recalculate();
+        Clicks.recalculate();
         return cps;
     })
     Game.registerHook('logic', this.logic);
