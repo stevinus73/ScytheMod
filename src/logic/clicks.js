@@ -16,7 +16,7 @@ Clicks._Initialize = function(en, Research) {
     this.baseClicks = 150;
     this.maxClicks = this.baseClicks;
     this.clicks = this.baseClicks;
-    this.regenTimer = Game.fps;
+    this.regenTimer = Game.fps*5;
 
     this.powerClicks = 0;
     this.maxPowerClicks = 0;
@@ -67,7 +67,9 @@ Clicks._Initialize = function(en, Research) {
         Clicks.recalculate();
         return cps;
     })
-    Game.registerHook('logic', this.logic);
+    Game.registerHook('logic', function() {
+        Clicks.logic();
+    });
     en.rebuildBigCookieButton();
 }
 
