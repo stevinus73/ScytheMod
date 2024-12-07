@@ -2,8 +2,18 @@ var Clicks = {}
 
 Clicks._Initialize = function(en, Research) {
     this.en = en;
+
+    en.ue.addUpgrade("Big clicks", "The mouse and cursors are <b>four times as efficient</b>. Maximum click space <b>doubled</b>.<q>Big clicks for the big cookie.</q>",
+        1e4, [1, 6], 140, {unlockAt: 5e3});
+    en.ue.addUpgrade("Butterfly", "The mouse and cursors are <b>four times as efficient</b>. Maximum click space <b>doubled</b>.<q>More like a hummingbird with THAT speed.</q>",
+        1e6, [12, 1], 140, {unlockAt: 5e5});
+    en.ue.addUpgrade("Hands-off approach", "Clicks regenerate <b>twice</b> as fast.<q>Ow, my hands are really sore. Good idea.</q>",
+        1e8, [12, 2], 140, {unlockAt: 5e7});
     
-    this.baseClicks = 1000;
+    Game.mouseCps = en.injectCode(Game.mouseCps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
+    Game.Objects.Cursor.cps = en.injectCode(Game.Objects.Cursor.cps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
+    
+    this.baseClicks = 150;
     this.maxClicks = this.baseClicks;
     this.clicks = this.baseClicks;
     this.regenTimer = Game.fps;
@@ -13,16 +23,19 @@ Clicks._Initialize = function(en, Research) {
     this.pc_enabled = false;
 
     Clicks.recalculate = function() {
-
+        var maxClicks = this.baseClicks;
+        if (Game.Has("Big clicks")) maxClicks*=2;
+        if (Game.Has("Butterfly")) maxClicks*=2;
+        this.maxClicks = Math.round(maxClicks);
     }
 
     Clicks.drainClick = function() {
         this.clicks--;
-        this.regenTimer=Game.fps*60;
+        this.regenTimer=Game.fps*10;
     }
 
     Clicks.hasClicksLeft = function() {
-        return (clicks > 0);
+        return (this.clicks > 0);
     }
 
     Clicks.logic = function() {
@@ -31,7 +44,9 @@ Clicks._Initialize = function(en, Research) {
             // regenerate a click
             this.clicks++;
             this.clicks=Math.min(this.clicks, this.maxClicks);
-            this.regenTimer=Game.fps*60;
+            var rate=Game.fps*5;
+            if (Game.Has("Hands-off approach")) rate*=0.5;
+            this.regenTimer=rate;
         }
     }
 
