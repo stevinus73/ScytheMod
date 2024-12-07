@@ -53,6 +53,7 @@ Clicks._Initialize = function(en, Research) {
         return cps;
     })
     Game.registerHook('logic', this.logic);
+    en.rebuildBigCookieButton();
 }
 
 export { Clicks }

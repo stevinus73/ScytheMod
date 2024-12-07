@@ -94,11 +94,11 @@ IdlersPocket._Initialize = function () {
         return this.vars.get(name).value;
     }
 
-    IdlersPocket.loadCallback = function(callback) {
+    IdlersPocket.loadCallback = function (callback) {
         this.loadCallbacks.push(callback);
     }
 
-    IdlersPocket.saveCallback = function(callback) {
+    IdlersPocket.saveCallback = function (callback) {
         this.saveCallbacks.push(callback);
     }
 
@@ -107,6 +107,33 @@ IdlersPocket._Initialize = function () {
      * (work on later)
      */
 
+
+    /**
+     * more stuffs
+     */
+
+
+
+    IdlersPocket.rebuildBigCookieButton = function () {
+        l('bigCookie').remove();
+        var bigCookie = document.createElement('button');
+        bigCookie.id = 'bigCookie';
+        l('cookieAnchor').appendChild(bigCookie);
+
+        if (!Game.touchEvents) {
+            AddEvent(bigCookie, 'click', Game.ClickCookie);
+            AddEvent(bigCookie, 'mousedown', function (event) { Game.BigCookieState = 1; if (Game.prefs.cookiesound) { Game.playCookieClickSound(); } if (event) event.preventDefault(); });
+            AddEvent(bigCookie, 'mouseup', function (event) { Game.BigCookieState = 2; if (event) event.preventDefault(); });
+            AddEvent(bigCookie, 'mouseout', function (event) { Game.BigCookieState = 0; });
+            AddEvent(bigCookie, 'mouseover', function (event) { Game.BigCookieState = 2; });
+        }
+        else {
+            //touch events
+            AddEvent(bigCookie, 'touchend', Game.ClickCookie);
+            AddEvent(bigCookie, 'touchstart', function (event) { Game.BigCookieState = 1; if (event) event.preventDefault(); });
+            AddEvent(bigCookie, 'touchend', function (event) { Game.BigCookieState = 0; if (event) event.preventDefault(); });
+        }
+    }
 }
 
 IdlersPocket._Initialize();
