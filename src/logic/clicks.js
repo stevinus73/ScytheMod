@@ -23,7 +23,7 @@ Clicks._Initialize = function(en, Research) {
     const overflowGain = 0.5;
     const minOverflow = -(3*overflowGain);
     const overflowLoss = 0.35;
-    const baseThreshold = 0.1;
+    const baseThreshold = 0.25;
     this.overflow = minOverflow;
 
     const baseCursorTime = Game.fps*15;
@@ -46,7 +46,7 @@ Clicks._Initialize = function(en, Research) {
         if(this.clicks<0) this.clicks=0;
         this.regenTimer=baseRecovery;
         var threshold=baseThreshold;
-        if (Game.Has("Thousand fingers")) threshold*=(1+0.2*Math.floor(Game.Objects['Cursor'].amount/100)); // cursor nerf!
+        if (Game.Has("Thousand fingers")) threshold*=(1+0.1*Math.floor(Game.Objects['Cursor'].amount/100)); // cursor nerf!
         if (now-Game.lastClick<=(1000*threshold)) {
             this.overflow+=overflowGain;
         } else {
