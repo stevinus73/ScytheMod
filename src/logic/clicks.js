@@ -20,8 +20,10 @@ Clicks._Initialize = function(en, Research) {
     this.clicks = baseClicks;
     this.regenTimer = baseRegen;
 
-    const minOverflow = -2;
-    const threshold = 0.5;
+    const overflowGain = 0.5;
+    const minOverflow = -(3*overflowGain);
+    const overflowLoss = 0.35;
+    const threshold = 0.2;
     this.overflow = minOverflow;
 
     this.powerClicks = 0;
@@ -36,13 +38,13 @@ Clicks._Initialize = function(en, Research) {
     }
 
     Clicks.drainClick = function(now) {
-        var clickNum=1+(this.overflow>0?this.overflow:0); 
+        var clickNum=1+(this.overflow>0?Math.floor(this.overflow):0); 
         this.clicks-=clickNum;
         this.regenTimer=baseRecovery;
         if (now-Game.lastClick<=(1000*threshold)) {
-            this.overflow++;
+            this.overflow+=overflowGain;
         } else {
-            this.overflow--;
+            this.overflow-=overflowLoss;
             if (this.overflow<minOverflow) this.overflow=minOverflow;
         }
     }
@@ -64,7 +66,8 @@ Clicks._Initialize = function(en, Research) {
     }
 
     Clicks.getClickDisplay = function() {
-        return '<div style="font-size:50%">clicks left: '+this.clicks+' out of '+this.maxClicks+' (overflow: +'+Math.max(this.overflow, 0)+')</div>';
+        return '<div style="font-size:50%">clicks left: '+this.clicks+' out of '+this.maxClicks
+        +' (overflow: '+(this.overflow>0?'+'+Math.floor(this.overflow):0)+')</div>';
     }
 
     // show click display
