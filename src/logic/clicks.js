@@ -23,8 +23,11 @@ Clicks._Initialize = function(en, Research) {
     const overflowGain = 0.5;
     const minOverflow = -(3*overflowGain);
     const overflowLoss = 0.35;
-    const threshold = 0.2;
+    const baseThreshold = 0.1;
     this.overflow = minOverflow;
+
+    const baseCursorTime = Game.fps*15;
+    this.cursorTimer = baseCursorTime;
 
     this.powerClicks = 0;
     this.maxPowerClicks = 0;
@@ -41,12 +44,31 @@ Clicks._Initialize = function(en, Research) {
         var clickNum=1+(this.overflow>0?Math.floor(this.overflow):0); 
         this.clicks-=clickNum;
         this.regenTimer=baseRecovery;
+        var threshold=baseThreshold;
+        if (Game.Has("Thousand fingers")) threshold*=(1+0.2*Math.floor(Game.Objects['Cursor'].amount/100)); // cursor nerf!
         if (now-Game.lastClick<=(1000*threshold)) {
             this.overflow+=overflowGain;
         } else {
             this.overflow-=overflowLoss;
             if (this.overflow<minOverflow) this.overflow=minOverflow;
         }
+    }
+
+    Clicks.getCursorClicks = function() { // cursor nerf!
+        var clickNum=0.1*Math.ceil(Game.Objects['Cursor'].amount/100);
+        if (Game.Has("Thousand fingers")) clickNum*=1.3;
+        if (Game.Has("Million fingers")) clickNum*=1.3;
+        if (Game.Has("Billion fingers")) clickNum*=1.3;
+        if (Game.Has("Trillion fingers")) clickNum*=1.3;
+        if (Game.Has("Quadrillion fingers")) clickNum*=1.3;
+        if (Game.Has("Quintillion fingers")) clickNum*=1.3;
+        if (Game.Has("Sextillion fingers")) clickNum*=1.3;
+        if (Game.Has("Septillion fingers")) clickNum*=1.3;
+        if (Game.Has("Octillion fingers")) clickNum*=1.3;
+        if (Game.Has("Nonillion fingers")) clickNum*=1.3;
+        if (Game.Has("Decillion fingers")) clickNum*=1.3;
+        if (Game.Has("Undecillion fingers")) clickNum*=1.3;
+        return clickNum;
     }
 
     Clicks.hasClicksLeft = function() {
@@ -62,6 +84,13 @@ Clicks._Initialize = function(en, Research) {
             var rate=baseRegen;
             if (Game.Has("Hands-off approach")) rate*=0.5;
             this.regenTimer=rate;
+        }
+
+        if (this.cursorTimer>0) this.cursorTimer--;
+        else {
+            this.clicks-=Math.round(this.getCursorClicks()); // heh
+            if(this.clicks<0) this.clicks=0;
+            this.cursorTimer=baseCursorTime;
         }
     }
 
