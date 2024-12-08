@@ -370,9 +370,6 @@ Research._Initialize = function(en) {
         " You gain research in a variety of ways, such as earning achievements. <div class=\"line\"></div>"+
         " Research upgrades are kept across ascensions. <q>It's quite small, but so is your current business.</q>", 1, f, f, [], [1, 0, Icons], 0, 0); //0
     new Research.Tech("Plain cookie", "Cookie production multiplier <b>+5%</b>. <div class=\"line\"></div> Unlocks <b>new cookie upgrades</b> that appear once you have enough cookies. <q>We all gotta start somewhere. </q>", 50, f, f, [0], [2, 3], -0.2, 0.5); //1
-    Game.NewUpgradeCookie = en.injectCode(Game.NewUpgradeCookie, "if (obj.require) toPush.require=obj.require;",
-        'toPush.require=function(){return mod.research.has("Plain cookie") && (obj.require ? obj.require : true)}', "replace"
-    )
     new Research.Tech("Interns", "You <b>gain research passively</b>, at a rate of <b>1 research every 10 minutes</b>. <q>They do research for you when you're gone. Sure, they may just be drinking all the test tubes and fighting each other with meter sticks, but it's the effort that counts. </q>", 10, f, f, [0], [9, 0], 0.3, 0); //2
     new Research.Tech("Better application forms", "Research costs <b>10%</b> less.", 100, f, f, [2], [9, 1], 0.6, 0); //3
     new Research.Tech("Kitten scientists", "You gain <b>more CpS</b> the more milk you have.<q>science is a natural for meow</q>", 999, req(() => Game.AchievementsOwned, 500, "achievements"), f, [1], [18, 21], -0.6, 0.4); //4
@@ -434,8 +431,8 @@ Research._Initialize = function(en) {
     )
     new Research.Tech("Jitter-click", "The mouse is <b>twice</b> as efficient.", 25, req(() => Game.cookieClicks, 150, "cookie clicks"), f, [0], [11, 0], -0.2, -0.1); // 7
     new Research.Tech("Sustainable clicks", "Overflow accumulates <b>25%</b> slower.", 45, f, f, [7], [11, 1], -0.5, -0.2); // 8
-    new Research.Tech("Damage control", "Decreases overflow effect on clicks used by <b>20%</b>.", 85, f, f, [8], [11, 25], -0.8, -0.4); // 9
-    new Research.Tech("Patience", "Increases click regeneration by <b>30%</b>. <q>A watched pot never boils.</q>", 90, f, f, [8], [11, 21], -0.7, -0.5); // 10
+    new Research.Tech("Damage control", "Decreases overflow effect on clicks used by <b>20%</b>.", 85, f, f, [8], [11, 25], -0.8, -0.3); // 9
+    new Research.Tech("Patience", "Increases click regeneration by <b>30%</b>. <q>A watched pot never boils.</q>", 90, f, f, [8], [11, 21], -0.6, -0.5); // 10
     new Research.Tech("Malevolent power", "Clicking is <b>10%</b> more powerful <b>per level of overflow</b>.", 267, f, f, [9, 10], [12, 0], -1.0, -0.7); // 11 
     buildingTree(1);
     tieredTreeG(1, 1, "Jumbo rolling pins", "Really helps them get to work.", "Grandmas are <b>15%</b> more efficient."); // 1

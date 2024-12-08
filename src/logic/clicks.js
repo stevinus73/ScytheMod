@@ -14,11 +14,11 @@ Clicks._Initialize = function(en, Research) {
     Game.mouseCps = en.injectCode(Game.mouseCps, "if (Game.Has('Dragon claw')) mult*=1.03;", 
         "\n\t\t\tif(mod.research.has('Malevolent power')) mult*=(1+0.1*mod.clicks.getOverflow());", "after");
     Game.Objects.Cursor.cps = en.injectCode(Game.Objects.Cursor.cps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
-    eval("Game.DrawSpecial="+Game.DrawSpecial.toString().replace("Game.LeftBackground.globalAlpha=0.75;","Game.LeftBackground.globalAlpha=0.75*(mod.clicks.clicks/mod.clicks.maxClicks);"));
+    eval("Game.DrawSpecial="+Game.DrawSpecial.toString().replace("Game.LeftBackground.globalAlpha=0.75;","Game.LeftBackground.globalAlpha=1-0.25*(mod.clicks.clicks/mod.clicks.maxClicks);"));
 
     const baseClicks = 250;
-    const baseRegen = Game.fps*3;
-    const baseRecovery = Game.fps*15;
+    const baseRegen = Game.fps*2;
+    const baseRecovery = Game.fps*10;
     this.maxClicks = baseClicks;
     this.clicks = baseClicks;
     this.regenTimer = baseRegen;
@@ -31,6 +31,7 @@ Clicks._Initialize = function(en, Research) {
     const baseThreshold = 0.2;
     this.overflow = minOverflow;
     en.newVar("overflow", "float");
+    this.overflow_enabled = false;
 
     const baseCursorTime = Game.fps*15;
     this.cursorTimer = baseCursorTime;
@@ -53,6 +54,7 @@ Clicks._Initialize = function(en, Research) {
         this.clicks-=clickNum;
         if(this.clicks<0) this.clicks=0;
         this.regenTimer=baseRecovery;
+        if(!this.overflow_enabled) return;
         var threshold=baseThreshold;
         if (Game.Has("Thousand fingers")) threshold*=(1+0.1*Math.floor(Game.Objects['Cursor'].amount/100)); // cursor nerf!
         if (now-Game.lastClick<=(1000*threshold)) {
@@ -100,14 +102,16 @@ Clicks._Initialize = function(en, Research) {
         else {
             this.clicks-=Math.ceil(this.getCursorClicks()); 
             if(this.clicks<0) this.clicks=0;
-            this.overflow+=Math.min(Game.Objects['Cursor'].amount/500,0.5); // devious
+            if(this.overflow_enabled) this.overflow+=Math.min(Game.Objects['Cursor'].amount/500,0.5); // devious
             this.cursorTimer=baseCursorTime;
         }
+
+        if ((Game.cookiesEarned+Game.cookiesReset)>=1000000) this.overflow_enabled = true;
     }
 
     Clicks.getClickDisplay = function() {
         return '<div style="font-size:50%">clicks left: '+this.clicks+' out of '+this.maxClicks
-        +' (overflow: '+(this.overflow>=1?'+'+this.getOverflow():0)+')</div>';
+        +(this.overflow_enabled?' (overflow: '+(this.overflow>=1?'+'+this.getOverflow():0)+')':'')+'</div>';
     }
 
     // show click display
@@ -130,6 +134,12 @@ Clicks._Initialize = function(en, Research) {
     Game.registerHook('logic', function() {
         Clicks.logic();
     });
+    Game.registerHook('reset', function(wipe) {
+        Clicks.clicks = baseClicks;
+        Clicks.maxClicks = baseClicks;
+        Clicks.overflow = minOverflow;
+        if(wipe) Clicks.overflow_enabled = false;
+    })
 
     en.saveCallback(function() {
         en.setVar("clicks", Clicks.clicks);
