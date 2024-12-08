@@ -14,7 +14,8 @@ Clicks._Initialize = function(en, Research) {
     Game.mouseCps = en.injectCode(Game.mouseCps, "if (Game.Has('Dragon claw')) mult*=1.03;", 
         "\n\t\t\tif(mod.research.has('Malevolent power')) mult*=(1+0.1*mod.clicks.getOverflow());", "after");
     Game.Objects.Cursor.cps = en.injectCode(Game.Objects.Cursor.cps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
-    
+    eval("Game.drawSpecial="+Game.drawSpecial.toString().replace("Game.LeftBackground.globalAlpha=0.75;","Game.LeftBackground.globalAlpha=0.75*(mod.clicks.clicks/mod.clicks.maxClicks);"));
+
     const baseClicks = 250;
     const baseRegen = Game.fps*3;
     const baseRecovery = Game.fps*15;
