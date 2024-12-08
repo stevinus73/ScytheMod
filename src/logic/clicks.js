@@ -13,25 +13,38 @@ Clicks._Initialize = function(en, Research) {
     Game.mouseCps = en.injectCode(Game.mouseCps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
     Game.Objects.Cursor.cps = en.injectCode(Game.Objects.Cursor.cps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
     
-    this.baseClicks = 150;
-    this.maxClicks = this.baseClicks;
-    this.clicks = this.baseClicks;
-    this.regenTimer = Game.fps*5;
+    const baseClicks = 250;
+    const baseRegen = Game.fps*3;
+    const baseRecovery = Game.fps*15;
+    this.maxClicks = baseClicks;
+    this.clicks = baseClicks;
+    this.regenTimer = baseRegen;
+
+    const minOverflow = -2;
+    const threshold = 0.5;
+    this.overflow = minOverflow;
 
     this.powerClicks = 0;
     this.maxPowerClicks = 0;
     this.pc_enabled = false;
 
     Clicks.recalculate = function() {
-        var maxClicks = this.baseClicks;
+        var maxClicks = baseClicks;
         if (Game.Has("Big clicks")) maxClicks*=2;
         if (Game.Has("Butterfly")) maxClicks*=2;
         this.maxClicks = Math.round(maxClicks);
     }
 
-    Clicks.drainClick = function() {
-        this.clicks--;
-        this.regenTimer=Game.fps*10;
+    Clicks.drainClick = function(now) {
+        var clickNum=1+(this.overflow>0?this.overflow:0); 
+        this.clicks-=clickNum;
+        this.regenTimer=baseRecovery;
+        if (now-Game.lastClick<=(1000*threshold)) {
+            this.overflow++;
+        } else {
+            this.overflow--;
+            if (this.overflow<minOverflow) this.overflow=minOverflow;
+        }
     }
 
     Clicks.hasClicksLeft = function() {
@@ -44,19 +57,23 @@ Clicks._Initialize = function(en, Research) {
             // regenerate a click
             this.clicks++;
             this.clicks=Math.min(this.clicks, this.maxClicks);
-            var rate=Game.fps*5;
+            var rate=baseRegen;
             if (Game.Has("Hands-off approach")) rate*=0.5;
             this.regenTimer=rate;
         }
     }
 
+    Clicks.getClickDisplay = function() {
+        return '<div style="font-size:50%">clicks left: '+this.clicks+' out of '+this.maxClicks+' (overflow: +'+Math.max(this.overflow, 0)+')</div>';
+    }
+
     // show click display
     Game.Draw = en.injectCode(Game.Draw, `l('cookies').innerHTML=str;`, 
-        `str=str+'<div style="font-size:50%">(clicks left: '+mod.clicks.clicks+' out of '+mod.clicks.maxClicks+')</div>';`, 
+        `str=str+mod.clicks.getClickDisplay();`, 
         "before");
     
     Game.ClickCookie = en.injectCode(Game.ClickCookie, "|| Game.T<3 ", "|| !mod.clicks.hasClicksLeft() ", "after");
-    Game.ClickCookie = en.injectCode(Game.ClickCookie, "Game.loseShimmeringVeil('click');", "\n\t\tmod.clicks.drainClick();", "after");
+    Game.ClickCookie = en.injectCode(Game.ClickCookie, "Game.loseShimmeringVeil('click');", "\n\t\tmod.clicks.drainClick(now);", "after");
     
     Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
         `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
