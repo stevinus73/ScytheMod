@@ -21,12 +21,15 @@ Clicks._Initialize = function(en, Research) {
     this.maxClicks = baseClicks;
     this.clicks = baseClicks;
     this.regenTimer = baseRegen;
+    en.newVar("clicks", "int");
+    en.newVar("maxClicks", "int");
 
     const overflowGain = 0.5;
     const minOverflow = -(3*overflowGain);
     const overflowLoss = 0.35;
     const baseThreshold = 0.2;
     this.overflow = minOverflow;
+    en.newVar("overflow", "float");
 
     const baseCursorTime = Game.fps*15;
     this.cursorTimer = baseCursorTime;
@@ -126,6 +129,19 @@ Clicks._Initialize = function(en, Research) {
     Game.registerHook('logic', function() {
         Clicks.logic();
     });
+
+    en.saveCallback(function() {
+        en.setVar("clicks", Clicks.clicks);
+        en.setVar("maxClicks", Clicks.maxClicks);
+        en.setVar("overflow", Clicks.overflow);
+    })
+
+    en.loadCallback(function() {
+        Clicks.clicks = en.getVar("clicks", Clicks.clicks);
+        Clicks.maxClicks = en.getVar("maxClicks", Clicks.maxClicks);
+        Clicks.overflow = en.getVar("overflow", Clicks.overflow);
+    })
+
     en.rebuildBigCookieButton();
 }
 

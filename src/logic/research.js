@@ -432,11 +432,11 @@ Research._Initialize = function(en) {
             'if (mod.research.has("Repeated electrical shock")) mult*=1.06;'
         ]
     )
-    new Research.Tech("Jitter-click", "The mouse is <b>twice</b> as efficient.", 25, req(() => Game.cookieClicks, 150, "cookie clicks"), f, [0], [11, 0], -0.2, 0); // 7
+    new Research.Tech("Jitter-click", "The mouse is <b>twice</b> as efficient.", 25, req(() => Game.cookieClicks, 150, "cookie clicks"), f, [0], [11, 0], -0.2, -0.1); // 7
     new Research.Tech("Sustainable clicks", "Overflow accumulates <b>25%</b> slower.", 45, f, f, [7], [11, 1], -0.5, -0.2); // 8
-    new Research.Tech("Damage control", "Decreases overflow effect on clicks used by <b>20%</b>", 85, f, f, [8], [11, 25], -0.9, -0.4); // 9
-    new Research.Tech("Patience", "Increases click regeneration by <b>30%</b>. <q>A watched pot never boils.</q>", 90, f, f, [8], [11, 21], -0.7, -0.6); // 10
-    new Research.Tech("Malevolent power", "Clicking is <b>10%</b> more powerful <b>per level of overflow</b>.", 267, f, f, [9, 10], [12, 0], -1.2, -0.9); // 11 
+    new Research.Tech("Damage control", "Decreases overflow effect on clicks used by <b>20%</b>.", 85, f, f, [8], [11, 25], -0.8, -0.4); // 9
+    new Research.Tech("Patience", "Increases click regeneration by <b>30%</b>. <q>A watched pot never boils.</q>", 90, f, f, [8], [11, 21], -0.7, -0.5); // 10
+    new Research.Tech("Malevolent power", "Clicking is <b>10%</b> more powerful <b>per level of overflow</b>.", 267, f, f, [9, 10], [12, 0], -1.0, -0.7); // 11 
     buildingTree(1);
     tieredTreeG(1, 1, "Jumbo rolling pins", "Really helps them get to work.", "Grandmas are <b>15%</b> more efficient."); // 1
     tieredTreeG(1, 2, "Hair whitener", "Studies show that the whiter the grandmas' hair is, the older they are, and therefore, the more powerful they are.", "Grandmas are <b>15%</b> more efficient.") // 2
