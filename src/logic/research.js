@@ -424,9 +424,10 @@ Research._Initialize = function(en) {
             'if (mod.research.has("Repeated electrical shock")) mult*=1.06;'
         ]
     )
+    new Research.Tech("Jitter-click", "The mouse is <b>twice</b> as efficient.", 25, req(() => Game.cookieClicks, 150, "cookie clicks"), f, [0], [11, 0], -0.2, 0);
     buildingTree(1);
     tieredTreeG(1, 1, "Jumbo rolling pins", "Really helps them get to work.", "Grandmas are <b>15%</b> more efficient."); // 1
-    tieredTreeG(1, 2, "Hair whitener", "Studies show that the whiter the grandmas' hair are, the older they are, and therefore, the more powerful they are.", "Grandmas are <b>15%</b> more efficient.") // 2
+    tieredTreeG(1, 2, "Hair whitener", "Studies show that the whiter the grandmas' hair is, the older they are, and therefore, the more powerful they are.", "Grandmas are <b>15%</b> more efficient.") // 2
     tieredTreeG(1, 3, "Other people's grandmas", "You sure do seem to have a lot of grandmas. But! If you pull grandmas from other people, you might be able to get even more grandmas.", "Grandmas are <b>15%</b> more efficient.") // 3
     var unlockGP = {reqFunc: function(){return Game.Objects['Grandma'].amount>=6 && Game.HasAchiev('Elder')}, reqDesc: "have <b>7 different grandma types</b>"}
     new Research.Tech("Bingo center/Research facility", "Grandma-operated science lab and leisure club. <b>This will unlock the Bingo center/Research facility upgrade in the Store.</b> <q>What could possibly keep those grandmothers in check?...<br>Bingo.</q>", 40, unlockGP, f, [0], [11, 9], 0.4, 0.4);
@@ -508,7 +509,7 @@ Research._Initialize = function(en) {
     tieredTree(13, 3, "Pair instability", "It turns out, that according to new scientific developments, light harnessed by prisms can become so powerful that its energy is temporarily drained towards the production of cookies. This, of course, means more cookies.") // 3
     buildingTree(14);
     tieredTreeG(14, 1, "Luck in the air", "Literally!", "Chancemakers are <b>77%</b> more efficient. Golden cookie gains <b>+77%</b>.") // 1
-    tieredTreeG(14, 2, "Loaded dice", "Can also be used to annoy people at DnD games.", "Chancemakers are <b>27%</b> more efficient. Golden cookie gains <b>+27%</b>.") // 2
+    tieredTreeG(14, 2, "Unfair dice", "Can also be used to annoy people at DnD games.", "Chancemakers are <b>27%</b> more efficient. Golden cookie gains <b>+27%</b>.") // 2
     tieredTreeG(14, 3, "The law of large numbers of cookies", "States that the more cookies you have, the more luck you're bound to get.", "Chancemakers are <b>27%</b> more efficient. Golden cookie gains <b>+27%</b>.") // 3
     Game.shimmerTypes.golden.popFunc = en.injectChain(Game.shimmerTypes.golden.popFunc, "if (Game.Has('Dragon fang')) mult*=1.03;",
         [
@@ -531,7 +532,7 @@ Research._Initialize = function(en) {
     buildingTree(16);
     tieredTree(16, 1, "Multithreading", "Splits code into many different threads, which all produce cookies simultaneously.") // 1
     tieredTree(16, 2, "If there was a computer for every atom of the observable universe, running 13.8 billion years from the Big Bang to the present day...", "...but you actually made them do that.") // 2
-    tieredTree(16, 3, "Cutting-edge AI compiler", "Let's face it, AIs can figure out how to allocate memory and run floating-point operations efficiently much better than we do.") // 3
+    tieredTree(16, 3, "The old days", "Look back in time for inspiration. Did you know that Git was originally a large van?") // 3
     buildingTree(17);
     new Research.Tech("Galactica mindoris", "You gain <b>more resource space</b> the more idleverses you have. <q>Turns out there's a ton of room in idleverses!</q>", 410, f, f, [0], [33, 35], 0, 1.5);
     tieredTreeG(17, 1, "Converter", "A machine to convert all matter in an idleverse to cookies. Don't tell any Cookieclysm devs.", "Idleverses are <b>30%</b> more efficient.") // 1

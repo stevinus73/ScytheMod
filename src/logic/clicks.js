@@ -4,13 +4,13 @@ Clicks._Initialize = function(en, Research) {
     this.en = en;
 
     en.ue.addUpgrade("Big clicks", "The mouse and cursors are <b>four times as efficient</b>. Maximum click space <b>doubled</b>.<q>Big clicks for the big cookie.</q>",
-        250, [1, 6], 140, {unlockAt: 100});
+        500, [1, 6], 140, {unlockAt: 100});
     en.ue.addUpgrade("Butterfly", "The mouse and cursors are <b>four times as efficient</b>. Maximum click space <b>doubled</b>.<q>More like a hummingbird with THAT speed.</q>",
-        25000, [12, 1], 140, {unlockAt: 10000});
+        50000, [12, 1], 140, {unlockAt: 10000});
     en.ue.addUpgrade("Hands-off approach", "Clicks regenerate <b>twice</b> as fast.<q>Ow, my hands are really sore. Good idea.</q>",
-        2500000, [12, 2], 140, {unlockAt: 1000000});
+        5000000, [12, 2], 140, {unlockAt: 1000000});
     
-    Game.mouseCps = en.injectCode(Game.mouseCps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
+    Game.mouseCps = en.injectCode(Game.mouseCps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')+mod.research.has('Jitter-click')", "after");
     Game.Objects.Cursor.cps = en.injectCode(Game.Objects.Cursor.cps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
     
     const baseClicks = 250;
@@ -43,6 +43,7 @@ Clicks._Initialize = function(en, Research) {
     Clicks.drainClick = function(now) {
         var clickNum=1+(this.overflow>0?Math.floor(this.overflow):0); 
         this.clicks-=clickNum;
+        if(this.clicks<0) this.clicks=0;
         this.regenTimer=baseRecovery;
         var threshold=baseThreshold;
         if (Game.Has("Thousand fingers")) threshold*=(1+0.2*Math.floor(Game.Objects['Cursor'].amount/100)); // cursor nerf!
@@ -88,8 +89,9 @@ Clicks._Initialize = function(en, Research) {
 
         if (this.cursorTimer>0) this.cursorTimer--;
         else {
-            this.clicks-=Math.round(this.getCursorClicks()); // heh
+            this.clicks-=Math.ceil(this.getCursorClicks()); 
             if(this.clicks<0) this.clicks=0;
+            this.overflow+=Math.min(Game.Objects['Cursor'].amount/500,0.5); // devious
             this.cursorTimer=baseCursorTime;
         }
     }
