@@ -11,6 +11,8 @@ Clicks._Initialize = function(en, Research) {
         5000000, [12, 2], 140, {unlockAt: 1000000});
     
     Game.mouseCps = en.injectCode(Game.mouseCps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')+mod.research.has('Jitter-click')", "after");
+    Game.mouseCps = en.injectCode(Game.mouseCps, "if (Game.Has('Dragon claw')) mult*=1.03;", 
+        "\n\t\t\tif(mod.research.has('Malevolent power')) mult*=(1+0.1*mod.clicks.getOverflow());", "after");
     Game.Objects.Cursor.cps = en.injectCode(Game.Objects.Cursor.cps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
     
     const baseClicks = 250;
@@ -23,7 +25,7 @@ Clicks._Initialize = function(en, Research) {
     const overflowGain = 0.5;
     const minOverflow = -(3*overflowGain);
     const overflowLoss = 0.35;
-    const baseThreshold = 0.25;
+    const baseThreshold = 0.2;
     this.overflow = minOverflow;
 
     const baseCursorTime = Game.fps*15;
@@ -40,17 +42,19 @@ Clicks._Initialize = function(en, Research) {
         this.maxClicks = Math.round(maxClicks);
     }
 
+    Clicks.getOverflow = function() {return Math.floor(Math.max(this.overflow,0));}
+
     Clicks.drainClick = function(now) {
-        var clickNum=1+(this.overflow>0?Math.floor(this.overflow):0); 
+        var clickNum=1+(this.overflow>0?Math.floor(this.overflow*(Research.has("Damage control")?0.8:1)):0); 
         this.clicks-=clickNum;
         if(this.clicks<0) this.clicks=0;
         this.regenTimer=baseRecovery;
         var threshold=baseThreshold;
         if (Game.Has("Thousand fingers")) threshold*=(1+0.1*Math.floor(Game.Objects['Cursor'].amount/100)); // cursor nerf!
         if (now-Game.lastClick<=(1000*threshold)) {
-            this.overflow+=overflowGain;
+            this.overflow+=overflowGain*(Research.has("Sustainable clicks")?0.75:1);
         } else {
-            this.overflow-=overflowLoss;
+            this.overflow-=overflowLoss*(this.overflow>=1?1:2.5);
             if (this.overflow<minOverflow) this.overflow=minOverflow;
         }
     }
@@ -84,6 +88,7 @@ Clicks._Initialize = function(en, Research) {
             this.clicks=Math.min(this.clicks, this.maxClicks);
             var rate=baseRegen;
             if (Game.Has("Hands-off approach")) rate*=0.5;
+            if (Research.has("Patience")) rate*=0.7;
             this.regenTimer=rate;
         }
 
@@ -98,7 +103,7 @@ Clicks._Initialize = function(en, Research) {
 
     Clicks.getClickDisplay = function() {
         return '<div style="font-size:50%">clicks left: '+this.clicks+' out of '+this.maxClicks
-        +' (overflow: '+(this.overflow>0?'+'+Math.floor(this.overflow):0)+')</div>';
+        +' (overflow: '+(this.overflow>=1?'+'+this.getOverflow():0)+')</div>';
     }
 
     // show click display
