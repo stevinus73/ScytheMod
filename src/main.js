@@ -2,7 +2,10 @@ var src="https://stevinus73.github.io/ScytheMod/";
 var CodeUrl = function(url) {return src+"src/"+url};
 var ImageUrl = function(url) {return src+"img/"+url};
 var Icons = ImageUrl("icons.png");
+var Kaizo = Game.mods["Kaizo Cookies"];
+var Clysm = Game.mods["Cookieclysm"];
 
+// loading
 var script=document.querySelector('script[src="'+CodeUrl("main.js")+'"]');
 script.setAttribute('type','module');
 
@@ -29,6 +32,7 @@ var LoadModule = function (url, callback, error) {
 var el = LoadModule("engine/engine.js");
 var en;
 var mod;
+var P={};
 
 var CreateMod = function (engine) {
     en = engine.IdlersPocket;

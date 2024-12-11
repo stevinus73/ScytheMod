@@ -99,16 +99,16 @@ General._Initialize = function(en, Research) {
         this.shinies.push(name)
     }
 
-    General.newShinyCookie("Star cookie", "Glimmers and shines like a star. May supernova at some point.", 1e4, [10, 0])
-    General.newShinyCookie("Emerald cookie", "Beautiful, marvelous, incredible, sublime.", 1e6, [10, 0])
-    General.newShinyCookie("Diamond cookie", "1 in 8,192 chance!", 1e8, [10, 0])
-    General.newShinyCookie("Silver cookie", "Tastes pretty meh, but the shininess is the real special part about all of these cookies.", 1e10, [10, 0])
-    General.newShinyCookie("Tungsten cookie", "The legends didn't lie.", 1e12, [10, 0])
+    General.newShinyCookie("Star cookies", "Glimmers and shines like a star. May supernova at some point.", 1e4, [10, 0])
+    General.newShinyCookie("Emerald cookies", "Beautiful, marvelous, incredible, sublime.", 1e6, [10, 0])
+    General.newShinyCookie("Diamond cookies", "1 in 8,192 chance!", 1e8, [10, 0])
+    General.newShinyCookie("Silver cookies", "Tastes pretty meh, but the shininess is the real special part about all of these cookies.", 1e10, [10, 0])
+    General.newShinyCookie("Tungsten cookies", "The legends didn't lie.", 1e12, [10, 0])
 
     Game.registerHook('logic', function(){
         General.shinies.forEach(function(shiny) {
             var me=Game.Upgrades[shiny]
-            if (General.canShiny() && Game.cookiesEarned >= me.price/20){Game.Unlock(shiny);}
+            if (General.canShiny() && (Game.cookiesEarned >= me.price/20)){Game.Unlock(shiny);}
         })
     })
 

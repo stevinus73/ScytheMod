@@ -19,32 +19,32 @@ Clicks._Initialize = function(en, Research) {
     eval("Game.DrawSpecial="+Game.DrawSpecial.toString().replace("Game.LeftBackground.globalAlpha=0.75;","Game.LeftBackground.globalAlpha=1-0.25*(mod.clicks.clicks/mod.clicks.maxClicks);")); 
     
 
-    const baseClicks = 250;
-    const baseRegen = Game.fps*2;
-    const baseRecovery = Game.fps*10;
-    this.maxClicks = baseClicks;
-    this.clicks = baseClicks;
-    this.regenTimer = baseRegen;
+    // const baseClicks = 250;
+    // const baseRegen = Game.fps*2;
+    // const baseRecovery = Game.fps*10;
+    this.maxClicks = P.baseClicks;
+    this.clicks = P.baseClicks;
+    this.regenTimer = P.baseRegen;
     en.newVar("clicks", "int");
     en.newVar("maxClicks", "int");
 
-    const overflowGain = 0.5;
-    const minOverflow = -(3*overflowGain);
-    const overflowLoss = 0.35;
-    const baseThreshold = 0.2;
+    // const overflowGain = 0.5;
+    const minOverflow = -(3*P.overflowGain);
+    // const overflowLoss = 0.35;
+    // const baseThreshold = 0.2;
     this.overflow = minOverflow;
     en.newVar("overflow", "float");
     this.overflow_enabled = false;
 
-    const baseCursorTime = Game.fps*15;
-    this.cursorTimer = baseCursorTime;
+    // const baseCursorTime = Game.fps*15;
+    this.cursorTimer = P.cursorRate;
 
     this.powerClicks = 0;
     this.maxPowerClicks = 0;
     this.pc_enabled = false;
 
     Clicks.recalculate = function() {
-        var maxClicks = baseClicks;
+        var maxClicks = P.baseClicks;
         if (Game.Has("Big clicks")) maxClicks*=2;
         if (Game.Has("Butterfly")) maxClicks*=2;
         this.maxClicks = Math.round(maxClicks);
@@ -56,15 +56,15 @@ Clicks._Initialize = function(en, Research) {
         var clickNum=1+(this.overflow>0?Math.floor(this.overflow*(Research.has("Damage control")?0.8:1)):0); 
         this.clicks-=clickNum;
         if(this.clicks<0) this.clicks=0;
-        this.regenTimer=baseRecovery;
+        this.regenTimer=P.baseRecovery;
         if(!this.overflow_enabled) return;
-        var threshold=baseThreshold;
+        var threshold=P.baseThreshold;
         if (Game.Has("Thousand fingers")) threshold*=(1+0.1*Math.floor(Game.Objects['Cursor'].amount/100)); // cursor nerf!
         if (now-Game.lastClick<=(1000*threshold)) {
-            this.overflow+=overflowGain*(Research.has("Sustainable clicks")?0.75:1);
+            this.overflow+=P.overflowGain*(Research.has("Sustainable clicks")?0.75:1);
             if (Research.has("Malevolent power")) Game.recalculateGains = 1;
         } else {
-            this.overflow-=overflowLoss*(this.overflow>=1?1:2.5);
+            this.overflow-=P.overflowLoss*(this.overflow>=1?1:2.5);
             if (this.overflow<minOverflow) this.overflow=minOverflow;
             if (Research.has("Malevolent power")) Game.recalculateGains = 1;
         }
@@ -97,7 +97,7 @@ Clicks._Initialize = function(en, Research) {
             // regenerate a click
             this.clicks++;
             this.clicks=Math.min(this.clicks, this.maxClicks);
-            var rate=baseRegen;
+            var rate=P.baseRegen;
             if (Game.Has("Hands-off approach")) rate*=0.5;
             if (Research.has("Patience")) rate*=0.7;
             this.regenTimer=rate;
@@ -108,10 +108,10 @@ Clicks._Initialize = function(en, Research) {
             this.clicks-=Math.ceil(this.getCursorClicks()); 
             if(this.clicks<0) this.clicks=0;
             if(this.overflow_enabled) this.overflow+=Math.min(Game.Objects['Cursor'].amount/500,0.5); // devious
-            this.cursorTimer=baseCursorTime;
+            this.cursorTimer=P.cursorRate;
         }
 
-        if ((Game.cookiesEarned+Game.cookiesReset)>=1000000) this.overflow_enabled = true;
+        if (!Kaizo && (Game.cookiesEarned+Game.cookiesReset)>=P.overflowT) this.overflow_enabled = true;
     }
 
     Clicks.getClickDisplay = function() {
@@ -140,9 +140,9 @@ Clicks._Initialize = function(en, Research) {
         Clicks.logic();
     });
     Game.registerHook('reset', function(wipe) {
-        Clicks.clicks = baseClicks;
-        Clicks.maxClicks = baseClicks;
-        Clicks.overflow = minOverflow;
+        Clicks.clicks = P.baseClicks;
+        Clicks.maxClicks = P.baseClicks;
+        Clicks.overflow = P.minOverflow;
         if(wipe) Clicks.overflow_enabled = false;
     })
 

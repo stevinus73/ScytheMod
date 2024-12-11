@@ -1,3 +1,4 @@
+import {ResetParams} from "./params.js"
 import {BModify} from "./buildings.js"
 import {Research} from "./research.js"
 import {General} from "./modgeneral.js"
@@ -6,6 +7,7 @@ import {Clicks} from "./clicks.js"
 var mod = {}
 
 mod.Init = function(engine) {
+    ResetParams();
     this.en = engine;
     this.research = Research;
     this.research._Initialize(this.en);
