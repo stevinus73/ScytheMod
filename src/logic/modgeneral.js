@@ -22,7 +22,7 @@ General._Initialize = function(en, Research) {
     en.ue.strReplace(Game.Upgrades['Quintillion fingers'], "20", "10");
 
     /**
-     * Temple name changes + effect deletion (uses eval but this shouldn't really matter due to Game.loadMinigames rarely being called)
+     * Name changes + effect deletion (uses eval but this shouldn't really matter due to Game.loadMinigames rarely being called)
      */
 
     General.TempleRename = function() {
@@ -64,6 +64,10 @@ General._Initialize = function(en, Research) {
     Game.GetHeavenlyMultiplier = en.injectCode(Game.GetHeavenlyMultiplier, "var godLvl=Game.hasGod('creation');", "var godLvl=0;", "replace");
     Game.modifyBuildingPrice = en.injectCode(Game.modifyBuildingPrice, "var godLvl=Game.hasGod('creation');", "var godLvl=0;", "replace");
 
+    /**
+     * Updating buff timers (this took longer than you'd think it would)
+     */
+
     General.buffTooltip = function(buff) {
         if (!buff) return;
         var desc=buff.type.func((buff.time/Game.fps), buff.arg1, buff.arg2, buff.arg3).desc; // might not be the best way to do this
@@ -75,5 +79,41 @@ General._Initialize = function(en, Research) {
         `"function(){return mod.general.buffTooltip(Game.buffs['"+buff.name+"']);}"`, 
         "replace"
     )
+
+    /**
+     * Shiny cookies
+     */
+
+    General.canShiny = function(){return Research.has("Plain cookie");}
+    General.shinies = []
+    const shinyPower=50
+    const shinyPowerAsc=10
+
+    General.newShinyCookie = function(name, desc, price, icon){
+        en.ue.addUpgrade(name, desc, price, icon, 10400, {
+            descFunc: function(){return getStrCookieProductionMultiplierPlus(Game.resets?shinyPowerAsc:shinyPower)+'<q>'+desc+'</q>'}
+        })
+        this.shinies.push(name)
+    }
+
+    General.newShinyCookie("Star cookie", "Glimmers and shines like a star. May supernova at some point.", 1e4, [10, 0])
+    General.newShinyCookie("Emerald cookie", "Beautiful, marvelous, incredible, sublime.", 1e6, [10, 0])
+    General.newShinyCookie("Diamond cookie", "1 in 8,192 chance!", 1e8, [10, 0])
+    General.newShinyCookie("Silver cookie", "Tastes pretty meh, but the shininess is the real special part about all of these cookies.", 1e10, [10, 0])
+    General.newShinyCookie("Tungsten cookie", "The legends didn't lie.", 1e12, [10, 0])
+
+    Game.registerHook('logic', function(){
+        General.shinies.forEach(function(shiny) {
+            var me=Game.Upgrades[shiny]
+            if (General.canShiny() && Game.cookiesEarned >= me.price/20){Game.Unlock(shiny);}
+        })
+    })
+
+    Game.registerHook('cps', function(cps) {
+        General.shinies.forEach(function(shiny) {
+            var me=Game.Upgrades[shiny]
+            if (me.bought) cps*=1+0.01*(Game.resets?shinyPowerAsc:shinyPower)
+        })
+    })
 }
 export { General }

@@ -35,7 +35,6 @@ IdlersPocket._Initialize = function () {
     IdlersPocket.be = building_engine;
     IdlersPocket.ae = achiev_engine;
     IdlersPocket.ue = upgrade_engine;
-    IdlersPocket._Process = Process;
 
     /**
      * STORAGE
@@ -164,7 +163,7 @@ IdlersPocket.LoadMod = function (name, init) {
 }
 
 IdlersPocket.Process = function() {
-    this._Process();
+    Process(this);
 }
 
 export { IdlersPocket };
