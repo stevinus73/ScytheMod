@@ -88,6 +88,9 @@ General._Initialize = function(en, Research) {
     General.shinies = []
     const shinyPower=50
     const shinyPowerAsc=10
+    var strCookieProductionMultiplierPlus=loc("Cookie production multiplier <b>+%1%</b>.",'[x]');
+	var getStrCookieProductionMultiplierPlus=function(x)
+	{return strCookieProductionMultiplierPlus.replace('[x]',x);}
 
     General.newShinyCookie = function(name, desc, price, icon){
         en.ue.addUpgrade(name, desc, price, icon, 10400, {
