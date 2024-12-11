@@ -82,16 +82,13 @@ BModify._Initialize = function(en, Research) {
             var rsmult=1;
             var yieldmult=1;
             for (var i in me.tieredUpgrades) {
-                var num = Math.min(1.4 + 0.1 * i, 2);
                 if (!Game.Tiers[me.tieredUpgrades[i].tier].special && Game.Has(me.tieredUpgrades[i].name)) {
                     var tierMult=2; 
-                    var tierRsMult=num;
                     if (Game.ascensionMode!=1 && Game.Has(me.unshackleUpgrade) && Game.Has(Game.Tiers[me.tieredUpgrades[i].tier].unshackleUpgrade)) {
                         tierMult+=me.id==1?0.5:(20-me.id)*0.1;
-                        tierRsMult+=(me.id==1?0.5:(20-me.id)*0.1)*0.5*num;
                     }
                     rhpsmult*=tierMult;
-                    rsmult*=tierRsMult;
+                    rsmult*=tierMult;
                 }
             }
             rsmult*=BModify.idleverse.resourceMult();
@@ -363,9 +360,8 @@ BModify._Initialize = function(en, Research) {
 
         for (var i in this.me.tieredUpgrades) {
             if (!Game.Tiers[this.me.tieredUpgrades[i].tier].special) {
-                var percentage = Math.min(0.4 + 0.1 * i, 1) * 100;
                 en.ue.appendToDesc(this.me.tieredUpgrades[i], 
-                    "Total "+this.rsNames[0].toLowerCase()+" <b>+"+Beautify(percentage)+"%</b>.");
+                    "Total "+this.rsNames[0].toLowerCase()+" <b>doubled</b>.");
             }
         }
     }

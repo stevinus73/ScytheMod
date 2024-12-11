@@ -14,7 +14,10 @@ Clicks._Initialize = function(en, Research) {
     Game.mouseCps = en.injectCode(Game.mouseCps, "if (Game.Has('Dragon claw')) mult*=1.03;", 
         "\n\t\t\tif(mod.research.has('Malevolent power')) mult*=(1+0.1*mod.clicks.getOverflow());", "after");
     Game.Objects.Cursor.cps = en.injectCode(Game.Objects.Cursor.cps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
-    eval("Game.DrawSpecial="+Game.DrawSpecial.toString().replace("Game.LeftBackground.globalAlpha=0.75;","Game.LeftBackground.globalAlpha=1-0.25*(mod.clicks.clicks/mod.clicks.maxClicks);"));
+    
+    // why does this not work :(
+    eval("Game.DrawSpecial="+Game.DrawSpecial.toString().replace("Game.LeftBackground.globalAlpha=0.75;","Game.LeftBackground.globalAlpha=1-0.25*(mod.clicks.clicks/mod.clicks.maxClicks);")); 
+    
 
     const baseClicks = 250;
     const baseRegen = Game.fps*2;
@@ -59,9 +62,11 @@ Clicks._Initialize = function(en, Research) {
         if (Game.Has("Thousand fingers")) threshold*=(1+0.1*Math.floor(Game.Objects['Cursor'].amount/100)); // cursor nerf!
         if (now-Game.lastClick<=(1000*threshold)) {
             this.overflow+=overflowGain*(Research.has("Sustainable clicks")?0.75:1);
+            if (Research.has("Malevolent power")) Game.recalculateGains = 1;
         } else {
             this.overflow-=overflowLoss*(this.overflow>=1?1:2.5);
             if (this.overflow<minOverflow) this.overflow=minOverflow;
+            if (Research.has("Malevolent power")) Game.recalculateGains = 1;
         }
     }
 
