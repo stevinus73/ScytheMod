@@ -51,7 +51,7 @@ upgrade_engine.strReplace = function(upgrade, find, replace) {
     this.replaceDesc(upgrade, upgrade.ddesc.replace(find, replace));
 }
 
-var Process = function() {
+var Process = function(en) {
     upgrade_engine.upgradeQueue.forEach(function(upgrade) {
         upgrade.me = new Game.Upgrade(upgrade.name, upgrade.desc, upgrade.price, upgrade.icon);
         for (var i in upgrade.other) { // transfer
@@ -59,6 +59,10 @@ var Process = function() {
         }
         if (Game.last.unlockAt) Game.UnlockAt.push({cookies: Game.last.unlockAt, name: upgrade.name});
         Game.last.order = upgrade.order + Game.last.id*0.001;
+        en.newVar("moddedUpUl"+Game.last.id, "int");
+        en.newVar("moddedUpB"+Game.last.id, "int");
+        en.setVar("moddedUpUl"+Game.last.id, 0);
+        en.setVar("moddedUpB"+Game.last.id, 0);
     })
     achiev_engine.achievementQueue.forEach(function(achiev) {
         achiev.me = new Game.Achievement(achiev.name, achiev.desc, achiev.icon);
@@ -66,6 +70,26 @@ var Process = function() {
             Game.last[i] = achiev.other[i];
         }
         Game.last.order = Game.Achievements[achiev.prev].order + Game.last.id*0.001;
+        en.newVar("moddedAchW"+Game.last.id, "int");
+        en.setVar("moddedAchW"+Game.last.id, 0);
+    })
+    en.saveCallback(function() {
+        upgrade_engine.upgradeQueue.forEach(function(up) {
+            en.setVar("moddedUpUl"+Game.last.id, up.me.unlocked);
+            en.setVar("moddedUpB"+Game.last.id, up.me.bought);
+        })
+        achiev_engine.upgradeQueue.forEach(function(achiev) {
+            en.setVar("moddedAchW"+Game.last.id, achiev.me.won);
+        })
+    })
+    en.loadCallback(function() {
+        upgrade_engine.upgradeQueue.forEach(function(up) {
+            up.me.unlocked = en.getVar("moddedUpUl"+Game.last.id, up.me.unlocked);
+            up.me.bought = en.getVar("moddedUpB"+Game.last.id, up.me.bought);
+        })
+        achiev_engine.upgradeQueue.forEach(function(achiev) {
+            achiev.me.won = en.getVar("moddedAchW"+Game.last.id, achiev.me.won);
+        })
     })
     LocalizeUpgradesAndAchievs();
     upgrade_engine.replaceQueue.forEach(function(repl) {
