@@ -78,7 +78,7 @@ var Process = function(en) {
             en.setVar("moddedUpUl"+Game.last.id, up.me.unlocked);
             en.setVar("moddedUpB"+Game.last.id, up.me.bought);
         })
-        achiev_engine.upgradeQueue.forEach(function(achiev) {
+        achiev_engine.achievementQueue.forEach(function(achiev) {
             en.setVar("moddedAchW"+Game.last.id, achiev.me.won);
         })
     })
@@ -87,7 +87,7 @@ var Process = function(en) {
             up.me.unlocked = en.getVar("moddedUpUl"+Game.last.id, up.me.unlocked);
             up.me.bought = en.getVar("moddedUpB"+Game.last.id, up.me.bought);
         })
-        achiev_engine.upgradeQueue.forEach(function(achiev) {
+        achiev_engine.achievementQueue.forEach(function(achiev) {
             achiev.me.won = en.getVar("moddedAchW"+Game.last.id, achiev.me.won);
         })
     })
