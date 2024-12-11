@@ -110,10 +110,12 @@ General._Initialize = function(en, Research) {
     })
 
     Game.registerHook('cps', function(cps) {
+        var mult=1;
         General.shinies.forEach(function(shiny) {
             var me=Game.Upgrades[shiny]
-            if (me.bought) cps*=1+0.01*(Game.resets?shinyPowerAsc:shinyPower)
+            if (me.bought) mult*=1+0.01*(Game.resets?shinyPowerAsc:shinyPower)
         })
+        return cps*mult
     })
 }
 export { General }
