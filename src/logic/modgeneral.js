@@ -86,15 +86,19 @@ General._Initialize = function(en, Research) {
 
     General.canShiny = function(){return Research.has("Plain cookie");}
     General.shinies = []
-    const shinyPower=50
-    const shinyPowerAsc=10
     var strCookieProductionMultiplierPlus=loc("Cookie production multiplier <b>+%1%</b>.",'[x]');
 	var getStrCookieProductionMultiplierPlus=function(x)
 	{return strCookieProductionMultiplierPlus.replace('[x]',x);}
+    General.shinyPower = function(){
+        if(Game.resets==0) return P.shinyPower[0];
+        if(Game.resets==1) return P.shinyPower[1];
+        if(Game.resets==2) return P.shinyPower[2];
+        return P.shinyPower[3];
+    }
 
     General.newShinyCookie = function(name, desc, price, icon){
         en.ue.addUpgrade(name, desc, price, icon, 10400, {
-            descFunc: function(){return getStrCookieProductionMultiplierPlus(Game.resets?shinyPowerAsc:shinyPower)+'<q>'+desc+'</q>'}
+            descFunc: function(){return getStrCookieProductionMultiplierPlus(General.shinyPower())+'<q>'+desc+'</q>'}
         })
         this.shinies.push(name)
     }
@@ -108,7 +112,7 @@ General._Initialize = function(en, Research) {
     Game.registerHook('logic', function(){
         General.shinies.forEach(function(shiny) {
             var me=Game.Upgrades[shiny]
-            if (General.canShiny() && (Game.cookiesEarned >= me.price/20)){Game.Unlock(shiny);}
+            if (General.canShiny() && (Game.cookiesEarned >= me.basePrice/20)){Game.Unlock(shiny);}
         })
     })
 
@@ -116,7 +120,7 @@ General._Initialize = function(en, Research) {
         var mult=1;
         General.shinies.forEach(function(shiny) {
             var me=Game.Upgrades[shiny]
-            if (me.bought) mult*=1+0.01*(Game.resets?shinyPowerAsc:shinyPower)
+            if (me.bought) mult*=1+0.01*(General.shinyPower())
         })
         return cps*mult
     })
