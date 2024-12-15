@@ -71,6 +71,7 @@ Research._Initialize = function(en) {
         this.y = y; // -1 to 1
         this.id = this.tree.id;
         this.bought = false;
+        this.priceB = 0;
 
         this.canBuy = function() {
             var parentBuy = true;
@@ -86,9 +87,15 @@ Research._Initialize = function(en) {
             return Math.round(this.priceR * priceMult);
         }
 
+        this.click = function() {
+            if (Game.keys[16]) this.unbuy();
+            else this.buy();
+        }
+
         this.buy = function() {
             if ((!this.canBuy()) || this.bought) return;
-            Research.research -= this.getPrice();
+            this.priceB = this.getPrice();
+            Research.research -= this.priceB;
             this.bought = true;
             Research.numUpgrades++;
             //this.onBuy();
@@ -98,7 +105,7 @@ Research._Initialize = function(en) {
 
         this.unbuy = function() {
             if (!this.bought) return;
-            Research.research += this.getPrice();
+            Research.earn(this.priceB);
             Research.numUpgrades--;
             Research.draw();
             Game.recalculateGains = 1;
@@ -148,7 +155,7 @@ Research._Initialize = function(en) {
             var sX = this.getPosition().posX;
             var sY = this.getPosition().posY;
             var classes = 'crate upgrade heavenly';
-            var clickStr = available ? 'mod.research.currTree.upgrades['+this.id+'].buy()' : ''; 
+            var clickStr = available ? 'mod.research.currTree.upgrades['+this.id+'].click()' : ''; 
             var tname = this.tree.name;
             var enabled = 0;
             if (this.bought) enabled=1;
@@ -175,7 +182,8 @@ Research._Initialize = function(en) {
             }
             var cost=this.getPrice();
             price='<div style="float:right;text-align:right;"><span class="price research'+ (this.canBuy() ? '' : ' disabled') +'">'+Beautify(Math.round(cost))+'</span></div>';
-            var tip=(this.canBuy() && !this.bought) ? loc("Click to research.") : "";
+            var tip = this.canBuy() ? loc("Click to research.") : "";
+            if (this.bought) tip=loc("Ctrl-click to refund.");
             if (!this.req) tip=loc("This upgrade hasn't been unlocked yet.");
             return '<div style="position:absolute;left:1px;top:1px;right:1px;bottom:1px;background:linear-gradient(125deg,rgba(54,164,255,1) 0%,rgba(54,164,255,0) 20%);mix-blend-mode:screen;z-index:1;"></div><div style="z-index:10;padding:8px 4px;min-width:350px;position:relative;" id="tooltipCrate">'+
             '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;'+writeIcon(this.sprite)+'"></div>'+(this.req?price:'')+
@@ -319,7 +327,7 @@ Research._Initialize = function(en) {
             this.nextResearch -= (1.0 / Game.fps);
 
             if (this.nextResearch <= 0) {
-                this.research += 1;
+                this.earn(1);
                 var bmult = 1;
                 if (this.has("Cookie funding")) bmult += 0.0015 * Game.Objects['Bank'].amount;
                 this.nextResearch = (10 * 60) / bmult;
@@ -347,11 +355,17 @@ Research._Initialize = function(en) {
         return false;
     }
 
+    Research.earn = function(num) {
+        this.research+=num;
+        var rect=l("researchIcon").getBounds();
+        Game.Popup('<small>+'+Beautify(num)+' research</small>',(rect.left+rect.right)/2,(rect.top+rect.bottom)/2-48);
+    }
+
     Research.earnResearch = function(num) {
         var mult = 1;
         if (this.has("Supercomputers")) mult *= 1.1;
         if (this.has("Thinktank")) mult *= 1.1;
-        this.research += Math.round(num * mult);
+        this.earn(Math.round(num * mult));
     }
     Game.Win = en.injectCode(Game.Win, 'it.won=1;', 'mod.research.earnResearch(10);', "after");
     
@@ -379,7 +393,7 @@ Research._Initialize = function(en) {
     new Research.Tech("Supercomputers", "Direct research gains <b>+10%</b>. <q>To be fair, they take up a lot of space.</q>", 130, breq('Javascript console', 100), f, [0], [32, 0], -0.15, -0.15); //5
     new Research.Tech("Thinktank", "Direct research gains <b>+10%</b>. <q>Big brains think together!</q>", 200, breq('Cortex baker', 200), f, [5], [34, 0], -0.3, -0.5); // 6
     new Research.Tech("Cookie funding", "You passively gain research <b>faster</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 150, breq('Bank', 250), f, [2], [2, 0, Icons], 0.5, -0.3); //7
-    new Research.Tech("Shiny cookies", "Unlocks <b>shiny cookies</b>, special cookies that grant a large CpS multiplier. <div class=\"line\"></div>Shiny cookies' power decreases the more you ascend.", 37, f, f, [0], [2, 1, Icons], -0.4, 0.5); // 8
+    new Research.Tech("Shiny cookies", "Unlocks <b>shiny cookies</b>, special cookies that grant a large CpS multiplier. <div class=\"line\"></div>Shiny cookies' power decreases the more you ascend.", 37, f, f, [1], [2, 1, Icons], -0.4, 0.5); // 8
     var spr_ref = [0,1,2,3,4,15,16,17,5,6,7,8,13,14,19,20,32,33,34,35];
     var tier_ref = [21,26,27];
     var buildingTree = function(i) {
