@@ -369,7 +369,7 @@ Research._Initialize = function(en) {
     new Research.Tech("Research lab", "Unlocks the <b>Research tree</b>, where you can buy upgrades using research (the number in the top right corner). <div class=\"line\"></div>"+
         " You gain research in a variety of ways, such as earning achievements. <div class=\"line\"></div>"+
         " Research upgrades are kept across ascensions. <q>It's quite small, but so is your current business.</q>", 1, f, f, [], [1, 0, Icons], 0, 0); //0
-    new Research.Tech("Plain cookie", "Cookie production multiplier <b>+5%</b>. <div class=\"line\"></div> Unlocks <b>new cookie upgrades</b> that appear once you have enough cookies. <q>We all gotta start somewhere. </q>", 50, f, f, [0], [2, 3], -0.2, 0.5); //1
+    new Research.Tech("Plain cookie", "Cookie production multiplier <b>+5%</b>. <q>We all gotta start somewhere. </q>", 20, f, f, [0], [2, 3], -0.2, 0.5); //1
     new Research.Tech("Interns", "You <b>gain research passively</b>, at a rate of <b>1 research every 10 minutes</b>. <q>They do research for you when you're gone. Sure, they may just be drinking all the test tubes and fighting each other with meter sticks, but it's the effort that counts. </q>", 10, f, f, [0], [9, 0], 0.3, 0); //2
     new Research.Tech("Better application forms", "Research costs <b>10%</b> less.", 100, f, f, [2], [9, 1], 0.6, 0); //3
     new Research.Tech("Kitten scientists", "You gain <b>more CpS</b> the more milk you have.<q>science is a natural for meow</q>", 999, req(() => Game.AchievementsOwned, 500, "achievements"), f, [1], [18, 21], -0.6, 0.4); //4
@@ -379,7 +379,7 @@ Research._Initialize = function(en) {
     new Research.Tech("Supercomputers", "Direct research gains <b>+10%</b>. <q>To be fair, they take up a lot of space.</q>", 130, breq('Javascript console', 100), f, [0], [32, 0], -0.15, -0.15); //5
     new Research.Tech("Thinktank", "Direct research gains <b>+10%</b>. <q>Big brains think together!</q>", 200, breq('Cortex baker', 200), f, [5], [34, 0], -0.3, -0.5); // 6
     new Research.Tech("Cookie funding", "You passively gain research <b>faster</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 150, breq('Bank', 250), f, [2], [2, 0, Icons], 0.5, -0.3); //7
-
+    new Research.Tech("Shiny cookies", "Unlocks <b>shiny cookies</b>, special cookies that grant a large CpS multiplier. <div class=\"line\"></div>Shiny cookies' power decreases the more you ascend.", 37, f, f, [0], [2, 1, Icons], -0.4, 0.5); // 8
     var spr_ref = [0,1,2,3,4,15,16,17,5,6,7,8,13,14,19,20,32,33,34,35];
     var tier_ref = [21,26,27];
     var buildingTree = function(i) {

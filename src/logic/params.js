@@ -8,7 +8,7 @@ const fparams = {
         baseThreshold: 0.15,
         overflowT: 1e5,
         cursorRate: Game.fps*15,
-        shinyPower: [50, 35, 20, 10],
+        shinyPower: [55, 40, 25, 10],
     },
     wst: {
         baseClicks: 100,
