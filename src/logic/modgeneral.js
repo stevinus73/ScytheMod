@@ -103,10 +103,10 @@ General._Initialize = function(en, Research) {
         this.shinies.push(name)
     }
 
-    General.newShinyCookie("Star cookies", "Glimmers and shines like a star. May supernova at some point.", 1e4, [10, 0])
-    General.newShinyCookie("Emerald cookies", "Beautiful, marvelous, incredible, sublime.", 1e6, [10, 0])
-    General.newShinyCookie("Diamond cookies", "1 in 8,192 chance!", 1e8, [10, 0])
-    General.newShinyCookie("Silver cookies", "Tastes pretty meh, but the shininess is the real special part about all of these cookies.", 1e10, [10, 0])
+    General.newShinyCookie("Star cookies", "Glimmers and shines like a star. May supernova eventually.", 1e4, [2, 1, Icons])
+    General.newShinyCookie("Emerald cookies", "Beautiful, marvelous, incredible, sublime.", 1e6, [2, 2, Icons])
+    General.newShinyCookie("Diamond cookies", "1 in 8,192 chance!", 1e8, [2, 3, Icons])
+    General.newShinyCookie("Silver cookies", "Tastes pretty meh, but the shininess is the real special part about all of these cookies.", 1e10, [2, 4, Icons])
     General.newShinyCookie("Tungsten cookies", "The legends didn't lie.", 1e12, [10, 0])
 
     Game.registerHook('logic', function(){
