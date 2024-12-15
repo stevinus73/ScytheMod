@@ -23,6 +23,7 @@ Research._Initialize = function(en) {
         '#researchIcon{width: 48px; height: 48px; right: -8px; top: -8px; position: absolute; pointer-events: none;}'+
         '#researchAmount{font-size: 12px; color: #6cf; position: absolute; right: 36px; top: 6px; text-align: right; width: 200px;}'+
         '.research.price:before{width:48px;height:48px;left:-20px;top:-14px;'+writeIcon([1, 0, Icons])+'transform:scale(0.5);}'+
+        '.noscroll{overflow-y: hidden;}'+
         '#researchButton{cursor: pointer;}</style>'
     )
     l("centerArea").insertAdjacentHTML('beforeend', '<div id="research"></div>')
@@ -105,6 +106,7 @@ Research._Initialize = function(en) {
 
         this.unbuy = function() {
             if (!this.bought) return;
+            this.bought = false;
             Research.earn(this.priceB);
             Research.numUpgrades--;
             Research.draw();
@@ -261,11 +263,13 @@ Research._Initialize = function(en) {
         if (this.researchOn) {
             this.container.style.display = "block";
             l("rows").style.display = "none";
+            l("centerArea").classList.add("noscroll");
             this.button.firstChild.textContent = "Close Research";
             this.draw();
         } else {
             this.container.style.display = "none";
             l("rows").style.display = "block";
+            l("centerArea").classList.remove("noscroll");
             this.button.firstChild.textContent = "View Research";
             if (Game.onMenu == '') {
                 for (var i in Game.Objects) {
