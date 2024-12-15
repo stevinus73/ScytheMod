@@ -185,7 +185,10 @@ Research._Initialize = function(en) {
             var cost=this.getPrice();
             price='<div style="float:right;text-align:right;"><span class="price research'+ (this.canBuy() ? '' : ' disabled') +'">'+Beautify(Math.round(cost))+'</span></div>';
             var tip = this.canBuy() ? loc("Click to research.") : "";
-            if (this.bought) tip=loc("Ctrl-click to refund.");
+            if (this.bought) {
+                if (Game.keys[16]) tip=loc("You are holding Shift. Clicking this research upgrade will unbuy it and refund your research.");
+                else tip=loc("Shift-click to refund.");
+            }
             if (!this.req) tip=loc("This upgrade hasn't been unlocked yet.");
             return '<div style="position:absolute;left:1px;top:1px;right:1px;bottom:1px;background:linear-gradient(125deg,rgba(54,164,255,1) 0%,rgba(54,164,255,0) 20%);mix-blend-mode:screen;z-index:1;"></div><div style="z-index:10;padding:8px 4px;min-width:350px;position:relative;" id="tooltipCrate">'+
             '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;'+writeIcon(this.sprite)+'"></div>'+(this.req?price:'')+
