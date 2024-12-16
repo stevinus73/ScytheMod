@@ -53,7 +53,7 @@ Clicks._Initialize = function(en, Research) {
     Clicks.getOverflow = function() {return Math.floor(Math.max(this.overflow,0));}
 
     // for modding purposes
-    Game.Object.prototype.sell = en.injectMult(Game.Objects.prototype.sell, 
+    Game.Object.prototype.sell = en.injectMult(Game.Object.prototype.sell, 
         [[",1+sold*0.01", ",1+sold*0.005"],[",1+sold*0.005", ",1+sold*0.003"],[",1+sold*0.0025", ",1+sold*0.001"]], "after"
     )
 
