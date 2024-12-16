@@ -52,9 +52,18 @@ Clicks._Initialize = function(en, Research) {
 
     Clicks.getOverflow = function() {return Math.floor(Math.max(this.overflow,0));}
 
+    // for modding purposes
+    Game.Object.prototype.sell = en.injectMult(Game.Objects.prototype.sell, 
+        [[",1+sold*0.01", ",1+sold*0.005"],[",1+sold*0.005", ",1+sold*0.003"],[",1+sold*0.0025", ",1+sold*0.001"]], "after"
+    )
+
     Clicks.drainClick = function(now) {
         var clickNum=1+(this.overflow>0?Math.floor(this.overflow*(Research.has("Damage control")?0.8:1)):0); 
-        this.clicks-=clickNum;
+        if (Game.hasBuff("Click frenzy")) clickNum*=2;
+        if (Game.hasBuff("Dragonflight")) clickNum*=2;
+        var gz = Game.hasBuff("Devastation");
+        if (gz) clickNum*=(1+gz.arg2);
+        this.clicks-=Math.ceil(clickNum);
         if(this.clicks<0) this.clicks=0;
         this.regenTimer=P.baseRecovery;
         if(!this.overflow_enabled) return;
