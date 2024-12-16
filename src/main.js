@@ -6,7 +6,7 @@ var Kaizo = Game.mods["Kaizo Cookies"];
 var Clysm = Game.mods["Cookieclysm"];
 
 // loading
-var script=document.querySelector('script[src="'+CodeUrl("main.js")+'"]');
+var script=document.querySelector('script[src="https://stevinus73.github.io/ScytheMod/src/main.js"]');
 script.setAttribute('type','module');
 
 var LoadModule = function (url, callback, error) {
