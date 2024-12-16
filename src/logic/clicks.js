@@ -52,10 +52,13 @@ Clicks._Initialize = function(en, Research) {
 
     Clicks.getOverflow = function() {return Math.floor(Math.max(this.overflow,0));}
 
-    // for modding purposes
-    Game.Object.prototype.sell = en.injectMult(Game.Object.prototype.sell, 
-        [[",1+sold*0.01", ",1+sold*0.005"],[",1+sold*0.005", ",1+sold*0.003"],[",1+sold*0.0025", ",1+sold*0.001"]], "after"
-    )
+    // Game.Object.prototype.sell = en.injectMult(Game.Object.prototype.sell, 
+    //     [[",1+sold*0.01", ",1+sold*0.005"],[",1+sold*0.005", ",1+sold*0.003"],[",1+sold*0.0025", ",1+sold*0.001"]], "after"
+    // )
+
+    Game.Object.prototype.sell = en.injectCode(Game.Object.prototype.sell, "sold*0.01", ",1+sold*0.005", "after")
+    Game.Object.prototype.sell = en.injectCode(Game.Object.prototype.sell, "sold*0.005", ",1+sold*0.003", "after")
+    Game.Object.prototype.sell = en.injectCode(Game.Object.prototype.sell, "sold*0.0025", ",1+sold*0.001", "after")
 
     Clicks.drainClick = function(now) {
         var clickNum=1+(this.overflow>0?Math.floor(this.overflow*(Research.has("Damage control")?0.8:1)):0); 
