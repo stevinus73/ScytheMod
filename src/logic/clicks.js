@@ -56,9 +56,12 @@ Clicks._Initialize = function(en, Research) {
     //     [[",1+sold*0.01", ",1+sold*0.005"],[",1+sold*0.005", ",1+sold*0.003"],[",1+sold*0.0025", ",1+sold*0.001"]], "after"
     // )
 
-    Game.Object.prototype.sell = en.injectCode(Game.Object.prototype.sell, "sold*0.01", ",1+sold*0.005", "after")
-    Game.Object.prototype.sell = en.injectCode(Game.Object.prototype.sell, "sold*0.005", ",1+sold*0.003", "after")
-    Game.Object.prototype.sell = en.injectCode(Game.Object.prototype.sell, "sold*0.0025", ",1+sold*0.001", "after")
+    for (var i in Game.Objects) {
+        var me = Game.Objects[i];
+        me.sell = en.injectCode(me.sell, "sold*0.01", ",1+sold*0.005", "after")
+        me.sell = en.injectCode(me.sell, "sold*0.005", ",1+sold*0.003", "after")
+        me.sell = en.injectCode(me.sell, "sold*0.0025", ",1+sold*0.001", "after")
+    }
 
     Clicks.drainClick = function(now) {
         var clickNum=1+(this.overflow>0?Math.floor(this.overflow*(Research.has("Damage control")?0.8:1)):0); 
