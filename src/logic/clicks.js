@@ -66,10 +66,10 @@ Clicks._Initialize = function(en, Research) {
             me.sell = en.injectCode(me.sell, "sold*0.01", ",1+sold*0.005", "after")
             me.sell = en.injectCode(me.sell, "sold*0.005", ",1+sold*0.003", "after")
             me.sell = en.injectCode(me.sell, "sold*0.0025", ",1+sold*0.001", "after")
+            me.sell = en.injectCode(me.sell, "if (godLvl==1) old.multClick+=sold*0.01;", "if (godLvl==1) { old.multClick+=sold*0.01; old.arg2+=sold*0.005; }", "replace")
+            me.sell = en.injectCode(me.sell, "else if (godLvl==2) old.multClick+=sold*0.005;", "else if (godLvl==2) { old.multClick+=sold*0.005; old.arg2+=sold*0.003; }", "replace")
+            me.sell = en.injectCode(me.sell, "else if (godLvl==3) old.multClick+=sold*0.0025;", "else if (godLvl==3) { old.multClick+=sold*0.0025; old.arg2+=sold*0.001; }", "replace")
         }
-        me.sell = en.injectCode(me.sell, "old.multClick+=sold*0.01", "; old."+(Kaizo?"arg3":"arg2")+"+=sold*0.005;", "after")
-        me.sell = en.injectCode(me.sell, "old.multClick+=sold*0.005", "; old."+(Kaizo?"arg3":"arg2")+"+=sold*0.003;", "after")
-        me.sell = en.injectCode(me.sell, "old.multClick+=sold*0.0025", "; old."+(Kaizo?"arg3":"arg2")+"+=sold*0.001;", "after")
     }
 
     Clicks.drainClick = function(now) {
