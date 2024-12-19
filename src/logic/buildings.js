@@ -560,7 +560,7 @@ BModify._Initialize = function(en, Research) {
     BModify.Mines = function() {
         var me = this;
         this.bd = Game.Objects['Mine'];
-        this.rs = this.me.rsManager;
+        this.rs = this.bd.rsManager;
         this.ores = [];
         this.id = 0;
 
