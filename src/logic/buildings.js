@@ -585,7 +585,7 @@ BModify._Initialize = function(en, Research) {
             l('stats3').insertAdjacentHTML('beforeend', '<div id="oreVisual'+this.id+'" style="margin-top:70px;"></div>');
             this.wrapper = l('oreVisual'+this.id);
             var str = '';
-            str+='<div id="ore'+this.id+'"'+Game.getDynamicTooltip('mod.bModify.Mines.ores['+this.id+'].infoTooltip', 'this')+' class="resBar smallFramed meterContainer" style="width:1px;">'
+            str+='<div id="ore'+this.id+'" class="resBar smallFramed meterContainer" style="width:1px;">'
             str+='<div id="oreInfo'+this.id+'" class="shadowFilter resBarRefill barRefillL" style="'+writeIcon(sprite)+'"></div>'
             str+='<div id="oreBarFull'+this.id+'" class="resBarFull meter filling" style="width:1px;"></div>'
             str+='<div id="oreBarText'+this.id+'" class="resBarText titleFont"></div>'
