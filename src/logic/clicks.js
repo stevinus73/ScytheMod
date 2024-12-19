@@ -58,9 +58,18 @@ Clicks._Initialize = function(en, Research) {
 
     for (var i in Game.Objects) {
         var me = Game.Objects[i];
-        me.sell = en.injectCode(me.sell, "sold*0.01", ",1+sold*0.005", "after")
-        me.sell = en.injectCode(me.sell, "sold*0.005", ",1+sold*0.003", "after")
-        me.sell = en.injectCode(me.sell, "sold*0.0025", ",1+sold*0.001", "after")
+        if (Kaizo) {
+            me.sell = en.injectCode(me.sell, "sold*0.01,1+sold*0.01", ",1+sold*0.005", "after")
+            me.sell = en.injectCode(me.sell, "sold*0.005,1+sold*0.004", ",1+sold*0.003", "after")
+            me.sell = en.injectCode(me.sell, "sold*0.0025,1+sold*0.0015", ",1+sold*0.001", "after")
+        } else {
+            me.sell = en.injectCode(me.sell, "sold*0.01", ",1+sold*0.005", "after")
+            me.sell = en.injectCode(me.sell, "sold*0.005", ",1+sold*0.003", "after")
+            me.sell = en.injectCode(me.sell, "sold*0.0025", ",1+sold*0.001", "after")
+        }
+        me.sell = en.injectCode(me.sell, "old.multClick+=sold*0.01", "; old."+(Kaizo?"arg3":"arg2")+"+=sold*0.005;", "after")
+        me.sell = en.injectCode(me.sell, "old.multClick+=sold*0.005", "; old."+(Kaizo?"arg3":"arg2")+"+=sold*0.003;", "after")
+        me.sell = en.injectCode(me.sell, "old.multClick+=sold*0.0025", "; old."+(Kaizo?"arg3":"arg2")+"+=sold*0.001;", "after")
     }
 
     Clicks.drainClick = function(now) {
@@ -68,7 +77,7 @@ Clicks._Initialize = function(en, Research) {
         if (Game.hasBuff("Click frenzy")) clickNum*=2;
         if (Game.hasBuff("Dragonflight")) clickNum*=2;
         var gz = Game.hasBuff("Devastation");
-        if (gz) clickNum*=(1+gz.arg2);
+        if (gz) clickNum*=(1+Kaizo?gz.arg3:gz.arg2);
         this.clicks-=Math.ceil(clickNum);
         if(this.clicks<0) this.clicks=0;
         this.regenTimer=P.baseRecovery;

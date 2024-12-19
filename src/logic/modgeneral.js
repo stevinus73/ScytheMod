@@ -34,9 +34,9 @@ General._Initialize = function(en, Research) {
             m.gods['creation'].desc1 = '<span class="green">Increases yield by 8%.</span> <span class="red">Decreases resource use rate by 25%.</span>';
             m.gods['creation'].desc2 = '<span class="green">Increases yield by 6%.</span> <span class="red">Decreases resource use rate by 20%.</span>';
             m.gods['creation'].desc3 = '<span class="green">Increases yield by 4%.</span> <span class="red">Decreases resource use rate by 15%.</span>';
-            m.gods['devastation'].desc1 += ' <span class="red">Buff increases clicks used by +0.5% for every building sold for 10 seconds.</span>',
-			m.gods['devastation'].desc1 += ' <span class="red">Buff increases clicks used by +0.3% for every building sold for 10 seconds.</span>',
-			m.gods['devastation'].desc1 += ' <span class="red">Buff increases clicks used by +0.1% for every building sold for 10 seconds.</span>',
+            m.gods['ruin'].desc1 += ' <span class="red">Buff increases clicks used by +0.5% for every building sold for 10 seconds.</span>',
+			m.gods['ruin'].desc1 += ' <span class="red">Buff increases clicks used by +0.3% for every building sold for 10 seconds.</span>',
+			m.gods['ruin'].desc1 += ' <span class="red">Buff increases clicks used by +0.1% for every building sold for 10 seconds.</span>',
             eval("Game.Objects.Temple.minigame.godTooltip="+Game.Objects.Temple.minigame.godTooltip.toString().replace('{',"{M=Game.Objects.Temple.minigame;"));
             eval("Game.Objects.Temple.minigame.slotTooltip="+Game.Objects.Temple.minigame.slotTooltip.toString().replace('{',"{M=Game.Objects.Temple.minigame;"));
             // eval("Game.Objects.Temple.minigame.draw="+Game.Objects.Temple.minigame.draw.toString().replace(
