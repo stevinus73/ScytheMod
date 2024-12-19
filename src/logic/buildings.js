@@ -559,7 +559,7 @@ BModify._Initialize = function(en, Research) {
 
     BModify.Mines = function() {
         var me = this;
-        this.me = Game.Objects['Mine'];
+        this.bd = Game.Objects['Mine'];
         this.rs = this.me.rsManager;
         this.ores = [];
         this.id = 0;
@@ -576,7 +576,21 @@ BModify._Initialize = function(en, Research) {
             en.newVar("rsTotal"+name2, "int");
             en.newVar("rsUsed"+name2,  "int");
             en.newVar("oreH"+name2,    "int");
-            var _name = function(){return name2.toLowerCase()}
+            l('stats3').insertAdjacentHTML('beforeend', '<div id="oreVisual'+this.id+'"></div>');
+            this.wrapper = l('oreVisual'+this.id);
+            var str = '';
+            str+='<div id="ore'+this.id+'" class="resBar smallFramed meterContainer" style="width:1px;">'
+            str+='<div id="oreInfo'+this.id+'" class="shadowFilter resBarRefill barRefillL rlIcon"></div>'
+            str+='<div id="oreBarFull'+this.id+'" class="resBarFull meter filling" style="width:1px;"></div>'
+            str+='<div id="oreBarText'+this.id+'" class="resBarText titleFont"></div>'
+            str+='<div id="oreBarInfo'+this.id+'" class="resBarInfo"></div>'
+            str+='</div>'
+            this.wrapper.innerHTML = str;
+            this.mbarFull = l("oreBarFull"+this.id);
+            this.mbar = l("ore"+this.id);
+            this.mbarText = l("oreBarText"+this.id);
+            this.mbarInfo = l("oreBarInfo"+this.id);
+            this.mbarInfo2 = l("oreInfo"+this.id);
 
             this.oreName = name1;
             this.name = name2;
@@ -625,7 +639,13 @@ BModify._Initialize = function(en, Research) {
             }
 
             this.draw = function() {
-
+                if (Game.drawT%5==0) {
+                    this.mbarFull.style.width=Math.max(Math.round((this.rsAvailable/this.rsTotal)*100), 0)+'%';
+                    this.mbar.style.width='350px';
+                    this.mbarText.innerHTML=Beautify(Math.max((this.rsAvailable/this.rsTotal)*100, 0), 1)+'% left';
+                    this.mbarInfo.innerHTML='ligma';
+                }
+                this.mbarFull.style.backgroundPosition=(-Game.T*0.5)+'px';
             }
 
             me.ores.push(this);
