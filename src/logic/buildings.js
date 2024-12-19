@@ -232,7 +232,7 @@ BModify._Initialize = function(en, Research) {
         l('stats'+this.id).insertAdjacentHTML('beforeend', '<div id="statsVisual'+this.id+'"></div>')
 
         var str = '';
-        str+='<div id="resBar'+this.id+'" class="resBar smallFramed meterContainer" style="width:1px;">'
+        str+='<div id="resBar'+this.id+'"'+Game.getDynamicTooltip('Game.ObjectsById['+this.id+'].rsManager.infoTooltip', 'this')+' class="resBar smallFramed meterContainer" style="width:1px;">'
         str+='<div id="resBarRefillL'+this.id+'"'+Game.getDynamicTooltip('Game.ObjectsById['+this.id+'].rsManager.refillTooltipL', 'this')+' class="shadowFilter resBarRefill barRefillL rlIcon"></div>'
         str+='<div id="resBarRefillR'+this.id+'"'+Game.getDynamicTooltip('Game.ObjectsById['+this.id+'].rsManager.refillTooltipR', 'this')+' class="shadowFilter resBarRefill barRefillR rrIcon"></div>'
         str+='<div id="resBarFull'+this.id+'" class="resBarFull meter filling" style="width:1px;"></div>'
@@ -299,11 +299,17 @@ BModify._Initialize = function(en, Research) {
             else this.refillR.style.display='none';
         }
 
+        this.infoTooltip = function() {
+            var str = "This is your <b>resource meter</b>. It displays the percentage of resource that you have left.";
+            str += "<br>When your resource meter is <b>depleted</b>, this building will stop producing CpS.";
+            return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+str+'</div>';
+        }
+
         // will be implemented soon
         this.refillTooltipL = function() {
             var str = "Click to <b>refill available resources by 35%</b> and prevent depletion for <b>1 minute</b> for ??? power clicks.";
             str += "<br><small>(not yet implemented)</small>";
-            return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;" id="tooltipRefill">'+str+'</div>';
+            return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+str+'</div>';
         }
 
         this.refillPrice = function() {
@@ -319,7 +325,7 @@ BModify._Initialize = function(en, Research) {
 
             str += (BModify.bankRefill>0?"<br><small class='red'>(usable again in "+Game.sayTime(BModify.bankRefill+Game.fps, -1)+")</small>"
                 :"<br><small>(Cooldown time upon use: "+(this.depleted?"<span class='red'>3 hours</span>":"1 hour")+")</small>");
-            return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;" id="tooltipRefill">'+str+'</div>';
+            return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+str+'</div>';
         }
 
         AddEvent(this.refillL,'click',function(){
@@ -576,11 +582,11 @@ BModify._Initialize = function(en, Research) {
             en.newVar("rsTotal"+name2, "int");
             en.newVar("rsUsed"+name2,  "int");
             en.newVar("oreH"+name2,    "int");
-            l('stats3').insertAdjacentHTML('beforeend', '<div id="oreVisual'+this.id+'"></div>');
+            l('stats3').insertAdjacentHTML('beforeend', '<div id="oreVisual'+this.id+'" style="margin-top:70px;"></div>');
             this.wrapper = l('oreVisual'+this.id);
             var str = '';
-            str+='<div id="ore'+this.id+'" class="resBar smallFramed meterContainer" style="width:1px;">'
-            str+='<div id="oreInfo'+this.id+'" class="shadowFilter resBarRefill barRefillL rlIcon"></div>'
+            str+='<div id="ore'+this.id+'"'+Game.getDynamicTooltip('mod.bModify.Mines.ores['+this.id+'].infoTooltip', 'this')+' class="resBar smallFramed meterContainer" style="width:1px;">'
+            str+='<div id="oreInfo'+this.id+'" class="shadowFilter resBarRefill barRefillL" style="'+writeIcon(sprite)+'"></div>'
             str+='<div id="oreBarFull'+this.id+'" class="resBarFull meter filling" style="width:1px;"></div>'
             str+='<div id="oreBarText'+this.id+'" class="resBarText titleFont"></div>'
             str+='<div id="oreBarInfo'+this.id+'" class="resBarInfo"></div>'
@@ -597,6 +603,10 @@ BModify._Initialize = function(en, Research) {
 
             this.unlocked = false;
             this.depleted = false;
+
+            this.infoTooltip = function() {
+                return ''
+            }
 
             this.recalculate = function() {
                 var rhpsmult = 1;
@@ -639,6 +649,8 @@ BModify._Initialize = function(en, Research) {
             }
 
             this.draw = function() {
+                if (this.unlocked) this.wrapper.style.display='block';
+                else this.wrapper.style.display='none';
                 if (Game.drawT%5==0) {
                     this.mbarFull.style.width=Math.max(Math.round((this.rsAvailable/this.rsTotal)*100), 0)+'%';
                     this.mbar.style.width='350px';
