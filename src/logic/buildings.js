@@ -106,6 +106,7 @@ BModify._Initialize = function(en, Research) {
                 yieldmult*=(1+BModify.grandma.grandmaAlloc[me.id-2]*0.2*(1/(me.id-1)));
             }
             if ((this.id == 2) && Research.has("Regrowth")) yieldmult*=3;
+            yieldmult*=(1+0.025*Game.Objects.Farm.getLumpBuff());
 
             if (me.tieredResearch) {
                 if (Research.hasTiered(this.id, 1)) rsmult*=2;
@@ -486,12 +487,12 @@ BModify._Initialize = function(en, Research) {
         )
         Game.GetTieredCpsMult = en.injectCode(Game.GetTieredCpsMult, 
             "mult*=(1+Game.Objects['Grandma'].amount*0.01*(1/(me.id-1)));",
-            "mult*=(1+mod.bModify.grandma.grandmaAlloc[me.id-2]*0.2*(1/(me.id-1)));", 
+            "mult*=(1+mod.bModify.grandma.grandmaAlloc[me.id-2]*0.2*(1/(me.id-1)))*(1+0.04*Game.Objects.Grandma.getLumpBuff());", 
             "replace"
         )
         this.me.tooltip = en.injectCode(this.me.tooltip,
             "var mult=me.amount*0.01*(1/(other.id-1));",
-            "var mult=1+mod.bModify.grandma.grandmaAlloc[other.id-2]*0.2*(1/(other.id-1));", 
+            "var mult=1+mod.bModify.grandma.grandmaAlloc[other.id-2]*0.2*(1/(other.id-1))*(1+0.04*Game.Objects.Grandma.getLumpBuff());", 
             "replace"
         )
         en.saveCallback(function() {

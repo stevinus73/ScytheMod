@@ -105,7 +105,7 @@ Research._Initialize = function(en) {
         }
 
         this.unbuy = function() {
-            if (!this.bought) return;
+            if (!this.bought || (this.id==0)) return;
             this.bought = false;
             Research.earn(this.priceB);
             Research.numUpgrades--;
@@ -185,7 +185,7 @@ Research._Initialize = function(en) {
             var cost=this.getPrice();
             price='<div style="float:right;text-align:right;"><span class="price research'+ (this.canBuy() ? '' : ' disabled') +'">'+Beautify(Math.round(cost))+'</span></div>';
             var tip = this.canBuy() ? loc("Click to research.") : "";
-            if (this.bought) {
+            if (this.bought && (this.id!=0)) {
                 if (Game.keys[16]) tip=loc("You are holding Shift. Clicking this research upgrade will unbuy it and refund your research.");
                 else tip=loc("Shift-click to refund.");
             }
@@ -424,6 +424,19 @@ Research._Initialize = function(en) {
     var tieredTree = function(i, tier, name, desc) {
         tieredTreeG(i, tier, name, desc, cfl(Game.ObjectsById[i].plural)+" yield <b>"+Beautify(100-5*i)+"%</b> more. Resource space is <b>doubled</b>.");
     }
+    var bLumpBuff = function(i, name, spc, desc) {
+        var me = Game.ObjectsById[i];
+        var hfunction = {reqFunc:function(){return me.level >= 5},reqDesc:"upgrade this building to level 5"};
+        var deps = [2];
+        me.lumpBuff = new Research.Tech(name, spc+'<q>'+desc+'</q>', 100, hfunction, f, deps, [spr_ref[i], 22], 2.0, 0.6);
+    }
+    for (var i in Game.Objects) {
+        Game.Objects[i].getLumpBuff = function() {
+            if (!this.lumpBuff) return 0;
+            if (!Research.has(this.lumpBuff.name)) return 0;
+            return Math.min(this.level, 20);
+        }
+    }
     Research.hasTiered = function(i, tier) {
         if (!Game.ObjectsById[i].tieredResearch) return false;
         if (Game.ObjectsById[i].tieredResearch.length < tier) return false;
@@ -441,6 +454,7 @@ Research._Initialize = function(en) {
             'if (mod.research.hasTiered(0, 3)) mult*=1.25;'
         ]
     )
+    // no need for lump buff
     new Research.Tech("Fourth-dimensional workarounds", "Clicking is <b>6%</b> more powerful.", 30, req(() => Game.cookieClicks, 500, "cookie clicks"), f, [0], [1, 6], 0.3, 0.3); // 4
     new Research.Tech("Cybernetic fingers", "Clicking is <b>6%</b> more powerful. <q>Clink, clink.</q>", 50, req(() => Game.cookieClicks, 1000, "cookie clicks"), f, [4], [12, 1], 0.5, 0.6); // 5
     new Research.Tech("Repeated electrical shock", "Clicking is <b>6%</b> more powerful. <q>Ow. Ow. Ow.</q>", 70, req(() => Game.cookieClicks, 2500, "cookie clicks"), f, [5], [12, 2], 0.6, 0.9); // 6
@@ -460,8 +474,9 @@ Research._Initialize = function(en) {
     tieredTreeG(1, 1, "Jumbo rolling pins", "Really helps them get to work.", "Grandmas are <b>15%</b> more efficient."); // 1
     tieredTreeG(1, 2, "Hair whitener", "Studies show that the whiter the grandmas' hair is, the older they are, and therefore, the more powerful they are.", "Grandmas are <b>15%</b> more efficient.") // 2
     tieredTreeG(1, 3, "Other people's grandmas", "You sure do seem to have a lot of grandmas. But! If you pull grandmas from other people, you might be able to get even more grandmas.", "Grandmas are <b>15%</b> more efficient.") // 3
+    bLumpBuff(1, "Cotton-candy grandmas", "Grandma types are <b>4%</b> more powerful per grandma level (up to level 20).", "Cotton candy injected via IV.");
     var unlockGP = {reqFunc: function(){return Game.Objects['Grandma'].amount>=6 && Game.HasAchiev('Elder')}, reqDesc: "have <b>7 different grandma types</b>"}
-    new Research.Tech("Bingo center/Research facility", "Grandma-operated science lab and leisure club. <b>This will unlock the Bingo center/Research facility upgrade in the Store.</b> <q>What could possibly keep those grandmothers in check?...<br>Bingo.</q>", 40, unlockGP, f, [0], [11, 9], 0.4, 0.4);
+    new Research.Tech("Bingo center/Research facility", "Grandma-operated science lab and leisure club. <b>This will unlock the Bingo center/Research facility upgrade in the Store.</b> <q>What could possibly keep those grandmothers in check?...<br>Bingo.</q>", 40, unlockGP, f, [0], [11, 9], 0.4, 0.4); // 5
     Game.Logic = en.injectCode(Game.Logic, "Game.HasAchiev('Elder'))", 
         "mod.research.has('Bingo center/Research facility'))", "replace"
     )
@@ -470,6 +485,7 @@ Research._Initialize = function(en) {
     tieredTree(2, 1, "Monocookie agriculture", "Gearing your farms to only cultivate cookies."); // 1
     tieredTree(2, 2, "Better hoes", "Actually, scratch that. Who would waste netherite on a hoe?"); // 2
     tieredTree(2, 3, "Radiative therapy", "Radiation increases the chance for cookie plants to mutate and become more useful. For example, a carnivorous plant with the ability to speak is already being used as a deterrent to greedy young kids.")
+    bLumpBuff(2, "Caramel fertilizer", "Resource-tied buildings yield <b>2.5%</b> more per farm level (up to level 20).", "Dear Baker, what do they put in this stuff nowadays?");
     buildingTree(3);
     tieredTree(3, 1, "Mineral scentilocation", "Recent advances have led to the creation of a machine that can detect tasty minerals via their natural scent-giving properties.") // 1
     tieredTree(3, 2, "Nanomining", "Scratch all the giant drills and pickaxes! The fabric of reality itself has been found to contain fundamental particles that can be made into cookies. This will surely have no unforeseen consequences on the stability of the universe, y'know?") // 2
@@ -540,8 +556,8 @@ Research._Initialize = function(en) {
     tieredTree(13, 3, "Pair instability", "It turns out, that according to new scientific developments, light harnessed by prisms can become so powerful that its energy is temporarily drained towards the production of cookies. This, of course, means more cookies.") // 3
     buildingTree(14);
     tieredTreeG(14, 1, "Luck in the air", "Literally!", "Chancemakers are <b>77%</b> more efficient. Golden cookie gains <b>+77%</b>.") // 1
-    tieredTreeG(14, 2, "Unfair dice", "Can also be used to annoy people at DnD games.", "Chancemakers are <b>27%</b> more efficient. Golden cookie gains <b>+27%</b>.") // 2
-    tieredTreeG(14, 3, "The law of large numbers of cookies", "States that the more cookies you have, the more luck you're bound to get.", "Chancemakers are <b>27%</b> more efficient. Golden cookie gains <b>+27%</b>.") // 3
+    tieredTreeG(14, 2, "Unfair dice", "Can also be used to annoy people at DnD games.", "Chancemakers are <b>57%</b> more efficient. Golden cookie gains <b>+57%</b>.") // 2
+    tieredTreeG(14, 3, "The law of large numbers of cookies", "States that the more cookies you have, the more luck you're bound to get.", "Chancemakers are <b>37%</b> more efficient. Golden cookie gains <b>+37%</b>.") // 3
     Game.shimmerTypes.golden.popFunc = en.injectChain(Game.shimmerTypes.golden.popFunc, "if (Game.Has('Dragon fang')) mult*=1.03;",
         [
             'if (mod.research.hasTiered(14, 1)) mult*=1.77;',
