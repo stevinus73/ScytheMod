@@ -56,28 +56,28 @@ Clicks._Initialize = function(en, Research) {
     //     [[",1+sold*0.01", ",1+sold*0.005"],[",1+sold*0.005", ",1+sold*0.003"],[",1+sold*0.0025", ",1+sold*0.001"]], "after"
     // )
 
-    for (var i in Game.Objects) {
-        var me = Game.Objects[i];
-        if (Kaizo) {
-            me.sell = en.injectCode(me.sell, "sold*0.01,1+sold*0.01", ",1+sold*0.005", "after")
-            me.sell = en.injectCode(me.sell, "sold*0.005,1+sold*0.004", ",1+sold*0.003", "after")
-            me.sell = en.injectCode(me.sell, "sold*0.0025,1+sold*0.0015", ",1+sold*0.001", "after")
-        } else {
-            me.sell = en.injectCode(me.sell, "sold*0.01", ",1+sold*0.005", "after")
-            me.sell = en.injectCode(me.sell, "sold*0.005", ",1+sold*0.003", "after")
-            me.sell = en.injectCode(me.sell, "sold*0.0025", ",1+sold*0.001", "after")
-            me.sell = en.injectCode(me.sell, "if (godLvl==1) old.multClick+=sold*0.01;", "if (godLvl==1) { old.multClick+=sold*0.01; old.arg2+=sold*0.005; }", "replace")
-            me.sell = en.injectCode(me.sell, "else if (godLvl==2) old.multClick+=sold*0.005;", "else if (godLvl==2) { old.multClick+=sold*0.005; old.arg2+=sold*0.003; }", "replace")
-            me.sell = en.injectCode(me.sell, "else if (godLvl==3) old.multClick+=sold*0.0025;", "else if (godLvl==3) { old.multClick+=sold*0.0025; old.arg2+=sold*0.001; }", "replace")
-        }
-    }
+    // for (var i in Game.Objects) {
+    //     var me = Game.Objects[i];
+    //     if (Kaizo) {
+    //         me.sell = en.injectCode(me.sell, "sold*0.01,1+sold*0.01", ",1+sold*0.005", "after")
+    //         me.sell = en.injectCode(me.sell, "sold*0.005,1+sold*0.004", ",1+sold*0.003", "after")
+    //         me.sell = en.injectCode(me.sell, "sold*0.0025,1+sold*0.0015", ",1+sold*0.001", "after")
+    //     } else {
+    //         me.sell = en.injectCode(me.sell, "sold*0.01", ",1+sold*0.005", "after")
+    //         me.sell = en.injectCode(me.sell, "sold*0.005", ",1+sold*0.003", "after")
+    //         me.sell = en.injectCode(me.sell, "sold*0.0025", ",1+sold*0.001", "after")
+    //         me.sell = en.injectCode(me.sell, "if (godLvl==1) old.multClick+=sold*0.01;", "if (godLvl==1) { old.multClick+=sold*0.01; old.arg2+=sold*0.005; }", "replace")
+    //         me.sell = en.injectCode(me.sell, "else if (godLvl==2) old.multClick+=sold*0.005;", "else if (godLvl==2) { old.multClick+=sold*0.005; old.arg2+=sold*0.003; }", "replace")
+    //         me.sell = en.injectCode(me.sell, "else if (godLvl==3) old.multClick+=sold*0.0025;", "else if (godLvl==3) { old.multClick+=sold*0.0025; old.arg2+=sold*0.001; }", "replace")
+    //     }
+    // }
 
     Clicks.drainClick = function(now) {
         var clickNum=1+(this.overflow>0?Math.floor(this.overflow*(Research.has("Damage control")?0.8:1)):0); 
         if (Game.hasBuff("Click frenzy")) clickNum*=2;
         if (Game.hasBuff("Dragonflight")) clickNum*=2;
-        var gz = Game.hasBuff("Devastation");
-        if (gz) clickNum*=(1+Kaizo?gz.arg3:gz.arg2);
+        // var gz = Game.hasBuff("Devastation");
+        // if (gz) clickNum*=(1+Kaizo?gz.arg3:gz.arg2);
         this.clicks-=Math.ceil(clickNum);
         if(this.clicks<0) this.clicks=0;
         this.regenTimer=P.baseRecovery;
