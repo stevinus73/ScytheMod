@@ -32,6 +32,25 @@ BModify._Initialize = function(en, Research) {
     
     en.newVar("bankRefill", "int");
 
+    var sstr='<style>'
+        +'.resBar{max-width:95%;margin:4px auto;height:16px;}'
+        +'.resBarRefill{cursor:pointer;width:48px;height:48px;position:absolute;z-index:1000;transition:transform 0.05s;transform:scale(0.8);}'
+        +'.resBarRefill:hover{transform:scale(1.3);}'
+        +'.resBarRefill:active{transform.scale(0.7);}'
+        +'.barRefillL{left:-40px;top:-17px;}'
+        +'.barRefillR{left:340px;top:-17px;}'
+        +'.rlIcon{'+writeIcon([3, 0, Icons])+'}'
+        +'.rrIcon{'+writeIcon([2, 0, Icons])+'}' // not fully sure why right:-40px doesn't work; think it's something about overriding
+        +'.resBarFull{transform:scale(1,2);transform-origin:50% 0;height:50%;}'
+        +'.resBarText{transform:scale(1,0.8);width:100%;position:absolute;left:0px;top:0px;text-align:center;color:#fff;text-shadow:-1px 1px #000,0px 0px 4px #000,0px 0px 6px #000;margin-top:2px;}'
+        +'.resBarInfo{text-align:center;font-size:11px;margin-top:15px;color:rgba(255,255,255,0.75);text-shadow:-1px 1px 0px #000;}'
+        +'.statsBG{background:url('+Game.resPath+'img/shadedBorders.png),url('+Game.resPath+'img/darkNoise.jpg);background-size:33% 100%,auto;position:relative;left:0px;right:0px;top:0px;bottom:16px;}'
+        +'.separatorTop{width: 100%;height: 8px;background: url(img/panelHorizontal.png?v=2) repeat-x;background: url(img/panelGradientLeft.png) no-repeat top left, '
+        +'url(img/panelGradientRight.png) no-repeat top right, url(img/panelHorizontal.png?v=2) repeat-x;position: absolute;left: 0px;top: 0px;}'
+        +'</style>';
+
+    l("centerArea").insertAdjacentHTML('beforeend', sstr)
+
     BModify.RS_Manager = function(id, baseRS, rsNames) {
         this.id = id;
         this.me = Game.ObjectsById[this.id];
@@ -205,7 +224,7 @@ BModify._Initialize = function(en, Research) {
 
         this.activButton = l("productStatsButton"+this.id); 
         this.statDiv = l("rowStats"+this.id); 
-        this.statDiv.insertAdjacentHTML('beforeend', '<div id="statsBG'+this.id+'"></div>')
+        this.statDiv.insertAdjacentHTML('beforeend', '<div id="statsBG'+this.id+'" class="statsBG"></div>')
         l('statsBG'+this.id).insertAdjacentHTML('beforeend', '<div id="stats'+this.id+'" class="subsection"></div>')
         l('stats'+this.id).insertAdjacentHTML('beforeend', '<div class="separatorTop"/>')
         l('stats'+this.id).insertAdjacentHTML('beforeend', '<div class="title" style="position:relative">'+cfl(this.me.plural)+'</div>')
@@ -213,26 +232,12 @@ BModify._Initialize = function(en, Research) {
         l('stats'+this.id).insertAdjacentHTML('beforeend', '<div id="statsVisual'+this.id+'"></div>')
 
         var str = '';
-        str+='<style>'
-        +'#resBar'+this.id+'{max-width:95%;margin:4px auto;height:16px;}'
-        +'.resBarRefill{cursor:pointer;width:48px;height:48px;position:absolute;z-index:1000;transition:transform 0.05s;transform:scale(0.8);}'
-        +'.resBarRefill:hover{transform:scale(1.3);}'
-        +'.resBarRefill:active{transform.scale(0.7);}'
-        +'#resBarRefillL'+this.id+'{left:-40px;top:-17px;'+writeIcon([3, 0, Icons])+'}'
-        +'#resBarRefillR'+this.id+'{left:340px;top:-17px;'+writeIcon([2, 0, Icons])+'}' // not fully sure why right:-40px doesn't work; think it's something about overriding
-        +'#resBarFull'+this.id+'{transform:scale(1,2);transform-origin:50% 0;height:50%;}'
-        +'#resBarText'+this.id+'{transform:scale(1,0.8);width:100%;position:absolute;left:0px;top:0px;text-align:center;color:#fff;text-shadow:-1px 1px #000,0px 0px 4px #000,0px 0px 6px #000;margin-top:2px;}'
-        +'#resBarInfo'+this.id+'{text-align:center;font-size:11px;margin-top:15px;color:rgba(255,255,255,0.75);text-shadow:-1px 1px 0px #000;}'
-        +'#statsBG'+this.id+'{background:url('+Game.resPath+'img/shadedBorders.png),url('+Game.resPath+'img/darkNoise.jpg);background-size:33% 100%,auto;position:relative;left:0px;right:0px;top:0px;bottom:16px;}'
-        +'.separatorTop{width: 100%;height: 8px;background: url(img/panelHorizontal.png?v=2) repeat-x;background: url(img/panelGradientLeft.png) no-repeat top left, '
-        +'url(img/panelGradientRight.png) no-repeat top right, url(img/panelHorizontal.png?v=2) repeat-x;position: absolute;left: 0px;top: 0px;}'
-        +'</style>';
-        str+='<div id="resBar'+this.id+'" class="smallFramed meterContainer" style="width:1px;">'
-        str+='<div id="resBarRefillL'+this.id+'"'+Game.getDynamicTooltip('Game.ObjectsById['+this.id+'].rsManager.refillTooltipL', 'this')+' class="shadowFilter resBarRefill"></div>'
-        str+='<div id="resBarRefillR'+this.id+'"'+Game.getDynamicTooltip('Game.ObjectsById['+this.id+'].rsManager.refillTooltipR', 'this')+' class="shadowFilter resBarRefill"></div>'
-        str+='<div id="resBarFull'+this.id+'" class="meter filling" style="width:1px;"></div>'
-        str+='<div id="resBarText'+this.id+'" class="titleFont"></div>'
-        str+='<div id="resBarInfo'+this.id+'"></div>'
+        str+='<div id="resBar'+this.id+'" class="resBar smallFramed meterContainer" style="width:1px;">'
+        str+='<div id="resBarRefillL'+this.id+'"'+Game.getDynamicTooltip('Game.ObjectsById['+this.id+'].rsManager.refillTooltipL', 'this')+' class="shadowFilter resBarRefill barRefillL rlIcon"></div>'
+        str+='<div id="resBarRefillR'+this.id+'"'+Game.getDynamicTooltip('Game.ObjectsById['+this.id+'].rsManager.refillTooltipR', 'this')+' class="shadowFilter resBarRefill barRefillR rrIcon"></div>'
+        str+='<div id="resBarFull'+this.id+'" class="resBarFull meter filling" style="width:1px;"></div>'
+        str+='<div id="resBarText'+this.id+'" class="resBarText titleFont"></div>'
+        str+='<div id="resBarInfo'+this.id+'" class="resBarInfo"></div>'
         str+='</div>'
         l('statsVisual'+this.id).innerHTML = str;
 
@@ -571,6 +576,7 @@ BModify._Initialize = function(en, Research) {
             en.newVar("rsTotal"+name2, "int");
             en.newVar("rsUsed"+name2,  "int");
             en.newVar("oreH"+name2,    "int");
+            var _name = function(){return name2.toLowerCase()}
 
             this.oreName = name1;
             this.name = name2;
