@@ -6,7 +6,7 @@ G._Initialize = function(en, Research) {
     // tweaking around some stuffs lel
     G.me.popFunc = en.injectCode(G.me.popFunc, 
         "buff=Game.gainBuff('click frenzy',Math.ceil(13*effectDurMod),777);",
-        "buff=Game.gainBuff('click frenzy',Math.ceil(13*effectDurMod),77*(1+Game.auraMult('Dragon Cursor')*(133/77)));",
+        "buff=Game.gainBuff('click frenzy',Math.ceil(13*effectDurMod),77*(1+Game.auraMult('Dragon Cursor')*(277/77)));",
         "replace"
     )
     G.me.popFunc = en.injectCode(G.me.popFunc, 
@@ -95,7 +95,8 @@ G._Initialize = function(en, Research) {
     Game.dragonLevels[6].action='Train Dragon Cursor<br><small>Aura: boost to Click frenzy and Dragonflight</small>';
     G.me.mouseCps = en.injectCode(G.me.mouseCps,
         "mult*=1+Game.auraMult('Dragon Cursor')*0.05;",
-        "add+=Game.cookiesPsGame.auraMult('Dragon Cursor')*0.05;"
+        "add+=Game.cookiesPsGame.auraMult('Dragon Cursor')*0.05;",
+        "replace"
     )
 }
 
