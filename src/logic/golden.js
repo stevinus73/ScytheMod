@@ -20,7 +20,7 @@ G._Initialize = function(en, Research) {
         "replace"
     )
 
-    // i could do all escthis with for loops but it just seems like a waste of time and unnecessary abstraction
+    // i could do all this with for loops but it just seems like a waste of time and unnecessary abstraction
     const pluralizedEffs = {
         'frenzy': "Frenzy",
         'dragon harvest': "Dragon Harvest",
