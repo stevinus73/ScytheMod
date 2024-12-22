@@ -160,7 +160,7 @@ General._Initialize = function(en, Research) {
         }
         return pow;
     };
-    Game.heartDrops.forEach(drop => {Game.Upgrades[drop]=heartPower;})
+    Game.heartDrops.forEach(drop => {Game.Upgrades[drop].power=heartPower;})
 
 }
 export { General }
