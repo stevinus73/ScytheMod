@@ -92,7 +92,7 @@ G._Initialize = function(en, Research) {
 
     // dragon cursor
     Game.dragonAuras[2].desc="Click frenzy and Dragonflight are stronger.<br>"+loc("Clicking gains <b>+%1% of your CpS</b>.",5);
-    Game.dragonLevels[6].action='Train Dragon Cursor<br><small>Aura: boost to Click frenzy and Dragonflight</small>';
+    Game.dragonLevels[5].action='Train Dragon Cursor<br><small>Aura: boost to Click frenzy and Dragonflight</small>';
     Game.mouseCps = en.injectCode(Game.mouseCps,
         "mult*=1+Game.auraMult('Dragon Cursor')*0.05;",
         "add+=Game.cookiesPs*Game.auraMult('Dragon Cursor')*0.05;",
