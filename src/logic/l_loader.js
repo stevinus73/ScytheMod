@@ -3,6 +3,7 @@ import {BModify} from "./buildings.js"
 import {Research} from "./research.js"
 import {General} from "./modgeneral.js"
 import {Clicks} from "./clicks.js"
+import {G} from "./golden.js"
 
 var mod = {}
 
@@ -17,6 +18,8 @@ mod.Init = function(engine) {
     this.bModify._Initialize(this.en, this.research);
     this.general = General;
     this.general._Initialize(this.en, this.research);
+    this.g = G;
+    this.g._Initialize(this.en, this.research);
     this.en.Process();
 }
 
