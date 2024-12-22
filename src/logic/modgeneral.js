@@ -110,8 +110,8 @@ General._Initialize = function(en, Research) {
     General.newShinyCookie("Emerald cookies", "Beautiful, marvelous, incredible, sublime.", 1e6, [2, 3, Icons])
     General.newShinyCookie("Diamond cookies", "1 in 8,192 chance!", 1e8, [2, 4, Icons])
     General.newShinyCookie("Silver cookies", "Tastes pretty meh, but the shininess is the real special part about all of these cookies.", 1e11, [2, 5, Icons])
-    General.newShinyCookie("Tungsten cookies", "The legends didn't lie.", 1e14, [2, 5, Icons])
-    General.newShinyCookie("Big-bang nucleosynthesized cookies", "From the beginning of time itself.", 1e17, [2, 1, Icons])
+    General.newShinyCookie("Tungsten cookies", "The legends didn't lie.", 1e16, [2, 5, Icons])
+    General.newShinyCookie("Big-bang nucleosynthesized cookies", "From the beginning of time itself.", 1e20, [2, 1, Icons])
 
     Game.registerHook('logic', function(){
         General.shinies.forEach(function(shiny) {
@@ -128,5 +128,26 @@ General._Initialize = function(en, Research) {
         })
         return cps*mult
     })
+    // beeg buff?
+    Game.Upgrades['Peanut butter cookies'].power = 10;
+    Game.Upgrades['Coconut cookies'].power = 10;
+    Game.Upgrades['White chocolate cookies'].power = 10;
+    Game.Upgrades['Macadamia nut cookies'].power = 10;
+    Game.Upgrades['Double-chip cookies'].power = 4;
+    Game.Upgrades['White chocolate macadamia nut cookies'].power = 4;
+    Game.Upgrades['All-chocolate cookies'].power = 4;
+    Game.Upgrades['Eclipse cookies'].power = 7;
+    Game.Upgrades['Zebra cookies'].power = 3;
+    Game.Upgrades['Snickerdoodles'].power = 3;
+    Game.Upgrades['Stroopwafels'].power = 3;
+    Game.Upgrades['Macaroons'].power = 3;
+    Game.Upgrades['Empire biscuits'].power = 3;
+    Game.Upgrades['Madeleines'].power = 8;
+    Game.Upgrades['Palmiers'].power = 3;
+    Game.Upgrades['Palets'].power = 3;
+    Game.Upgrades['Sablés'].power = 3;
+    Game.Upgrades['Gingerbread men'].power = 3;
+    Game.Upgrades['Gingerbread trees'].power = 3;
+
 }
 export { General }
