@@ -16,7 +16,7 @@ Clicks._Initialize = function(en, Research) {
     Game.Objects.Cursor.cps = en.injectCode(Game.Objects.Cursor.cps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
     
     // why does this not work :(
-    eval("Game.DrawSpecial="+Game.DrawSpecial.toString().replace("Game.LeftBackground.globalAlpha=0.75;","Game.LeftBackground.globalAlpha=1-0.25*(mod.clicks.clicks/mod.clicks.maxClicks);")); 
+    eval("Game.DrawBackground="+Game.DrawBackground.toString().replace("var alphaMult=1;","var alphaMult=0.1+0.9*(mod.clicks.clicks/mod.clicks.maxClicks);")); 
     
 
     // const baseClicks = 250;

@@ -95,7 +95,7 @@ G._Initialize = function(en, Research) {
     Game.dragonLevels[6].action='Train Dragon Cursor<br><small>Aura: boost to Click frenzy and Dragonflight</small>';
     Game.mouseCps = en.injectCode(Game.mouseCps,
         "mult*=1+Game.auraMult('Dragon Cursor')*0.05;",
-        "add+=Game.cookiesPsGame.auraMult('Dragon Cursor')*0.05;",
+        "add+=Game.cookiesPs*Game.auraMult('Dragon Cursor')*0.05;",
         "replace"
     )
 }
