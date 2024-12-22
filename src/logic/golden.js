@@ -20,7 +20,7 @@ G._Initialize = function(en, Research) {
         "replace"
     )
 
-    // i could do all this with for loops but it just seems like a waste of time and unnecessary abstraction
+    // i could do all escthis with for loops but it just seems like a waste of time and unnecessary abstraction
     const pluralizedEffs = {
         'frenzy': "Frenzy",
         'dragon harvest': "Dragon Harvest",
@@ -93,7 +93,7 @@ G._Initialize = function(en, Research) {
     // dragon cursor
     Game.dragonAuras[2].desc="Click frenzy and Dragonflight are stronger.<br>"+loc("Clicking gains <b>+%1% of your CpS</b>.",5);
     Game.dragonLevels[6].action='Train Dragon Cursor<br><small>Aura: boost to Click frenzy and Dragonflight</small>';
-    G.me.mouseCps = en.injectCode(G.me.mouseCps,
+    Game.mouseCps = en.injectCode(Game.mouseCps,
         "mult*=1+Game.auraMult('Dragon Cursor')*0.05;",
         "add+=Game.cookiesPsGame.auraMult('Dragon Cursor')*0.05;",
         "replace"
