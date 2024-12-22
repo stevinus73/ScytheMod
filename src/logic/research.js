@@ -442,6 +442,10 @@ Research._Initialize = function(en) {
         if (Game.ObjectsById[i].tieredResearch.length < tier) return false;
         return Game.ObjectsById[i].tieredResearch[tier-1].bought;
     }
+    // gc tree
+    new Research.Tree("Golden cookies", [27, 6], function(){return Game.goldenClicks;});
+    new Research.Tech("Golden cookies", "Unlocks the research tree for <b>golden cookies</b>.", 7, f, f, [], [10, 14], 0, 0);
+    // all the building trees go here
 
     buildingTree(0);
     tieredTreeG(0, 1, "Flex gloves", "Trendy, and in style!", "Cursors are <b>25%</b> more efficient."); // 1

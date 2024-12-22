@@ -57,7 +57,6 @@ G._Initialize = function(en, Research) {
         return effs;
     }
 
-
     G.me.popFunc = en.injectCode(G.me.popFunc,
         "else if (choice=='blood frenzy')",
         `else if (choice=='fortune'){var moni=mod.G.fortuneEarn(mult);`
@@ -65,8 +64,7 @@ G._Initialize = function(en, Research) {
         "before"
     )
     G.fortuneEarn = function(mult) {
-        var time=Game.cookiesPs*60*10;
-        var moni=mult*time+777;
+        var moni=mult*Game.cookiesPs*60*10+777;
 		Game.Earn(moni);
         return moni;
     }
@@ -75,6 +73,29 @@ G._Initialize = function(en, Research) {
         "this.last=choice;",
         "if(mod.G.isEff(choice) && mod.G.currEffs().length == mod.G.maxEffs){choice='fortune'};\n\t\t\t",
         "before"
+    )
+
+    // click frenzy/dragonflight mutual exclusitivity (well, technically not completely mutually exclusive but eh, whatever)
+    // anything that was supposed to give click frenzy now gives fortune (fun!)
+    // also nerfed dragonflight chances
+    G.me.popFunc = en.injectCode(G.me.popFunc,
+        "if (me.force!='') {this.chain=0;choice=me.force;me.force='';}",
+        "if (me.force!='') {this.chain=0;choice=me.force;if (choice=='click frenzy' && Game.hasBuff('Dragonflight')){choice='fortune';};me.force='';}",
+        "replace"
+    )
+    // this just makes it harder to get cf+df
+    G.me.popFunc = en.injectCode(G.me.popFunc,
+        "if (Math.random()<0.8) Game.killBuff('Click frenzy');",
+        "if (Math.random()<0.95) Game.killBuff('Click frenzy');",
+        "replace"
+    )
+
+    // dragon cursor
+    Game.dragonAuras[2].desc="Click frenzy and Dragonflight are stronger.<br>"+loc("Clicking gains <b>+%1% of your CpS</b>.",5);
+    Game.dragonLevels[6].action='Train Dragon Cursor<br><small>Aura: boost to Click frenzy and Dragonflight</small>';
+    G.me.mouseCps = en.injectCode(G.me.mouseCps,
+        "mult*=1+Game.auraMult('Dragon Cursor')*0.05;",
+        "add+=Game.cookiesPsGame.auraMult('Dragon Cursor')*0.05;"
     )
 }
 
