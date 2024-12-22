@@ -18,8 +18,8 @@ mod.Init = function(engine) {
     this.bModify._Initialize(this.en, this.research);
     this.general = General;
     this.general._Initialize(this.en, this.research);
-    this.g = G;
-    this.g._Initialize(this.en, this.research);
+    this.G = G;
+    this.G._Initialize(this.en, this.research);
     this.en.Process();
 }
 
