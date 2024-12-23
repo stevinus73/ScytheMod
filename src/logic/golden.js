@@ -6,7 +6,7 @@ G._Initialize = function(en, Research) {
     // tweaking around some stuffs lel
     G.me.popFunc = en.injectCode(G.me.popFunc, 
         "buff=Game.gainBuff('click frenzy',Math.ceil(13*effectDurMod),777);",
-        "buff=Game.gainBuff('click frenzy',Math.ceil(13*effectDurMod),77*(1+Game.auraMult('Dragon Cursor')*(277/77)));",
+        "buff=Game.gainBuff('click frenzy',Math.ceil(13*effectDurMod),233*(1+Game.auraMult('Dragon Cursor')*(377/233)));",
         "replace"
     )
     G.me.popFunc = en.injectCode(G.me.popFunc, 
@@ -64,8 +64,9 @@ G._Initialize = function(en, Research) {
         "before"
     )
     G.fortuneEarn = function(mult) {
-        var moni=mult*Game.cookiesPs*60*10+777;
+        var moni=mult*Game.cookiesPs*60*15+777;
 		Game.Earn(moni);
+        Game.Notify("Fortune!", "This golden cookie effect, which would have exceeded the golden cookie effect cap, has been converted into cookies.", [23, 6]);
         return moni;
     }
     // the big one
@@ -98,6 +99,14 @@ G._Initialize = function(en, Research) {
         "add+=Game.cookiesPs*Game.auraMult('Dragon Cursor')*0.05;",
         "replace"
     )
+
+    G.update = function() {
+
+    }
+    
+    Game.registerHook('logic', function() {
+        if (Game.T%(Game.fps)==0) G.update();
+    });
 }
 
 export {G}
