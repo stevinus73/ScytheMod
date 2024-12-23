@@ -90,6 +90,9 @@ G._Initialize = function(en, Research) {
         "if (Math.random()<0.95) Game.killBuff('Click frenzy');",
         "replace"
     )
+    en.ae.addAchievement("The click to end all clicks", 
+        "Have both <b>Click frenzy</b> and <b>Dragonflight</b> active at the same time.<q>Oh my Orteil, what have you done?</q>",
+        [12, 0], "True Neverclick", {pool: 'shadow'});
 
     // dragon cursor
     Game.dragonAuras[2].desc="Click frenzy and Dragonflight are stronger.<br>"+loc("Clicking gains <b>+%1% of your CpS</b>.",5);
@@ -101,7 +104,7 @@ G._Initialize = function(en, Research) {
     )
 
     G.update = function() {
-
+        if (Game.hasBuff('Dragonflight') && Game.hasBuff('Click frenzy')) Game.Win("The click to end all clicks");
     }
     
     Game.registerHook('logic', function() {
