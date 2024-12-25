@@ -455,12 +455,13 @@ BModify._Initialize = function(en, Research) {
                     '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;background-position:'+(-this.sprite[0]*48)+'px '+(-this.sprite[1]*48)+'px;"></div>'+
                     '<div class="name">'+this.lname+'</div>'+
                     '<div>Currently allocated: <b>'+this.allocated+'/'+this.maxFunc()+'</b></div>'+
+                    '<div>Click to allocate a grandma, Shift-click to remove.</div>'+
                     '<div class="line"></div><div class="description"><b>'+loc("Effect:")+'</b> <span class="green">'+this.desc+'</span></div></div>';
                     return str;
                 },
                 getRawHTML: function() {
                     return '<div class="grandmaType titleFont ready" id="grandmaType'+this.name+'" '+
-                        Game.getDynamicTooltip('mod.bModify.grandma.grandmaTypes['+this.name+'].tooltip','this')+
+                        Game.getDynamicTooltip('mod.bModify.grandma.grandmaTypes[`'+this.name+'`].tooltip','this')+
                         '><div class="usesIcon shadowFilter grandmaIcon" style="background-position:'+(-this.sprite[0]*48)+'px '+(-this.sprite[1]*48)+'px;"></div>'+
                         '<div class="grandmaTypeInfo" id="grandmaTypeInfo'+this.name+'">-</div></div>';
                 },
@@ -509,6 +510,14 @@ BModify._Initialize = function(en, Research) {
 		}
 		str+='</div>';
         l("grandmaManager").innerHTML = str;
+
+        for (var i in this.grandmaTypes) {
+            var me=this.grandmaTypes[i];
+            AddEvent(me.getMainElement(), 'click', function() {
+                if (Game.keys[16]) me.alloc();
+                else me.remove();
+            })
+        }
 
         // this.alloc = function(index) {
         //     if (this.allocT == this.me.amount) return;
