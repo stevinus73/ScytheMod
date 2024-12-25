@@ -485,7 +485,7 @@ BModify._Initialize = function(en, Research) {
         }
 
         // testing
-
+        this.newGrandmaType("grandpa", "Grandpas", function(){return 500;}, [0, 0], "wait what");
 
         str='';
         str+='<div id="grandmaTypes">';
