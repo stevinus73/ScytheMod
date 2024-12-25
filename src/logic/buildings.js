@@ -512,10 +512,9 @@ BModify._Initialize = function(en, Research) {
         l("grandmaManager").innerHTML = str;
 
         for (var i in this.grandmaTypes) {
-            var me=this.grandmaTypes[i];
-            AddEvent(me.getMainElement(), 'click', function() {
-                if (Game.keys[16]) me.alloc();
-                else me.remove();
+            AddEvent(this.grandmaTypes[i].getMainElement(), 'click', function() {
+                if (Game.keys[16]) BModify.grandma.grandmaTypes[i].alloc();
+                BModify.grandma.grandmaTypes[i].remove();
             })
         }
 
@@ -801,6 +800,7 @@ BModify._Initialize = function(en, Research) {
         BModify.Harvest()
         BModify.rsManagers.forEach(mn => mn.draw())
         BModify.mine.ores.forEach(mn => mn.draw())
+        BModify.grandma.update()
         if (BModify.bankRefill>0) BModify.bankRefill--
     }
 
@@ -834,7 +834,6 @@ BModify._Initialize = function(en, Research) {
     Game.registerHook('logic', this.Logic);
     Game.registerHook('check', function() {
         BModify.rsManagers.forEach(mn => mn.update())
-        BModify.grandma.update()
         BModify.mine.ores.forEach(mn => mn.update())
 
         if (BModify.totalDp >= 50000) Game.Win("Harvester") 
