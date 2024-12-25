@@ -384,6 +384,7 @@ BModify._Initialize = function(en, Research) {
 
     BModify.Grandmas = function() {
         this.me = Game.Objects['Grandma'];
+        var grandmaM = this;
 
         l("productMinigameButton1").insertAdjacentHTML('afterend', 
             '<div id="grandmaSwitch" class="productButton" onclick="mod.bModify.grandma.switchStats(-1)">'+loc('View Manager')+'</div>');
@@ -391,12 +392,29 @@ BModify._Initialize = function(en, Research) {
 
         this.activButton = l("grandmaSwitch"); 
         this.statDiv = l("grandmaManagerDiv"); 
-
+        
+        // copypasted the Grimoire spell layout
         var str = '';
         str+='<style>'
         +'#grandmaManagerBG{background:url('+Game.resPath+'img/shadedBorders.png),url('+Game.resPath+'img/darkNoise.jpg);background-size:33% 100%,auto;position:relative;left:0px;right:0px;top:0px;bottom:16px;}'
         +'.separatorTop{width: 100%;height: 8px;background: url(img/panelHorizontal.png?v=2) repeat-x;background: url(img/panelGradientLeft.png) no-repeat top left, '
         +'url(img/panelGradientRight.png) no-repeat top right, url(img/panelHorizontal.png?v=2) repeat-x;position: absolute;left: 0px;top: 0px;}'
+        '#grandmaTypes{text-align:center;width:100%;padding:8px;box-sizing:border-box;}'+
+		'.grandmaIcon{pointer-events:none;margin:2px 6px 0px 6px;width:48px;height:48px;opacity:0.8;position:relative;}'+
+		'.grandmaTypeInfo{pointer-events:none;}'+
+		'.grandmaType{box-shadow:4px 4px 4px #000;cursor:pointer;position:relative;color:#f33;opacity:0.8;text-shadow:0px 0px 4px #000,0px 0px 6px #000;font-weight:bold;font-size:12px;display:inline-block;width:60px;height:74px;background:url('+Game.resPath+'img/spellBG.png);}'+
+		'.grandmaType.ready{color:rgba(255,255,255,0.8);opacity:1;}'+
+		'.grandmaType.ready:hover{color:#fff;}'+
+		'.grandmaType:hover{box-shadow:6px 6px 6px 2px #000;z-index:1000000001;top:-1px;}'+
+		'.grandmaType:active{top:1px;}'+
+		'.grandmaType.ready .grandmaIcon{opacity:1;}'+
+		'.grandmaType:hover{background-position:0px -74px;} .grandmaType:active{background-position:0px 74px;}'+
+		'.grandmaType:nth-child(4n+1){background-position:-60px 0px;} .grandmaType:nth-child(4n+1):hover{background-position:-60px -74px;} .grandmaType:nth-child(4n+1):active{background-position:-60px 74px;}'+
+		'.grandmaType:nth-child(4n+2){background-position:-120px 0px;} .grandmaType:nth-child(4n+2):hover{background-position:-120px -74px;} .grandmaType:nth-child(4n+2):active{background-position:-120px 74px;}'+
+		'.grandmaType:nth-child(4n+3){background-position:-180px 0px;} .grandmaType:nth-child(4n+3):hover{background-position:-180px -74px;} .grandmaType:nth-child(4n+3):active{background-position:-180px 74px;}'+
+		'.grandmaType:hover .grandmaIcon{top:-1px;}'+
+		'.grandmaType.ready:hover .grandmaIcon{animation-name:bounce;animation-iteration-count:infinite;animation-duration:0.8s;}'+
+		'.noFancy .grandmaType.ready:hover .grandmaIcon{animation:none;}'+
         +'</style>';
 
         this.statDiv.insertAdjacentHTML('beforeend', '<div id="grandmaManagerBG"></div>')
@@ -405,11 +423,49 @@ BModify._Initialize = function(en, Research) {
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div class="separatorTop"/>')
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div class="title" style="position:relative">'+cfl(this.me.plural)+'</div>')
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div id="grandmaManager" style="overflow:auto"></div>')
-        
-        this.grandmaAlloc = new Array(18).fill(0);
-        this.allocT = 0;
 
-        for (var i=0;i<18;i++) en.newVar("grandmaAlloc"+i, "int");
+        this.allocT = 0;
+        this.grandmaTypes = {};
+        this.newGrandmaType = function(name, lname, maxFunc, sprite, desc) {
+            var grandmaType = {
+                name: name,
+                lname: lname,
+                maxFunc: maxFunc,
+                sprite: sprite,
+                desc: desc,
+                unlocked: true, //false,
+                allocated: 0,
+                alloc: function() {
+                    if (grandmaM.allocT >= grandmaM.me.amount) return;
+                    grandmaM.allocT += 1;
+                    if (this.allocated > this.maxFunc()) this.allocated = this.maxFunc();
+                    else this.allocated += 1;
+                    grandmaM.update();
+                    Game.recalculateGains = 1;
+                },
+                remove: function() {
+                    if (this.allocated <= 0) return;
+                    this.allocated -= 1;
+                    grandmaM.allocT -= 1;
+                    grandmaM.update();
+                    Game.recalculateGains = 1;
+                },
+                getRawHTML: function() {
+                    return '<div class="grandmaType titleFont" id="grandmaType'+this.name+'" '+
+                        //Game.getDynamicTooltip('Game.ObjectsById['+M.parent.id+'].minigame.spellTooltip('+me.id+')','this')+
+                        '><div class="usesIcon shadowFilter grandmaIcon" style="background-position:'+(-this.sprite[0]*48)+'px '+(-this.sprite[1]*48)+'px;"></div>'+
+                        '<div class="grandmaTypeInfo" id="grandmaTypeInfo'+this.name+'">-</div></div>';
+                },
+                getMainElement: function() {
+                    return l("grandmaType"+this.name);
+                },
+                getInfoElement: function() {
+                    return l("grandmaTypeInfo"+this.name);
+                },
+            }
+            en.newVar(name+"grandmaAlloc", "int");
+            this.grandmaTypes[name] = grandmaType;
+        }
         en.newVar("allocT", "int");
 
         this.switchStats = function(on) {
@@ -424,96 +480,107 @@ BModify._Initialize = function(en, Research) {
             }
         }
 
-        this.maxGrandmas = function(index) {
-            return Math.ceil(this.me.amount * 0.05) + 3 * this.me.level;
+        this.maxFree = function() {
+            return Math.ceil(this.me.amount * 0.2) + 10 * this.me.level;
         }
 
-        this.alloc = function(index) {
-            if (this.allocT == this.me.amount) return;
-            this.grandmaAlloc[index] += 1;
-            if (this.grandmaAlloc[index] > this.maxGrandmas(index)) {
-                this.grandmaAlloc[index] = this.maxGrandmas(index);
-            } else this.allocT += 1;
-            this.update();
-            Game.recalculateGains = 1;
-        }
+        // testing
 
-        this.remove = function(index) {
-            this.grandmaAlloc[index] -= 1;
-            if (this.grandmaAlloc[index] < 0) {
-                this.grandmaAlloc[index] = 0;
-            } else this.allocT -= 1;
-            this.update();
-            Game.recalculateGains = 1;
-        }
 
-        this.canSell = function() {
-            var popup = "Can't sell any more grandmas!";
-            if (this.allocT == this.me.amount) {
-                Game.Popup(popup, Game.mouseX, Game.mouseY);
-                return false;
-            }
-            var max = Math.ceil((this.me.amount-1) * 0.05) + 3 * this.me.level;
-            for (var i=0; i<18;i++){
-                if (this.grandmaAlloc[i] > max) {
-                    Game.Popup(popup, Game.mouseX, Game.mouseY);
-                    return false;
-                }
-            }
-            return true;
-        }
+        str='';
+        str+='<div id="grandmaTypes">';
+		for (var i in this.grandmaTypes) {
+            str+=this.grandmaTypes[i].getRawHTML();
+		}
+		str+='</div>';
+        l("grandmaManager").innerHTML = str;
 
-        this.cpsGrandmas = function() {return this.me.amount - this.allocT;}
+        // this.alloc = function(index) {
+        //     if (this.allocT == this.me.amount) return;
+        //     this.grandmaAlloc[index] += 1;
+        //     if (this.grandmaAlloc[index] > this.maxGrandmas(index)) {
+        //         this.grandmaAlloc[index] = this.maxGrandmas(index);
+        //     } else this.allocT += 1;
+        //     this.update();
+        //     Game.recalculateGains = 1;
+        // }
 
-        this.clear = function() {
-            for (var i=0; i<18;i++){
-                this.grandmaAlloc[i]=0;
-                this.allocT=0;
-            }
-        }
+        // this.remove = function(index) {
+        //     this.grandmaAlloc[index] -= 1;
+        //     if (this.grandmaAlloc[index] < 0) {
+        //         this.grandmaAlloc[index] = 0;
+        //     } else this.allocT -= 1;
+        //     this.update();
+        //     Game.recalculateGains = 1;
+        // }
+
+        // this.canSell = function() {
+        //     var popup = "Can't sell any more grandmas!";
+        //     if (this.allocT == this.me.amount) {
+        //         Game.Popup(popup, Game.mouseX, Game.mouseY);
+        //         return false;
+        //     }
+        //     var max = Math.ceil((this.me.amount-1) * 0.05) + 3 * this.me.level;
+        //     for (var i=0; i<18;i++){
+        //         if (this.grandmaAlloc[i] > max) {
+        //             Game.Popup(popup, Game.mouseX, Game.mouseY);
+        //             return false;
+        //         }
+        //     }
+        //     return true;
+        // }
+
+        // this.cpsGrandmas = function() {return this.me.amount - this.allocT;}
+
+        // this.clear = function() {
+        //     for (var i=0; i<18;i++){
+        //         this.grandmaAlloc[i]=0;
+        //         this.allocT=0;
+        //     }
+        // }
 
         this.update = function() {
-            var str = '';
-            var allocate = '';
-            var remove = '';
-            str += '<div class="listing">Number of grandmas allocated in total: ' + this.allocT + '</div>';
-            for (var i=0; i<18; i++) {
-                var me = Game.ObjectsById[i+2];
-                if (Game.Has(me.grandma.name)) {
-                    allocate = '<a class="smallFancyButton" onclick="mod.bModify.grandma.alloc('+i+')" style="width: 70px;">'+loc('Allocate')+'</a>';
-                    remove = '<a class="smallFancyButton" onclick="mod.bModify.grandma.remove('+i+')" style="width: 70px;">'+loc('Remove')+'</a>';
-                    str += '<div class="listing">'+tinyIcon([spr_ref[i+2],0]);
-                    str += ': '+allocate + " " + this.grandmaAlloc[i] + " " + remove; 
-                    str += '(max: '+this.maxGrandmas()+')';
-                    str += '</div>';
-                }
-            }
-            str += '<div class="listing">Number of grandmas used for cookie production: ' + this.cpsGrandmas() + '</div>';
-            l("grandmaManager").innerHTML = str;
+            // var str = '';
+            // var allocate = '';
+            // var remove = '';
+            // str += '<div class="listing">Number of grandmas allocated in total: ' + this.allocT + '</div>';
+            // for (var i=0; i<18; i++) {
+            //     var me = Game.ObjectsById[i+2];
+            //     if (Game.Has(me.grandma.name)) {
+            //         allocate = '<a class="smallFancyButton" onclick="mod.bModify.grandma.alloc('+i+')" style="width: 70px;">'+loc('Allocate')+'</a>';
+            //         remove = '<a class="smallFancyButton" onclick="mod.bModify.grandma.remove('+i+')" style="width: 70px;">'+loc('Remove')+'</a>';
+            //         str += '<div class="listing">'+tinyIcon([spr_ref[i+2],0]);
+            //         str += ': '+allocate + " " + this.grandmaAlloc[i] + " " + remove; 
+            //         str += '(max: '+this.maxGrandmas()+')';
+            //         str += '</div>';
+            //     }
+            // }
+            // str += '<div class="listing">Number of grandmas used for cookie production: ' + this.cpsGrandmas() + '</div>';
+            // l("grandmaManager").innerHTML = str;
         }
 
-        this.me.sell = en.injectCode(this.me.sell, "price=Math.floor(price*giveBack);", "if ((this.id == 1) && (!mod.bModify.grandma.canSell())) break;", "after");
-        Game.CalculateGains = en.injectCode(Game.CalculateGains, "me.storedTotalCps=me.amount*me.storedCps;",
-            "\n\tif(me.id == 1) me.storedTotalCps=mod.bModify.grandma.cpsGrandmas()*me.storedCps;", "after"
-        )
-        Game.GetTieredCpsMult = en.injectCode(Game.GetTieredCpsMult, 
-            "mult*=(1+Game.Objects['Grandma'].amount*0.01*(1/(me.id-1)));",
-            "mult*=(1+mod.bModify.grandma.grandmaAlloc[me.id-2]*0.2*(1/(me.id-1)))*(1+0.04*Game.Objects.Grandma.getLumpBuff());", 
-            "replace"
-        )
-        this.me.tooltip = en.injectCode(this.me.tooltip,
-            "var mult=me.amount*0.01*(1/(other.id-1));",
-            "var mult=1+mod.bModify.grandma.grandmaAlloc[other.id-2]*0.2*(1/(other.id-1))*(1+0.04*Game.Objects.Grandma.getLumpBuff());", 
-            "replace"
-        )
-        en.saveCallback(function() {
-            for (var i=0;i<18;i++) en.setVar("grandmaAlloc"+i, BModify.grandma.grandmaAlloc[i]);
-            en.setVar("allocT", BModify.grandma.allocT);
-        })
-        en.loadCallback(function() {
-            for (var i=0;i<18;i++) BModify.grandma.grandmaAlloc[i] = en.getVar("grandmaAlloc"+i);
-            BModify.grandma.allocT = en.getVar("allocT", BModify.grandma.allocT);
-        })
+        // this.me.sell = en.injectCode(this.me.sell, "price=Math.floor(price*giveBack);", "if ((this.id == 1) && (!mod.bModify.grandma.canSell())) break;", "after");
+        // Game.CalculateGains = en.injectCode(Game.CalculateGains, "me.storedTotalCps=me.amount*me.storedCps;",
+        //     "\n\tif(me.id == 1) me.storedTotalCps=mod.bModify.grandma.cpsGrandmas()*me.storedCps;", "after"
+        // )
+        // Game.GetTieredCpsMult = en.injectCode(Game.GetTieredCpsMult, 
+        //     "mult*=(1+Game.Objects['Grandma'].amount*0.01*(1/(me.id-1)));",
+        //     "mult*=(1+mod.bModify.grandma.grandmaAlloc[me.id-2]*0.2*(1/(me.id-1)))*(1+0.04*Game.Objects.Grandma.getLumpBuff());", 
+        //     "replace"
+        // )
+        // this.me.tooltip = en.injectCode(this.me.tooltip,
+        //     "var mult=me.amount*0.01*(1/(other.id-1));",
+        //     "var mult=1+mod.bModify.grandma.grandmaAlloc[other.id-2]*0.2*(1/(other.id-1))*(1+0.04*Game.Objects.Grandma.getLumpBuff());", 
+        //     "replace"
+        // )
+        // en.saveCallback(function() {
+        //     for (var i=0;i<18;i++) en.setVar("grandmaAlloc"+i, BModify.grandma.grandmaAlloc[i]);
+        //     en.setVar("allocT", BModify.grandma.allocT);
+        // })
+        // en.loadCallback(function() {
+        //     for (var i=0;i<18;i++) BModify.grandma.grandmaAlloc[i] = en.getVar("grandmaAlloc"+i);
+        //     BModify.grandma.allocT = en.getVar("allocT", BModify.grandma.allocT);
+        // })
 
         this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);", 
             [
