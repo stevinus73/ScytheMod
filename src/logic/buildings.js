@@ -450,9 +450,17 @@ BModify._Initialize = function(en, Research) {
                     grandmaM.update();
                     Game.recalculateGains = 1;
                 },
+                tooltip: function() {
+                    var str='<div style="padding:8px 4px;min-width:350px;">'+
+                    '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;background-position:'+(-this.sprite[0]*48)+'px '+(-this.sprite[1]*48)+'px;"></div>'+
+                    '<div class="name">'+this.lname+'</div>'+
+                    '<div>Currently allocated: <b>'+this.allocated+'/'+this.maxFunc()+'</b></div>'+
+                    '<div class="line"></div><div class="description"><b>'+loc("Effect:")+'</b> <span class="green">'+this.desc+'</span></div></div>';
+                    return str;
+                },
                 getRawHTML: function() {
-                    return '<div class="grandmaType titleFont" id="grandmaType'+this.name+'" '+
-                        //Game.getDynamicTooltip('Game.ObjectsById['+M.parent.id+'].minigame.spellTooltip('+me.id+')','this')+
+                    return '<div class="grandmaType titleFont ready" id="grandmaType'+this.name+'" '+
+                        Game.getDynamicTooltip('mod.bModify.grandma.grandmaTypes['+this.name+'].tooltip','this')+
                         '><div class="usesIcon shadowFilter grandmaIcon" style="background-position:'+(-this.sprite[0]*48)+'px '+(-this.sprite[1]*48)+'px;"></div>'+
                         '<div class="grandmaTypeInfo" id="grandmaTypeInfo'+this.name+'">-</div></div>';
                 },
@@ -465,6 +473,7 @@ BModify._Initialize = function(en, Research) {
             }
             en.newVar(name+"grandmaAlloc", "int");
             this.grandmaTypes[name] = grandmaType;
+            return grandmaType;
         }
         en.newVar("allocT", "int");
 
@@ -481,11 +490,17 @@ BModify._Initialize = function(en, Research) {
         }
 
         this.maxFree = function() {
-            return Math.ceil(this.me.amount * 0.2) + 10 * this.me.level;
+            return Math.ceil(this.me.highest * 0.2) + 2 * this.me.level;
         }
 
-        // testing
-        this.newGrandmaType("grandpa", "Grandpas", function(){return 500;}, [0, 0], "wait what");
+        for (var i=0; i<18; i++) {
+            var me=this.newGrandmaType("G"+(i+2), Game.GrandmaSynergies[i], function() {
+                return 500; //Math.ceil(grandmaM.maxFree()*0.1);
+            }, [spr_ref[i+2], 0], "abcdef");
+            me.buildingBuff=function() {
+                return (0.05/(i+1))*me.allocated;
+            }
+        }
 
         str='';
         str+='<div id="grandmaTypes">';
@@ -557,6 +572,12 @@ BModify._Initialize = function(en, Research) {
             // }
             // str += '<div class="listing">Number of grandmas used for cookie production: ' + this.cpsGrandmas() + '</div>';
             // l("grandmaManager").innerHTML = str;
+            if (Game.T%5==0) {
+                for (var i in this.grandmaTypes) {
+                    var me=this.grandmaTypes[i];
+                    me.getInfoElement().innerHTML=me.allocated+"/"+me.maxFunc();
+                }
+            }
         }
 
         // this.me.sell = en.injectCode(this.me.sell, "price=Math.floor(price*giveBack);", "if ((this.id == 1) && (!mod.bModify.grandma.canSell())) break;", "after");
