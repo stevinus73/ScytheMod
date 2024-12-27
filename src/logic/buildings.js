@@ -513,9 +513,8 @@ BModify._Initialize = function(en, Research) {
 
         for (var i in this.grandmaTypes) {
             AddEvent(this.grandmaTypes[i].getMainElement(), 'click', function() {
-                console.log("wtf is this");
-                // if (Game.keys[16]) BModify.grandma.grandmaTypes[i].alloc();
-                // BModify.grandma.grandmaTypes[i].remove();
+                if (Game.keys[16]) grandmaM.grandmaTypes[i].remove();
+                else grandmaM.grandma.grandmaTypes[i].alloc();
             })
         }
 
