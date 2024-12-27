@@ -139,6 +139,10 @@ General._Initialize = function(en, Research) {
     this.replacePower('Coconut cookies',10);
     this.replacePower('White chocolate cookies',10);
     this.replacePower('Macadamia nut cookies',10);
+    this.replacePower('Cashew cookies',10);
+    this.replacePower('Almond cookies',10);
+    this.replacePower('Hazelnut cookies',10);
+    this.replacePower('Walnut cookies',10);
     this.replacePower('Double-chip cookies',4);
     this.replacePower('White chocolate macadamia nut cookies',4);
     this.replacePower('All-chocolate cookies',4);

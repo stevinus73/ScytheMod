@@ -175,8 +175,8 @@ BModify._Initialize = function(en, Research) {
             if ((this.id == 2) && Research.has("Regrowth")) return;
             if (this.depleted) return;
             if (this.pause) {
-                var rate = 0.1+(this.rsAvailable/this.rsTotal)*0.1;
-                this.rsUsed -= (rate / (Game.fps * 60 * 60)) * this.rsTotal;
+                var rate = 0.005 * this.decayedFactor() * (Math.max(this.rsAvailable/this.rsTotal, 0.1));
+                this.rsUsed -= (rate / Game.fps) * this.rsTotal;
                 this.rsUsed = Math.max(this.rsUsed, 0);
                 return;
             } else {
