@@ -541,7 +541,7 @@ BModify._Initialize = function(en, Research) {
                 l("grandmaInfo2").innerHTML=this.allocT;
             }
         }
-        
+
         Game.GetTieredCpsMult = en.injectCode(Game.GetTieredCpsMult, 
             "mult*=(1+Game.Objects['Grandma'].amount*0.01*(1/(me.id-1)));",
             "mult*=(1+mod.bModify.grandma.grandmaTypes['G'+me.id].buildingBuff());", 
@@ -549,7 +549,7 @@ BModify._Initialize = function(en, Research) {
         )
         this.me.tooltip = en.injectCode(this.me.tooltip,
             "var mult=me.amount*0.01*(1/(other.id-1));",
-            "var mult=mod.bModify.grandma.grandmaTypes['G'+other.id].buildingBuff());;", 
+            "var mult=mod.bModify.grandma.grandmaTypes['G'+other.id].buildingBuff();", 
             "replace"
         )
         en.saveCallback(function() {
