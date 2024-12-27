@@ -75,20 +75,20 @@ var Process = function(en) {
     })
     en.saveCallback(function() {
         upgrade_engine.upgradeQueue.forEach(function(up) {
-            en.setVar("moddedUpUl"+Game.last.id, up.me.unlocked);
-            en.setVar("moddedUpB"+Game.last.id, up.me.bought);
+            en.setVar("moddedUpUl"+up.id, up.me.unlocked);
+            en.setVar("moddedUpB"+up.id, up.me.bought);
         })
         achiev_engine.achievementQueue.forEach(function(achiev) {
-            en.setVar("moddedAchW"+Game.last.id, achiev.me.won);
+            en.setVar("moddedAchW"+achiev.id, achiev.me.won);
         })
     })
     en.loadCallback(function() {
         upgrade_engine.upgradeQueue.forEach(function(up) {
-            up.me.unlocked = en.getVar("moddedUpUl"+Game.last.id, up.me.unlocked);
-            up.me.bought = en.getVar("moddedUpB"+Game.last.id, up.me.bought);
+            up.me.unlocked = en.getVar("moddedUpUl"+up.id, up.me.unlocked);
+            up.me.bought = en.getVar("moddedUpB"+up.id, up.me.bought);
         })
         achiev_engine.achievementQueue.forEach(function(achiev) {
-            achiev.me.won = en.getVar("moddedAchW"+Game.last.id, achiev.me.won);
+            achiev.me.won = en.getVar("moddedAchW"+achiev.id, achiev.me.won);
         })
     })
     LocalizeUpgradesAndAchievs();
