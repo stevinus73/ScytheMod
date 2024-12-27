@@ -521,10 +521,13 @@ BModify._Initialize = function(en, Research) {
 
         for (var i in this.grandmaTypes) {
             var me=this.grandmaTypes[i];
-            AddEvent(me.getMainElement(), 'click', function() {
-                if (Game.keys[16]) me.remove();
-                else me.alloc();
-            })
+            AddEvent(me.getMainElement(), 'click', function(t) {
+                return function() {
+                    PlaySound('snd/tick.mp3');
+                    if (Game.keys[16]) t.remove();
+                    else t.alloc();
+                }
+            }(me))
         }
 
         // this.alloc = function(index) {
