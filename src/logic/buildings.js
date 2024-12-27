@@ -498,7 +498,7 @@ BModify._Initialize = function(en, Research) {
         }
 
         this.maxFree = function() {
-            return Math.ceil(this.me.highest * 0.2) + 2 * this.me.level;
+            return Math.ceil(this.me.highest * 0.2) + this.me.level;
         }
 
         for (var i=0; i<18; i++) {
@@ -512,6 +512,8 @@ BModify._Initialize = function(en, Research) {
         }
 
         str='';
+        str+='<div><b>Free grandmas</b> are grandmas not currently producing cookies. You can allocate them to do specific tasks.</div>';
+        str+='<div>You have <span id="grandmaInfo1"></span> free grandmas, <span id="grandmaInfo2"></span> of which are currently allocated as grandma types.</div>';
         str+='<div id="grandmaTypes">';
 		for (var i in this.grandmaTypes) {
             str+=this.grandmaTypes[i].getRawHTML();
@@ -529,74 +531,14 @@ BModify._Initialize = function(en, Research) {
                 }
             }(me))
         }
-
-        // this.alloc = function(index) {
-        //     if (this.allocT == this.me.amount) return;
-        //     this.grandmaAlloc[index] += 1;
-        //     if (this.grandmaAlloc[index] > this.maxGrandmas(index)) {
-        //         this.grandmaAlloc[index] = this.maxGrandmas(index);
-        //     } else this.allocT += 1;
-        //     this.update();
-        //     Game.recalculateGains = 1;
-        // }
-
-        // this.remove = function(index) {
-        //     this.grandmaAlloc[index] -= 1;
-        //     if (this.grandmaAlloc[index] < 0) {
-        //         this.grandmaAlloc[index] = 0;
-        //     } else this.allocT -= 1;
-        //     this.update();
-        //     Game.recalculateGains = 1;
-        // }
-
-        // this.canSell = function() {
-        //     var popup = "Can't sell any more grandmas!";
-        //     if (this.allocT == this.me.amount) {
-        //         Game.Popup(popup, Game.mouseX, Game.mouseY);
-        //         return false;
-        //     }
-        //     var max = Math.ceil((this.me.amount-1) * 0.05) + 3 * this.me.level;
-        //     for (var i=0; i<18;i++){
-        //         if (this.grandmaAlloc[i] > max) {
-        //             Game.Popup(popup, Game.mouseX, Game.mouseY);
-        //             return false;
-        //         }
-        //     }
-        //     return true;
-        // }
-
-        // this.cpsGrandmas = function() {return this.me.amount - this.allocT;}
-
-        // this.clear = function() {
-        //     for (var i=0; i<18;i++){
-        //         this.grandmaAlloc[i]=0;
-        //         this.allocT=0;
-        //     }
-        // }
-
         this.update = function() {
-            // var str = '';
-            // var allocate = '';
-            // var remove = '';
-            // str += '<div class="listing">Number of grandmas allocated in total: ' + this.allocT + '</div>';
-            // for (var i=0; i<18; i++) {
-            //     var me = Game.ObjectsById[i+2];
-            //     if (Game.Has(me.grandma.name)) {
-            //         allocate = '<a class="smallFancyButton" onclick="mod.bModify.grandma.alloc('+i+')" style="width: 70px;">'+loc('Allocate')+'</a>';
-            //         remove = '<a class="smallFancyButton" onclick="mod.bModify.grandma.remove('+i+')" style="width: 70px;">'+loc('Remove')+'</a>';
-            //         str += '<div class="listing">'+tinyIcon([spr_ref[i+2],0]);
-            //         str += ': '+allocate + " " + this.grandmaAlloc[i] + " " + remove; 
-            //         str += '(max: '+this.maxGrandmas()+')';
-            //         str += '</div>';
-            //     }
-            // }
-            // str += '<div class="listing">Number of grandmas used for cookie production: ' + this.cpsGrandmas() + '</div>';
-            // l("grandmaManager").innerHTML = str;
             if (Game.T%5==0) {
                 for (var i in this.grandmaTypes) {
                     var me=this.grandmaTypes[i];
                     me.getInfoElement().innerHTML=me.allocated+"/"+me.maxFunc();
                 }
+                l("grandmaInfo1").innerHTML=this.maxFree();
+                l("grandmaInfo2").innerHTML=this.allocT;
             }
         }
 
