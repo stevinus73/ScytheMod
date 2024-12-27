@@ -82,7 +82,7 @@ BModify._Initialize = function(en, Research) {
         BModify.rsManagers.push(this);
 
         this.getRawCpS = function() {
-            var cps = this.RhpS * this.yield * Math.pow(0.997, Math.min(this.me.amount, 600));
+            var cps = this.RhpS * this.yield * this.decayedFactor();
             var dmult = 1;
             if (this.depleted || this.pause)
                 dmult = 0;
@@ -158,7 +158,7 @@ BModify._Initialize = function(en, Research) {
         
         // decay factor applied to rhps
         this.decayedFactor = function() {
-            return this.me.amount * Math.pow(0.997, Math.min(this.me.amount, 600));
+            return Math.pow(0.997, Math.min(this.me.amount, 600));
         }
 
         //
@@ -180,7 +180,7 @@ BModify._Initialize = function(en, Research) {
                 this.rsUsed = Math.max(this.rsUsed, 0);
                 return;
             } else {
-                var dep = (this.RhpS / Game.fps) * this.decayedFactor() * (this.interest>0?1.5:1);
+                var dep = (this.RhpS / Game.fps) * this.me.amount * this.decayedFactor() * (this.interest>0?1.5:1);
                 this.rsUsed += dep;
                 BModify.totalDp += dep;
             }
@@ -287,7 +287,7 @@ BModify._Initialize = function(en, Research) {
             if (this.depleted) sty='style="color:red"';
             str+='<div class="listing" '+sty+'> <b>'+this.rsNames[0]+' use rate ('+this.rsNames[2]+'/second) per '+this.me.dname.toLowerCase()+': </b>'+
                 Beautify((this.pause || this.depleted) ? 0 : this.RhpS*(this.interest>0?1.5:1), 1);
-            str+=' ('+Beautify(this.RhpS * this.decayedFactor()*(this.interest>0?1.5:1), 1)+' for '+Beautify(this.me.amount)+' '+this.me.plural.toLowerCase();
+            str+=' ('+Beautify(this.RhpS * this.me.amount * this.decayedFactor()*(this.interest>0?1.5:1), 1)+' for '+Beautify(this.me.amount)+' '+this.me.plural.toLowerCase();
             str+=')'+(((this.interest>0)&&(!this.pause)&&(!this.depleted))?' <span class="red">(50% faster due to interest)</span>':'')+'</div>';
             str+='<div class="listing"> <b>Base yield: </b>'+Beautify(this.yield, 1)+ " cookies/"+this.rsNames[1]+'</div>';
             str+='<div class="listing"> <b>Total amount of '+this.rsNames[0].toLowerCase()+':</b> '+Beautify(this.rsTotal) + " " + this.rsNames[2]+'</div>';
@@ -363,8 +363,8 @@ BModify._Initialize = function(en, Research) {
                 else if (this.pause) this.mbarInfo.innerHTML='Currently paused';
                 else if ((this.id == 2) && Research.has("Regrowth")) this.mbarInfo.innerHTML='Regrowth is currently active.';
                 else this.mbarInfo.innerHTML='Depletion rate: -'
-                    +Beautify(Math.max(((this.RhpS*this.decayedFactor()*(this.interest>0?1.5:1))/this.rsTotal)*100, 0), 2)+'%/s (-'
-                    +Beautify(Math.max(((this.RhpS*this.decayedFactor()*(this.interest>0?1.5:1))/this.rsTotal)*100*60, 0), 2)+'%/min)';
+                    +Beautify(Math.max(((this.RhpS*this.me.amount*this.decayedFactor()*(this.interest>0?1.5:1))/this.rsTotal)*100, 0), 2)+'%/s (-'
+                    +Beautify(Math.max(((this.RhpS*this.me.amount*this.decayedFactor()*(this.interest>0?1.5:1))/this.rsTotal)*100*60, 0), 2)+'%/min)';
 		    }
 		    this.mbarFull.style.backgroundPosition=(-Game.T*0.5)+'px';
             if (this.interest>0) this.interest--;
@@ -504,7 +504,7 @@ BModify._Initialize = function(en, Research) {
         for (var i=0; i<18; i++) {
             var me=this.newGrandmaType("G"+(i+2), Game.ObjectsById[i+2].grandma.name, function() {
                 return Math.ceil(grandmaM.maxFree()*0.1);
-            }, [spr_ref[i+2], 0], Game.ObjectsById[i+2].plural+" gain <b>+50%</b> CpS per "+
+            }, [spr_ref[i+2], 0], cfl(Game.ObjectsById[i+2].plural)+" gain <b>+50%</b> CpS per "+
                 (i==0? " grandma." : (i+1)+" grandmas."));
             me.buildingBuff=function() {
                 return (0.5/(i+1))*me.allocated;
