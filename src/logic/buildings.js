@@ -399,6 +399,7 @@ BModify._Initialize = function(en, Research) {
         +'#grandmaManagerBG{background:url('+Game.resPath+'img/shadedBorders.png),url('+Game.resPath+'img/darkNoise.jpg);background-size:33% 100%,auto;position:relative;left:0px;right:0px;top:0px;bottom:16px;}'
         +'.separatorTop{width: 100%;height: 8px;background: url(img/panelHorizontal.png?v=2) repeat-x;background: url(img/panelGradientLeft.png) no-repeat top left, '
         +'url(img/panelGradientRight.png) no-repeat top right, url(img/panelHorizontal.png?v=2) repeat-x;position: absolute;left: 0px;top: 0px;}'
+        +'#grandmaManager{text-align:center;}'
         +'#grandmaTypes{text-align:center;width:100%;padding:8px;box-sizing:border-box;}'+
 		'.grandmaIcon{pointer-events:none;margin:2px 6px 0px 6px;width:48px;height:48px;opacity:0.8;position:relative;}'+
 		'.grandmaTypeInfo{pointer-events:none;}'+
@@ -436,7 +437,7 @@ BModify._Initialize = function(en, Research) {
                 unlocked: true, //false,
                 allocated: 0,
                 alloc: function() {
-                    if (grandmaM.allocT >= grandmaM.me.amount) return;
+                    if (grandmaM.allocT >= grandmaM.maxFree()) return;
                     grandmaM.allocT += 1;
                     if (this.allocated > this.maxFunc()) this.allocated = this.maxFunc();
                     else this.allocated += 1;
@@ -471,6 +472,12 @@ BModify._Initialize = function(en, Research) {
                 getInfoElement: function() {
                     return l("grandmaTypeInfo"+this.name);
                 },
+                save: function() {
+                    en.setVar(this.name+"grandmaAlloc", this.allocated);
+                },
+                load: function() {
+                    this.allocated = en.getVar(this.name+"grandmaAlloc", this.allocated);
+                },
             }
             en.newVar(name+"grandmaAlloc", "int");
             this.grandmaTypes[name] = grandmaType;
@@ -495,9 +502,10 @@ BModify._Initialize = function(en, Research) {
         }
 
         for (var i=0; i<18; i++) {
-            var me=this.newGrandmaType("G"+(i+2), Game.GrandmaSynergies[i], function() {
-                return 500; //Math.ceil(grandmaM.maxFree()*0.1);
-            }, [spr_ref[i+2], 0], "abcdef");
+            var me=this.newGrandmaType("G"+(i+2), Game.ObjectsById[i+2].grandma.name, function() {
+                return Math.ceil(grandmaM.maxFree()*0.1);
+            }, [spr_ref[i+2], 0], Game.ObjectsById[i+2].plural+" gain <b>+50%</b> CpS per "+
+                (i+1)+" grandmas");
             me.buildingBuff=function() {
                 return (0.05/(i+1))*me.allocated;
             }
@@ -514,7 +522,7 @@ BModify._Initialize = function(en, Research) {
         for (var i in this.grandmaTypes) {
             AddEvent(this.grandmaTypes[i].getMainElement(), 'click', function() {
                 if (Game.keys[16]) grandmaM.grandmaTypes[i].remove();
-                else grandmaM.grandma.grandmaTypes[i].alloc();
+                else grandmaM.grandmaTypes[i].alloc();
             })
         }
 
@@ -602,14 +610,14 @@ BModify._Initialize = function(en, Research) {
         //     "var mult=1+mod.bModify.grandma.grandmaAlloc[other.id-2]*0.2*(1/(other.id-1))*(1+0.04*Game.Objects.Grandma.getLumpBuff());", 
         //     "replace"
         // )
-        // en.saveCallback(function() {
-        //     for (var i=0;i<18;i++) en.setVar("grandmaAlloc"+i, BModify.grandma.grandmaAlloc[i]);
-        //     en.setVar("allocT", BModify.grandma.allocT);
-        // })
-        // en.loadCallback(function() {
-        //     for (var i=0;i<18;i++) BModify.grandma.grandmaAlloc[i] = en.getVar("grandmaAlloc"+i);
-        //     BModify.grandma.allocT = en.getVar("allocT", BModify.grandma.allocT);
-        // })
+        en.saveCallback(function() {
+            for (var i in grandmaM.grandmaTypes) grandmaM.grandmaTypes[i].save();
+            en.setVar("allocT", grandmaM.allocT);
+        })
+        en.loadCallback(function() {
+            for (var i in grandmaM.grandmaTypes) grandmaM.grandmaTypes[i].load();
+            grandmaM.allocT = en.getVar("allocT", grandmaM.allocT);
+        })
 
         this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);", 
             [
