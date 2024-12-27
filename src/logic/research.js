@@ -270,13 +270,13 @@ Research._Initialize = function(en) {
         if (this.researchOn) {
             this.container.style.display = "block";
             l("rows").style.display = "none";
-            l("centerArea").classList.add("noscroll");
+            l("centerArea").style.overflowY = "hidden";
             this.button.firstChild.textContent = "Close Research";
             this.draw();
         } else {
             this.container.style.display = "none";
             l("rows").style.display = "block";
-            l("centerArea").classList.remove("noscroll");
+            l("centerArea").style.overflowY = "auto";
             this.button.firstChild.textContent = "View Research";
             if (Game.onMenu == '') {
                 for (var i in Game.Objects) {
