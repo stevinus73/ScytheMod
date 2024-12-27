@@ -1,4 +1,4 @@
-var src=Game._Path??("https://rawcdn.githack.com/stevinus73/ScytheMod/"+(Game._Version??"v0.1.1")+"/");
+var src=Game._Path??("https://rawcdn.githack.com/stevinus73/ScytheMod/"+(Game._Version??"v0.1.2")+"/");
 var CodeUrl = function(url) {return src+"src/"+url};
 var ImageUrl = function(url) {return src+"img/"+url};
 var Icons = ImageUrl("icons.png");
