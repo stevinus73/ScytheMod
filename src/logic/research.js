@@ -198,13 +198,13 @@ Research._Initialize = function(en) {
         }
 
         this.unlock = function() {
-            Game.Notify("Unlocked new research!", "Check your research trees!", [9, 0]);
+            if (!this.req && this.requirements.reqDesc) Game.Notify("Unlocked new research!", "Check your research trees!", [9, 0]);
             this.req = true;
         }
 
         this.check = function() {
             if (this.requirements.reqFunc()) {
-                if (!this.req && this.requirements.reqDesc) this.unlock();
+                this.unlock();
             }
         }
 
