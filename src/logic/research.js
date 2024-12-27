@@ -197,10 +197,14 @@ Research._Initialize = function(en) {
             (tip!=''?('<div class="line"></div><div style="font-size:10px;font-weight:bold;color:#999;text-align:center;padding-bottom:4px;line-height:100%;" class="crateTip">'+tip+'</div>'):'');
         }
 
+        this.unlock = function() {
+            Game.Notify("Unlocked new research!", "Check your research trees!", [9, 0]);
+            this.req = true;
+        }
+
         this.check = function() {
             if (this.requirements.reqFunc()) {
-                if (!this.req && this.requirements.reqDesc) Game.Notify("Unlocked new research!", "Check your research trees!", [9, 0]);
-                this.req = true;
+                if (!this.req && this.requirements.reqDesc) this.unlock();
             }
         }
 
@@ -362,6 +366,14 @@ Research._Initialize = function(en) {
         return false;
     }
 
+    Research.unlock = function(name) {
+        for (var i in this.trees) {
+            if (this.trees[i].has(name)) {
+                this.trees[i].upgradesByName[name].unlock();
+            }
+        }
+    }
+
     Research.earn = function(num) {
         this.research+=num;
         var rect=l("researchIcon").getBounds();
@@ -445,6 +457,9 @@ Research._Initialize = function(en) {
     // gc tree
     new Research.Tree("Golden cookies", [27, 6], function(){return Game.goldenClicks;});
     new Research.Tech("Golden cookies", "Unlocks the research tree for <b>golden cookies</b>.", 7, f, f, [], [10, 14], 0, 0);
+    new Research.Tech("Hoard of treasure", "Golden cookie gains <b>doubled</b>.", 27, req(() => mod.G.fortunesEarned, 3, "Fortunes obtained"), f, [0], [27, 6], 0.5, 0);
+    new Research.Tech("The true purpose of luck", "Golden cookie gains <b>doubled</b>.<q>...is to get more cookies.</b>", req(() => mod.G.fortunesEarned, 17, "Fortunes obtained"), f, f, [0], [27, 6], 0.5, 0);
+    new Research.Tech("Pure one-hundred-percent gold", "Golden cookie frequency <b>+5%</b>.<q>The purest gold!</q>", 27, f, f, [0], [27, 6], -0.5, 0);
     // all the building trees go here
 
     buildingTree(0);
@@ -565,15 +580,22 @@ Research._Initialize = function(en) {
     Game.shimmerTypes.golden.popFunc = en.injectChain(Game.shimmerTypes.golden.popFunc, "if (Game.Has('Dragon fang')) mult*=1.03;",
         [
             'if (mod.research.hasTiered(14, 1)) mult*=1.77;',
-            'if (mod.research.hasTiered(14, 2)) mult*=1.27;',
-            'if (mod.research.hasTiered(14, 3)) mult*=1.27;',
+            'if (mod.research.hasTiered(14, 2)) mult*=1.57;',
+            'if (mod.research.hasTiered(14, 3)) mult*=1.37;',
+            'if (mod.research.has("Hoard of treasure")) mult*=2;',
+            'if (mod.research.has("The true purpose of luck")) mult*=2;'
+        ]
+    )
+    Game.shimmerTypes.golden.getTimeMod = en.injectChain(Game.shimmerTypes.golden.getTimeMod, "if (Game.Has('Green yeast digestives')) m*=0.99;",
+        [
+            'if (mod.research.has("Pure one-hundred-percent gold")) m*=0.95;',
         ]
     )
     Game.Objects.Chancemaker.cps = en.injectChain(Game.Objects.Chancemaker.cps, "mult*=Game.magicCpS(me.name);", 
         [
             'if (mod.research.hasTiered(14, 1)) mult*=1.77;',
-            'if (mod.research.hasTiered(14, 2)) mult*=1.27;',
-            'if (mod.research.hasTiered(14, 3)) mult*=1.27;'
+            'if (mod.research.hasTiered(14, 2)) mult*=1.57;',
+            'if (mod.research.hasTiered(14, 3)) mult*=1.37;'
         ]
     )
     buildingTree(15);

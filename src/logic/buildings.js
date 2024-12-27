@@ -541,21 +541,17 @@ BModify._Initialize = function(en, Research) {
                 l("grandmaInfo2").innerHTML=this.allocT;
             }
         }
-
-        // this.me.sell = en.injectCode(this.me.sell, "price=Math.floor(price*giveBack);", "if ((this.id == 1) && (!mod.bModify.grandma.canSell())) break;", "after");
-        // Game.CalculateGains = en.injectCode(Game.CalculateGains, "me.storedTotalCps=me.amount*me.storedCps;",
-        //     "\n\tif(me.id == 1) me.storedTotalCps=mod.bModify.grandma.cpsGrandmas()*me.storedCps;", "after"
-        // )
-        // Game.GetTieredCpsMult = en.injectCode(Game.GetTieredCpsMult, 
-        //     "mult*=(1+Game.Objects['Grandma'].amount*0.01*(1/(me.id-1)));",
-        //     "mult*=(1+mod.bModify.grandma.grandmaAlloc[me.id-2]*0.2*(1/(me.id-1)))*(1+0.04*Game.Objects.Grandma.getLumpBuff());", 
-        //     "replace"
-        // )
-        // this.me.tooltip = en.injectCode(this.me.tooltip,
-        //     "var mult=me.amount*0.01*(1/(other.id-1));",
-        //     "var mult=1+mod.bModify.grandma.grandmaAlloc[other.id-2]*0.2*(1/(other.id-1))*(1+0.04*Game.Objects.Grandma.getLumpBuff());", 
-        //     "replace"
-        // )
+        
+        Game.GetTieredCpsMult = en.injectCode(Game.GetTieredCpsMult, 
+            "mult*=(1+Game.Objects['Grandma'].amount*0.01*(1/(me.id-1)));",
+            "mult*=(1+mod.bModify.grandma.grandmaTypes['G'+me.id].buildingBuff());", 
+            "replace"
+        )
+        this.me.tooltip = en.injectCode(this.me.tooltip,
+            "var mult=me.amount*0.01*(1/(other.id-1));",
+            "var mult=mod.bModify.grandma.grandmaTypes['G'+other.id].buildingBuff());;", 
+            "replace"
+        )
         en.saveCallback(function() {
             for (var i in grandmaM.grandmaTypes) grandmaM.grandmaTypes[i].save();
             en.setVar("allocT", grandmaM.allocT);

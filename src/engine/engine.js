@@ -23,7 +23,7 @@ IdlersPocket._Initialize = function () {
         var ret = func;
         var last = begin;
         chain.forEach(function(code) {
-            ret = IdlersPocket.injectCode(ret, last, "\n\t"+code, "after");
+            ret = IdlersPocket.injectCode(ret, last, "\n\n\n\t"+code, "after");
             last = code;
         })
         return ret;

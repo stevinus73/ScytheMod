@@ -3,6 +3,9 @@ G._Initialize = function(en, Research) {
     this.me = Game.shimmerTypes.golden;
     this.maxEffs = 3;
 
+    // for stats
+    this.fortunesEarned = 0;
+
     // tweaking around some stuffs lel
     G.me.popFunc = en.injectCode(G.me.popFunc, 
         "buff=Game.gainBuff('click frenzy',Math.ceil(13*effectDurMod),777);",
@@ -67,6 +70,7 @@ G._Initialize = function(en, Research) {
         var moni=mult*Game.cookiesPs*60*15+777;
         moni*=Math.pow(3, this.currEffs().length-1);
 		Game.Earn(moni);
+        this.fortunesEarned++;
         Game.Notify("Fortune!", "This golden cookie effect, which would have exceeded the golden cookie effect cap, has been converted into cookies.", [23, 6]);
         return moni;
     }
