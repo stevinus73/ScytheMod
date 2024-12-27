@@ -129,25 +129,30 @@ General._Initialize = function(en, Research) {
         return cps*mult
     })
     // beeg buff?
-    Game.Upgrades['Peanut butter cookies'].power = 10;
-    Game.Upgrades['Coconut cookies'].power = 10;
-    Game.Upgrades['White chocolate cookies'].power = 10;
-    Game.Upgrades['Macadamia nut cookies'].power = 10;
-    Game.Upgrades['Double-chip cookies'].power = 4;
-    Game.Upgrades['White chocolate macadamia nut cookies'].power = 4;
-    Game.Upgrades['All-chocolate cookies'].power = 4;
-    Game.Upgrades['Eclipse cookies'].power = 7;
-    Game.Upgrades['Zebra cookies'].power = 3;
-    Game.Upgrades['Snickerdoodles'].power = 3;
-    Game.Upgrades['Stroopwafels'].power = 3;
-    Game.Upgrades['Macaroons'].power = 3;
-    Game.Upgrades['Empire biscuits'].power = 3;
-    Game.Upgrades['Madeleines'].power = 8;
-    Game.Upgrades['Palmiers'].power = 3;
-    Game.Upgrades['Palets'].power = 3;
-    Game.Upgrades['Sabl&eacute;s'].power = 3;
-    Game.Upgrades['Gingerbread men'].power = 3;
-    Game.Upgrades['Gingerbread trees'].power = 3;
+    General.replacePower = function(upgrade, newPower) {
+        var me = Game.Upgrades[upgrade];
+        en.ue.strReplace(me, me.power, newPower);
+        me.power = newPower;
+    }
+    this.replacePower('Peanut butter cookies',10);
+    this.replacePower('Coconut cookies',10);
+    this.replacePower('White chocolate cookies',10);
+    this.replacePower('Macadamia nut cookies',10);
+    this.replacePower('Double-chip cookies',4);
+    this.replacePower('White chocolate macadamia nut cookies',4);
+    this.replacePower('All-chocolate cookies',4);
+    this.replacePower('Eclipse cookies',7);
+    this.replacePower('Zebra cookies',3);
+    this.replacePower('Snickerdoodles',3);
+    this.replacePower('Stroopwafels',3);
+    this.replacePower('Macaroons',3);
+    this.replacePower('Empire biscuits',3);
+    this.replacePower('Madeleines',8);
+    this.replacePower('Palmiers',3);
+    this.replacePower('Palets',3);
+    this.replacePower('Sabl&eacute);s',3);
+    this.replacePower('Gingerbread men',3);
+    this.replacePower('Gingerbread trees',3);
     var heartPower=function(){
         var pow=6;
         if (Game.Has('Starlove')) pow=9;

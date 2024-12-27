@@ -65,6 +65,7 @@ G._Initialize = function(en, Research) {
     )
     G.fortuneEarn = function(mult) {
         var moni=mult*Game.cookiesPs*60*15+777;
+        moni*=Math.pow(3, this.currEffs().length-1);
 		Game.Earn(moni);
         Game.Notify("Fortune!", "This golden cookie effect, which would have exceeded the golden cookie effect cap, has been converted into cookies.", [23, 6]);
         return moni;
