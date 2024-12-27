@@ -131,6 +131,7 @@ General._Initialize = function(en, Research) {
     // beeg buff?
     General.replacePower = function(upgrade, newPower) {
         var me = Game.Upgrades[upgrade];
+        if (!me) return;
         en.ue.strReplace(me, me.power, newPower);
         me.power = newPower;
     }
@@ -150,7 +151,7 @@ General._Initialize = function(en, Research) {
     this.replacePower('Madeleines',8);
     this.replacePower('Palmiers',3);
     this.replacePower('Palets',3);
-    this.replacePower('Sabl&eacute);s',3);
+    //this.replacePower('Sabl&eacute);s',3);
     this.replacePower('Gingerbread men',3);
     this.replacePower('Gingerbread trees',3);
     var heartPower=function(){
