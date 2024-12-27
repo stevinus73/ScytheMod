@@ -438,9 +438,9 @@ BModify._Initialize = function(en, Research) {
                 allocated: 0,
                 alloc: function() {
                     if (grandmaM.allocT >= grandmaM.maxFree()) return;
-                    grandmaM.allocT += 1;
+                    this.allocated += 1;
                     if (this.allocated > this.maxFunc()) this.allocated = this.maxFunc();
-                    else this.allocated += 1;
+                    else grandmaM.allocT += 1;
                     grandmaM.update();
                     Game.recalculateGains = 1;
                 },
@@ -505,9 +505,9 @@ BModify._Initialize = function(en, Research) {
             var me=this.newGrandmaType("G"+(i+2), Game.ObjectsById[i+2].grandma.name, function() {
                 return Math.ceil(grandmaM.maxFree()*0.1);
             }, [spr_ref[i+2], 0], Game.ObjectsById[i+2].plural+" gain <b>+50%</b> CpS per "+
-                (i+1)+" grandmas");
+                (i==0? " grandma." : (i+1)+" grandmas."));
             me.buildingBuff=function() {
-                return (0.05/(i+1))*me.allocated;
+                return (0.5/(i+1))*me.allocated;
             }
         }
 
@@ -520,9 +520,10 @@ BModify._Initialize = function(en, Research) {
         l("grandmaManager").innerHTML = str;
 
         for (var i in this.grandmaTypes) {
-            AddEvent(this.grandmaTypes[i].getMainElement(), 'click', function() {
-                if (Game.keys[16]) grandmaM.grandmaTypes[i].remove();
-                else grandmaM.grandmaTypes[i].alloc();
+            var me=this.grandmaTypes[i];
+            AddEvent(me.getMainElement(), 'click', function() {
+                if (Game.keys[16]) me.remove();
+                else me.alloc();
             })
         }
 
