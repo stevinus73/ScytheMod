@@ -506,8 +506,9 @@ BModify._Initialize = function(en, Research) {
                 return Math.ceil(grandmaM.maxFree()*0.1);
             }, [spr_ref[i+2], 0], cfl(Game.ObjectsById[i+2].plural)+" gain <b>+50%</b> CpS per "+
                 (i==0? " grandma." : (i+1)+" grandmas."));
+            me.buildingTie=Game.ObjectsById[i+2];
             me.buildingBuff=function() {
-                return (0.5/(i+1))*this.allocated;
+                return (0.5/(this.buildingTie.id-1))*this.allocated;
             }
         }
 
