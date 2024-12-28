@@ -457,9 +457,10 @@ BModify._Initialize = function(en, Research) {
                     var str='<div style="padding:8px 4px;min-width:350px;">'+
                     '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;background-position:'+(-this.sprite[0]*48)+'px '+(-this.sprite[1]*48)+'px;"></div>'+
                     '<div class="name">'+this.lname+'</div>'+
-                    '<div>Currently allocated: <b>'+this.allocated+'/'+this.maxFunc()+'</b></div>'+
+                    (this.unlocked?'<div>Currently allocated: <b>'+this.allocated+'/'+this.maxFunc()+'</b></div>'+
                     '<div>Click to allocate a grandma, Shift-click to remove.</div>'+
-                    '<div class="line"></div><div class="description"><b>'+loc("Effect:")+'</b> <span class="green">'+this.desc+'</span></div></div>';
+                    '<div class="line"></div><div class="description"><b>'+loc("Effect:")+'</b> <span class="green">'+this.desc+'</span></div></div>' :
+                    '<div>You do not have this grandma type yet.</div>');
                     return str;
                 },
                 getRawHTML: function() {
@@ -501,7 +502,7 @@ BModify._Initialize = function(en, Research) {
         }
 
         this.maxFree = function() {
-            return Math.ceil(this.me.highest * 0.2) + this.me.level;
+            return Math.ceil(this.me.highest * 0.2)+10*this.me.level;
         }
 
         for (var i=0; i<18; i++) {
@@ -510,6 +511,8 @@ BModify._Initialize = function(en, Research) {
             }, [spr_ref[i+2], 0], cfl(Game.ObjectsById[i+2].plural)+" gain <b>+50%</b> CpS per "+
                 (i==0? " grandma." : (i+1)+" grandmas."));
             me.buildingTie=Game.ObjectsById[i+2];
+            en.ue.replaceDescPart(me.buildingTie.grandma, 
+                loc("%1 are <b>twice</b> as efficient.",cap(Game.Objects['Grandma'].plural))+' Unlocks a <b>new grandma type</b>')
             me.buildingBuff=function() {return (0.5/(this.buildingTie.id-1))*this.allocated;}
             me.update=function(){
                 if (Game.Has(this.buildingTie.grandma.name)) this.unlocked=true;
