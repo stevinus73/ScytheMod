@@ -191,8 +191,8 @@ General._Initialize = function(en, Research) {
         `\n\t\t\t\t\tif (Game.santaLevel>=14) str+=mod.general.getSantaDiv();`, 
         "after");
     Game.CalculateGains=en.injectCode(Game.CalculateGains,
-        "if (Game.Has('Santa\'s dominion')) mult*=1.2;", 
-        "if (Game.Has('Santa\'s dominion')) mult*=(1+mod.general.santaBoost);",
+        "mult*=1.2;", 
+        "mult*=(1+mod.general.santaBoost);",
         "replace");
 
     this.santaBoost=0;
@@ -201,7 +201,9 @@ General._Initialize = function(en, Research) {
     this.lastSantaMode='';
     
     this.getSantaDiv=function() {
-        return '<div style="text-align:center;margin-bottom:4px;">+'+Beautify(100*this.santaBoost,1)+'%</div>';
+        return '<div style="text-align:center;margin-bottom:4px;">'
+            +'<div style="'+writeIcon([[19,10]])+' width:48px;height:48px;" class="shadowFilter"></div>'
+            +'+'+Beautify(100*this.santaBoost,1)+'%</div>';
     }
 
     this.updateSanta=function() {
