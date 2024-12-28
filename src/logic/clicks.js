@@ -129,7 +129,7 @@ Clicks._Initialize = function(en, Research) {
 
         if (this.cursorTimer>0) this.cursorTimer--;
         else {
-            this.clicks-=Math.ceil(this.getCursorClicks()); 
+            // this.clicks-=Math.ceil(this.getCursorClicks()); 
             if(this.clicks<0) this.clicks=0;
             // if(this.overflow_enabled) this.overflow+=Math.min(Game.Objects['Cursor'].amount/500,0.5); // devious
             this.cursorTimer=P.cursorRate;
