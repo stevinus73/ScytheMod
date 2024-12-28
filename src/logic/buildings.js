@@ -434,7 +434,7 @@ BModify._Initialize = function(en, Research) {
                 maxFunc: maxFunc,
                 sprite: sprite,
                 desc: desc,
-                unlocked: true, //false,
+                unlocked: false,
                 allocated: 0,
                 alloc: function() {
                     if (grandmaM.allocT >= grandmaM.maxFree()) return;
@@ -507,7 +507,7 @@ BModify._Initialize = function(en, Research) {
             }, [spr_ref[i+2], 0], cfl(Game.ObjectsById[i+2].plural)+" gain <b>+50%</b> CpS per "+
                 (i==0? " grandma." : (i+1)+" grandmas."));
             me.buildingBuff=function() {
-                return (0.5/(i+1))*me.allocated;
+                return (0.5/(i+1))*this.allocated;
             }
         }
 
@@ -532,9 +532,14 @@ BModify._Initialize = function(en, Research) {
             }(me))
         }
         this.update = function() {
+            for (var i=2; i<20; i++) {
+                var me=Game.ObjectsById[i].grandma;
+                if (Game.Has(me.name)) this.grandmaTypes["G"+i].unlocked = true; 
+            }
             if (Game.T%5==0) {
                 for (var i in this.grandmaTypes) {
                     var me=this.grandmaTypes[i];
+                    me.getMainElement().style.display=(me.unlocked?'block':'none');
                     me.getInfoElement().innerHTML=me.allocated+"/"+me.maxFunc();
                 }
                 l("grandmaInfo1").innerHTML=this.maxFree();
