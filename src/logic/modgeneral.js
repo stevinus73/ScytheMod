@@ -155,22 +155,21 @@ General._Initialize = function(en, Research) {
     this.replacePower('Madeleines',8);
     this.replacePower('Palmiers',3);
     this.replacePower('Palets',3);
-    //this.replacePower('Sabl&eacute);s',3);
     this.replacePower('Gingerbread men',3);
     this.replacePower('Gingerbread trees',3);
-    var heartPower=function(){
-        var pow=6;
-        if (Game.Has('Starlove')) pow=9;
-        if (Game.hasGod)
-        {
-            var godLvl=Game.hasGod('seasons');
-            if (godLvl==1) pow*=1.3;
-            else if (godLvl==2) pow*=1.2;
-            else if (godLvl==3) pow*=1.1;
-        }
-        return pow;
-    };
-    Game.heartDrops.forEach(drop => {Game.Upgrades[drop].power=heartPower;})
+    // var heartPower=function(){
+    //     var pow=6;
+    //     if (Game.Has('Starlove')) pow=9;
+    //     if (Game.hasGod)
+    //     {
+    //         var godLvl=Game.hasGod('seasons');
+    //         if (godLvl==1) pow*=1.3;
+    //         else if (godLvl==2) pow*=1.2;
+    //         else if (godLvl==3) pow*=1.1;
+    //     }
+    //     return pow;
+    // };
+    // Game.heartDrops.forEach(drop => {Game.Upgrades[drop].power=heartPower;})
 
 }
 export { General }

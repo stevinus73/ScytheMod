@@ -88,7 +88,7 @@ Clicks._Initialize = function(en, Research) {
             this.overflow+=P.overflowGain*(Research.has("Sustainable clicks")?0.75:1);
             if (Research.has("Malevolent power")) Game.recalculateGains = 1;
         } else {
-            this.overflow-=P.overflowLoss*(this.overflow>=1?1:2.5);
+            this.overflow-=P.overflowLoss;
             if (this.overflow<minOverflow) this.overflow=minOverflow;
             if (Research.has("Malevolent power")) Game.recalculateGains = 1;
         }
@@ -131,7 +131,7 @@ Clicks._Initialize = function(en, Research) {
         else {
             this.clicks-=Math.ceil(this.getCursorClicks()); 
             if(this.clicks<0) this.clicks=0;
-            if(this.overflow_enabled) this.overflow+=Math.min(Game.Objects['Cursor'].amount/500,0.5); // devious
+            // if(this.overflow_enabled) this.overflow+=Math.min(Game.Objects['Cursor'].amount/500,0.5); // devious
             this.cursorTimer=P.cursorRate;
         }
 
