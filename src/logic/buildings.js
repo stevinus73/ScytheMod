@@ -124,6 +124,7 @@ BModify._Initialize = function(en, Research) {
             // if (me.grandma && Game.Has(me.grandma.name) && BModify.grandma) {
             //     yieldmult*=(1+BModify.grandma.grandmaAlloc[me.id-2]*0.2*(1/(me.id-1)));
             // }
+            yieldmult*=(1+BModify.grandma.grandmaTypes['G'+me.id].buildingBuff());
             if ((this.id == 2) && Research.has("Regrowth")) yieldmult*=3;
             yieldmult*=(1+0.025*Game.Objects.Farm.getLumpBuff());
 
