@@ -194,27 +194,31 @@ General._Initialize = function(en, Research) {
         "mult*=1.2;", 
         "mult*=(1+mod.general.santaBoost);",
         "replace");
+    en.ue.strReplace(Game.Upgrades['Santa\'s dominion'],getStrCookieProductionMultiplierPlus(20),"Santa gives a <b>fluctuating CpS boost</b>.");
 
     this.santaBoost=0;
     this.dSantaL=0;
     this.dSantaR=0;
+    this.santaDiff=0;
     this.lastSantaMode='';
     
     this.getSantaDiv=function() {
         return '<div style="text-align:center;margin-bottom:4px;">'
             +'<div style="'+writeIcon([19,10])+' width:48px;height:48px;" class="usesIcon shadowFilter"></div>'
-            +'+'+Beautify(100*this.santaBoost,1)+'%</div>';
+            +'Current Santa boost: <b>+'+Beautify(100*this.santaBoost,1)+'%</b></div>';
     }
 
     this.updateSanta=function() {
         if (!Game.Has('Santa\'s dominion')) {this.santaBoost=0;return;}
-        this.santaBoost*=(1+Math.random()*(this.dSantaR-this.dSantaL)+this.dSantaR);
+        this.santaDiff=Math.max(Math.min(this.santaDiff,5),-2);
+        if (this.timeSinceLast>=Game.fps*60*30) this.santaDiff+=0.0004;
+        this.santaBoost*=(1+Math.random()*(this.dSantaR-this.dSantaL)+this.dSantaR+0.001*this.santaDiff);
         this.santaBoost=Math.max(Math.min(this.santaBoost,4),0.2);
     }
 
     this.updateSanta_D=function() {
         var modes=['rise', 'fall', 'rise', 'fall', 'fast rise', 'fast fall', 'chaotic'];
-        if(this.lastSantaMode) modes.push(this.lastSantaMode, this.lastSantaMode, this.lastSantaMode, this.lastSantaMode);
+        if(this.lastSantaMode) modes.push(this.lastSantaMode, this.lastSantaMode, this.lastSantaMode);
         var santaMode=choose(modes);
         if (santaMode=='rise') {
             this.dSantaL=-0.0003;
@@ -239,9 +243,22 @@ General._Initialize = function(en, Research) {
         this.lastSantaMode=santaMode;
     }
 
+    // activity check
+    this.timeSinceLast=0;
+    Game.loseShimmeringVeil=en.injectCode(Game.loseShimmeringVeil,
+        `if (!Game.Has('Shimmering veil')) return false;`,
+        `mod.general.activityCheck();\n\t\t\t`,
+        "before");
+
+    this.activityCheck=function() {
+        this.timeSinceLast=0;
+        this.santaDiff-=0.3;
+    }
+
     Game.registerHook('logic', function() {
         if (Game.T%(Game.fps)==0) General.updateSanta();
-        if (Game.T%(Game.fps*15)==0) General.updateSanta_D();
+        if (Game.T%(Game.fps*30)==0) General.updateSanta_D();
+        General.timeSinceLast++;
     });
 }
 export { General }
