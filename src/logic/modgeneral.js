@@ -185,5 +185,61 @@ General._Initialize = function(en, Research) {
     // };
     // Game.heartDrops.forEach(drop => {Game.Upgrades[drop].power=heartPower;})
 
+    // SANTA
+    Game.ToggleSpecialMenu=en.injectCode(Game.ToggleSpecialMenu, 
+        `str+='<h3 style="pointer-events:none;">'+Game.santaLevels[Game.santaLevel]+'</h3>';`,
+        `\n\t\t\t\t\tif (Game.santaLevel>=14) str+=mod.general.getSantaDiv();`, 
+        "after");
+    Game.CalculateGains=en.injectCode(Game.CalculateGains,
+        "if (Game.Has('Santa\'s dominion')) mult*=1.2;", 
+        "if (Game.Has('Santa\'s dominion')) mult*=(1+mod.general.santaBoost);",
+        "replace");
+
+    this.santaBoost=0;
+    this.dSantaL=0;
+    this.dSantaR=0;
+    this.lastSantaMode='';
+    
+    this.getSantaDiv=function() {
+        return '<div style="text-align:center;margin-bottom:4px;">+'+Beautify(100*this.santaBoost,1)+'%</div>';
+    }
+
+    this.updateSanta=function() {
+        if (!Game.Has('Santa\'s dominion')) {this.santaBoost=0;return;}
+        this.santaBoost*=(1+Math.random()*(this.dSantaR-this.dSantaL)+this.dSantaR);
+        this.santaBoost=Math.max(Math.min(this.santaBoost,4),0.2);
+    }
+
+    this.updateSanta_D=function() {
+        var modes=['rise', 'fall', 'rise', 'fall', 'fast rise', 'fast fall', 'chaotic'];
+        if(this.lastSantaMode) modes.push(this.lastSantaMode, this.lastSantaMode, this.lastSantaMode, this.lastSantaMode);
+        var santaMode=choose(modes);
+        if (santaMode=='rise') {
+            this.dSantaL=-0.0003;
+            this.dSantaR= 0.0015;
+        }
+        if (santaMode=='fall') {
+            this.dSantaL=-0.0015;
+            this.dSantaR= 0.0003;
+        }
+        if (santaMode=='fast rise') {
+            this.dSantaL=-0.0005;
+            this.dSantaR= 0.005;
+        }
+        if (santaMode=='fast fall') {
+            this.dSantaL=-0.005;
+            this.dSantaR= 0.0005;
+        }
+        if (santaMode=='chaotic') {
+            this.dSantaL=-0.01;
+            this.dSantaR= 0.01;
+        }
+        this.lastSantaMode=santaMode;
+    }
+
+    Game.registerHook('logic', function() {
+        if (Game.T%(Game.fps)==0) General.updateSanta();
+        if (Game.T%(Game.fps*15)==0) General.updateSanta_D();
+    });
 }
 export { General }
