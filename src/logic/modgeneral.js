@@ -212,7 +212,7 @@ General._Initialize = function(en, Research) {
         if (!Game.Has('Santa\'s dominion')) {this.santaBoost=0;return;}
         this.santaDiff=Math.max(Math.min(this.santaDiff,5),-2);
         if (this.timeSinceLast>=Game.fps*60*30) this.santaDiff+=0.0004;
-        this.santaBoost*=(1+Math.random()*(this.dSantaR-this.dSantaL)+this.dSantaR+0.001*this.santaDiff);
+        this.santaBoost*=(1+Math.random()*(this.dSantaR-this.dSantaL)+this.dSantaL+0.001*this.santaDiff);
         this.santaBoost=Math.max(Math.min(this.santaBoost,4),0.2);
     }
 
