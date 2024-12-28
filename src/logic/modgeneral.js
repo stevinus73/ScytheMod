@@ -204,7 +204,7 @@ General._Initialize = function(en, Research) {
     
     this.getSantaDiv=function() {
         return '<div style="text-align:center;margin-bottom:4px;margin-top:4px;">'
-            +'<div style="'+writeIcon([19,10])+' width:48px;height:48px;transform:scale(0.5);position:absolute;left:45px;top:10px;" '
+            +'<div style="'+writeIcon([19,10])+' width:48px;height:48px;transform:scale(0.7);" '
             +'class="usesIcon shadowFilter"></div>'
             +'Current Santa boost: <b>+'+Beautify(100*this.santaBoost,1)+'%</b></div>';
     }
