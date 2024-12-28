@@ -244,6 +244,25 @@ General._Initialize = function(en, Research) {
         this.lastSantaMode=santaMode;
     }
 
+    // SUGAR LUMPS
+
+    // sucralosia inulitis makes every lump have a 50% chance to gain an extra lump
+    Game.harvestLumps=en.injectCode(Game.harvestLumps,
+        `if (Game.lumpCurrentType==1 && Game.Has('Sucralosia Inutilis') && Math.random()<0.05) total*=2;`,
+        ``,
+        "replace");
+    Game.harvestLumps=en.injectCode(Game.harvestLumps,
+        `total=Math.floor(total);`,
+        `\n\t\t\tif (total>0 && Game.Has('Sucralosia Inutilis') && Math.random()<0.5) total+=1;`,
+        "after");
+    Game.computeLumpType=en.injectCode(Game.computeLumpType,
+        `if (Math.random()<(Game.Has('Sucralosia Inutilis')?0.15:0.1)) types.push(1);`,
+        `if (Math.random()<0.1) types.push(1);`,
+        "replace");
+    en.ue.replaceDescPart(Game.Upgrades['Sucralosia Inutilis'], 
+        "Upon harvesting a sugar lump, there is a <b>50%</b> that <b>one more lump</b> is dropped."    
+    )
+
     // activity check
     this.timeSinceLast=0;
     Game.loseShimmeringVeil=en.injectCode(Game.loseShimmeringVeil,
