@@ -124,6 +124,11 @@ Clicks._Initialize = function(en, Research) {
             var rate=P.baseRegen;
             if (Game.Has("Hands-off approach")) rate*=0.5;
             if (Research.has("Patience")) rate*=0.7;
+            // if the shimmering veil is active, overflow decreases over time
+            if (Game.Has('Shimmering veil [off]')) {
+                rate*=0.75;
+                this.overflow-=0.05;
+            }
             this.regenTimer=rate;
         }
 
