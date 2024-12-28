@@ -202,7 +202,7 @@ General._Initialize = function(en, Research) {
     
     this.getSantaDiv=function() {
         return '<div style="text-align:center;margin-bottom:4px;">'
-            +'<div style="'+writeIcon([[19,10]])+' width:48px;height:48px;" class="shadowFilter"></div>'
+            +'<div style="'+writeIcon([19,10])+' width:48px;height:48px;" class="usesIcon shadowFilter"></div>'
             +'+'+Beautify(100*this.santaBoost,1)+'%</div>';
     }
 
