@@ -56,8 +56,26 @@ General._Initialize = function(en, Research) {
             // m.spells['summon crafty pixies'].failDesc = "Resources are used up 25% faster, without any CpS increase for 1 hour.";
         }
     }
+    General.GardenEdit = function() {
+        if (Game.Objects.Farm.minigame) {
+            var m = Game.Objects.Farm.minigame;
+            m.plotLimits=[
+                [1,1,5,5],
+                [1,1,6,5],
+                [1,1,6,6],
+                [0,1,6,6],
+                [0,0,6,6],
+                [0,0,7,6],
+                [0,0,7,7],
+                [0,0,8,7],
+                [0,0,8,8]
+            ];
+        }
+    }
+    this.GardenEdit();
     this.TempleRename();
     this.GrimoireRename();
+    Game.scriptLoaded = en.injectCode(Game.scriptLoaded, "who.minigame.launch();", "\n\tif(who.id==2){mod.general.GardenEdit();}", "after");
     Game.scriptLoaded = en.injectCode(Game.scriptLoaded, "who.minigame.launch();", "\n\tif(who.id==6){mod.general.TempleRename();}", "after");
     Game.scriptLoaded = en.injectCode(Game.scriptLoaded, "who.minigame.launch();", "\n\tif(who.id==7){mod.general.GrimoireRename();}", "after");
     
