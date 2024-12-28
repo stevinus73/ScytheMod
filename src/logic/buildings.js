@@ -481,6 +481,9 @@ BModify._Initialize = function(en, Research) {
                 load: function() {
                     this.allocated = en.getVar(this.name+"grandmaAlloc", this.allocated);
                 },
+                reset: function() {
+                    this.allocated = 0;
+                },
                 update: function() {} 
             }
             en.newVar(name+"grandmaAlloc", "int");
@@ -584,6 +587,13 @@ BModify._Initialize = function(en, Research) {
                 'if (mod.research.hasTiered(1, 3)) mult*=1.15;'
             ]
         )
+
+        Game.registerHook('reset', function() {
+            grandmaM.allocT = 0;
+            for (var i in grandmaM.grandmaTypes) {
+                grandmaM.grandmaTypes[i].reset();
+            }
+        })
     }
 
     BModify.Idleverses = function() {

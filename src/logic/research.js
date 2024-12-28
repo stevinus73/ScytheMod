@@ -458,7 +458,7 @@ Research._Initialize = function(en) {
     new Research.Tree("Golden cookies", [27, 6], function(){return Game.goldenClicks;});
     new Research.Tech("Golden cookies", "Unlocks the research tree for <b>golden cookies</b>.", 7, f, f, [], [10, 14], 0, 0);
     new Research.Tech("Hoard of treasure", "Golden cookie gains <b>doubled</b>.", 27, req(() => mod.G.fortunesEarned, 3, "Fortunes obtained"), f, [0], [27, 6], 0.5, 0);
-    new Research.Tech("The true purpose of luck", "Golden cookie gains <b>doubled</b>.<q>...is to get more cookies.</b>", req(() => mod.G.fortunesEarned, 17, "Fortunes obtained"), f, f, [0], [27, 6], 0.5, 0);
+    new Research.Tech("The true purpose of luck", "Golden cookie gains <b>doubled</b>.<q>...is to get more cookies.</b>", 17, req(() => mod.G.fortunesEarned, 17, "Fortunes obtained"), f, f, [0], [27, 6], 0.5, 0);
     new Research.Tech("Pure one-hundred-percent gold", "Golden cookie frequency <b>+5%</b>.<q>The purest gold!</q>", 27, f, f, [0], [27, 6], -0.5, 0);
     // all the building trees go here
 
