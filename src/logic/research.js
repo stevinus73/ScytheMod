@@ -458,7 +458,7 @@ Research._Initialize = function(en) {
     new Research.Tree("Golden cookies", [27, 6], function(){return Game.goldenClicks;});
     new Research.Tech("Golden cookies", "Unlocks the research tree for <b>golden cookies</b>.", 7, f, f, [], [10, 14], 0, 0);
     new Research.Tech("Hoard of treasure", "Golden cookie gains <b>doubled</b>.", 27, req(() => mod.G.fortunesEarned, 3, "Fortunes obtained"), f, [0], [27, 6], 0.5, 0);
-    new Research.Tech("The true purpose of luck", "Golden cookie gains <b>doubled</b>.<q>...is to get more cookies.</b>", 17, req(() => mod.G.fortunesEarned, 17, "Fortunes obtained"), f, f, [0], [27, 6], 0.5, 0);
+    new Research.Tech("The true purpose of luck", "Golden cookie gains <b>doubled</b>.<q>...is to get more cookies.</b>", 17, req(() => mod.G.fortunesEarned, 17, "Fortunes obtained"), f, [0], [27, 6], 0.5, 0);
     new Research.Tech("Pure one-hundred-percent gold", "Golden cookie frequency <b>+5%</b>.<q>The purest gold!</q>", 27, f, f, [0], [27, 6], -0.5, 0);
     // all the building trees go here
 
@@ -494,17 +494,17 @@ Research._Initialize = function(en) {
     tieredTreeG(1, 2, "Hair whitener", "Studies show that the whiter the grandmas' hair is, the older they are, and therefore, the more powerful they are.", "Grandmas are <b>15%</b> more efficient.") // 2
     tieredTreeG(1, 3, "Other people's grandmas", "You sure do seem to have a lot of grandmas. But! If you pull grandmas from other people, you might be able to get even more grandmas.", "Grandmas are <b>15%</b> more efficient.") // 3
     bLumpBuff(1, "Cotton-candy grandmas", "Grandma types are <b>4%</b> more powerful per grandma level (up to level 20).", "Cotton candy injected via IV.");
-    var unlockGP = {reqFunc: function(){return Game.Objects['Grandma'].amount>=6 && Game.HasAchiev('Elder')}, reqDesc: "have <b>7 different grandma types</b>"}
-    new Research.Tech("Bingo center/Research facility", "Grandma-operated science lab and leisure club. <b>This will unlock the Bingo center/Research facility upgrade in the Store.</b> <q>What could possibly keep those grandmothers in check?...<br>Bingo.</q>", 40, unlockGP, f, [0], [11, 9], 0.4, 0.4); // 5
-    Game.Logic = en.injectCode(Game.Logic, "Game.HasAchiev('Elder'))", 
-        "mod.research.has('Bingo center/Research facility'))", "replace"
-    )
+    // var unlockGP = {reqFunc: function(){return Game.Objects['Grandma'].amount>=6 && Game.HasAchiev('Elder')}, reqDesc: "have <b>7 different grandma types</b>"}
+    // new Research.Tech("Bingo center/Research facility", "Grandma-operated science lab and leisure club. <b>This will unlock the Bingo center/Research facility upgrade in the Store.</b> <q>What could possibly keep those grandmothers in check?...<br>Bingo.</q>", 40, unlockGP, f, [0], [11, 9], 0.4, 0.4); // 5
+    // Game.Logic = en.injectCode(Game.Logic, "Game.HasAchiev('Elder'))", 
+    //     "mod.research.has('Bingo center/Research facility'))", "replace"
+    // )
     buildingTree(2);
-    new Research.Tech("Regrowth", "Farms yield <b>three times</b> more. <div class=\"line\"></div> You can <b>reuse depleted land</b>, effectively ignoring resource depletion. <q>A masterful resource-saving invention! Wait, isn't this how agriculture is supposed to work? </q>", 230, breq('Farm', 75), f, [0], [2, 35], 0.8, 0.8); // 1
     tieredTree(2, 1, "Monocookie agriculture", "Gearing your farms to only cultivate cookies."); // 1
     tieredTree(2, 2, "Better hoes", "Actually, scratch that. Who would waste netherite on a hoe?"); // 2
     tieredTree(2, 3, "Radiative therapy", "Radiation increases the chance for cookie plants to mutate and become more useful. For example, a carnivorous plant with the ability to speak is already being used as a deterrent to greedy young kids.")
     bLumpBuff(2, "Caramel fertilizer", "Resource-tied buildings yield <b>2.5%</b> more per farm level (up to level 20).", "Dear Baker, what do they put in this stuff nowadays?");
+    new Research.Tech("Regrowth", "Farms yield <b>three times</b> more. <div class=\"line\"></div> You can <b>reuse depleted land</b>, effectively ignoring resource depletion. <q>A masterful resource-saving invention! Wait, isn't this how agriculture is supposed to work? </q>", 230, breq('Farm', 75), f, [0], [2, 35], 0.8, 0.8); // 1
     buildingTree(3);
     tieredTree(3, 1, "Mineral scentilocation", "Recent advances have led to the creation of a machine that can detect tasty minerals via their natural scent-giving properties.") // 1
     tieredTree(3, 2, "Nanomining", "Scratch all the giant drills and pickaxes! The fabric of reality itself has been found to contain fundamental particles that can be made into cookies. This will surely have no unforeseen consequences on the stability of the universe, y'know?") // 2
