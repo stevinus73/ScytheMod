@@ -260,7 +260,7 @@ General._Initialize = function(en, Research) {
         `if (Math.random()<0.1) types.push(1);`,
         "replace");
     en.ue.replaceDescPart(Game.Upgrades['Sucralosia Inutilis'], 
-        "Upon harvesting a sugar lump, there is a <b>50%</b> that <b>one more lump</b> is dropped."    
+        "Upon harvesting a sugar lump, there is a <b>50% chance</b> that <b>one more lump</b> is dropped."    
     )
 
     // activity check
