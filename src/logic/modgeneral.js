@@ -249,7 +249,7 @@ General._Initialize = function(en, Research) {
     // sucralosia inulitis makes every lump have a 50% chance to gain an extra lump
     Game.harvestLumps=en.injectCode(Game.harvestLumps,
         `if (Game.lumpCurrentType==1 && Game.Has('Sucralosia Inutilis') && Math.random()<0.05) total*=2;`,
-        ``,
+        `if (Game.lumpCurrentType==1 && Game.Has('Sucralosia Inutilis') && Math.random()<0.05) total*=1;`,
         "replace");
     Game.harvestLumps=en.injectCode(Game.harvestLumps,
         `total=Math.floor(total);`,
