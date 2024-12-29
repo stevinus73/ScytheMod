@@ -581,6 +581,7 @@ BModify._Initialize = function(en, Research) {
         this.cookiesReq = function(){return Math.max(Game.cookiesPsRawHighest*60,1e15)*Math.pow(1.2,this.storage);}
 
         this.upgradeStorage = function() {
+            console.log("so is this just a hardware issue or what");
             if (this.me.amount<this.grandmaReq()) return;
             if (Research.research<this.researchReq()) return;
             if (Game.cookies<this.cookiesReq()) return;
