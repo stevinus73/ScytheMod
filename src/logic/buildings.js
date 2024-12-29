@@ -508,7 +508,7 @@ BModify._Initialize = function(en, Research) {
         }
 
         this.maxFree = function() {
-            return 5+5*this.storage+10*this.me.level;
+            return 5+5*this.storage;
         }
 
         for (var i=0; i<18; i++) {
@@ -563,14 +563,12 @@ BModify._Initialize = function(en, Research) {
                 }
                 l("grandmaInfo1").innerHTML=this.maxFree();
                 l("grandmaInfo2").innerHTML=this.allocT;
-            }
-
-            if (Game.T%60==0) {
+                l('storage').innerHTML=(this.storage>0?this.storage:'no');
                 l('storageBuilder').innerHTML='<div class="line"></div>'+
                 '<div class="optionBox" style="margin-bottom:0px;"><a style="line-height:80%;" class="option framed large title" '+Game.clickStr+'="mod.bModify.grandma.upgradeStorage();">'+
                     '<div style="display:table-cell;vertical-align:middle;">Build a retirement home</div>'+
                     '<div style="display:table-cell;vertical-align:middle;padding:4px 12px;">|</div>'+
-                    '<div style="display:table-cell;vertical-align:middle;font-size:65%;"><div'+(this.me.amount>=this.grandmaReq()?'':' style="color:#777;"')+'>'+this.grandmaReq()+' grandmas</div></div>'+
+                    '<div style="display:table-cell;vertical-align:middle;font-size:65%;"><div'+(this.me.amount>=this.grandmaReq()?'':' style="color:#777;"')+'>'+this.grandmaReq()+' grandmas, </div></div>'+
                     '<div style="display:table-cell;vertical-align:middle;font-size:65%;"><div'+(Research.research>=this.researchReq()?'':' style="color:#777;"')+'>'+this.researchReq()+' research</div></div>'+
                 '</a></div>';
             }
@@ -582,8 +580,7 @@ BModify._Initialize = function(en, Research) {
         this.upgradeStorage = function() {
             if (this.me.amount<this.grandmaReq()) return;
             if (Research.research<this.researchReq()) return;
-            var rect=l('centerArea').getBounds();Game.SparkleAt((rect.left+rect.right)/2,(rect.top+rect.bottom)/2)+32-TopBarOffset;
-            console.log("Does this do it?");
+            Research.research-=this.researchReq();
             this.storage++;
         }
 
