@@ -580,6 +580,8 @@ BModify._Initialize = function(en, Research) {
         this.upgradeStorage = function() {
             if (this.me.amount<this.grandmaReq()) return;
             if (Research.research<this.researchReq()) return;
+            var rect=l('centerArea').getBounds();Game.SparkleAt((rect.left+rect.right)/2,(rect.top+rect.bottom)/2)+32-TopBarOffset;
+            console.log("Does this do it?");
             this.storage++;
         }
 
