@@ -523,6 +523,7 @@ BModify._Initialize = function(en, Research) {
             me.update=function(){
                 if (Game.Has(this.buildingTie.grandma.name)) this.unlocked=true;
                 else this.unlocked=false;
+                if (!this.unlocked) this.allocated = 0;
             }
         }
 
@@ -554,31 +555,35 @@ BModify._Initialize = function(en, Research) {
             //     var me=Game.ObjectsById[i].grandma;
             //     if (Game.Has(me.name)) this.grandmaTypes["G"+i].unlocked = true; 
             // }
-            if (Game.T%5==0) {
-                for (var i in this.grandmaTypes) {
-                    var me=this.grandmaTypes[i];
-                    if (me.unlocked) me.getMainElement().classList.add("ready");
-                    else me.getMainElement().classList.remove("ready");
-                    me.update();
-                    me.getInfoElement().innerHTML=me.allocated+"/"+me.maxFunc();
-                }
-                l("grandmaInfo1").innerHTML=this.maxFree();
-                l("grandmaInfo2").innerHTML=this.allocT;
-                l('storage').innerHTML=this.storage+' '+(this.storage==1?'retirement home':'retirement homes');
-                l('storageBuilder').innerHTML='<div class="line"></div>'+
-                '<div class="optionBox" style="margin-bottom:0px;"><a style="line-height:80%;" class="option framed large title" '+Game.clickStr+'="mod.bModify.grandma.upgradeStorage();">'+
-                    '<div style="display:table-cell;vertical-align:middle;">Build a retirement home</div>'+
-                    '<div style="display:table-cell;vertical-align:middle;padding:4px 12px;">|</div>'+
-                    '<div style="display:table-cell;vertical-align:middle;font-size:65%;"><div'+(this.me.amount>=this.grandmaReq()?'':' style="color:#777;"')+'>'+this.grandmaReq()+' grandmas</div>'+
-                    '<br/><div'+(Game.cookies>=this.cookiesReq()?'':' style="color:#777;"')+'>'+Beautify(this.cookiesReq())+' cookies</div>'+
-                    '<br/><div'+(Research.research>=this.researchReq()?'':' style="color:#777;"')+'>'+this.researchReq()+' research</div></div>'+
-                '</a></div>';
+            if (Game.T%10==0) {
+                this.draw();
             }
+        }
+
+        this.draw = function() {
+            for (var i in this.grandmaTypes) {
+                var me=this.grandmaTypes[i];
+                if (me.unlocked) me.getMainElement().classList.add("ready");
+                else me.getMainElement().classList.remove("ready");
+                me.update();
+                me.getInfoElement().innerHTML=me.allocated+"/"+me.maxFunc();
+            }
+            l("grandmaInfo1").innerHTML=this.maxFree();
+            l("grandmaInfo2").innerHTML=this.allocT;
+            l('storage').innerHTML=this.storage+' '+(this.storage==1?'retirement home':'retirement homes');
+            l('storageBuilder').innerHTML='<div class="line"></div>'+
+            '<div class="optionBox" style="margin-bottom:0px;"><a style="line-height:80%;" class="option framed large title" '+Game.clickStr+'="mod.bModify.grandma.upgradeStorage();">'+
+                '<div style="display:table-cell;vertical-align:middle;">Build a retirement home</div>'+
+                '<div style="display:table-cell;vertical-align:middle;padding:4px 12px;">|</div>'+
+                '<div style="display:table-cell;vertical-align:middle;font-size:65%;"><div'+(this.me.amount>=this.grandmaReq()?'':' style="color:#777;"')+'>'+this.grandmaReq()+' grandmas</div>'+
+                '<br/><div'+(Game.cookies>=this.cookiesReq()?'':' style="color:#777;"')+'>'+Beautify(this.cookiesReq())+' cookies</div>'+
+                '<br/><div'+(Research.research>=this.researchReq()?'':' style="color:#777;"')+'>'+this.researchReq()+' research</div></div>'+
+            '</a></div>';
         }
 
         this.grandmaReq = function(){return 25*this.storage+25;}
         this.researchReq = function(){return Math.ceil(1.6*this.storage+20);}
-        this.cookiesReq = function(){return Math.max(Game.cookiesPsRawHighest*60,1e15)*Math.pow(1.2,this.storage);}
+        this.cookiesReq = function(){return Math.max(Game.cookiesPsRawHighest*60,1e6)*Math.pow(1.2,this.storage);}
 
         this.upgradeStorage = function() {
             if (this.me.amount<this.grandmaReq()) return;
@@ -587,6 +592,7 @@ BModify._Initialize = function(en, Research) {
             Research.research-=this.researchReq();
             Game.Spend(this.cookiesReq());
             this.storage++;
+            this.draw();
         }
 
         Game.GetTieredCpsMult = en.injectCode(Game.GetTieredCpsMult, 
