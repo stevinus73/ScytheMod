@@ -569,7 +569,7 @@ BModify._Initialize = function(en, Research) {
                     '<div style="display:table-cell;vertical-align:middle;">Build a retirement home</div>'+
                     '<div style="display:table-cell;vertical-align:middle;padding:4px 12px;">|</div>'+
                     '<div style="display:table-cell;vertical-align:middle;font-size:65%;"><div'+(this.me.amount>=this.grandmaReq()?'':' style="color:#777;"')+'>'+this.grandmaReq()+' grandmas</div></div>'+
-                    '<div style="display:table-cell;vertical-align:middle;font-size:65%;">><div'+(Research.research>=this.researchReq()?'':' style="color:#777;"')+'>'+this.researchReq()+' research</div></div>'+
+                    '<div style="display:table-cell;vertical-align:middle;font-size:65%;"><div'+(Research.research>=this.researchReq()?'':' style="color:#777;"')+'>'+this.researchReq()+' research</div></div>'+
                 '</a></div>';
             }
         }
