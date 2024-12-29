@@ -527,6 +527,7 @@ BModify._Initialize = function(en, Research) {
         str='';
         str+='<div><b>Free grandmas</b> are grandmas not currently producing cookies. You can allocate them to do specific tasks.</div>';
         str+='<div>You have <span id="grandmaInfo1"></span> free grandmas, <span id="grandmaInfo2"></span> of which are currently allocated as grandma types.</div>';
+        str+='<div id="storageBuilder"></div>';
         str+='<div id="grandmaTypes">';
 		for (var i in this.grandmaTypes) {
             str+=this.grandmaTypes[i].getRawHTML();
@@ -559,7 +560,19 @@ BModify._Initialize = function(en, Research) {
                 }
                 l("grandmaInfo1").innerHTML=this.maxFree();
                 l("grandmaInfo2").innerHTML=this.allocT;
+
+                l('storageBuilder').innerHTML='<div class="line"></div>'+
+                '<div class="optionBox" style="margin-bottom:0px;"><a style="line-height:80%;" class="option framed large title" '+Game.clickStr+'="mod.bModify.grandma.upgradeStorage();">'+
+                    '<div style="display:table-cell;vertical-align:middle;">'+level.action+'</div>'+
+                    '<div style="display:table-cell;vertical-align:middle;padding:4px 12px;">|</div>'+
+                    '<div style="display:table-cell;vertical-align:middle;font-size:65%;">0 grandmas</div>'+
+                    '<div style="display:table-cell;vertical-align:middle;font-size:65%;">10 research</div>'+
+                '</a></div>';
             }
+        }
+
+        this.upgradeStorage = function() {
+
         }
 
         Game.GetTieredCpsMult = en.injectCode(Game.GetTieredCpsMult, 
