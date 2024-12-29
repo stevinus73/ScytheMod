@@ -428,6 +428,8 @@ BModify._Initialize = function(en, Research) {
 
         this.allocT = 0;
         this.grandmaTypes = {};
+
+        this.storage = 0;
         this.newGrandmaType = function(name, lname, maxFunc, sprite, desc) {
             var grandmaType = {
                 name: name,
@@ -506,7 +508,7 @@ BModify._Initialize = function(en, Research) {
         }
 
         this.maxFree = function() {
-            return Math.ceil(this.me.highest * 0.2)+10*this.me.level;
+            return 5+5*this.storage+10*this.me.level;
         }
 
         for (var i=0; i<18; i++) {
@@ -563,16 +565,21 @@ BModify._Initialize = function(en, Research) {
 
                 l('storageBuilder').innerHTML='<div class="line"></div>'+
                 '<div class="optionBox" style="margin-bottom:0px;"><a style="line-height:80%;" class="option framed large title" '+Game.clickStr+'="mod.bModify.grandma.upgradeStorage();">'+
-                    '<div style="display:table-cell;vertical-align:middle;">'+level.action+'</div>'+
+                    '<div style="display:table-cell;vertical-align:middle;">Build a retirement home</div>'+
                     '<div style="display:table-cell;vertical-align:middle;padding:4px 12px;">|</div>'+
-                    '<div style="display:table-cell;vertical-align:middle;font-size:65%;">0 grandmas</div>'+
+                    '<div style="display:table-cell;vertical-align:middle;font-size:65%;"><div'+(this.me.amount>=this.grandmaReq()?'':' style="color:#777;"')+'>'+this.grandmaReq+' grandmas</div></div>'+
                     '<div style="display:table-cell;vertical-align:middle;font-size:65%;">10 research</div>'+
                 '</a></div>';
             }
         }
 
-        this.upgradeStorage = function() {
+        this.grandmaReq = function(){return 25*this.storage+25;}
+        this.researchReq = function(){return 10;}
 
+        this.upgradeStorage = function() {
+            if (this.me.amount<this.grandmaReq()) return;
+            //if (Research.research<this.researchReq()) return;
+            this.storage++;
         }
 
         Game.GetTieredCpsMult = en.injectCode(Game.GetTieredCpsMult, 
