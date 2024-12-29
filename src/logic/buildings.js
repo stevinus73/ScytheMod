@@ -563,7 +563,9 @@ BModify._Initialize = function(en, Research) {
                 }
                 l("grandmaInfo1").innerHTML=this.maxFree();
                 l("grandmaInfo2").innerHTML=this.allocT;
+            }
 
+            if (Game.T%60==0) {
                 l('storageBuilder').innerHTML='<div class="line"></div>'+
                 '<div class="optionBox" style="margin-bottom:0px;"><a style="line-height:80%;" class="option framed large title" '+Game.clickStr+'="mod.bModify.grandma.upgradeStorage();">'+
                     '<div style="display:table-cell;vertical-align:middle;">Build a retirement home</div>'+
