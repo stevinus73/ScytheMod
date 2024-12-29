@@ -528,8 +528,9 @@ BModify._Initialize = function(en, Research) {
 
         str='';
         str+='<div><b>Free grandmas</b> are grandmas not currently producing cookies. You can allocate them to do specific tasks.</div>';
+        str+='<div>You gain free grandmas by building retirement homes, which attract grandmas.</div>';
         str+='<div>You have <span id="grandmaInfo1"></span> free grandmas, <span id="grandmaInfo2"></span> of which are currently allocated as grandma types.</div>';
-        str+='<div>You have <span id="storage"</span> retirement homes.</div>';
+        str+='<div>You have <span id="storage"></span></div>';
         str+='<div id="storageBuilder"></div>';
         str+='<div id="grandmaTypes">';
 		for (var i in this.grandmaTypes) {
@@ -563,24 +564,28 @@ BModify._Initialize = function(en, Research) {
                 }
                 l("grandmaInfo1").innerHTML=this.maxFree();
                 l("grandmaInfo2").innerHTML=this.allocT;
-                l('storage').innerHTML=(this.storage>0?this.storage:'no');
+                l('storage').innerHTML=this.storage+' '+(this.storage==1?'retirement home':'retirement homes');
                 l('storageBuilder').innerHTML='<div class="line"></div>'+
                 '<div class="optionBox" style="margin-bottom:0px;"><a style="line-height:80%;" class="option framed large title" '+Game.clickStr+'="mod.bModify.grandma.upgradeStorage();">'+
                     '<div style="display:table-cell;vertical-align:middle;">Build a retirement home</div>'+
                     '<div style="display:table-cell;vertical-align:middle;padding:4px 12px;">|</div>'+
-                    '<div style="display:table-cell;vertical-align:middle;font-size:65%;"><div'+(this.me.amount>=this.grandmaReq()?'':' style="color:#777;"')+'>'+this.grandmaReq()+' grandmas, </div></div>'+
-                    '<div style="display:table-cell;vertical-align:middle;font-size:65%;"><div'+(Research.research>=this.researchReq()?'':' style="color:#777;"')+'>'+this.researchReq()+' research</div></div>'+
+                    '<div style="display:table-cell;vertical-align:middle;font-size:65%;"><div'+(this.me.amount>=this.grandmaReq()?'':' style="color:#777;"')+'>'+this.grandmaReq()+' grandmas</div>'+
+                    '<br/><div'+(Game.cookies>=this.cookiesReq()?'':' style="color:#777;"')+'>'+this.cookiesReq()+' cookies</div></div>'+
+                    '<br/><div'+(Research.research>=this.researchReq()?'':' style="color:#777;"')+'>'+this.researchReq()+' research</div></div>'+
                 '</a></div>';
             }
         }
 
         this.grandmaReq = function(){return 25*this.storage+25;}
-        this.researchReq = function(){return 10;}
+        this.researchReq = function(){return Math.ceil(1.6*this.storage+20);}
+        this.cookiesReq = function(){return Math.max(Game.cookiesPsRawHighest*60,1e15)*Math.pow(1.2,this.storage);}
 
         this.upgradeStorage = function() {
             if (this.me.amount<this.grandmaReq()) return;
             if (Research.research<this.researchReq()) return;
+            if (Game.cookies<this.cookiesReq()) return;
             Research.research-=this.researchReq();
+            Game.Spend(this.cookiesReq());
             this.storage++;
         }
 
@@ -611,10 +616,13 @@ BModify._Initialize = function(en, Research) {
             ]
         )
 
-        Game.registerHook('reset', function() {
+        Game.registerHook('reset', function(wipe) {
             grandmaM.allocT = 0;
             for (var i in grandmaM.grandmaTypes) {
                 grandmaM.grandmaTypes[i].reset();
+            }
+            if (wipe) {
+                grandmaM.storage = 0;
             }
         })
     }
