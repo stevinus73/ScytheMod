@@ -529,6 +529,7 @@ BModify._Initialize = function(en, Research) {
         str='';
         str+='<div><b>Free grandmas</b> are grandmas not currently producing cookies. You can allocate them to do specific tasks.</div>';
         str+='<div>You have <span id="grandmaInfo1"></span> free grandmas, <span id="grandmaInfo2"></span> of which are currently allocated as grandma types.</div>';
+        str+='<div>You have <span id="storage"</span> retirement homes.</div>';
         str+='<div id="storageBuilder"></div>';
         str+='<div id="grandmaTypes">';
 		for (var i in this.grandmaTypes) {
@@ -567,8 +568,8 @@ BModify._Initialize = function(en, Research) {
                 '<div class="optionBox" style="margin-bottom:0px;"><a style="line-height:80%;" class="option framed large title" '+Game.clickStr+'="mod.bModify.grandma.upgradeStorage();">'+
                     '<div style="display:table-cell;vertical-align:middle;">Build a retirement home</div>'+
                     '<div style="display:table-cell;vertical-align:middle;padding:4px 12px;">|</div>'+
-                    '<div style="display:table-cell;vertical-align:middle;font-size:65%;"><div'+(this.me.amount>=this.grandmaReq()?'':' style="color:#777;"')+'>'+this.grandmaReq+' grandmas</div></div>'+
-                    '<div style="display:table-cell;vertical-align:middle;font-size:65%;">10 research</div>'+
+                    '<div style="display:table-cell;vertical-align:middle;font-size:65%;"><div'+(this.me.amount>=this.grandmaReq()?'':' style="color:#777;"')+'>'+this.grandmaReq()+' grandmas</div></div>'+
+                    '<div style="display:table-cell;vertical-align:middle;font-size:65%;">><div'+(Research.research>=this.researchReq()?'':' style="color:#777;"')+'>'+this.researchReq()+' research</div></div>'+
                 '</a></div>';
             }
         }
@@ -578,7 +579,7 @@ BModify._Initialize = function(en, Research) {
 
         this.upgradeStorage = function() {
             if (this.me.amount<this.grandmaReq()) return;
-            //if (Research.research<this.researchReq()) return;
+            if (Research.research<this.researchReq()) return;
             this.storage++;
         }
 
