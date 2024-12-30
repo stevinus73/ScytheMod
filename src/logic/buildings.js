@@ -527,6 +527,16 @@ BModify._Initialize = function(en, Research) {
             }
         }
 
+        // scientist grandmas
+        var sci=this.newGrandmaType("scientist", "Scientist grandmas", 
+            function(){return 10+Math.ceil(grandmaM.maxFree()*0.5)}, [0, 1], 
+            "You passively gain research. Speed is faster the more grandmas you have.");
+        sci.update=function(){
+            if (Research.has("Interns")) this.unlocked=true;
+            else this.unlocked=false;
+            if (!this.unlocked) this.allocated=0;
+        }
+
         str='';
         str+='<div><b>Free grandmas</b> are grandmas not currently producing cookies. You can allocate them to do specific tasks.</div>';
         str+='<div>You gain free grandmas by building retirement homes, which attract grandmas.</div>';
