@@ -428,7 +428,7 @@ BModify._Initialize = function(en, Research) {
 
         this.allocT = 0;
         this.grandmaTypes = {};
-
+        const UpdateTicks = 10;
         this.storage = 0;
         this.newGrandmaType = function(name, lname, maxFunc, sprite, desc) {
             var grandmaType = {
@@ -528,11 +528,22 @@ BModify._Initialize = function(en, Research) {
         }
 
         // scientist grandmas
+        const BaseResearchTime=Game.fps*10;//Game.fps*60*10;
         var sci=this.newGrandmaType("scientist", "Scientist grandmas", 
-            function(){return 10+Math.ceil(grandmaM.maxFree()*0.5)}, [0, 1], 
+            function(){return 10+Math.ceil(grandmaM.maxFree()*0.3)}, [0, 1], 
             "You passively gain research. Speed is faster the more grandmas you have.");
+        sci.nextResearch=BaseResearchTime;
         sci.update=function(){
-            if (Research.has("Interns")) this.unlocked=true;
+            if (Research.has("Interns")) {
+                this.unlocked=true;
+                if (this.allocated>0) {
+                    this.nextResearch-=UpdateTicks;
+                    if (this.nextResearch<=0) {
+                        Research.earn(1);
+                        this.nextResearch=(BaseResearchTime) / Math.sqrt(this.allocated);
+                    }
+                }
+            }
             else this.unlocked=false;
             if (!this.unlocked) this.allocated=0;
         }
@@ -571,7 +582,7 @@ BModify._Initialize = function(en, Research) {
             //     var me=Game.ObjectsById[i].grandma;
             //     if (Game.Has(me.name)) this.grandmaTypes["G"+i].unlocked = true; 
             // }
-            if (Game.T%10==0) {
+            if (Game.T%UpdateTicks==0) {
                 this.draw();
             }
             
