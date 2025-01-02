@@ -65,9 +65,10 @@ BModify._Initialize = function(en, Research) {
 
         this.baseRs = baseRS;
         this.rsTotal = baseRS;
+        this.getBaseRsMax = function(){return this.baseRs*5*Math.pow(20-this.id, 1.3);}
+        this.rsMax = this.getBaseRsMax();
         this.rsUsed = 0;
         this.interest = 0;
-        this.rsAvailable = baseRS;
 
         this.depleted = false;
         this.pause = false;
@@ -77,6 +78,7 @@ BModify._Initialize = function(en, Research) {
         en.newVar("yield"+this.me.id, "float");
         en.newVar("rsTotal"+this.me.id, "int");
         en.newVar("rsUsed"+this.me.id,  "int");
+        en.newVar("rsMaxBoost"+this.me.id, "float");
         en.newVar("pause"+this.me.id,   "int");
 
         BModify.rsManagers.push(this);
@@ -94,6 +96,7 @@ BModify._Initialize = function(en, Research) {
         this.me.cps = function(me) {
             return me.rsManager.getRawCpS();
         };
+
         // called once every calculateGains()
         this.recalculate = function() {
             var me = this.me;
@@ -106,8 +109,8 @@ BModify._Initialize = function(en, Research) {
                     if (Game.ascensionMode!=1 && Game.Has(me.unshackleUpgrade) && Game.Has(Game.Tiers[me.tieredUpgrades[i].tier].unshackleUpgrade)) {
                         tierMult+=me.id==1?0.5:(20-me.id)*0.1;
                     }
-                    rhpsmult*=tierMult;
-                    rsmult*=tierMult;
+                    yieldmult*=tierMult;
+                    rsmult*=1.2;
                 }
             }
             rsmult*=BModify.idleverse.resourceMult();
@@ -121,9 +124,6 @@ BModify._Initialize = function(en, Research) {
             }
 
             if (me.fortune && Game.Has(me.fortune.name)) yieldmult*=1.07;
-            // if (me.grandma && Game.Has(me.grandma.name) && BModify.grandma) {
-            //     yieldmult*=(1+BModify.grandma.grandmaAlloc[me.id-2]*0.2*(1/(me.id-1)));
-            // }
             yieldmult*=(1+BModify.grandma.grandmaTypes['G'+me.id].buildingBuff());
             if ((this.id == 2) && Research.has("Regrowth")) yieldmult*=3;
             yieldmult*=(1+0.025*Game.Objects.Farm.getLumpBuff());
@@ -150,10 +150,9 @@ BModify._Initialize = function(en, Research) {
             if (Game.Has("Growth ray")) rsmult*=1.5;
             if (Game.Has("Shrink ray")) rsmult*=1.5;
 
-            this.yield = this.baseYield * yieldmult;
-            this.RhpS = this.baseRhpS * rhpsmult;
-            this.rsTotal = this.baseRs * rsmult;
-            this.rsAvailable = this.rsTotal - this.rsUsed;
+            this.yield = this.baseYield*yieldmult;
+            this.RhpS = this.baseRhpS*rhpsmult;
+            this.rsMax = this.getBaseRsMax()*rsmult*this.rsMaxBoost;
             this.update()
         }
         
@@ -162,21 +161,30 @@ BModify._Initialize = function(en, Research) {
             return Math.pow(0.997, Math.min(this.me.amount, 600));
         }
 
-        //
+        this.availableRes = function(){return this.rsTotal-this.rsUsed;}
+
+        this.gainRes = function(amnt){
+            var num=Math.min(amnt, this.rsMax-this.rsTotal);
+            this.rsTotal+=num;
+            return num;
+        }
+        this.loseRes = function(amnt){
+            var num=Math.min(amnt, this.availableRes()*0.75);
+            this.rsTotal-=num;
+            return num;
+        }
 
         // called once per Game.Logic loop
         this.harvest = function() {
-            this.rsAvailable = this.rsTotal - this.rsUsed;
-            if (this.rsAvailable <= 0) {
+            if (this.availableRes() <= 0) {
                 if (!this.depleted) Game.recalculateGains = 1;
                 this.depleted = true;
             } else this.depleted = false;
             this.rsUsed = Math.min(this.rsUsed, this.rsTotal);
-            this.rsAvailable = Math.max(this.rsAvailable, 0);
             if ((this.id == 2) && Research.has("Regrowth")) return;
             if (this.depleted) return;
             if (this.pause) {
-                var rate = 0.001 * this.decayedFactor() * (Math.max(this.rsAvailable/this.rsTotal, 0.1));
+                var rate = 0.001 * this.decayedFactor() * (Math.max(this.availableRes()/this.rsTotal, 0.1));
                 this.rsUsed -= (rate / Game.fps) * this.rsTotal;
                 this.rsUsed = Math.max(this.rsUsed, 0);
                 return;
@@ -184,6 +192,7 @@ BModify._Initialize = function(en, Research) {
                 var dep = (this.RhpS / Game.fps) * this.me.amount * this.decayedFactor() * (this.interest>0?1.5:1);
                 this.rsUsed += dep;
                 BModify.totalDp += dep;
+                this.rsMaxBoost *= 1+(0.01/Game.fps);
             }
         }
 
@@ -197,12 +206,17 @@ BModify._Initialize = function(en, Research) {
 
             this.rsTotal = this.baseRs;
             this.rsUsed = 0;
-            this.rsAvailable = this.baseRs;
+            this.rsMax = this.getBaseRsMax();
+            this.rsMaxBoost = 1;
             this.interest = 0;
 
             this.depleted = false;
             this.switch(false);
             this.switchStats(false);
+        }
+
+        this.gainRes = function() {
+
         }
 
         // whatever this is
@@ -293,8 +307,8 @@ BModify._Initialize = function(en, Research) {
             str+='<div class="listing"> <b>Base yield: </b>'+Beautify(this.yield, 1)+ " cookies/"+this.rsNames[1]+'</div>';
             str+='<div class="listing"> <b>Total amount of '+this.rsNames[0].toLowerCase()+':</b> '+Beautify(this.rsTotal) + " " + this.rsNames[2]+'</div>';
             str+='<div class="listing"> <b>Used '+this.rsNames[0].toLowerCase()+' so far:</b> '+Beautify(this.rsUsed) + " " + this.rsNames[2]+'</div>';
-            str+='<div class="listing" '+sty+'> <b>Base CpS:</b> '+Beautify(this.getRawCpS()*this.me.amount, 1)+" cookies/second"+'</div>';
-            str+='<div class="listing" '+sty+'> <b>CpS:</b> '+Beautify(this.me.storedTotalCps*Game.globalCpsMult, 1)+" cookies/second"+'</div>';
+            // str+='<div class="listing" '+sty+'> <b>Base CpS:</b> '+Beautify(this.getRawCpS()*this.me.amount, 1)+" cookies/second"+'</div>';
+            // str+='<div class="listing" '+sty+'> <b>CpS:</b> '+Beautify(this.me.storedTotalCps*Game.globalCpsMult, 1)+" cookies/second"+'</div>';
             l('statsListing'+this.id).innerHTML = str;
             if (Game.Objects.Bank.minigame) this.refillR.style.display='inline';
             else this.refillR.style.display='none';
@@ -355,17 +369,16 @@ BModify._Initialize = function(en, Research) {
 
         this.draw = function() {
 	    	if (Game.drawT%5==0) {
-	    		this.mbarFull.style.width=Math.max(Math.round((this.rsAvailable/this.rsTotal)*100), 0)+'%';
+	    		this.mbarFull.style.width=Math.max(Math.round((this.availableRes()/this.rsTotal)*100), 0)+'%';
                 if ((this.id == 2) && Research.has("Regrowth")) this.mbar.style.background='lightGreen';
-                else if (this.interest>0) this.mbar.style.background='lightRed';
 			    this.mbar.style.width='350px';
-                this.mbarText.innerHTML=Beautify(Math.max((this.rsAvailable/this.rsTotal)*100, 0), 1)+'% left';
+                this.mbarText.innerHTML=Beautify(Math.max((this.availableRes()/this.rsTotal)*100, 0), 1)+'% left ('+this.rsMax+' max)';
                 if (this.depleted) this.mbarInfo.innerHTML='This resource has been depleted';
                 else if (this.pause) this.mbarInfo.innerHTML='Currently paused';
                 else if ((this.id == 2) && Research.has("Regrowth")) this.mbarInfo.innerHTML='Regrowth is currently active.';
                 else this.mbarInfo.innerHTML='Depletion rate: -'
-                    +Beautify(Math.max(((this.RhpS*this.me.amount*this.decayedFactor()*(this.interest>0?1.5:1))/this.rsTotal)*100, 0), 2)+'%/s (-'
-                    +Beautify(Math.max(((this.RhpS*this.me.amount*this.decayedFactor()*(this.interest>0?1.5:1))/this.rsTotal)*100*60, 0), 2)+'%/min)';
+                    +Beautify(Math.max(((this.RhpS*this.me.amount*this.decayedFactor())/this.rsTotal)*100, 0), 2)+'%/s (-'
+                    +Beautify(Math.max(((this.RhpS*this.me.amount*this.decayedFactor())/this.rsTotal)*100*60, 0), 2)+'%/min)';
 		    }
 		    this.mbarFull.style.backgroundPosition=(-Game.T*0.5)+'px';
             if (this.interest>0) this.interest--;
@@ -528,9 +541,9 @@ BModify._Initialize = function(en, Research) {
         }
 
         // scientist grandmas
-        const BaseResearchTime=Game.fps*10;//Game.fps*60*10;
+        const BaseResearchTime=Game.fps*60*30;
         var sci=this.newGrandmaType("scientist", "Scientist grandmas", 
-            function(){return 10+Math.ceil(grandmaM.maxFree()*0.3)}, [0, 1], 
+            function(){return Math.ceil(grandmaM.maxFree()*0.3)}, [1, 0, Icons], 
             "You passively gain research. Speed is faster the more grandmas you have.");
         sci.nextResearch=BaseResearchTime;
         sci.update=function(){
@@ -847,6 +860,7 @@ BModify._Initialize = function(en, Research) {
             en.setVar("yield"+me.id,   me.yield);
             en.setVar("rsTotal"+me.id, me.rsTotal);
             en.setVar("rsUsed"+me.id,  me.rsUsed);
+            en.setVar("rsMaxBoost"+me.id,  me.rsMaxBoost);
             en.setVar("pause"+me.id,   me.pause ? 1 : 0);
         })
         en.setVar("bankRefill", BModify.bankRefill);
@@ -858,6 +872,7 @@ BModify._Initialize = function(en, Research) {
             me.yield =   en.getVar("yield"+me.id,   me.yield);
             me.rsTotal = en.getVar("rsTotal"+me.id, me.rsTotal);
             me.rsUsed =  en.getVar("rsUsed"+me.id,  me.rsUsed);
+            me.rsMaxBoost = en.getVar("rsMaxBoost"+me.id,  me.rsMaxBoost);
             me.pause =  (en.getVar("pause"+me.id,   me.pause) > 0) ? true: false;
         })
         BModify.bankRefill = en.getVar("bankRefill", BModify.bankRefill);
