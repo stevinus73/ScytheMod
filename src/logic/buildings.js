@@ -166,11 +166,13 @@ BModify._Initialize = function(en, Research) {
 
         this.gainRes = function(amnt){
             var num=Math.min(amnt, this.rsMax-this.rsTotal);
+            console.log(num);
             this.rsTotal+=num;
             return num;
         }
         this.loseRes = function(amnt){
             var num=Math.min(amnt, this.availableRes()*0.75);
+            console.log(num);
             this.rsTotal-=num;
             return num;
         }
