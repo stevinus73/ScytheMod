@@ -65,7 +65,7 @@ BModify._Initialize = function(en, Research) {
 
         this.baseRs = baseRS;
         this.rsTotal = baseRS;
-        this.getBaseRsMax = function(){return this.baseRs*5*Math.pow(20-this.id, 1.3);}
+        this.getBaseRsMax = function(){return this.baseRs*5*Math.pow(20-this.id, 0.3);}
         this.rsMax = this.getBaseRsMax();
         this.rsUsed = 0;
         this.interest = 0;
@@ -192,7 +192,7 @@ BModify._Initialize = function(en, Research) {
                 var dep = (this.RhpS / Game.fps) * this.me.amount * this.decayedFactor() * (this.interest>0?1.5:1);
                 this.rsUsed += dep;
                 BModify.totalDp += dep;
-                this.rsMaxBoost *= 1+(0.01/Game.fps);
+                //this.rsMaxBoost *= 1+(0.01/Game.fps);
             }
         }
 
@@ -303,7 +303,7 @@ BModify._Initialize = function(en, Research) {
             str+='<div class="listing" '+sty+'> <b>'+this.rsNames[0]+' use rate ('+this.rsNames[2]+'/second) per '+this.me.dname.toLowerCase()+': </b>'+
                 Beautify((this.pause || this.depleted) ? 0 : this.RhpS*(this.interest>0?1.5:1), 1);
             str+=' ('+Beautify(this.RhpS * this.me.amount * this.decayedFactor()*(this.interest>0?1.5:1), 1)+' for '+Beautify(this.me.amount)+' '+this.me.plural.toLowerCase();
-            str+=')'+(((this.interest>0)&&(!this.pause)&&(!this.depleted))?' <span class="red">(50% faster due to interest)</span>':'')+'</div>';
+            str+=')</div>';
             str+='<div class="listing"> <b>Base yield: </b>'+Beautify(this.yield, 1)+ " cookies/"+this.rsNames[1]+'</div>';
             str+='<div class="listing"> <b>Total amount of '+this.rsNames[0].toLowerCase()+':</b> '+Beautify(this.rsTotal) + " " + this.rsNames[2]+'</div>';
             str+='<div class="listing"> <b>Used '+this.rsNames[0].toLowerCase()+' so far:</b> '+Beautify(this.rsUsed) + " " + this.rsNames[2]+'</div>';
