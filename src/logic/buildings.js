@@ -67,6 +67,7 @@ BModify._Initialize = function(en, Research) {
         this.rsTotal = baseRS;
         this.getBaseRsMax = function(){return this.baseRs*5*Math.pow(20-this.id, 0.3);}
         this.rsMax = this.getBaseRsMax();
+        this.rsMaxBoost = 1;
         this.rsUsed = 0;
         this.interest = 0;
 
@@ -860,7 +861,7 @@ BModify._Initialize = function(en, Research) {
             en.setVar("yield"+me.id,   me.yield);
             en.setVar("rsTotal"+me.id, me.rsTotal);
             en.setVar("rsUsed"+me.id,  me.rsUsed);
-            //en.setVar("rsMaxBoost"+me.id,  me.rsMaxBoost);
+            en.setVar("rsMaxBoost"+me.id,  me.rsMaxBoost);
             en.setVar("pause"+me.id,   me.pause ? 1 : 0);
         })
         en.setVar("bankRefill", BModify.bankRefill);
@@ -872,7 +873,7 @@ BModify._Initialize = function(en, Research) {
             me.yield =   en.getVar("yield"+me.id,   me.yield);
             me.rsTotal = en.getVar("rsTotal"+me.id, me.rsTotal);
             me.rsUsed =  en.getVar("rsUsed"+me.id,  me.rsUsed);
-            //me.rsMaxBoost = en.getVar("rsMaxBoost"+me.id,  me.rsMaxBoost);
+            me.rsMaxBoost = en.getVar("rsMaxBoost"+me.id,  me.rsMaxBoost);
             me.pause =  (en.getVar("pause"+me.id,   me.pause) > 0) ? true: false;
         })
         BModify.bankRefill = en.getVar("bankRefill", BModify.bankRefill);
