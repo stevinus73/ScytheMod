@@ -609,10 +609,10 @@ BModify._Initialize = function(en, Research) {
                 var me=this.grandmaTypes[i];
                 if (me.unlocked) {
                     me.getMainElement().classList.add("ready");
-                    me.getMainElement().style.display="none";
+                    me.getMainElement().style.display="inline-block";
                 } else {
                     me.getMainElement().classList.remove("ready");
-                    me.getMainElement().style.display="inline-block";
+                    me.getMainElement().style.display="none";
                 }
                 if (me.reqFunc(me)) me.unlocked=true;
                 else {me.unlocked=false; me.allocated=0;}
