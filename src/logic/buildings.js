@@ -187,7 +187,9 @@ BModify._Initialize = function(en, Research) {
             if ((this.id == 2) && Research.has("Regrowth")) return;
             if (this.depleted) return;
             if (this.pause) {
-                var rate = 0.001 * this.decayedFactor() * (Math.max(this.availableRes()/this.rsTotal, 0.1));
+                var rate = 0.001 * this.decayedFactor() 
+                    * (Math.max(this.availableRes()/this.rsTotal, 0.1))
+                    * Math.sqrt(BModify.grandma.grandmaTypes['healer'].allocated);
                 this.rsUsed -= (rate / Game.fps) * this.rsTotal;
                 this.rsUsed = Math.max(this.rsUsed, 0);
                 return;
@@ -304,7 +306,7 @@ BModify._Initialize = function(en, Research) {
             str+=' ('+Beautify(this.RhpS * this.me.amount * this.decayedFactor()*(this.interest>0?1.5:1), 1)+' for '+Beautify(this.me.amount)+' '+this.me.plural.toLowerCase();
             str+=')</div>';
             str+='<div class="listing"> <b>Base yield: </b>'+Beautify(this.yield, 1)+ " cookies/"+this.rsNames[1]+'</div>';
-            str+='<div class="listing"> <b>Total amount of '+this.rsNames[0].toLowerCase()+':</b> '+Beautify(this.rsTotal) + " " + this.rsNames[2]+'</div>';
+            str+='<div class="listing"> <b>Total amount of '+this.rsNames[0].toLowerCase()+' discovered:</b> '+Beautify(this.rsTotal) + " " + this.rsNames[2]+'</div>';
             str+='<div class="listing"> <b>Used '+this.rsNames[0].toLowerCase()+' so far:</b> '+Beautify(this.rsUsed) + " " + this.rsNames[2]+'</div>';
             // str+='<div class="listing" '+sty+'> <b>Base CpS:</b> '+Beautify(this.getRawCpS()*this.me.amount, 1)+" cookies/second"+'</div>';
             // str+='<div class="listing" '+sty+'> <b>CpS:</b> '+Beautify(this.me.storedTotalCps*Game.globalCpsMult, 1)+" cookies/second"+'</div>';
@@ -470,7 +472,7 @@ BModify._Initialize = function(en, Research) {
                 },
                 tooltip: function() {
                     var str='<div style="padding:8px 4px;min-width:350px;">'+
-                    '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;background-position:'+(-this.sprite[0]*48)+'px '+(-this.sprite[1]*48)+'px;"></div>'+
+                    '<div class="icon" style="float:left;margin-left:-8px;margin-top:-8px;'+writeIcon(this.sprite)+'"></div>'+
                     '<div class="name">'+this.lname+'</div>'+
                     (this.unlocked?'<div>Currently allocated: <b>'+this.allocated+'/'+this.maxFunc()+'</b></div>'+
                     '<div>Click to allocate a grandma, Shift-click to remove.</div>'+
@@ -562,11 +564,11 @@ BModify._Initialize = function(en, Research) {
         }
 
         // healer grandmas
-        var heal=this.newGrandmaType("healer", "Healer grandmas", 
+        this.newGrandmaType("healer", "Healer grandmas", 
             function(){return Math.ceil(grandmaM.maxFree()*0.25)}, [3, 1, Icons], 
             "Used resource is converted into available resource while buildings are paused. Speed is faster the more grandmas you have.");
 
-        var exp=this.newGrandmaType("explorer", "Explorer grandmas", 
+        this.newGrandmaType("explorer", "Explorer grandmas", 
             function(){return Math.ceil(grandmaM.maxFree()*0.25)}, [3, 2, Icons], 
             "You can send these grandmas on an exploration trip to collect resources and other goodies.");
 
