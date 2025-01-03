@@ -530,10 +530,9 @@ BModify._Initialize = function(en, Research) {
         }
 
         for (var i=0; i<18; i++) {
-            var building=Game.ObjectsById[i+2];
-            me.buildingTie=building;
+            me.buildingTie=Game.ObjectsById[i+2];
             var me=this.newGrandmaType("G"+(i+2), Game.ObjectsById[i+2].grandma.name, 
-            () => Game.Has(building.grandma.name),
+            (me) => Game.Has(me.buildingTie.grandma.name),
             function() {
                 return Math.ceil(grandmaM.maxFree()*0.1);
             }, [spr_ref[i+2], 0], cfl(Game.ObjectsById[i+2].plural)+" gain <b>+50%</b> CpS per "+
@@ -545,7 +544,7 @@ BModify._Initialize = function(en, Research) {
 
         // scientist grandmas
         const BaseResearchTime=Game.fps*60*30;
-        var sci=this.newGrandmaType("scientist", "Scientist grandmas", () => Research.has("Interns"),
+        var sci=this.newGrandmaType("scientist", "Scientist grandmas", (me) => Research.has("Interns"),
             function(){return Math.ceil(grandmaM.maxFree()*0.2)}, [1, 0, Icons], 
             "You passively gain research. Speed is faster the more grandmas you have.");
         sci.nextResearch=BaseResearchTime;
@@ -560,11 +559,11 @@ BModify._Initialize = function(en, Research) {
         }
 
         // healer grandmas
-        this.newGrandmaType("healer", "Healer grandmas", () => true,
+        this.newGrandmaType("healer", "Healer grandmas", (me) => true,
             function(){return Math.ceil(grandmaM.maxFree()*0.25)}, [3, 1, Icons], 
             "Used resource is converted into available resource while buildings are paused. Speed is faster the more grandmas you have.");
 
-        this.newGrandmaType("explorer", "Explorer grandmas", () => true,
+        this.newGrandmaType("explorer", "Explorer grandmas", (me) => true,
             function(){return Math.ceil(grandmaM.maxFree()*0.25)}, [3, 2, Icons], 
             "You can send these grandmas on an exploration trip to collect resources and other goodies.");
 
@@ -613,7 +612,7 @@ BModify._Initialize = function(en, Research) {
                     me.getMainElement().classList.remove("ready");
                     me.getMainElement().style.display="inline-block";
                 }
-                if (me.reqFunc()) me.unlocked=true;
+                if (me.reqFunc(me)) me.unlocked=true;
                 else {me.unlocked=false; me.allocated=0;}
                 if (me.upkeep()) me.update();
             }
