@@ -622,6 +622,7 @@ BModify._Initialize = function(en, Research) {
 
         this.draw = function() {
             for (var i in this.grandmaTypes) {
+                var me=this.grandmaTypes[i];
                 me.getInfoElement().innerHTML=me.allocated+"/"+me.maxFunc();
             }
             l("grandmaInfo1").innerHTML=this.maxFree();
