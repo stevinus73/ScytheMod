@@ -38,7 +38,6 @@ Research._Initialize = function(en) {
     this.num = l("researchAmount");
     this.numUpgrades = 0;
     this.research = 0;
-    this.nextResearch = 10 * 60;
 
     this.userX = 0;
     this.userY = 0;
@@ -333,17 +332,6 @@ Research._Initialize = function(en) {
         if (Game.onMenu != '') this.switch(false);
 
         this.num.textContent = this.research;
-
-        if (this.has("Interns")) {
-            this.nextResearch -= (1.0 / Game.fps);
-
-            if (this.nextResearch <= 0) {
-                this.earn(1);
-                var bmult = 1;
-                if (this.has("Cookie funding")) bmult += 0.0015 * Game.Objects['Bank'].amount;
-                this.nextResearch = (10 * 60) / bmult;
-            }
-        }
     }
 
     Research.setCurrTree = function(treeName) {
@@ -403,7 +391,7 @@ Research._Initialize = function(en) {
         " You gain research in a variety of ways, such as earning achievements. <div class=\"line\"></div>"+
         " Research upgrades are kept across ascensions. <q>It's quite small, but so is your current business.</q>", 1, f, f, [], [1, 0, Icons], 0, 0); //0
     new Research.Tech("Plain cookie", "Cookie production multiplier <b>+5%</b>. <q>We all gotta start somewhere. </q>", 20, f, f, [0], [2, 3], -0.2, 0.5); //1
-    new Research.Tech("Interns", "You <b>gain research passively</b>, at a rate of <b>1 research every 10 minutes</b>. <q>They do research for you when you're gone. Sure, they may just be drinking all the test tubes and fighting each other with meter sticks, but it's the effort that counts. </q>", 10, f, f, [0], [9, 0], 0.3, 0); //2
+    new Research.Tech("Interns", "Unlocks a new grandma type that <b>gains research passively</b>. <q>Grandmas. Can they be trusted? Can they be relied on? All I know is that I can use them for unpaid labor.</q>", 10, f, f, [0], [9, 0], 0.3, 0); //2
     new Research.Tech("Better application forms", "Research costs <b>10%</b> less.", 100, f, f, [2], [9, 1], 0.6, 0); //3
     new Research.Tech("Kitten scientists", "You gain <b>more CpS</b> the more milk you have.<q>science is a natural for meow</q>", 999, req(() => Game.AchievementsOwned, 500, "achievements"), f, [1], [18, 21], -0.6, 0.4); //4
     Game.CalculateGains = en.injectCode(Game.CalculateGains, `if (Game.Has('Fortune #103')) catMult*=(1+Game.milkProgress*0.05*milkMult);`,

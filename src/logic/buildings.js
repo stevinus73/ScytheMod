@@ -218,10 +218,6 @@ BModify._Initialize = function(en, Research) {
             this.switchStats(false);
         }
 
-        this.gainRes = function() {
-
-        }
-
         // whatever this is
 
 
@@ -375,7 +371,7 @@ BModify._Initialize = function(en, Research) {
 	    		this.mbarFull.style.width=Math.max(Math.round((this.availableRes()/this.rsTotal)*100), 0)+'%';
                 if ((this.id == 2) && Research.has("Regrowth")) this.mbar.style.background='lightGreen';
 			    this.mbar.style.width='350px';
-                this.mbarText.innerHTML=Beautify(Math.max((this.availableRes()/this.rsTotal)*100, 0), 1)+'% left ('+this.rsMax+' max)';
+                this.mbarText.innerHTML=Beautify(Math.max((this.availableRes()/this.rsTotal)*100, 0), 1)+'% left ('+Beautify(this.rsMax)+' max)';
                 if (this.depleted) this.mbarInfo.innerHTML='This resource has been depleted';
                 else if (this.pause) this.mbarInfo.innerHTML='Currently paused';
                 else if ((this.id == 2) && Research.has("Regrowth")) this.mbarInfo.innerHTML='Regrowth is currently active.';
@@ -503,7 +499,8 @@ BModify._Initialize = function(en, Research) {
                 reset: function() {
                     this.allocated = 0;
                 },
-                update: function() {} 
+                update: function() {},
+                upkeep: function() {return true;}, 
             }
             en.newVar(name+"grandmaAlloc", "int");
             this.grandmaTypes[name] = grandmaType;
@@ -546,7 +543,7 @@ BModify._Initialize = function(en, Research) {
         // scientist grandmas
         const BaseResearchTime=Game.fps*60*30;
         var sci=this.newGrandmaType("scientist", "Scientist grandmas", 
-            function(){return Math.ceil(grandmaM.maxFree()*0.3)}, [1, 0, Icons], 
+            function(){return Math.ceil(grandmaM.maxFree()*0.2)}, [1, 0, Icons], 
             "You passively gain research. Speed is faster the more grandmas you have.");
         sci.nextResearch=BaseResearchTime;
         sci.update=function(){
@@ -563,6 +560,17 @@ BModify._Initialize = function(en, Research) {
             else this.unlocked=false;
             if (!this.unlocked) this.allocated=0;
         }
+
+        // healer grandmas
+        var heal=this.newGrandmaType("healer", "Healer grandmas", 
+            function(){return Math.ceil(grandmaM.maxFree()*0.25)}, [3, 1, Icons], 
+            "Used resource is converted into available resource while buildings are paused. Speed is faster the more grandmas you have.");
+
+        var exp=this.newGrandmaType("explorer", "Explorer grandmas", 
+            function(){return Math.ceil(grandmaM.maxFree()*0.25)}, [3, 2, Icons], 
+            "You can send these grandmas on an exploration trip to collect resources and other goodies.");
+
+        // explorer grandmas
 
         str='';
         str+='<div><b>Free grandmas</b> are grandmas not currently producing cookies. You can allocate them to do specific tasks.</div>';
@@ -609,7 +617,7 @@ BModify._Initialize = function(en, Research) {
                 var me=this.grandmaTypes[i];
                 if (me.unlocked) me.getMainElement().classList.add("ready");
                 else me.getMainElement().classList.remove("ready");
-                me.update();
+                if (me.upkeep()) me.update();
                 me.getInfoElement().innerHTML=me.allocated+"/"+me.maxFunc();
             }
             l("grandmaInfo1").innerHTML=this.maxFree();
