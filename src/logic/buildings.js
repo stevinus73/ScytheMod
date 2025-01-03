@@ -397,6 +397,9 @@ BModify._Initialize = function(en, Research) {
         return 'RS_Manager';
     }
 
+    
+    const UpdateTicks = 10;
+
     BModify.Grandmas = function() {
         this.me = Game.Objects['Grandma'];
         var grandmaM = this;
@@ -442,7 +445,6 @@ BModify._Initialize = function(en, Research) {
 
         this.allocT = 0;
         this.grandmaTypes = {};
-        const UpdateTicks = 10;
         this.storage = 0;
         this.newGrandmaType = function(name, lname, reqFunc, maxFunc, sprite, desc) {
             var grandmaType = {
