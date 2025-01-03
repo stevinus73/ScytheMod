@@ -530,13 +530,13 @@ BModify._Initialize = function(en, Research) {
         }
 
         for (var i=0; i<18; i++) {
-            me.buildingTie=Game.ObjectsById[i+2];
             var me=this.newGrandmaType("G"+(i+2), Game.ObjectsById[i+2].grandma.name, 
             (me) => Game.Has(me.buildingTie.grandma.name),
             function() {
                 return Math.ceil(grandmaM.maxFree()*0.1);
             }, [spr_ref[i+2], 0], cfl(Game.ObjectsById[i+2].plural)+" gain <b>+50%</b> CpS per "+
                 (i==0? " grandma." : (i+1)+" grandmas."));
+            me.buildingTie=Game.ObjectsById[i+2];
             en.ue.replaceDescPart(me.buildingTie.grandma, 
                 loc("%1 are <b>twice</b> as efficient.",cap(Game.Objects['Grandma'].plural))+' Unlocks a <b>new grandma type</b>')
             me.buildingBuff=function() {return (0.5/(this.buildingTie.id-1))*this.allocated;}
