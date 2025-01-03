@@ -444,10 +444,11 @@ BModify._Initialize = function(en, Research) {
         this.grandmaTypes = {};
         const UpdateTicks = 10;
         this.storage = 0;
-        this.newGrandmaType = function(name, lname, maxFunc, sprite, desc) {
+        this.newGrandmaType = function(name, lname, reqFunc, maxFunc, sprite, desc) {
             var grandmaType = {
                 name: name,
                 lname: lname,
+                reqFunc: reqFunc,
                 maxFunc: maxFunc,
                 sprite: sprite,
                 desc: desc,
@@ -460,6 +461,7 @@ BModify._Initialize = function(en, Research) {
                     if (this.allocated > this.maxFunc()) this.allocated = this.maxFunc();
                     else grandmaM.allocT += 1;
                     grandmaM.update();
+                    grandmaM.draw();
                     Game.recalculateGains = 1;
                 },
                 remove: function() {
@@ -468,6 +470,7 @@ BModify._Initialize = function(en, Research) {
                     this.allocated -= 1;
                     grandmaM.allocT -= 1;
                     grandmaM.update();
+                    grandmaM.draw();
                     Game.recalculateGains = 1;
                 },
                 tooltip: function() {
@@ -483,7 +486,7 @@ BModify._Initialize = function(en, Research) {
                 getRawHTML: function() {
                     return '<div class="grandmaType titleFont" id="grandmaType'+this.name+'" '+
                         Game.getDynamicTooltip('mod.bModify.grandma.grandmaTypes[`'+this.name+'`].tooltip','this')+
-                        '><div class="usesIcon shadowFilter grandmaIcon" style="background-position:'+(-this.sprite[0]*48)+'px '+(-this.sprite[1]*48)+'px;"></div>'+
+                        '><div class="usesIcon shadowFilter grandmaIcon" style="'+writeIcon(this.sprite)+'"></div>'+
                         '<div class="grandmaTypeInfo" id="grandmaTypeInfo'+this.name+'">-</div></div>';
                 },
                 getMainElement: function() {
@@ -527,7 +530,9 @@ BModify._Initialize = function(en, Research) {
         }
 
         for (var i=0; i<18; i++) {
-            var me=this.newGrandmaType("G"+(i+2), Game.ObjectsById[i+2].grandma.name, function() {
+            var me=this.newGrandmaType("G"+(i+2), Game.ObjectsById[i+2].grandma.name, 
+            () => Game.Has(this.buildingTie.grandma.name),
+            function() {
                 return Math.ceil(grandmaM.maxFree()*0.1);
             }, [spr_ref[i+2], 0], cfl(Game.ObjectsById[i+2].plural)+" gain <b>+50%</b> CpS per "+
                 (i==0? " grandma." : (i+1)+" grandmas."));
@@ -544,31 +549,26 @@ BModify._Initialize = function(en, Research) {
 
         // scientist grandmas
         const BaseResearchTime=Game.fps*60*30;
-        var sci=this.newGrandmaType("scientist", "Scientist grandmas", 
+        var sci=this.newGrandmaType("scientist", "Scientist grandmas", () => Research.has("Interns"),
             function(){return Math.ceil(grandmaM.maxFree()*0.2)}, [1, 0, Icons], 
             "You passively gain research. Speed is faster the more grandmas you have.");
         sci.nextResearch=BaseResearchTime;
         sci.update=function(){
-            if (Research.has("Interns")) {
-                this.unlocked=true;
-                if (this.allocated>0) {
-                    this.nextResearch-=UpdateTicks;
-                    if (this.nextResearch<=0) {
-                        Research.earn(1);
-                        this.nextResearch=(BaseResearchTime) / Math.sqrt(this.allocated);
-                    }
+            if (this.allocated>0) {
+                this.nextResearch-=UpdateTicks;
+                if (this.nextResearch<=0) {
+                    Research.earn(1);
+                    this.nextResearch=(BaseResearchTime) / Math.sqrt(this.allocated);
                 }
             }
-            else this.unlocked=false;
-            if (!this.unlocked) this.allocated=0;
         }
 
         // healer grandmas
-        this.newGrandmaType("healer", "Healer grandmas", 
+        this.newGrandmaType("healer", "Healer grandmas", () => true,
             function(){return Math.ceil(grandmaM.maxFree()*0.25)}, [3, 1, Icons], 
             "Used resource is converted into available resource while buildings are paused. Speed is faster the more grandmas you have.");
 
-        this.newGrandmaType("explorer", "Explorer grandmas", 
+        this.newGrandmaType("explorer", "Explorer grandmas", () => true,
             function(){return Math.ceil(grandmaM.maxFree()*0.25)}, [3, 2, Icons], 
             "You can send these grandmas on an exploration trip to collect resources and other goodies.");
 
@@ -608,18 +608,23 @@ BModify._Initialize = function(en, Research) {
             //     var me=Game.ObjectsById[i].grandma;
             //     if (Game.Has(me.name)) this.grandmaTypes["G"+i].unlocked = true; 
             // }
-            if (Game.T%UpdateTicks==0) {
-                this.draw();
+            for (var i in this.grandmaTypes) {
+                var me=this.grandmaTypes[i];
+                if (me.unlocked) {
+                    me.getMainElement().classList.add("ready");
+                    me.getMainElement().style.display="none";
+                } else {
+                    me.getMainElement().classList.remove("ready");
+                    me.getMainElement().style.display="inline-block";
+                }
+                if (me.reqFunc()) me.unlocked=true;
+                else {me.unlocked=false; me.allocated=0;}
+                if (me.upkeep()) me.update();
             }
-            
         }
 
         this.draw = function() {
             for (var i in this.grandmaTypes) {
-                var me=this.grandmaTypes[i];
-                if (me.unlocked) me.getMainElement().classList.add("ready");
-                else me.getMainElement().classList.remove("ready");
-                if (me.upkeep()) me.update();
                 me.getInfoElement().innerHTML=me.allocated+"/"+me.maxFunc();
             }
             l("grandmaInfo1").innerHTML=this.maxFree();
@@ -864,6 +869,9 @@ BModify._Initialize = function(en, Research) {
         BModify.rsManagers.forEach(mn => mn.draw())
         BModify.mine.ores.forEach(mn => mn.draw())
         BModify.grandma.update()
+        if (Game.T%UpdateTicks==0) {
+            BModify.grandma.draw()
+        }
         if (BModify.bankRefill>0) BModify.bankRefill--
     }
 
