@@ -81,6 +81,28 @@ G._Initialize = function(en, Research) {
         "before"
     )
 
+    // starlight
+    new Game.buffType('starlight',function(time,pow)
+		{
+			return {
+				name:'Starlight',
+				desc:"Golden cookie effect cap +"+pow+" for "+Game.sayTime(time*Game.fps,-1)+"!",
+				icon:[9,9],
+				time:time*Game.fps,
+				power:pow,
+				max:true
+			};
+		});
+
+    G.gainStarlight = function(time) {
+        var old=Game.hasBuff('Starlight');
+        var pow=(old?old.power+1:1);
+        var buff=Game.gainBuff('starlight',time,pow);
+        buff.arg1=pow;
+        buff.power=pow;
+        return buff;
+    }
+
     // click frenzy/dragonflight mutual exclusitivity (well, technically not completely mutually exclusive but eh, whatever)
     // anything that was supposed to give click frenzy now gives fortune (fun!)
     // also nerfed dragonflight chances
