@@ -90,7 +90,8 @@ G._Initialize = function(en, Research) {
 				icon:[9,9],
 				time:time*Game.fps,
 				power:pow,
-				max:true
+                add:true,
+                aura:1
 			};
 		});
 
@@ -132,6 +133,15 @@ G._Initialize = function(en, Research) {
 
     G.update = function() {
         if (Game.hasBuff('Dragonflight') && Game.hasBuff('Click frenzy')) Game.Win("The click to end all clicks");
+
+        var maxEffs=3;
+        if (Game.hasBuff('Starlight')) maxEffs+=Game.hasBuff('Starlight').pow;
+        this.maxEffs=maxEffs;
+
+        var effs=G.currEffs();
+        while (effs.length>this.maxEffs) {
+            Game.killBuff(choose(effs));
+        }
     }
     
     Game.registerHook('logic', function() {
