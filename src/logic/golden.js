@@ -139,9 +139,7 @@ G._Initialize = function(en, Research) {
         this.maxEffs=maxEffs;
 
         var effs=G.currEffs();
-        while (effs.length>this.maxEffs) {
-            Game.killBuff(choose(effs));
-        }
+        if (effs.length>this.maxEffs) Game.killBuff(choose(effs));
     }
     
     Game.registerHook('logic', function() {
