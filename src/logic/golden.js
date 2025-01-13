@@ -1,7 +1,7 @@
 var G = {}
 G._Initialize = function(en, Research) {
     this.me = Game.shimmerTypes.golden;
-    this.maxEffs = 3;
+    this.maxEffs = 1;
 
     // for stats
     this.fortunesEarned = 0;
@@ -131,10 +131,22 @@ G._Initialize = function(en, Research) {
         "replace"
     )
 
+    en.ue.addUpgrade("Shimmering aura", "Increases the golden cookie effect cap by <b>1</b>.<div class=\"line\"></div>Unlocks a new Golden switch mode."
+        +'<q>Ethereal!</q>',
+        7777777, [9,9], 0, {pool: 'prestige', posX: -335, poxY: 270, parents: ['Heavenly luck', 'Lasting fortune', 'Decisive fate']}
+    );
+
+    en.ue.addUpgrade("Golden glow", "Increases the golden cookie effect cap by <b>1</b>.<div class=\"line\"></div>Unlocks a new Golden switch mode."
+        +'<q>Maybe your alchemy labs can do something with this.</q>',
+        777777777777777, [9,9], 0, {pool: 'prestige', posX: 254, poxY: 948, parents: ['Cosmic beginner \'s luck']}
+    );
+
     G.update = function() {
         if (Game.hasBuff('Dragonflight') && Game.hasBuff('Click frenzy')) Game.Win("The click to end all clicks");
 
-        var maxEffs=3;
+        var maxEffs=1;
+        if (Game.Has('Shimmering aura')) maxEffs++;
+        if (Game.Has('Golden glow')) maxEffs++;
         if (Game.hasBuff('Starlight')) maxEffs+=Game.hasBuff('Starlight').pow;
         this.maxEffs=maxEffs;
 
