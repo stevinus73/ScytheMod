@@ -58,6 +58,7 @@ var Process = function(en) {
             Game.last[i] = upgrade.other[i];
         }
         if (Game.last.unlockAt) Game.UnlockAt.push({cookies: Game.last.unlockAt, name: upgrade.name});
+        if (Game.last.pool=='prestige') Game.PrestigeUpgrades.push(Game.last);
         Game.last.order = upgrade.order + Game.last.id*0.001;
         en.newVar("moddedUpUl"+Game.last.id, "int");
         en.newVar("moddedUpB"+Game.last.id, "int");

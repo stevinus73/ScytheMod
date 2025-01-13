@@ -138,7 +138,7 @@ G._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Golden glow", "Increases the golden cookie effect cap by <b>1</b>.<div class=\"line\"></div>Unlocks a new Golden switch mode."
         +'<q>Maybe your alchemy labs can do something with this.</q>',
-        777777777777777, [9,9], 0, {pool: 'prestige', posX: 254, poxY: 948, parents: ['Cosmic beginner \'s luck']}
+        777777777777777, [9,9], 0, {pool: 'prestige', posX: 254, poxY: 948, parents: ['Cosmic beginner\'s luck']}
     );
 
     G.update = function() {
