@@ -913,7 +913,6 @@ BModify._Initialize = function(en, Research) {
     })
     Game.registerHook('reset', function() {
         BModify.rsManagers.forEach(mn => mn.clear())
-        BModify.grandma.clear()
         BModify.mine.ores.forEach(mn => mn.clear())
         BModify.bankRefill=0
         BModify.totalDp=0
