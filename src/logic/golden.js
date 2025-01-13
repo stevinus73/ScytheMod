@@ -133,13 +133,13 @@ G._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Shimmering aura", "Increases the golden cookie effect cap by <b>1</b>.<div class=\"line\"></div>Unlocks a new Golden switch mode."
         +'<q>Ethereal!</q>',
-        7777777, [9,9], 0, {pool: 'prestige', posX: -335, posY: 270, parents: 
+        7777777, [9,9], 0, {pool: 'prestige', posX: -325, posY: 270, parents: 
             [Game.Upgrades['Heavenly luck'], Game.Upgrades['Lasting fortune'], Game.Upgrades['Decisive fate']]}
     );
 
     en.ue.addUpgrade("Golden glow", "Increases the golden cookie effect cap by <b>1</b>.<div class=\"line\"></div>Unlocks a new Golden switch mode."
         +'<q>Maybe your alchemy labs can do something with this.</q>',
-        777777777777777, [9,9], 0, {pool: 'prestige', posX: -293, posY: 770, parents: [Game.Upgrades['Distilled essence of redoubled luck']]}
+        777777777777777, [4,0], 19300, {pool: 'prestige', posX: -293, posY: 770, parents: [Game.Upgrades['Distilled essence of redoubled luck']]}
     );
 
     // fortune moved
