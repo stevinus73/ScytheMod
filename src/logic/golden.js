@@ -139,8 +139,14 @@ G._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Golden glow", "Increases the golden cookie effect cap by <b>1</b>.<div class=\"line\"></div>Unlocks a new Golden switch mode."
         +'<q>Maybe your alchemy labs can do something with this.</q>',
-        777777777777777, [9,9], 0, {pool: 'prestige', posX: 254, posY: 948, parents: [Game.Upgrades['Cosmic beginner\'s luck']]}
+        777777777777777, [9,9], 0, {pool: 'prestige', posX: -293, posY: 770, parents: [Game.Upgrades['Distilled essence of redoubled luck']]}
     );
+
+    // fortune moved
+    Game.Upgrades['Fortune cookies'].posX=-640;Game.Upgrades['Fortune cookies'].posY=543
+    Game.Upgrades['Fortune cookies'].parents=[Game.Upgrades['Decisive fate']]
+    Game.Upgrades['Fortune cookies'].basePrice=77777777
+    Game.Tiers['fortune'].price=77777777777777777777
 
     G.update = function() {
         if (Game.hasBuff('Dragonflight') && Game.hasBuff('Click frenzy')) Game.Win("The click to end all clicks");
