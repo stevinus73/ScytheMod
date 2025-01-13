@@ -263,6 +263,37 @@ General._Initialize = function(en, Research) {
         "Upon harvesting a sugar lump, there is a <b>50% chance</b> that <b>one more lump</b> is dropped."    
     )
 
+    // IDLING
+    eval('Game.LoadSave='+Game.LoadSave.toString()
+        .replaceAll('percent+=10','percent+=20')
+        .replace('percent=5','percent=10')
+        .replace('percent+=3','percent+=83')
+        .replace('percent+=7','percent+=67')
+        .replace('percent+=1','percent+=10'))
+    
+    var desc=function(percent,total){return loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed, for a total of <b>%2%</b>.",[percent,total]);}
+
+    en.ue.replaceDescPart(Game.Upgrades['Twin Gates of Transcendence'],
+        loc("You now <b>keep making cookies while the game is closed</b>, at the rate of <b>%1%</b> of your regular CpS and up to <b>1 hour</b> after the game is closed."+
+            "<br>(Beyond 1 hour, this is reduced by a further %2% - your rate goes down to <b>%3%</b> of your CpS.)",[10,90,1]));
+    
+    en.ue.strReplace(Game.Upgrades['Angels'],desc(10,15),desc(20,30));
+    en.ue.strReplace(Game.Upgrades['Archangels'],desc(10,25),desc(20,50));
+    en.ue.strReplace(Game.Upgrades['Virtues'],desc(10,35),desc(20,70));
+    en.ue.strReplace(Game.Upgrades['Dominions'],desc(10,45),desc(20,90));
+    en.ue.strReplace(Game.Upgrades['Cherubim'],desc(10,55),desc(20,110));
+    en.ue.strReplace(Game.Upgrades['Seraphim'],desc(10,65),desc(20,130));
+    en.ue.strReplace(Game.Upgrades['God'],desc(10,75),desc(20,150));
+    en.ue.strReplace(Game.Upgrades['Ichor syrup'],
+        loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",3),
+        loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",83));
+    en.ue.strReplace(Game.Upgrades['Fern tea'],
+        loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",7),
+        loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",67));
+    en.ue.strReplace(Game.Upgrades['Fortune #102'],
+        loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",1),
+        loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",10));
+
     // activity check
     this.timeSinceLast=0;
     Game.loseShimmeringVeil=en.injectCode(Game.loseShimmeringVeil,
