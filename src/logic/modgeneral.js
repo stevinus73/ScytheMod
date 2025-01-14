@@ -265,11 +265,12 @@ General._Initialize = function(en, Research) {
 
     // IDLING
     eval('Game.LoadSave='+Game.LoadSave.toString()
-        .replaceAll('percent+=10','percent+=20')
-        .replace('percent=5','percent=10')
-        .replace('percent+=3','percent+=83')
-        .replace('percent+=7','percent+=67')
-        .replace('percent+=1','percent+=10'))
+        .replaceAll('percent+=10;','percent+=20;')
+        .replace('percent=5;','percent=10;')
+        .replace('percent+=5;','')
+        .replace('percent+=3;','percent+=83;')
+        .replace('percent+=7;','percent+=67;')
+        .replace('percent+=1;',`percent+=10;\n\t\t\t\t\t\tif(Game.Has('Chimera')) percent*=1.3;`))
     
     var desc=function(percent,total){return loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed, for a total of <b>%2%</b>.",[percent,total]);}
 
@@ -285,14 +286,17 @@ General._Initialize = function(en, Research) {
     en.ue.strReplace(Game.Upgrades['Seraphim'],desc(10,65),desc(20,130));
     en.ue.strReplace(Game.Upgrades['God'],desc(10,75),desc(20,150));
     en.ue.strReplace(Game.Upgrades['Ichor syrup'],
-        loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",3),
-        loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",83));
-    en.ue.strReplace(Game.Upgrades['Fern tea'],
         loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",7),
         loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",67));
+    en.ue.strReplace(Game.Upgrades['Fern tea'],
+        loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",3),
+        loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",83));
     en.ue.strReplace(Game.Upgrades['Fortune #102'],
         loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",1),
         loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",10));
+    en.ue.strReplace(Game.Upgrades['Chimera'],
+        loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",5),
+        "Offline CpS gains <b>+30%</b>.");
 
     // activity check
     this.timeSinceLast=0;
