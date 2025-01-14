@@ -302,7 +302,7 @@ General._Initialize = function(en, Research) {
     eval('Game.Logic='+Game.Logic.toString().replace(
         'if (ascendNowToGet<1) str+=loc("Ascending now would grant you no prestige.");',
         `if (!Game.Has('Legacy')&&!Game.Has('Heavenly key')) str+="You cannot ascend yet, as you do not have the Heavenly key upgrade."`
-        +'\n\tif (ascendNowToGet<1) str+=loc("Ascending now would grant you no prestige.");'
+        +'\n\telse if (ascendNowToGet<1) str+=loc("Ascending now would grant you no prestige.");'
     ))
 
     // IDLING
