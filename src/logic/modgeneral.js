@@ -296,7 +296,14 @@ General._Initialize = function(en, Research) {
             ['Heavenly favors']}
     );
 
+    /* used eval here because it's a little cleaner */
+
     eval('Game.Ascend='+Game.Ascend.toString().replace('if (!bypass)',`if (!Game.Has('Legacy')&&!Game.Has('Heavenly key')) return;\n\tif (!bypass)`));
+    eval('Game.Logic='+Game.Logic.toString().replace(
+        'if (ascendNowToGet<1) str+=loc("Ascending now would grant you no prestige.");',
+        `if (!Game.Has('Legacy')&&!Game.Has('Heavenly key')) str+="You cannot ascend yet, as you do not have the Heavenly key upgrade."`
+        +'\n\tif (ascendNowToGet<1) str+=loc("Ascending now would grant you no prestige.");'
+    ))
 
     // IDLING
     eval('Game.LoadSave='+Game.LoadSave.toString()
@@ -345,7 +352,7 @@ General._Initialize = function(en, Research) {
         this.santaDiff-=0.3;
     }
 
-    Game.Upgrades['Heavenly key'].basePrice=11111111111111111;
+    Game.Upgrades['Heavenly key'].basePrice=11111111111111111111;
     en.ue.replaceDesc(Game.Upgrades['Heavenly key'], "You can <b>ascend</b> to a higher plane of existence, leaving behind your cookies."
         +'<br>Ascend by pressing Legacy.'
         +'<q>This is the key to the pearly (and tasty) gates of pastry heaven.</q>'
