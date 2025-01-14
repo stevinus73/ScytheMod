@@ -263,13 +263,46 @@ General._Initialize = function(en, Research) {
         "Upon harvesting a sugar lump, there is a <b>50% chance</b> that <b>one more lump</b> is dropped."    
     )
 
+    // PRESTIGE (written through the magic of "hope for the best" maths)
+    Game.lastHcFactor=3;
+    Game.HcFactorFunc=function(cookies) {
+        var m=cookies/1000000000000;
+        if (m<=1) return 3;
+
+        var maxHcFactor=3.5;
+        if(Game.Has('Heavenly favors')) maxHcFactor=3.4;
+        if(Game.Has('Divine bribes')) maxHcFactor=3.35;
+
+        Game.lastHcFactor=Math.min(3+Math.log10(m)*(1/60), maxHcFactor);
+        return Game.lastHcFactor;
+    }
+
+    Game.HowMuchPrestige=function(cookies) {
+		return Math.pow(cookies/1000000000000,1/Game.HcFactorFunc(cookies));
+	}
+	Game.HowManyCookiesReset=function(chips) {
+		return Math.pow(chips,Game.lastHcFactor)*1000000000000;
+	}
+
+    en.ue.addUpgrade("Heavenly favors", "You <b>earn prestige faster.</b>"
+        +'<q>Now that you\'ve come along so far in your journey, the heavenly spirits can\'t help it to give you a little extra push.</q>',
+        90000000000000, [19,7], 274, {pool: 'prestige', posX: 190, posY: -1320, parents: 
+            [Game.Upgrades['Chimera']]}
+    );
+
+    en.ue.addUpgrade("Divine bribes", "You <b>earn prestige faster.</b>"
+        +'<q>A little bribe goes a long way.</q>',
+        90000000000000, [28,12], 274, {pool: 'prestige', posX: 190, posY: -1530, parents: 
+            [Game.Upgrades['Heavenly favors']]}
+    );
+
     // IDLING
     eval('Game.LoadSave='+Game.LoadSave.toString()
         .replaceAll('percent+=10;','percent+=20;')
         .replace('percent=5;','percent=10;')
         .replace('percent+=5;','')
-        .replace('percent+=3;','percent+=83;')
-        .replace('percent+=7;','percent+=67;')
+        .replace('percent+=3;','percent+=43;')
+        .replace('percent+=7;','percent+=27;')
         .replace('percent+=1;',`percent+=10;\n\t\t\t\t\t\tif(Game.Has('Chimera')) percent*=1.3;`))
     
     var desc=function(percent,total){return loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed, for a total of <b>%2%</b>.",[percent,total]);}
@@ -287,10 +320,10 @@ General._Initialize = function(en, Research) {
     en.ue.strReplace(Game.Upgrades['God'],desc(10,75),desc(20,150));
     en.ue.strReplace(Game.Upgrades['Ichor syrup'],
         loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",7),
-        loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",67));
+        loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",27));
     en.ue.strReplace(Game.Upgrades['Fern tea'],
         loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",3),
-        loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",83));
+        loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",43));
     en.ue.strReplace(Game.Upgrades['Fortune #102'],
         loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",1),
         loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",10));
