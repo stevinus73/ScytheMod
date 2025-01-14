@@ -269,11 +269,11 @@ General._Initialize = function(en, Research) {
         var m=cookies/1000000000000;
         if (m<=1) return 3;
 
-        var maxHcFactor=3.5;
+        var maxHcFactor=3.45;
         if(Game.Has('Heavenly favors')) maxHcFactor=3.4;
-        if(Game.Has('Divine bribes')) maxHcFactor=3.35;
+        if(Game.Has('Divine bribes')) maxHcFactor=3.3;
 
-        Game.lastHcFactor=Math.min(3+Math.log10(m)*(1/60), maxHcFactor);
+        Game.lastHcFactor=Math.min(3+Math.log10(m)*(1/45), maxHcFactor);
         return Game.lastHcFactor;
     }
 
@@ -286,15 +286,17 @@ General._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Heavenly favors", "You <b>earn prestige faster.</b>"
         +'<q>Now that you\'ve come along so far in your journey, the heavenly spirits can\'t help it to give you a little extra push.</q>',
-        90000000000000, [19,7], 274, {pool: 'prestige', posX: 190, posY: -1320, parents: 
+        9000000000000, [20,7], 274, {pool: 'prestige', posX: 190, posY: -1320, parents: 
             [Game.Upgrades['Chimera']]}
     );
 
     en.ue.addUpgrade("Divine bribes", "You <b>earn prestige faster.</b>"
         +'<q>A little bribe goes a long way.</q>',
-        90000000000000, [28,12], 274, {pool: 'prestige', posX: 190, posY: -1530, huParents: 
+        900000000000000, [10,35], 274, {pool: 'prestige', posX: 190, posY: -1530, huParents: 
             ['Heavenly favors']}
     );
+
+    eval('Game.Ascend='+Game.Ascend.toString().replace('if (!bypass)',`if (!Game.Has('Legacy')&&!Game.Has('Heavenly key')) return;\n\tif (!bypass)`));
 
     // IDLING
     eval('Game.LoadSave='+Game.LoadSave.toString()
@@ -343,10 +345,26 @@ General._Initialize = function(en, Research) {
         this.santaDiff-=0.3;
     }
 
+    Game.Upgrades['Heavenly key'].basePrice=11111111111111111;
+    en.ue.replaceDesc(Game.Upgrades['Heavenly key'], "You can <b>ascend</b> to a higher plane of existence, leaving behind your cookies."
+        +'<br>Ascend by pressing Legacy.'
+        +'<q>This is the key to the pearly (and tasty) gates of pastry heaven.</q>'
+    )
+
     Game.registerHook('logic', function() {
         if (Game.T%(Game.fps)==0) General.updateSanta();
         if (Game.T%(Game.fps*30)==0) General.updateSanta_D();
         General.timeSinceLast++;
+
+        if (!Game.Has('Legacy')) {
+            if (Game.cookiesEarned>=1e18) Game.Unlock('Heavenly key');
+        } else {
+            Game.Upgrades['Heavenly key'].basePrice=1111111111;
+            Game.Upgrades['Heavenly key'].ddesc=
+                loc("Unlocks <b>%1%</b> of the potential of your prestige level.",100)+
+                '<q>This is the key to the pearly (and tasty) gates of pastry heaven, granting you access to your entire stockpile of heavenly chips for baking purposes.'+
+                '<br>May you use them wisely.</q>'
+        }
     });
 }
 export { General }
