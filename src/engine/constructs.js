@@ -65,6 +65,12 @@ var Process = function(en) {
         en.setVar("moddedUpUl"+Game.last.id, 0);
         en.setVar("moddedUpB"+Game.last.id, 0);
     })
+
+    // adding parents to heavenly upgrades (blame orteil, not me)
+    upgrade_engine.upgradeQueue.forEach(function(upgrade) {
+        if (upgrade.me.huParents) upgrade.me.parents=Array.from(upgrade.me.huParents, (x)=>Game.Upgrades[x]);
+    })
+
     achiev_engine.achievementQueue.forEach(function(achiev) {
         achiev.me = new Game.Achievement(achiev.name, achiev.desc, achiev.icon);
         for (var i in achiev.other) { // transfer

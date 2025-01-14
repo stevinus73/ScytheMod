@@ -292,8 +292,8 @@ General._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Divine bribes", "You <b>earn prestige faster.</b>"
         +'<q>A little bribe goes a long way.</q>',
-        90000000000000, [28,12], 274, {pool: 'prestige', posX: 190, posY: -1530, parents: 
-            [Game.Upgrades['Heavenly favors']]}
+        90000000000000, [28,12], 274, {pool: 'prestige', posX: 190, posY: -1530, huParents: 
+            ['Heavenly favors']}
     );
 
     // IDLING
