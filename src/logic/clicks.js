@@ -44,7 +44,7 @@ Clicks._Initialize = function(en, Research) {
     this.pcEnabled = false;
 
     var wrapper=document.createElement('div');
-    wrapper.style.cssText='position:absolute;bottom:16px;right:0px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
+    wrapper.style.cssText='position:absolute;bottom:16px;right:8px;z-index:100000;transform-origin:100% 0%;transform:scale(0.75);';
     wrapper.innerHTML='<div id="pcButton" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon([3,0,Icons])+'"></div>';
     l('sectionLeft').appendChild(wrapper);
     this.pcWidget = l('pcButton');
