@@ -397,6 +397,14 @@ BModify._Initialize = function(en, Research) {
         return 'RS_Manager';
     }
 
+    BModify.Explorer = function() {
+        var wrapper=document.createElement('div');
+        wrapper.style.cssText='position:absolute;top:16px;left:0px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
+        wrapper.innerHTML='<div id="exploreButton" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon([3,2,Icons])+'"></div>';
+        l('sectionLeft').appendChild(wrapper);
+        this.explore=l('exploreButton');
+    }
+
     
     const UpdateTicks = 10;
 
@@ -433,8 +441,7 @@ BModify._Initialize = function(en, Research) {
 		'.grandmaType:nth-child(4n+3){background-position:-180px 0px;} .grandmaType:nth-child(4n+3):hover{background-position:-180px -74px;} .grandmaType:nth-child(4n+3):active{background-position:-180px 74px;}'+
 		'.grandmaType:hover .grandmaIcon{top:-1px;}'+
 		'.grandmaType.ready:hover .grandmaIcon{animation-name:bounce;animation-iteration-count:infinite;animation-duration:0.8s;}'+
-		'.noFancy .grandmaType.ready:hover .grandmaIcon{animation:none;}'+
-        '#exploreSpace{position:absolute;top:0px;left:0px;z-index:100000;transform-origin:100% 0%;transform:scale(0.75);}'
+		'.noFancy .grandmaType.ready:hover .grandmaIcon{animation:none;}'
         +'</style>';
 
         this.statDiv.insertAdjacentHTML('beforeend', '<div id="grandmaManagerBG"></div>')
@@ -443,11 +450,6 @@ BModify._Initialize = function(en, Research) {
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div class="separatorTop"/>')
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div class="title" style="position:relative">'+cfl(this.me.plural)+'</div>')
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div id="grandmaManager" style="overflow:auto"></div>')
-
-        this.explore=document.createElement('div');
-        this.explore.id='exploreSpace';
-        this.explore.innerHTML='<div id="exploreButton" class="crate enabled" style="opacity:1;float:none;display:block;'+writeIcon([3,2,Icons])+'"></div>';
-        l('sectionLeft').appendChild(this.explore);
 
         this.allocT = 0;
         this.grandmaTypes = {};
@@ -571,10 +573,10 @@ BModify._Initialize = function(en, Research) {
             function(){return Math.ceil(grandmaM.maxFree()*0.25)}, [3, 1, Icons], 
             "Used resource is converted into available resource while buildings are paused. Speed is faster the more grandmas you have.");
 
-        // explorer grandmas
-        this.newGrandmaType("explorer", "Explorer grandmas", (me) => true,
-            function(){return Math.ceil(grandmaM.maxFree()*0.25)}, [3, 2, Icons], 
-            "You can send these grandmas on an exploration trip to collect resources and other goodies.");
+        // // explorer grandmas
+        // this.newGrandmaType("explorer", "Explorer grandmas", (me) => true,
+        //     function(){return Math.ceil(grandmaM.maxFree()*0.25)}, [3, 2, Icons], 
+        //     "You can send these grandmas on an exploration trip to collect resources and other goodies.");
 
 
         str='';
@@ -948,6 +950,8 @@ BModify._Initialize = function(en, Research) {
     this.idleverse = new BModify.Idleverses();
     this.grandma = new BModify.Grandmas();
     this.mine = new BModify.Mines();
+
+    this.explorer = new BModify.Explorer();
 }
 
 
