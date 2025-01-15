@@ -355,7 +355,7 @@ General._Initialize = function(en, Research) {
     Game.Upgrades['Heavenly key'].basePrice=11111111111111111111;
     en.ue.replaceDesc(Game.Upgrades['Heavenly key'], "You can <b>ascend</b> to a higher plane of existence, leaving behind your cookies."
         +'<br>Ascend by pressing Legacy.'
-        +'<q>This is the key to the pearly (and tasty) gates of pastry heaven.</q>'
+        +'<q>This is the key to the pearly (and tasty) gates of pastry heaven.<br>May you use it wisely.</q>'
     )
 
     Game.registerHook('logic', function() {

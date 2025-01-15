@@ -434,6 +434,7 @@ BModify._Initialize = function(en, Research) {
 		'.grandmaType:hover .grandmaIcon{top:-1px;}'+
 		'.grandmaType.ready:hover .grandmaIcon{animation-name:bounce;animation-iteration-count:infinite;animation-duration:0.8s;}'+
 		'.noFancy .grandmaType.ready:hover .grandmaIcon{animation:none;}'+
+        '#exploreSpace{position:absolute;top:0px;left:0px;z-index:100000;transform-origin:100% 0%;transform:scale(0.75);}'
         +'</style>';
 
         this.statDiv.insertAdjacentHTML('beforeend', '<div id="grandmaManagerBG"></div>')
@@ -442,6 +443,11 @@ BModify._Initialize = function(en, Research) {
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div class="separatorTop"/>')
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div class="title" style="position:relative">'+cfl(this.me.plural)+'</div>')
         l('grandmaManagerWrapper').insertAdjacentHTML('beforeend', '<div id="grandmaManager" style="overflow:auto"></div>')
+
+        this.explore=document.createElement('div');
+        this.explore.id='exploreSpace';
+        this.explore.innerHTML='<div id="exploreButton" class="crate enabled" style="opacity:1;float:none;display:block;'+writeIcon([3,2,Icons])+'"></div>';
+        l('sectionLeft').appendChild(this.explore);
 
         this.allocT = 0;
         this.grandmaTypes = {};
@@ -565,11 +571,11 @@ BModify._Initialize = function(en, Research) {
             function(){return Math.ceil(grandmaM.maxFree()*0.25)}, [3, 1, Icons], 
             "Used resource is converted into available resource while buildings are paused. Speed is faster the more grandmas you have.");
 
+        // explorer grandmas
         this.newGrandmaType("explorer", "Explorer grandmas", (me) => true,
             function(){return Math.ceil(grandmaM.maxFree()*0.25)}, [3, 2, Icons], 
             "You can send these grandmas on an exploration trip to collect resources and other goodies.");
 
-        // explorer grandmas
 
         str='';
         str+='<div><b>Free grandmas</b> are grandmas not currently producing cookies. You can allocate them to do specific tasks.</div>';
@@ -724,7 +730,7 @@ BModify._Initialize = function(en, Research) {
     BModify.Idleverses.prototype.getType = function () {
         return 'Idleverse_Manager';
     }
-
+    // ores (basically abandoned)
     BModify.Mines = function() {
         var me = this;
         this.bd = Game.Objects['Mine'];
