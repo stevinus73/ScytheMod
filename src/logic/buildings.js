@@ -406,11 +406,42 @@ BModify._Initialize = function(en, Research) {
 
         this.nextExplore=0;
         this.exploring=false;
+        this.ticks=0;
 
         var me=this;
 
         this.Report=function() {
-            Game.Notify(loc("Exploration report"),'<div class="title" style="font-size:7px;margin-top:-2px;">The wind is howling.</div>',[3,2,Icons]);
+            this.ticks++;
+            var failRate=Math.min(0.005*(this.ticks-5),0.25);
+            var choices=['building reward','multiply cookies','none','none'];
+            if (Game.canLumps() && Math.random()<0.0001) choices.push('free sugar lump');
+            // if (Math.random()<0.5) choices.push('cps boost');
+            // if (Math.random()<0.2) choices.push('click boost');
+            // if (Math.random()<0.05) choices.push('gold rush');
+
+            if (Math.random()<0.3) choices.push('free reindeers');
+            
+            var choice=choose(choices);
+            if (Math.random()<failRate) choice='fail';
+
+            if (choice=='none') {
+                Game.Notify(loc("Exploration report"),choose(
+                    ['The wind is howling.', 'There\'s a chill in the air.', 'Nothing but endless sky for days.']),[3,2,Icons]);
+            } else if (choice=='multiply cookies') {
+				var gains=Math.min(Game.cookies*0.5,Game.cookiesPs*60*20);
+                Game.Earn(gains);
+                Game.Notify(loc("Exploration report"),choose(
+                    ['Discovered a hidden treasure trove of cookies!', 'Harvested an ancient cookie deposit!', 'Your team got lucky.'])
+                    +loc("Found <b>%1</b>!",loc("%1 cookie",LBeautify(gains))),[3,2,Icons]);
+            } else if (choice=='free sugar lump') {
+                Game.gainLumps(1);
+                Game.Notify(loc("Exploration report"),loc("Sweet!<br><small>Found 1 sugar lump!</small>"),[3,2,Icons]);
+            } else if (choice=='free reindeers') {
+                new Game.shimmer('reindeer');
+                new Game.shimmer('reindeer');
+                new Game.shimmer('reindeer');
+                Game.Notify(loc("Exploration report"),"Santa's blessings - a few reindeer from his sleigh.",[3,2,Icons]);
+            }
         }
 
 
