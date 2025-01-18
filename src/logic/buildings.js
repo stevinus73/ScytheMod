@@ -154,7 +154,7 @@ BModify._Initialize = function(en, Research) {
             this.yield = this.baseYield*yieldmult;
             this.RhpS = this.baseRhpS*rhpsmult;
             this.rsMax = this.getBaseRsMax()*rsmult*this.rsMaxBoost;
-            this.update()
+            this.update();
         }
         
         // decay factor applied to rhps
@@ -166,13 +166,13 @@ BModify._Initialize = function(en, Research) {
 
         this.gainRes = function(amnt){
             var num=Math.min(amnt, this.rsMax-this.rsTotal);
-            console.log(num);
+            this.update();
             this.rsTotal+=num;
             return num;
         }
         this.loseRes = function(amnt){
-            var num=Math.min(amnt, this.availableRes()*0.75);
-            console.log(num);
+            var num=Math.min(amnt, this.availableRes()*0.9);
+            this.update();
             this.rsTotal-=num;
             return num;
         }
@@ -199,6 +199,8 @@ BModify._Initialize = function(en, Research) {
                 BModify.totalDp += dep;
                 //this.rsMaxBoost *= 1+(0.01/Game.fps);
             }
+            // little detail
+            if (Math.random()<0.0001) this.rsMaxBoost*=1.01;
         }
 
         // resets everythin'
@@ -414,20 +416,20 @@ BModify._Initialize = function(en, Research) {
 
         var me=this;
 
-        this.ExplorePrice=function(){return Math.max(1000,60*60*Game.cookiesPs);}
+        this.ExplorePrice=function(){return Math.max(1000000,60*60*Game.cookiesPs);}
 
         this.tooltip=function() {
             var str='<div style="padding:8px;width:400px;font-size:11px;text-align:center;">'+
 			(this.exploring?'You are currently on an exploration trip ('+this.ticks+' reports).':
-                'You are not currently on an exploration trip.'+
+                'You are not currently on an exploration trip.')+
                 '<div class="line"></div>'+
-                (this.exploreCooldown>0?'You are tired, and will need to wait '+Game.sayTime(this.exploreCooldown,-1)+'.':
+                (this.exploreCooldown>0?'You are tired, and will need to wait '+Game.sayTime(this.exploreCooldown,-1)+' before you can send another trip.':
                 (this.exploring?'Click to recall this exploration trip.':'Click to send an exploration trip.'))+
                 '<br/> Every now and then, your explorers will send back a report, as well as any goods they might have obtained.'+
                 '<br/> However, there is a chance that your exploration trip might suddenly end.'+
                 '<div class="line"></div>'+
                 'You will need <span class="price'+(Game.cookies>=this.ExplorePrice()?'':' disabled')+'">'+this.ExplorePrice()+
-                '</span> to '+(this.exploring?'recall this exploration trip':'send a new exploration trip.'));
+                '</span> to '+(this.exploring?'recall this exploration trip':'send a new exploration trip.');
             
 
             return str;
@@ -465,6 +467,12 @@ BModify._Initialize = function(en, Research) {
             if (choice=='none') {
                 Game.Notify(loc("Exploration report"),choose(
                     ['The wind is howling.', 'There\'s a chill in the air.', 'Nothing but endless sky for days.']),[3,2,Icons]);
+            } else if (choice=='building reward') {
+                for (var i in Game.Objects) {
+                    var building=Game.Objects[i];
+                    if (building.rsManager) building.rsManager.gainRes(Math.min(building.rsManager.rsTotal*0.15,20000));
+                    else choice='multiply cookies';
+                }
             } else if (choice=='multiply cookies') {
 				var gains=Math.min(Game.cookies*0.5,Game.cookiesPs*60*20)+100;
                 Game.Earn(gains);
