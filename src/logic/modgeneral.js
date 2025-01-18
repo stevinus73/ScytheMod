@@ -263,6 +263,8 @@ General._Initialize = function(en, Research) {
         "Upon harvesting a sugar lump, there is a <b>50% chance</b> that <b>one more lump</b> is dropped."    
     )
 
+    
+
     // PRESTIGE (written through the magic of "hope for the best" maths)
     Game.lastHcFactor=3;
     Game.HcFactorFunc=function(cookies) {

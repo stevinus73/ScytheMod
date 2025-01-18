@@ -403,6 +403,25 @@ BModify._Initialize = function(en, Research) {
         wrapper.innerHTML='<div id="exploreButton" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon([3,2,Icons])+'"></div>';
         l('sectionLeft').appendChild(wrapper);
         this.explore=l('exploreButton');
+
+        this.nextExplore=0;
+        this.exploring=false;
+
+        this.Report=function() {
+            Game.Notify(loc("Exploration report"),'<div class="title" style="font-size:7px;margin-top:-2px;">The wind is howling.</div>',[3,2,icons]);
+        }
+
+        Game.registerHook('logic', function() {
+            if (this.exploring) {
+                this.nextExplore--;
+                if (this.nextExplore<=0) {
+                    this.Report();
+                    this.nextExplore=Game.fps*5//*60;
+                }
+            } else {
+
+            }
+        });
     }
 
     
