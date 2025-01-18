@@ -423,7 +423,7 @@ BModify._Initialize = function(en, Research) {
                 '<div class="line"></div>'+
                 (this.exploreCooldown>0?'You are tired, and will need to wait '+Game.sayTime(this.exploreCooldown,-1)+'.':
                 'Click to send an exploration trip to discover cookies and other rewards.')+
-                'You will need <span class="price'+(Game.Cookies>=this.ExplorePrice()?'':' disabled')+'>'+this.ExplorePrice()+
+                'You will need <span class="price'+(Game.cookies>=this.ExplorePrice()?'':' disabled')+'>'+this.ExplorePrice()+
                 '</span> to send a new exploration trip.');
             
 
@@ -432,9 +432,9 @@ BModify._Initialize = function(en, Research) {
 
         this.StartExplore=function() {
             if (this.exploreCooldown>0) return;
-            if (Game.Cookies<this.ExplorePrice()) return;
+            if (Game.cookies<this.ExplorePrice()) return;
             this.exploring=true;
-            Game.Cookies-=this.ExplorePrice();
+            Game.cookies-=this.ExplorePrice();
             this.explore.classList.add('ready');
         }
 
