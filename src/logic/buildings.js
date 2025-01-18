@@ -400,7 +400,9 @@ BModify._Initialize = function(en, Research) {
     BModify.Explorer = function() {
         var wrapper=document.createElement('div');
         wrapper.style.cssText='position:absolute;top:16px;left:0px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
-        wrapper.innerHTML='<div id="exploreButton" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon([3,2,Icons])+'"></div>';
+        wrapper.innerHTML='<div id="exploreButton" class="crate heavenly" style="opacity:1;float:none;display:block;'
+            +writeIcon([3,2,Icons])+'" '
+            +Game.clickStr+'="mod.bModify.explorer.StartExplore()"></div>';
         l('sectionLeft').appendChild(wrapper);
         this.explore=l('exploreButton');
 
@@ -410,16 +412,17 @@ BModify._Initialize = function(en, Research) {
 
         var me=this;
 
+        this.StartExplore=function() {
+            this.exploring=true;
+        }
+
         this.Report=function() {
             this.ticks++;
             var failRate=Math.min(0.005*(this.ticks-5),0.25);
             var choices=['building reward','multiply cookies','none','none'];
             if (Game.canLumps() && Math.random()<0.0001) choices.push('free sugar lump');
-            // if (Math.random()<0.5) choices.push('cps boost');
-            // if (Math.random()<0.2) choices.push('click boost');
-            // if (Math.random()<0.05) choices.push('gold rush');
-
-            if (Math.random()<0.3) choices.push('free reindeers');
+            if (Math.random()<0.15) choices.push('gold rush');
+            if (Math.random()<0.3 && (Game.season=='christmas')) choices.push('free reindeers');
             
             var choice=choose(choices);
             if (Math.random()<failRate) choice='fail';
@@ -432,7 +435,7 @@ BModify._Initialize = function(en, Research) {
                 Game.Earn(gains);
                 Game.Notify(loc("Exploration report"),choose(
                     ['Discovered a hidden treasure trove of cookies!', 'Harvested an ancient cookie deposit!', 'Your team got lucky.'])
-                    +loc("Found <b>%1</b>!",loc("%1 cookie",LBeautify(gains))),[3,2,Icons]);
+                    +' '+loc("Found <b>%1</b>!",loc("%1 cookie",LBeautify(gains))),[3,2,Icons]);
             } else if (choice=='free sugar lump') {
                 Game.gainLumps(1);
                 Game.Notify(loc("Exploration report"),loc("Sweet!<br><small>Found 1 sugar lump!</small>"),[3,2,Icons]);
@@ -441,9 +444,22 @@ BModify._Initialize = function(en, Research) {
                 new Game.shimmer('reindeer');
                 new Game.shimmer('reindeer');
                 Game.Notify(loc("Exploration report"),"Santa's blessings - a few reindeer from his sleigh.",[3,2,Icons]);
+            } else if (choice=='fail') {
+                Game.Notify(loc("Drat!"),"Your exploration trip comes to a sudden end.",[3,2,Icons]);
+                this.exploring=false;
             }
         }
 
+        new Game.buffType('gold rush',function(time,pow)
+		{
+			return {
+				name:'Gold rush',
+				desc:loc("You find %1% more golden cookies for the next %2.",[25,Game.sayTime(time*Game.fps,-1)]),
+				icon:[23,6],
+				time:time*Game.fps,
+                aura:1
+			};
+		});
 
         Game.registerHook('logic', function() {
             if (me.exploring) {
