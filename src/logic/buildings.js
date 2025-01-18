@@ -407,16 +407,19 @@ BModify._Initialize = function(en, Research) {
         this.nextExplore=0;
         this.exploring=false;
 
+        var me=this;
+
         this.Report=function() {
-            Game.Notify(loc("Exploration report"),'<div class="title" style="font-size:7px;margin-top:-2px;">The wind is howling.</div>',[3,2,icons]);
+            Game.Notify(loc("Exploration report"),'<div class="title" style="font-size:7px;margin-top:-2px;">The wind is howling.</div>',[3,2,Icons]);
         }
 
+
         Game.registerHook('logic', function() {
-            if (this.exploring) {
-                this.nextExplore--;
-                if (this.nextExplore<=0) {
-                    this.Report();
-                    this.nextExplore=Game.fps*5//*60;
+            if (me.exploring) {
+                me.nextExplore--;
+                if (me.nextExplore<=0) {
+                    me.Report();
+                    me.nextExplore=Game.fps*5//*60;
                 }
             } else {
 
