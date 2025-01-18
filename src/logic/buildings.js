@@ -422,20 +422,33 @@ BModify._Initialize = function(en, Research) {
                 'You are not currently on an exploration trip.'+
                 '<div class="line"></div>'+
                 (this.exploreCooldown>0?'You are tired, and will need to wait '+Game.sayTime(this.exploreCooldown,-1)+'.':
-                'Click to send an exploration trip to discover cookies and other rewards.')+
-                'You will need <span class="price'+(Game.cookies>=this.ExplorePrice()?'':' disabled')+'>'+this.ExplorePrice()+
-                '</span> to send a new exploration trip.');
+                (this.exploring?'Click to recall this exploration trip.':'Click to send an exploration trip.'))+
+                '<br/> Every now and then, your explorers will send back a report, as well as any goods they might have obtained.'+
+                '<br/> However, there is a chance that your exploration trip might suddenly end.'+
+                '<div class="line"></div>'+
+                'You will need <span class="price'+(Game.cookies>=this.ExplorePrice()?'':' disabled')+'">'+this.ExplorePrice()+
+                '</span> to '+(this.exploring?'recall this exploration trip':'send a new exploration trip.'));
             
 
             return str;
         }
 
+        this.EndExplore=function() {
+            this.exploring=false;
+            this.exploreCooldown=Game.fps*60*30;
+            this.explore.classList.remove('enabled');
+        }
+
         this.StartExplore=function() {
-            if (this.exploreCooldown>0) return;
             if (Game.cookies<this.ExplorePrice()) return;
-            this.exploring=true;
+            if (this.exploreCooldown>0) return;
             Game.cookies-=this.ExplorePrice();
-            this.explore.classList.add('ready');
+            if (this.exploring) {
+                this.EndExplore();
+                return;
+            }
+            this.exploring=true;
+            this.explore.classList.add('enabled');
         }
 
         this.Report=function() {
@@ -468,9 +481,7 @@ BModify._Initialize = function(en, Research) {
                 Game.Notify(loc("Exploration report"),"Santa's blessings - a few reindeer from his sleigh.",[3,2,Icons]);
             } else if (choice=='fail') {
                 Game.Notify(loc("Drat!"),"Your exploration trip comes to a sudden end.",[3,2,Icons]);
-                this.exploring=false;
-                this.exploreCooldown=Game.fps*60*30;
-                this.explore.classList.remove('ready');
+                this.EndExplore();
             }
         }
 
