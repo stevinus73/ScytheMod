@@ -428,7 +428,7 @@ BModify._Initialize = function(en, Research) {
                 '<br/> Every now and then, your explorers will send back a report, as well as any goods they might have obtained.'+
                 '<br/> However, there is a chance that your exploration trip might suddenly end.'+
                 '<div class="line"></div>'+
-                'You will need <span class="price'+(Game.cookies>=this.ExplorePrice()?'':' disabled')+'">'+this.ExplorePrice()+
+                'You will need <span class="price'+(Game.cookies>=this.ExplorePrice()?'':' disabled')+'">'+Beautify(this.ExplorePrice())+
                 '</span> to '+(this.exploring?'recall this exploration trip':'send a new exploration trip.');
             
 
