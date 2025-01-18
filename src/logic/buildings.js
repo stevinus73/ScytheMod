@@ -399,21 +399,43 @@ BModify._Initialize = function(en, Research) {
 
     BModify.Explorer = function() {
         var wrapper=document.createElement('div');
-        wrapper.style.cssText='position:absolute;top:16px;left:0px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
+        wrapper.style.cssText='position:absolute;top:80px;left:0px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
         wrapper.innerHTML='<div id="exploreButton" class="crate heavenly" style="opacity:1;float:none;display:block;'
             +writeIcon([3,2,Icons])+'" '
+            +Game.getDynamicTooltip('mod.bModify.explorer.tooltip','bottom')
             +Game.clickStr+'="mod.bModify.explorer.StartExplore()"></div>';
         l('sectionLeft').appendChild(wrapper);
         this.explore=l('exploreButton');
 
         this.nextExplore=0;
         this.exploring=false;
+        this.exploreCooldown=0;
         this.ticks=0;
 
         var me=this;
 
+        this.ExplorePrice=function(){return Math.max(1000,60*60*Game.cookiesPs);}
+
+        this.tooltip=function() {
+            var str='<div style="padding:8px;width:400px;font-size:11px;text-align:center;">'+
+			(this.exploring?'You are currently on an exploration trip ('+this.ticks+' reports).':
+                'You are not currently on an exploration trip.'+
+                '<div class="line"></div>'+
+                (this.exploreCooldown>0?'You are tired, and will need to wait '+Game.sayTime(this.exploreCooldown,-1)+'.':
+                'Click to send an exploration trip to discover cookies and other rewards.')+
+                'You will need <span class="price'+(Game.Cookies>=this.ExplorePrice()?'':' disabled')+'>'+this.ExplorePrice()+
+                '</span> to send a new exploration trip.');
+            
+
+            return str;
+        }
+
         this.StartExplore=function() {
+            if (this.exploreCooldown>0) return;
+            if (Game.Cookies<this.ExplorePrice()) return;
             this.exploring=true;
+            Game.Cookies-=this.ExplorePrice();
+            this.explore.classList.add('ready');
         }
 
         this.Report=function() {
@@ -431,7 +453,7 @@ BModify._Initialize = function(en, Research) {
                 Game.Notify(loc("Exploration report"),choose(
                     ['The wind is howling.', 'There\'s a chill in the air.', 'Nothing but endless sky for days.']),[3,2,Icons]);
             } else if (choice=='multiply cookies') {
-				var gains=Math.min(Game.cookies*0.5,Game.cookiesPs*60*20);
+				var gains=Math.min(Game.cookies*0.5,Game.cookiesPs*60*20)+100;
                 Game.Earn(gains);
                 Game.Notify(loc("Exploration report"),choose(
                     ['Discovered a hidden treasure trove of cookies!', 'Harvested an ancient cookie deposit!', 'Your team got lucky.'])
@@ -447,6 +469,8 @@ BModify._Initialize = function(en, Research) {
             } else if (choice=='fail') {
                 Game.Notify(loc("Drat!"),"Your exploration trip comes to a sudden end.",[3,2,Icons]);
                 this.exploring=false;
+                this.exploreCooldown=Game.fps*60*30;
+                this.explore.classList.remove('ready');
             }
         }
 
@@ -469,7 +493,8 @@ BModify._Initialize = function(en, Research) {
                     me.nextExplore=Game.fps*5//*60;
                 }
             } else {
-
+                me.exploreCooldown--;
+                if (me.exploreCooldown<0) me.exploreCooldown=0;
             }
         });
     }
