@@ -129,9 +129,9 @@ IdlersPocket._Initialize = function () {
 
     IdlersPocket.finalizeHooks = function() {
         Game.shimmerTypes.golden.popFunc = en.injectCode(Game.shimmerTypes.golden.popFunc, "if (Game.Has('Dragon fang')) mult*=1.03;",
-        `\n\t\t\tmult=Game.Ip.activate(mult,'gains');`, 'after')
+        `\n\t\t\tmult=Game.Ip.activate('gains',mult);`, 'after')
         Game.shimmerTypes.golden.getTimeMod = en.injectCode(Game.shimmerTypes.golden.getTimeMod, "if (Game.Has('Green yeast digestives')) m*=0.99;",
-        `\n\t\t\tm=Game.Ip.activate(m,'frequency');`, 'after');
+        `\n\t\t\tm=Game.Ip.activate('frequency',m);`, 'after');
     }
 
 

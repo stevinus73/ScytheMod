@@ -88,7 +88,7 @@ G._Initialize = function(en, Research) {
         [27, 6], "Eldeer", {});
 
     G.fortuneEarn = function(mult) {
-        if (ame.hasBuff('Elder frenzy')) Game.Win("Elder fortune");
+        if (Game.hasBuff('Elder frenzy')) Game.Win("Elder fortune");
         if (G.currEffsPower()>4000) Research.unlock("Golden gates");
 
         var moni=mult*Game.cookiesPs*60*15+777;
@@ -166,12 +166,28 @@ G._Initialize = function(en, Research) {
         777777777777777, [4,0,Icons], 19300, {pool: 'prestige', posX: -293, posY: 770, parents: [Game.Upgrades['Distilled essence of redoubled luck']]}
     );
 
+    // golden switch
+
+    var buyFunction=function(){
+        Game.Prompt('<id ModData><h3>'+loc("Mod data")+'</h3><div class="block">'+tinyIcon([16,5])+'<div></div>'+loc("These are the mods present in your save data. You may delete some of this data to make your save file smaller.")+'</div><div class="block" style="font-size:11px;">Sigmaese</div>',[loc("Back")]);
+    }
+
+    en.ue.addUpgrade("Golden switch [limited 1]", "???", 
+        1e6, [21, 10], 40000, {pool:'toggle',priceFunc:function(){return Game.cookiesPs*60*60;},buyFunction:buyFunction});
+    
+    en.ue.addUpgrade("Golden switch [limited 2]", "???", 
+        1e6, [21, 10], 40000, {pool:'toggle',priceFunc:function(){return Game.cookiesPs*60*60;},buyFunction:buyFunction});
+
+    Game.Unlock('Golden switch [limited 1]');
+    Game.Unlock('Golden switch [limited 2]');
+
     // fortune moved
     Game.Upgrades['Fortune cookies'].posX=-640;Game.Upgrades['Fortune cookies'].posY=543
     Game.Upgrades['Fortune cookies'].parents=[Game.Upgrades['Decisive fate']]
     Game.Upgrades['Fortune cookies'].basePrice=77777777
     Game.Tiers['fortune'].price=77777777777777777777
 
+    // updates
     G.update = function() {
         if (Game.hasBuff('Dragonflight') && Game.hasBuff('Click frenzy')) Game.Win("The click to end all clicks");
 
