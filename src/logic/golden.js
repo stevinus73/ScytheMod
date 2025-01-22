@@ -167,19 +167,22 @@ G._Initialize = function(en, Research) {
     );
 
     // golden switch
-
-    var buyFunction=function(){
-        Game.Prompt('<id ModData><h3>'+loc("Mod data")+'</h3><div class="block">'+tinyIcon([16,5])+'<div></div>'+loc("These are the mods present in your save data. You may delete some of this data to make your save file smaller.")+'</div><div class="block" style="font-size:11px;">Sigmaese</div>',[loc("Back")]);
+    Game.gsType=0;
+    var choicesFunction=function(){
+        var rank=0;
+		var choices=[];
+		choices[0]={name:"Golden switch [full]",icon:[21,10]};
+        choices[1]={name:"Golden switch [limited 1]",icon:[21,10]};
+        choices[2]={name:"Golden switch [limited 2]",icon:[21,10]};
+		choices[Game.gsType].selected=1;
+		return choices;
     }
 
-    en.ue.addUpgrade("Golden switch [limited 1]", "???", 
-        1e6, [21, 10], 40000, {pool:'toggle',priceFunc:function(){return Game.cookiesPs*60*60;},buyFunction:buyFunction});
-    
-    en.ue.addUpgrade("Golden switch [limited 2]", "???", 
+    en.ue.addUpgrade("Golden switch mode switcher", "Allows you to <b>change Golden switch modes</b> when the Golden switch is active."+
+        "<q>How much would a Golden switch mode switcher switch Golden switch modes if it could switch Golden switch modes?</q>", 
         1e6, [21, 10], 40000, {pool:'toggle',priceFunc:function(){return Game.cookiesPs*60*60;},buyFunction:buyFunction});
 
-    Game.Unlock('Golden switch [limited 1]');
-    Game.Unlock('Golden switch [limited 2]');
+    //Game.Unlock('Golden switch mode switcher');
 
     // fortune moved
     Game.Upgrades['Fortune cookies'].posX=-640;Game.Upgrades['Fortune cookies'].posY=543
