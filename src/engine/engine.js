@@ -45,6 +45,7 @@ IdlersPocket._Initialize = function () {
 
     IdlersPocket.vars = new Map();
     IdlersPocket.var_ident = [];
+    Game.Ip = this;
 
     
     IdlersPocket._encryptVars = function() {
@@ -111,6 +112,27 @@ IdlersPocket._Initialize = function () {
      * more stuffs
      */
 
+    IdlersPocket.gcGainsHooks=[];
+    IdlersPocket.gcFreqHooks=[];
+    IdlersPocket.addGcHook = function(type,fun) {
+        if (type=='frequency') this.gcFreqHooks.push(fun);
+        if (type=='gains') this.gcGainsHooks.push(fun);
+    }
+
+    function _activate(hooks,num){var n=num;hooks.forEach((hook)=>{n=hook(n);});return n;}
+
+    IdlersPocket.activate = function(type, num) {
+        if (type=='frequency') return _activate(this.gcFreqHooks, num);
+        if (type=='gains') return _activate(this.gcGainsHooks, num);
+        return num;
+    }
+
+    IdlersPocket.finalizeHooks = function() {
+        Game.shimmerTypes.golden.popFunc = en.injectCode(Game.shimmerTypes.golden.popFunc, "if (Game.Has('Dragon fang')) mult*=1.03;",
+        `\n\t\t\tm=Game.Ip.activate(m,'gains');`, 'after')
+        Game.shimmerTypes.golden.getTimeMod = en.injectCode(Game.shimmerTypes.golden.getTimeMod, "if (Game.Has('Green yeast digestives')) m*=0.99;",
+        `\n\t\t\tm=Game.Ip.activate(m,'frequency');`, 'after');
+    }
 
 
     IdlersPocket.rebuildBigCookieButton = function () {
@@ -163,6 +185,7 @@ IdlersPocket.LoadMod = function (name, init) {
 }
 
 IdlersPocket.Process = function() {
+    this.finalizeHooks();
     Process(this);
 }
 

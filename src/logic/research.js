@@ -457,11 +457,18 @@ Research._Initialize = function(en) {
         if (Game.ObjectsById[i].tieredResearch.length < tier) return false;
         return Game.ObjectsById[i].tieredResearch[tier-1].bought;
     }
+    Research.unlockAll = function() {
+        for (var i in this.trees) {
+            this.trees[i].upgrades.forEach(function(up) {
+                up.req=true;
+            })
+        }
+    }
     // gc tree
     new Research.Tree("Golden cookies", [27, 6], function(){return Game.goldenClicks;});
     new Research.Tech("Golden cookies", "Unlocks the research tree for <b>golden cookies</b>.", 7, f, f, [], [10, 14], 0, 0);
-    new Research.Tech("Hoard of treasure", "Golden cookie gains <b>doubled</b>.", 27, req(() => mod.G.fortunesEarned, 3, "Fortunes obtained"), f, [0], [27, 6], 0.5, 0);
-    new Research.Tech("The true purpose of luck", "Golden cookie gains <b>doubled</b>.<q>...is to get more cookies.</b>", 17, req(() => mod.G.fortunesEarned, 17, "Fortunes obtained"), f, [0], [27, 6], 0.5, 0);
+    new Research.Tech("Hoard of treasure", "Golden cookie gains <b>+20%</b>. Golden cookie frequency <b>+2%</b>.", 27, req(() => mod.G.fortunesEarned, 3, "Fortunes"), f, [0], [27, 6], 0.5, 0);
+    new Research.Tech("The true purpose of luck", "Golden cookie gains <b>+20%</b>. Golden cookie frequency <b>+2%</b>.<q>...is to get more cookies.</b>", 37, req(() => mod.G.fortunesEarned, 17, "Fortunes"), f, [0], [27, 6], 0.5, 0);
     new Research.Tech("Pure one-hundred-percent gold", "Golden cookie frequency <b>+5%</b>.<q>The purest gold!</q>", 27, f, f, [0], [27, 6], -0.5, 0);
     // all the building trees go here
 
@@ -584,20 +591,28 @@ Research._Initialize = function(en) {
     tieredTreeG(14, 1, "Luck in the air", "Literally!", "Chancemakers are <b>77%</b> more efficient. Golden cookie gains <b>+77%</b>.") // 1
     tieredTreeG(14, 2, "Unfair dice", "Can also be used to annoy people at DnD games.", "Chancemakers are <b>57%</b> more efficient. Golden cookie gains <b>+57%</b>.") // 2
     tieredTreeG(14, 3, "The law of large numbers of cookies", "States that the more cookies you have, the more luck you're bound to get.", "Chancemakers are <b>37%</b> more efficient. Golden cookie gains <b>+37%</b>.") // 3
-    Game.shimmerTypes.golden.popFunc = en.injectChain(Game.shimmerTypes.golden.popFunc, "if (Game.Has('Dragon fang')) mult*=1.03;",
-        [
-            'if (mod.research.hasTiered(14, 1)) mult*=1.77;',
-            'if (mod.research.hasTiered(14, 2)) mult*=1.57;',
-            'if (mod.research.hasTiered(14, 3)) mult*=1.37;',
-            'if (mod.research.has("Hoard of treasure")) mult*=2;',
-            'if (mod.research.has("The true purpose of luck")) mult*=2;'
-        ]
-    )
-    Game.shimmerTypes.golden.getTimeMod = en.injectChain(Game.shimmerTypes.golden.getTimeMod, "if (Game.Has('Green yeast digestives')) m*=0.99;",
-        [
-            'if (mod.research.has("Pure one-hundred-percent gold")) m*=0.95;',
-        ]
-    )
+    // Game.shimmerTypes.golden.popFunc = en.injectChain(Game.shimmerTypes.golden.popFunc, "if (Game.Has('Dragon fang')) mult*=1.03;",
+    //     [
+    //         'if (mod.research.hasTiered(14, 1)) mult*=1.77;',
+    //         'if (mod.research.hasTiered(14, 2)) mult*=1.57;',
+    //         'if (mod.research.hasTiered(14, 3)) mult*=1.37;',
+    //         'if (mod.research.has("Hoard of treasure")) mult*=2;',
+    //         'if (mod.research.has("The true purpose of luck")) mult*=2;'
+    //     ]
+    // )
+    // Game.shimmerTypes.golden.getTimeMod = en.injectChain(Game.shimmerTypes.golden.getTimeMod, "if (Game.Has('Green yeast digestives')) m*=0.99;",
+    //     [
+    //         'if (mod.research.has("Pure one-hundred-percent gold")) m*=0.95;',
+    //     ]
+    // )
+    en.addGcHook('gains',function(m){return m*(mod.research.hasTiered(14, 1)?1.77:1)})
+    en.addGcHook('gains',function(m){return m*(mod.research.hasTiered(14, 2)?1.57:1)})
+    en.addGcHook('gains',function(m){return m*(mod.research.hasTiered(14, 3)?1.37:1)})
+    en.addGcHook('gains',function(m){return m*(mod.research.has("Hoard of treasure")?1.20:1)})
+    en.addGcHook('gains',function(m){return m*(mod.research.has("The true purpose of luck")?1.20:1)})
+    en.addGcHook('frequency',function(m){return m*(mod.research.has("Pure one-hundred-percent gold")?1.05:1)})
+    en.addGcHook('frequency',function(m){return m*(mod.research.has("Hoard of treasure")?1.03:1)})
+    en.addGcHook('frequency',function(m){return m*(mod.research.has("The true purpose of luck")?1.03:1)})
     Game.Objects.Chancemaker.cps = en.injectChain(Game.Objects.Chancemaker.cps, "mult*=Game.magicCpS(me.name);", 
         [
             'if (mod.research.hasTiered(14, 1)) mult*=1.77;',

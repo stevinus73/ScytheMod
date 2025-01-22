@@ -44,11 +44,11 @@ BModify._Initialize = function(en, Research) {
         +'.resBarFull{transform:scale(1,2);transform-origin:50% 0;height:50%;}'
         +'.resBarText{transform:scale(1,0.8);width:100%;position:absolute;left:0px;top:0px;text-align:center;color:#fff;text-shadow:-1px 1px #000,0px 0px 4px #000,0px 0px 6px #000;margin-top:2px;}'
         +'.resBarInfo{text-align:center;font-size:11px;margin-top:15px;color:rgba(255,255,255,0.75);text-shadow:-1px 1px 0px #000;}'
-        +'.statsBG{background:url('+Game.resPath+'img/buildings.png),url('+Game.resPath+'img/darkNoise.jpg);background-size:33% 100%,auto;position:relative;left:0px;right:0px;top:0px;bottom:16px;}'
+        +'.statsBG{background:url('+Game.resPath+'img/shadedBorders.png),url('+Game.resPath+'img/darkNoise.jpg);background-size:33% 100%,auto;position:relative;left:0px;right:0px;top:0px;bottom:16px;}'
         +'.separatorTop{width: 100%;height: 8px;background: url(img/panelHorizontal.png?v=2) repeat-x;background: url(img/panelGradientLeft.png) no-repeat top left, '
         +'url(img/panelGradientRight.png) no-repeat top right, url(img/panelHorizontal.png?v=2) repeat-x;position: absolute;left: 0px;top: 0px;}'
         +'</style>';
-
+//<div id="buildingBG2" style="position:absolute;left:42px;top:58px;background-position:0px -1152px;opacity:50%;background-image:url('img/buildings.png');width:64px;height:64px;transform:scale(2.625);"></div>
     l("centerArea").insertAdjacentHTML('beforeend', sstr)
 
     BModify.RS_Manager = function(id, baseRS, rsNames) {
