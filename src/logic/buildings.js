@@ -1064,7 +1064,7 @@ BModify._Initialize = function(en, Research) {
     this.grandma = new BModify.Grandmas();
     this.mine = new BModify.Mines();
 
-    this.explorer = new BModify.Explorer();
+    //this.explorer = new BModify.Explorer();
 }
 
 
