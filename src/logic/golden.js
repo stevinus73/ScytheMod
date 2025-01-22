@@ -163,24 +163,65 @@ G._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Golden glow", "Increases the golden cookie effect cap by <b>1</b>.<div class=\"line\"></div>Unlocks a new Golden switch mode."
         +'<q>Maybe your alchemy labs can do something with this.</q>',
-        777777777777777, [4,0,Icons], 19300, {pool: 'prestige', posX: -293, posY: 770, parents: [Game.Upgrades['Distilled essence of redoubled luck']]}
+        7777777777777777, [4,0,Icons], 19300, {pool: 'prestige', posX: -293, posY: 770, 
+            parents: [Game.Upgrades['Distilled essence of redoubled luck']], showIf:function(){return Game.Has("Shimmering aura");}}
     );
 
     // golden switch
     Game.gsType=0;
-    var choicesFunction=function(){
-        var rank=0;
+    var gsChoicesFunction=function(){
 		var choices=[];
 		choices[0]={name:"Golden switch [full]",icon:[21,10]};
-        choices[1]={name:"Golden switch [limited 1]",icon:[21,10]};
-        choices[2]={name:"Golden switch [limited 2]",icon:[21,10]};
+        choices[1]=Game.Has('Shimmering aura')?{name:"Golden switch [limited 1]",icon:[21,10]}:0;
+        choices[2]=Game.Has('Golden glow')?{name:"Golden switch [limited 2]",icon:[21,10]}:0;
 		choices[Game.gsType].selected=1;
 		return choices;
     }
 
-    en.ue.addUpgrade("Golden switch mode switcher", "Allows you to <b>change Golden switch modes</b> when the Golden switch is active."+
+    var gsPick=function(id){Game.gsType=id;}
+
+    en.ue.addUpgrade("Golden switch mode selector", "Allows you to <b>change Golden switch modes</b> when the Golden switch is active."+
         "<q>How much would a Golden switch mode switcher switch Golden switch modes if it could switch Golden switch modes?</q>", 
-        1e6, [21, 10], 40000, {pool:'toggle',priceFunc:function(){return Game.cookiesPs*60*60;},choicesFunction:choicesFunction});
+        0, [21, 10], 40000, {pool:'toggle',priceFunc:function(){return Game.cookiesPs*60*60;},choicesFunction:gsChoicesFunction,choicesPick:gsPick});
+    
+    eval("Game.shimmerTypes.golden.spawnConditions="+
+        G.me.spawnConditions.replace("Game.Has('Golden switch [off]')","(Game.Has('Golden switch [off]')&&(Game.gsType==0))"));
+    
+    eval("Game.CalculateGains="+
+        Game.CalculateGains.replace("Game.Has('Golden switch [off]')","(Game.Has('Golden switch [off]')&&(Game.gsType==0))"));    
+
+    var funcOn=function(){
+        if (Game.gsType==0) {
+		    if (Game.Has('Residual luck')) {
+			    var bonus=0;
+			    var upgrades=Game.goldenCookieUpgrades;
+			    for (var i in upgrades) {if (Game.Has(upgrades[i])) bonus++;}
+			    return '<div style="text-align:center;">'+Game.listTinyOwnedUpgrades(Game.goldenCookieUpgrades)+'<br><br>The effective boost is <b>+'+Beautify(Math.round(50+bonus*10))+'%</b><br>thanks to residual luck<br>and your <b>'+bonus+'</b> golden cookie upgrade'+(bonus==1?'':'s')+'.</div><div class="line"></div>'+this.ddesc;
+		    }
+		    return this.desc;
+        } else if (Game.gsType==1) {
+            return 'The switch is currently decreasing the maximum golden cookie effect cap to 1.<br>Turning it off will revert those effects.<br>Cost is equal to 1 hour of production.';
+        } else if (Game.gsType==2) {
+            return 'The switch is currently decreasing the maximum golden cookie effect cap to 2.<br>Turning it off will revert those effects.<br>Cost is equal to 1 hour of production.';
+        }
+	};
+    var funcOff=function(){
+        if (Game.gsType==0) {
+		    if (Game.Has('Residual luck')) {
+			    var bonus=0;
+			    var upgrades=Game.goldenCookieUpgrades;
+			    for (var i in upgrades) {if (Game.Has(upgrades[i])) bonus++;}
+			    return '<div style="text-align:center;">'+Game.listTinyOwnedUpgrades(Game.goldenCookieUpgrades)+'<br><br>The effective boost is <b>+'+Beautify(Math.round(50+bonus*10))+'%</b><br>thanks to residual luck<br>and your <b>'+bonus+'</b> golden cookie upgrade'+(bonus==1?'':'s')+'.</div><div class="line"></div>'+this.ddesc;
+		    }
+		    return this.desc;
+        } else if (Game.gsType==1) {
+            return 'Turning this on will decrease the maximum golden cookie effect cap to 1.<br>Cost is equal to 1 hour of production.';
+        } else if (Game.gsType==2) {
+            return 'Turning this on will decrease the maximum golden cookie effect cap to 2.<br>Cost is equal to 1 hour of production.';
+        }
+	};
+	Game.Upgrades['Golden switch [off]'].descFunc=funcOff;
+    Game.Upgrades['Golden switch [on]'].descFunc=funcOn;
 
     //Game.Unlock('Golden switch mode switcher');
 
@@ -195,8 +236,10 @@ G._Initialize = function(en, Research) {
         if (Game.hasBuff('Dragonflight') && Game.hasBuff('Click frenzy')) Game.Win("The click to end all clicks");
 
         var maxEffs=1;
-        if (Game.Has('Shimmering aura')) maxEffs++;
+        if (Game.Has('Shimmering aura')) {Game.Unlock('Golden switch mode selector');maxEffs++;}
         if (Game.Has('Golden glow')) maxEffs++;
+        if (Game.Has('Golden switch [off]')&&(Game.gsType==1)) maxEffs=1;
+        if (Game.Has('Golden switch [off]')&&(Game.gsType==2)) maxEffs=2;
         if (Game.hasBuff('Starlight')) maxEffs+=Game.hasBuff('Starlight').pow;
         this.maxEffs=maxEffs;
 
