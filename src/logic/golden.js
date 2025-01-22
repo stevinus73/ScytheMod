@@ -172,15 +172,15 @@ G._Initialize = function(en, Research) {
     var gsChoicesFunction=function(){
 		var choices=[];
 		choices[0]={name:"Golden switch [full]",icon:[21,10]};
-        choices[1]=Game.Has('Shimmering aura')?{name:"Golden switch [limited 1]",icon:[21,10]}:0;
-        choices[2]=Game.Has('Golden glow')?{name:"Golden switch [limited 2]",icon:[21,10]}:0;
+        choices[1]=Game.Has('Shimmering aura')?{name:"Golden switch [limited 1]",icon:[1,2,Icons]}:0;
+        choices[2]=Game.Has('Golden glow')?{name:"Golden switch [limited 2]",icon:[1,3,Icons]}:0;
 		choices[Game.gsType].selected=1;
 		return choices;
     }
 
     var gsPick=function(id){Game.gsType=id;}
 
-    en.ue.addUpgrade("Golden switch mode selector", "Allows you to <b>change Golden switch modes</b> when the Golden switch is active."+
+    en.ue.addUpgrade("Golden switch mode selector", "Allows you to <b>change Golden switch modes</b>."+
         "<q>How much would a Golden switch mode switcher switch Golden switch modes if it could switch Golden switch modes?</q>", 
         0, [21, 10], 40000, {pool:'toggle',priceFunc:function(){return Game.cookiesPs*60*60;},choicesFunction:gsChoicesFunction,choicesPick:gsPick});
     
@@ -196,13 +196,16 @@ G._Initialize = function(en, Research) {
 			    var bonus=0;
 			    var upgrades=Game.goldenCookieUpgrades;
 			    for (var i in upgrades) {if (Game.Has(upgrades[i])) bonus++;}
-			    return '<div style="text-align:center;">'+Game.listTinyOwnedUpgrades(Game.goldenCookieUpgrades)+'<br><br>The effective boost is <b>+'+Beautify(Math.round(50+bonus*10))+'%</b><br>thanks to residual luck<br>and your <b>'+bonus+'</b> golden cookie upgrade'+(bonus==1?'':'s')+'.</div><div class="line"></div>'+this.ddesc;
+			    return '<div style="text-align:center;">'+Game.listTinyOwnedUpgrades(Game.goldenCookieUpgrades)+'<br><br>The effective boost is <b>+'+
+                    Beautify(Math.round(50+bonus*10))+'%</b><br>thanks to residual luck<br>and your <b>'+bonus+'</b> golden cookie upgrade'+(bonus==1?'':'s')+'.</div><div class="line"></div>'+this.ddesc;
 		    }
 		    return this.desc;
         } else if (Game.gsType==1) {
-            return 'The switch is currently decreasing the maximum golden cookie effect cap to 1.<br>Turning it off will revert those effects.<br>Cost is equal to 1 hour of production.';
+            return 'The switch is currently giving an extra <b>+35% golden cookie frequency</b> and <b>+60% golden cookie gains</b>; '+
+                'it also decreases the maximum golden cookie effect cap to 1.<br>Turning it off will revert those effects.<br>Cost is equal to 1 hour of production.';
         } else if (Game.gsType==2) {
-            return 'The switch is currently decreasing the maximum golden cookie effect cap to 2.<br>Turning it off will revert those effects.<br>Cost is equal to 1 hour of production.';
+            return 'The switch is currently giving an extra <b>+20% golden cookie frequency</b> and <b>+25% golden cookie gains</b>; '+
+                'it also decreases the maximum golden cookie effect cap to 2.<br>Turning it off will revert those effects.<br>Cost is equal to 1 hour of production.';
         }
 	};
     var funcOff=function(){
@@ -211,15 +214,20 @@ G._Initialize = function(en, Research) {
 			    var bonus=0;
 			    var upgrades=Game.goldenCookieUpgrades;
 			    for (var i in upgrades) {if (Game.Has(upgrades[i])) bonus++;}
-			    return '<div style="text-align:center;">'+Game.listTinyOwnedUpgrades(Game.goldenCookieUpgrades)+'<br><br>The effective boost is <b>+'+Beautify(Math.round(50+bonus*10))+'%</b><br>thanks to residual luck<br>and your <b>'+bonus+'</b> golden cookie upgrade'+(bonus==1?'':'s')+'.</div><div class="line"></div>'+this.ddesc;
+			    return '<div style="text-align:center;">'+Game.listTinyOwnedUpgrades(Game.goldenCookieUpgrades)+'<br><br>The effective boost is <b>+'+
+                    Beautify(Math.round(50+bonus*10))+'%</b><br>thanks to residual luck<br>and your <b>'+bonus+'</b> golden cookie upgrade'+(bonus==1?'':'s')+'.</div><div class="line"></div>'+this.ddesc;
 		    }
 		    return this.desc;
         } else if (Game.gsType==1) {
-            return 'Turning this on will decrease the maximum golden cookie effect cap to 1.<br>Cost is equal to 1 hour of production.';
+            return 'Turning this on will give <b>+35% golden cookie frequency</b> and <b>+60% golden cookie gains</b>, but decrease the maximum golden cookie effect cap to 1.<br>Cost is equal to 1 hour of production.';
         } else if (Game.gsType==2) {
-            return 'Turning this on will decrease the maximum golden cookie effect cap to 2.<br>Cost is equal to 1 hour of production.';
+            return 'Turning this on will give <b>+20% golden cookie frequency</b> and <b>+25% golden cookie gains</b>, but decrease the maximum golden cookie effect cap to 2.<br>Cost is equal to 1 hour of production.';
         }
 	};
+    en.addGcHook('gains',function(m){return m*(Game.Has('Golden switch [off]')&&(Game.gsType==1)?1.6:1)})
+    en.addGcHook('frequency',function(m){return m*(Game.Has('Golden switch [off]')&&(Game.gsType==1)?(1/1.35):1)})
+    en.addGcHook('gains',function(m){return m*(Game.Has('Golden switch [off]')&&(Game.gsType==2)?1.25:1)})
+    en.addGcHook('frequency',function(m){return m*(Game.Has('Golden switch [off]')&&(Game.gsType==2)?(1/1.20):1)})
 	Game.Upgrades['Golden switch [off]'].descFunc=funcOff;
     Game.Upgrades['Golden switch [on]'].descFunc=funcOn;
 
@@ -236,7 +244,7 @@ G._Initialize = function(en, Research) {
         if (Game.hasBuff('Dragonflight') && Game.hasBuff('Click frenzy')) Game.Win("The click to end all clicks");
 
         var maxEffs=1;
-        if (Game.Has('Shimmering aura')) {Game.Unlock('Golden switch mode selector');maxEffs++;}
+        if (Game.Has('Shimmering aura')) {if (Game.Has('Golden switch')){Game.Unlock('Golden switch mode selector');}maxEffs++;}
         if (Game.Has('Golden glow')) maxEffs++;
         if (Game.Has('Golden switch [off]')&&(Game.gsType==1)) maxEffs=1;
         if (Game.Has('Golden switch [off]')&&(Game.gsType==2)) maxEffs=2;
