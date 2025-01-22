@@ -180,7 +180,7 @@ G._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Golden switch mode switcher", "Allows you to <b>change Golden switch modes</b> when the Golden switch is active."+
         "<q>How much would a Golden switch mode switcher switch Golden switch modes if it could switch Golden switch modes?</q>", 
-        1e6, [21, 10], 40000, {pool:'toggle',priceFunc:function(){return Game.cookiesPs*60*60;},buyFunction:buyFunction});
+        1e6, [21, 10], 40000, {pool:'toggle',priceFunc:function(){return Game.cookiesPs*60*60;},choicesFunction:choicesFunction});
 
     //Game.Unlock('Golden switch mode switcher');
 
