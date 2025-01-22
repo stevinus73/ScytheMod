@@ -59,6 +59,23 @@ G._Initialize = function(en, Research) {
         }
         return effs;
     }
+    G.currEffsPower = function() {
+        var power=1;
+        if (Game.hasBuff('Dragon Harvest')) power*=Game.hasBuff('Dragon Harvest').multCpS;
+        if (Game.hasBuff('Elder frenzy')) power*=Game.hasBuff('Elder frenzy').multCpS;
+        if (Game.hasBuff('Frenzy')) power*=Game.hasBuff('Frenzy').multCpS;
+        if (Game.hasBuff('Clot')) power*=Game.hasBuff('Clot').multCpS;
+        if (Game.hasBuff('Cursed finger')) power=0;
+        for (var i in Game.goldenCookieBuildingBuffs) {
+            if (Game.hasBuff(Game.goldenCookieBuildingBuffs[i][0])) {
+                power*=Game.hasBuff(Game.goldenCookieBuildingBuffs[i][0]).multCpS;
+            }
+            if (Game.hasBuff(Game.goldenCookieBuildingBuffs[i][1])) {
+                power*=Game.hasBuff(Game.goldenCookieBuildingBuffs[i][1]).multCpS;
+            }
+        }
+        return power;
+    }
 
     G.me.popFunc = en.injectCode(G.me.popFunc,
         "else if (choice=='blood frenzy')",
@@ -66,9 +83,16 @@ G._Initialize = function(en, Research) {
         +`popup='Fortune!<br><small>Found '+loc("+%1!",loc("%1 cookie",LBeautify(moni)))+'</small>';}\n\t\t\t`,
         "before"
     )
+
+    en.ae.addAchievement("Elder fortune", "Obtain the Fortune buff <b>during an elder frenzy</b>.",
+        [27, 6], "Eldeer", {});
+
     G.fortuneEarn = function(mult) {
+        if (ame.hasBuff('Elder frenzy')) Game.Win("Elder fortune");
+        if (G.currEffsPower()>4000) Research.unlock("Golden gates");
+
         var moni=mult*Game.cookiesPs*60*15+777;
-        moni*=Math.pow(3, this.currEffs().length-1);
+        if (Research.has('Golden gates')) moni*=Math.pow(1.5, this.currEffs().length-1);
 		Game.Earn(moni);
         this.fortunesEarned++;
         Game.Notify("Fortune!", "This golden cookie effect, which would have exceeded the golden cookie effect cap, has been converted into cookies.", [23, 6]);

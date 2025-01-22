@@ -466,10 +466,18 @@ Research._Initialize = function(en) {
     }
     // gc tree
     new Research.Tree("Golden cookies", [27, 6], function(){return Game.goldenClicks;});
-    new Research.Tech("Golden cookies", "Unlocks the research tree for <b>golden cookies</b>.", 7, f, f, [], [10, 14], 0, 0);
-    new Research.Tech("Hoard of treasure", "Golden cookie gains <b>+20%</b>. Golden cookie frequency <b>+2%</b>.", 27, req(() => mod.G.fortunesEarned, 3, "Fortunes"), f, [0], [27, 6], 0.5, 0);
-    new Research.Tech("The true purpose of luck", "Golden cookie gains <b>+20%</b>. Golden cookie frequency <b>+2%</b>.<q>...is to get more cookies.</b>", 37, req(() => mod.G.fortunesEarned, 17, "Fortunes"), f, [0], [27, 6], 0.5, 0);
-    new Research.Tech("Pure one-hundred-percent gold", "Golden cookie frequency <b>+5%</b>.<q>The purest gold!</q>", 27, f, f, [0], [27, 6], -0.5, 0);
+    new Research.Tech("Golden cookies", "Unlocks the research tree for <b>golden cookies</b>.", 
+        7, f, f, [], [10, 14], 0, 0); // 0
+    new Research.Tech("Hoard of treasure", "Golden cookie gains <b>+10%</b>.", 
+        27, req(() => mod.G.fortunesEarned, 3, "Fortunes"), f, [0], [27, 6], 0.3, 0.25); // 1
+    new Research.Tech("The true purpose of luck", "Golden cookie frequency <b>+3%</b>.<q>...is to get more cookies.</b>", 
+        37, req(() => mod.G.fortunesEarned, 17, "Fortunes"), f, [1], [27, 6], 0.6, 0.35); // 2
+    new Research.Tech("Pure one-hundred-percent gold", "Golden cookie frequency <b>+5%</b>.<q>The purest gold!</q>", 
+        27, f, f, [0], [27, 6], 0, 0.5); // 3
+    new Research.Tech("Golden gates", "Golden cookie gains <b>doubled</b>. Each golden cookie effect active makes Fortune <b>50%</b> stronger."+
+        "<q>The golden gates of heaven. Make sure the angels don't get mad.</q>",
+        155, {reqFunc:function(){return false;},reqDesc:"obtain the Fortune effect while having a CpS multiplier from golden cookie effects of at least <b>x4,000</b>"}, f,
+        [2], [27, 6], 0.9, 0.7); // 4
     // all the building trees go here
 
     buildingTree(0);
@@ -608,10 +616,8 @@ Research._Initialize = function(en) {
     en.addGcHook('gains',function(m){return m*(mod.research.hasTiered(14, 1)?1.77:1)})
     en.addGcHook('gains',function(m){return m*(mod.research.hasTiered(14, 2)?1.57:1)})
     en.addGcHook('gains',function(m){return m*(mod.research.hasTiered(14, 3)?1.37:1)})
-    en.addGcHook('gains',function(m){return m*(mod.research.has("Hoard of treasure")?1.20:1)})
-    en.addGcHook('gains',function(m){return m*(mod.research.has("The true purpose of luck")?1.20:1)})
+    en.addGcHook('gains',function(m){return m*(mod.research.has("Hoard of treasure")?1.10:1)})
     en.addGcHook('frequency',function(m){return m*(mod.research.has("Pure one-hundred-percent gold")?1.05:1)})
-    en.addGcHook('frequency',function(m){return m*(mod.research.has("Hoard of treasure")?1.03:1)})
     en.addGcHook('frequency',function(m){return m*(mod.research.has("The true purpose of luck")?1.03:1)})
     Game.Objects.Chancemaker.cps = en.injectChain(Game.Objects.Chancemaker.cps, "mult*=Game.magicCpS(me.name);", 
         [
