@@ -493,9 +493,9 @@ Research._Initialize = function(en) {
     new Research.Tech("Patience", "Increases click regeneration by <b>30%</b>. <q>A watched pot never boils.</q>", 90, f, f, [8], [11, 21], -0.6, -0.5); // 10
     new Research.Tech("Malevolent power", "Clicking is <b>10%</b> more powerful <b>per level of overflow</b>.<q>I have mastered thy enemy.</q>", 267, f, f, [9, 10], [12, 0], -1.0, -0.7); // 11 
     new Research.Tech("Temporal stretch", "Decreases overflow effect on clicks used by <b>20%</b>.<q>Stretching time really helps with the rapid clicking issue.</q>", 
-        123, breq('Time machine', 250), f, f, [9], [11, 16], -1.1, -0.15); // 12
+        123, breq('Time machine', 250), f, [9], [11, 16], -1.1, -0.15); // 12
     new Research.Tech("Fractal absorption", "Decreases overflow effect on clicks used by <b>20%</b>.<q>Just don't question it.</q>", 
-        145, breq('Fractal engine', 350), f, f, [12], [11, 17], -1.4, 0); // 13
+        145, breq('Fractal engine', 350), f, [12], [11, 17], -1.4, 0); // 13
     buildingTree(1);
     tieredTreeG(1, 1, "Jumbo rolling pins", "Really helps them get to work.", "Grandmas are <b>15%</b> more efficient."); // 1
     tieredTreeG(1, 2, "Hair whitener", "Studies show that the whiter the grandmas' hair is, the older they are, and therefore, the more powerful they are.", "Grandmas are <b>15%</b> more efficient.") // 2
