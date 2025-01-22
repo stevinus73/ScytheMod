@@ -53,6 +53,8 @@ G._Initialize = function(en, Research) {
         if (Game.hasBuff('Frenzy')) effs.push('Frenzy');
         if (Game.hasBuff('Clot')) effs.push('Clot');
         if (Game.hasBuff('Cursed finger')) effs.push('Cursed finger');
+        if (Game.hasBuff('Everything must go')) effs.push('Everything must go');
+        if (Game.hasBuff('Cookie storm')) effs.push('Cookie storm');
         for (var i in Game.goldenCookieBuildingBuffs) {
             if (Game.hasBuff(Game.goldenCookieBuildingBuffs[i][0])) effs.push(Game.goldenCookieBuildingBuffs[i][0]);
             if (Game.hasBuff(Game.goldenCookieBuildingBuffs[i][1])) effs.push(Game.goldenCookieBuildingBuffs[i][1]);
