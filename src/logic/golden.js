@@ -185,10 +185,10 @@ G._Initialize = function(en, Research) {
         0, [21, 10], 40000, {pool:'toggle',priceFunc:function(){return Game.cookiesPs*60*60;},choicesFunction:gsChoicesFunction,choicesPick:gsPick});
     
     eval("Game.shimmerTypes.golden.spawnConditions="+
-        G.me.spawnConditions.replace("Game.Has('Golden switch [off]')","(Game.Has('Golden switch [off]')&&(Game.gsType==0))"));
+        G.me.spawnConditions.toString().replace("Game.Has('Golden switch [off]')","(Game.Has('Golden switch [off]')&&(Game.gsType==0))"));
     
     eval("Game.CalculateGains="+
-        Game.CalculateGains.replace("Game.Has('Golden switch [off]')","(Game.Has('Golden switch [off]')&&(Game.gsType==0))"));    
+        Game.CalculateGains.toString().replace("Game.Has('Golden switch [off]')","(Game.Has('Golden switch [off]')&&(Game.gsType==0))"));    
 
     var funcOn=function(){
         if (Game.gsType==0) {
