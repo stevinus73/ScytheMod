@@ -4,11 +4,11 @@ Clicks._Initialize = function(en, Research) {
     this.en = en;
 
     en.ue.addUpgrade("Big clicks", "The mouse and cursors are <b>four times as efficient</b>. Maximum click space <b>doubled</b>.<q>Big clicks for the big cookie.</q>",
-        500, [1, 6], 140, {unlockAt: 100});
+        50, [1, 6], 140, {unlockAt: 100});
     en.ue.addUpgrade("Butterfly", "The mouse and cursors are <b>four times as efficient</b>. Maximum click space <b>doubled</b>.<q>More like a hummingbird with THAT speed.</q>",
         50000, [12, 1], 140, {unlockAt: 10000});
     en.ue.addUpgrade("Hands-off approach", "Clicks regenerate <b>twice</b> as fast.<q>Ow, my hands are really sore. Good idea.</q>",
-        5000000, [12, 2], 140, {unlockAt: 1000000});
+        50000000, [12, 2], 140, {unlockAt: 1000000});
     
     Game.mouseCps = en.injectCode(Game.mouseCps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')+mod.research.has('Jitter-click')", "after");
     Game.mouseCps = en.injectCode(Game.mouseCps, "if (Game.Has('Dragon claw')) mult*=1.03;", 
@@ -79,7 +79,11 @@ Clicks._Initialize = function(en, Research) {
     // }
 
     Clicks.drainClick = function(now) {
-        var clickNum=1+(this.overflow>0?Math.floor(this.overflow*(Research.has("Damage control")?0.8:1)):0); 
+        var eff=1;
+        if (Research.has("Damage control")) eff*=0.8;
+        if (Research.has("Temporal stretch")) eff*=0.8;
+        if (Research.has("Fractal absorption")) eff*=0.8;
+        var clickNum=1+(this.overflow>0?Math.floor(this.overflow*eff):0); 
         if (Game.hasBuff("Click frenzy")) clickNum*=2;
         if (Game.hasBuff("Dragonflight")) clickNum*=2;
         // var gz = Game.hasBuff("Devastation");

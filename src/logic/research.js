@@ -103,6 +103,13 @@ Research._Initialize = function(en) {
             Game.recalculateGains = 1;
         }
 
+        this.get = function() {
+            this.bought = true;
+            Research.numUpgrades++;
+            Research.draw();
+            Game.recalculateGains = 1;
+        }
+
         this.unbuy = function() {
             if (!this.bought || (this.id==0)) return;
             this.bought = false;
@@ -362,6 +369,14 @@ Research._Initialize = function(en) {
         }
     }
 
+    Research.buyAll = function() {
+        for (var i in this.trees) {
+            this.trees[i].upgrades.forEach(function(up) {
+                up.get();
+            })
+        }
+    }
+
     Research.earn = function(num) {
         this.research+=num;
         var rect=l("researchIcon").getBounds();
@@ -472,11 +487,15 @@ Research._Initialize = function(en) {
             'if (mod.research.has("Repeated electrical shock")) mult*=1.06;'
         ]
     )
-    new Research.Tech("Jitter-click", "The mouse is <b>twice</b> as efficient.", 25, req(() => Game.cookieClicks, 150, "cookie clicks"), f, [0], [11, 0], -0.2, -0.1); // 7
-    new Research.Tech("Sustainable clicks", "Overflow accumulates <b>25%</b> slower.", 45, f, f, [7], [11, 1], -0.5, -0.2); // 8
-    new Research.Tech("Damage control", "Decreases overflow effect on clicks used by <b>20%</b>.", 85, f, f, [8], [11, 25], -0.8, -0.3); // 9
+    new Research.Tech("Jitter-click", "The mouse is <b>four times</b> as efficient.", 25, req(() => Game.cookieClicks, 150, "cookie clicks"), f, [0], [11, 0], -0.2, -0.1); // 7
+    new Research.Tech("Sustainable clicks", "Overflow accumulates <b>25%</b> slower.<q>Remember to ride your clickcycle to work!</q>", 45, f, f, [7], [11, 1], -0.5, -0.2); // 8
+    new Research.Tech("Damage control", "Decreases overflow effect on clicks used by <b>20%</b>.<q>If it's too much, just ascend.</q>", 85, f, f, [8], [11, 15], -0.8, -0.3); // 9
     new Research.Tech("Patience", "Increases click regeneration by <b>30%</b>. <q>A watched pot never boils.</q>", 90, f, f, [8], [11, 21], -0.6, -0.5); // 10
-    new Research.Tech("Malevolent power", "Clicking is <b>10%</b> more powerful <b>per level of overflow</b>.", 267, f, f, [9, 10], [12, 0], -1.0, -0.7); // 11 
+    new Research.Tech("Malevolent power", "Clicking is <b>10%</b> more powerful <b>per level of overflow</b>.<q>I have mastered thy enemy.</q>", 267, f, f, [9, 10], [12, 0], -1.0, -0.7); // 11 
+    new Research.Tech("Temporal stretch", "Decreases overflow effect on clicks used by <b>20%</b>.<q>Stretching time really helps with the rapid clicking issue.</q>", 
+        123, breq('Time machine', 250), f, f, [9], [11, 16], -1.1, -0.15); // 12
+    new Research.Tech("Fractal absorption", "Decreases overflow effect on clicks used by <b>20%</b>.<q>Just don't question it.</q>", 
+        145, breq('Fractal engine', 350), f, f, [12], [11, 17], -1.4, 0); // 13
     buildingTree(1);
     tieredTreeG(1, 1, "Jumbo rolling pins", "Really helps them get to work.", "Grandmas are <b>15%</b> more efficient."); // 1
     tieredTreeG(1, 2, "Hair whitener", "Studies show that the whiter the grandmas' hair is, the older they are, and therefore, the more powerful they are.", "Grandmas are <b>15%</b> more efficient.") // 2

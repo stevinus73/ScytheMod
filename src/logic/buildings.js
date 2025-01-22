@@ -399,124 +399,124 @@ BModify._Initialize = function(en, Research) {
         return 'RS_Manager';
     }
 
-    BModify.Explorer = function() {
-        var wrapper=document.createElement('div');
-        wrapper.style.cssText='position:absolute;top:80px;left:0px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
-        wrapper.innerHTML='<div id="exploreButton" class="crate heavenly" style="opacity:1;float:none;display:block;'
-            +writeIcon([3,2,Icons])+'" '
-            +Game.getDynamicTooltip('mod.bModify.explorer.tooltip','bottom')
-            +Game.clickStr+'="mod.bModify.explorer.StartExplore()"></div>';
-        l('sectionLeft').appendChild(wrapper);
-        this.explore=l('exploreButton');
+    // BModify.Explorer = function() {
+    //     var wrapper=document.createElement('div');
+    //     wrapper.style.cssText='position:absolute;top:80px;left:0px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
+    //     wrapper.innerHTML='<div id="exploreButton" class="crate heavenly" style="opacity:1;float:none;display:block;'
+    //         +writeIcon([3,2,Icons])+'" '
+    //         +Game.getDynamicTooltip('mod.bModify.explorer.tooltip','bottom')
+    //         +Game.clickStr+'="mod.bModify.explorer.StartExplore()"></div>';
+    //     l('sectionLeft').appendChild(wrapper);
+    //     this.explore=l('exploreButton');
 
-        this.nextExplore=0;
-        this.exploring=false;
-        this.exploreCooldown=0;
-        this.ticks=0;
+    //     this.nextExplore=0;
+    //     this.exploring=false;
+    //     this.exploreCooldown=0;
+    //     this.ticks=0;
 
-        var me=this;
+    //     var me=this;
 
-        this.ExplorePrice=function(){return Math.max(1000000,60*60*Game.cookiesPs);}
+    //     this.ExplorePrice=function(){return Math.max(1000000,60*60*Game.cookiesPs);}
 
-        this.tooltip=function() {
-            var str='<div style="padding:8px;width:400px;font-size:11px;text-align:center;">'+
-			(this.exploring?'You are currently on an exploration trip ('+this.ticks+' reports).':
-                'You are not currently on an exploration trip.')+
-                '<div class="line"></div>'+
-                (this.exploreCooldown>0?'You are tired, and will need to wait '+Game.sayTime(this.exploreCooldown,-1)+' before you can send another trip.':
-                (this.exploring?'Click to recall this exploration trip.':'Click to send an exploration trip.'))+
-                '<br/> Every now and then, your explorers will send back a report, as well as any goods they might have obtained.'+
-                '<br/> However, there is a chance that your exploration trip might suddenly end.'+
-                '<div class="line"></div>'+
-                'You will need <span class="price'+(Game.cookies>=this.ExplorePrice()?'':' disabled')+'">'+Beautify(this.ExplorePrice())+
-                '</span> to '+(this.exploring?'recall this exploration trip':'send a new exploration trip.');
+    //     this.tooltip=function() {
+    //         var str='<div style="padding:8px;width:400px;font-size:11px;text-align:center;">'+
+	// 		(this.exploring?'You are currently on an exploration trip ('+this.ticks+' reports).':
+    //             'You are not currently on an exploration trip.')+
+    //             '<div class="line"></div>'+
+    //             (this.exploreCooldown>0?'You are tired, and will need to wait '+Game.sayTime(this.exploreCooldown,-1)+' before you can send another trip.':
+    //             (this.exploring?'Click to recall this exploration trip.':'Click to send an exploration trip.'))+
+    //             '<br/> Every now and then, your explorers will send back a report, as well as any goods they might have obtained.'+
+    //             '<br/> However, there is a chance that your exploration trip might suddenly end.'+
+    //             '<div class="line"></div>'+
+    //             'You will need <span class="price'+(Game.cookies>=this.ExplorePrice()?'':' disabled')+'">'+Beautify(this.ExplorePrice())+
+    //             '</span> to '+(this.exploring?'recall this exploration trip':'send a new exploration trip.');
             
 
-            return str;
-        }
+    //         return str;
+    //     }
 
-        this.EndExplore=function() {
-            this.exploring=false;
-            this.exploreCooldown=Game.fps*60*30;
-            this.explore.classList.remove('enabled');
-        }
+    //     this.EndExplore=function() {
+    //         this.exploring=false;
+    //         this.exploreCooldown=Game.fps*60*30;
+    //         this.explore.classList.remove('enabled');
+    //     }
 
-        this.StartExplore=function() {
-            if (Game.cookies<this.ExplorePrice()) return;
-            if (this.exploreCooldown>0) return;
-            Game.cookies-=this.ExplorePrice();
-            if (this.exploring) {
-                this.EndExplore();
-                return;
-            }
-            this.exploring=true;
-            this.explore.classList.add('enabled');
-        }
+    //     this.StartExplore=function() {
+    //         if (Game.cookies<this.ExplorePrice()) return;
+    //         if (this.exploreCooldown>0) return;
+    //         Game.cookies-=this.ExplorePrice();
+    //         if (this.exploring) {
+    //             this.EndExplore();
+    //             return;
+    //         }
+    //         this.exploring=true;
+    //         this.explore.classList.add('enabled');
+    //     }
 
-        this.Report=function() {
-            this.ticks++;
-            var failRate=Math.min(0.005*(this.ticks-5),0.25);
-            var choices=['building reward','multiply cookies','none','none'];
-            if (Game.canLumps() && Math.random()<0.0001) choices.push('free sugar lump');
-            if (Math.random()<0.15) choices.push('gold rush');
-            if (Math.random()<0.3 && (Game.season=='christmas')) choices.push('free reindeers');
+    //     this.Report=function() {
+    //         this.ticks++;
+    //         var failRate=Math.min(0.005*(this.ticks-5),0.25);
+    //         var choices=['building reward','multiply cookies','none','none'];
+    //         if (Game.canLumps() && Math.random()<0.0001) choices.push('free sugar lump');
+    //         if (Math.random()<0.15) choices.push('gold rush');
+    //         if (Math.random()<0.3 && (Game.season=='christmas')) choices.push('free reindeers');
             
-            var choice=choose(choices);
-            if (Math.random()<failRate) choice='fail';
+    //         var choice=choose(choices);
+    //         if (Math.random()<failRate) choice='fail';
 
-            if (choice=='none') {
-                Game.Notify(loc("Exploration report"),choose(
-                    ['The wind is howling.', 'There\'s a chill in the air.', 'Nothing but endless sky for days.']),[3,2,Icons]);
-            } else if (choice=='building reward') {
-                for (var i in Game.Objects) {
-                    var building=Game.Objects[i];
-                    if (building.rsManager) building.rsManager.gainRes(Math.min(building.rsManager.rsTotal*0.15,20000));
-                    else choice='multiply cookies';
-                }
-            } else if (choice=='multiply cookies') {
-				var gains=Math.min(Game.cookies*0.5,Game.cookiesPs*60*20)+100;
-                Game.Earn(gains);
-                Game.Notify(loc("Exploration report"),choose(
-                    ['Discovered a hidden treasure trove of cookies!', 'Harvested an ancient cookie deposit!', 'Your team got lucky.'])
-                    +' '+loc("Found <b>%1</b>!",loc("%1 cookie",LBeautify(gains))),[3,2,Icons]);
-            } else if (choice=='free sugar lump') {
-                Game.gainLumps(1);
-                Game.Notify(loc("Exploration report"),loc("Sweet!<br><small>Found 1 sugar lump!</small>"),[3,2,Icons]);
-            } else if (choice=='free reindeers') {
-                new Game.shimmer('reindeer');
-                new Game.shimmer('reindeer');
-                new Game.shimmer('reindeer');
-                Game.Notify(loc("Exploration report"),"Santa's blessings - a few reindeer from his sleigh.",[3,2,Icons]);
-            } else if (choice=='fail') {
-                Game.Notify(loc("Drat!"),"Your exploration trip comes to a sudden end.",[3,2,Icons]);
-                this.EndExplore();
-            }
-        }
+    //         if (choice=='none') {
+    //             Game.Notify(loc("Exploration report"),choose(
+    //                 ['The wind is howling.', 'There\'s a chill in the air.', 'Nothing but endless sky for days.']),[3,2,Icons]);
+    //         } else if (choice=='building reward') {
+    //             for (var i in Game.Objects) {
+    //                 var building=Game.Objects[i];
+    //                 if (building.rsManager) building.rsManager.gainRes(Math.min(building.rsManager.rsTotal*0.15,20000));
+    //                 else choice='multiply cookies';
+    //             }
+    //         } else if (choice=='multiply cookies') {
+	// 			var gains=Math.min(Game.cookies*0.5,Game.cookiesPs*60*20)+100;
+    //             Game.Earn(gains);
+    //             Game.Notify(loc("Exploration report"),choose(
+    //                 ['Discovered a hidden treasure trove of cookies!', 'Harvested an ancient cookie deposit!', 'Your team got lucky.'])
+    //                 +' '+loc("Found <b>%1</b>!",loc("%1 cookie",LBeautify(gains))),[3,2,Icons]);
+    //         } else if (choice=='free sugar lump') {
+    //             Game.gainLumps(1);
+    //             Game.Notify(loc("Exploration report"),loc("Sweet!<br><small>Found 1 sugar lump!</small>"),[3,2,Icons]);
+    //         } else if (choice=='free reindeers') {
+    //             new Game.shimmer('reindeer');
+    //             new Game.shimmer('reindeer');
+    //             new Game.shimmer('reindeer');
+    //             Game.Notify(loc("Exploration report"),"Santa's blessings - a few reindeer from his sleigh.",[3,2,Icons]);
+    //         } else if (choice=='fail') {
+    //             Game.Notify(loc("Drat!"),"Your exploration trip comes to a sudden end.",[3,2,Icons]);
+    //             this.EndExplore();
+    //         }
+    //     }
 
-        new Game.buffType('gold rush',function(time,pow)
-		{
-			return {
-				name:'Gold rush',
-				desc:loc("You find %1% more golden cookies for the next %2.",[25,Game.sayTime(time*Game.fps,-1)]),
-				icon:[23,6],
-				time:time*Game.fps,
-                aura:1
-			};
-		});
+    //     new Game.buffType('gold rush',function(time,pow)
+	// 	{
+	// 		return {
+	// 			name:'Gold rush',
+	// 			desc:loc("You find %1% more golden cookies for the next %2.",[25,Game.sayTime(time*Game.fps,-1)]),
+	// 			icon:[23,6],
+	// 			time:time*Game.fps,
+    //             aura:1
+	// 		};
+	// 	});
 
-        Game.registerHook('logic', function() {
-            if (me.exploring) {
-                me.nextExplore--;
-                if (me.nextExplore<=0) {
-                    me.Report();
-                    me.nextExplore=Game.fps*5//*60;
-                }
-            } else {
-                me.exploreCooldown--;
-                if (me.exploreCooldown<0) me.exploreCooldown=0;
-            }
-        });
-    }
+    //     Game.registerHook('logic', function() {
+    //         if (me.exploring) {
+    //             me.nextExplore--;
+    //             if (me.nextExplore<=0) {
+    //                 me.Report();
+    //                 me.nextExplore=Game.fps*5//*60;
+    //             }
+    //         } else {
+    //             me.exploreCooldown--;
+    //             if (me.exploreCooldown<0) me.exploreCooldown=0;
+    //         }
+    //     });
+    // }
 
     
     const UpdateTicks = 10;
