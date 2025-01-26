@@ -102,6 +102,23 @@ General._Initialize = function(en, Research) {
             if (l('gardenContent')) {l('gardenContent').style.height='392px'; }
 
             m.toRebuild=true;
+            // soils change
+            m.soils.dirt.tick=3;
+            m.soils.dirt.effsStr=m.soils.dirt.effsStr.replace(
+                loc("tick every %1",'<b>'+Game.sayTime(5*60*Game.fps)+'</b>'),
+                loc("tick every %1",'<b>'+Game.sayTime(3*60*Game.fps)+'</b>')
+            )
+            m.soils.fertilizer.tick=2;
+            m.soils.fertilizer.effsStr=m.soils.fertilizer.effsStr.replace(
+                loc("tick every %1",'<b>'+Game.sayTime(3*60*Game.fps)+'</b>'),
+                loc("tick every %1",'<b>'+Game.sayTime(2*60*Game.fps)+'</b>')
+            )
+            m.soils.pebbles.tick=10;
+            m.soils.pebbles.effsStr=m.soils.pebbles.effsStr.replace(
+                loc("tick every %1",'<b>'+Game.sayTime(5*60*Game.fps)+'</b>'),
+                loc("tick every %1",'<b>'+Game.sayTime(10*60*Game.fps)+'</b>')
+            )
+
         }
     }
     this.GardenEdit();
