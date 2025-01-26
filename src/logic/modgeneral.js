@@ -86,7 +86,7 @@ General._Initialize = function(en, Research) {
             eval("Game.Objects.Farm.minigame.save="+gardenEval(m.save.toString()));
             eval("Game.Objects.Farm.minigame.load="+gardenEval(m.load.toString())
                 .replace('M.plot[y][x]=[parseInt(plot[n]),parseInt(plot[n+1])];',
-                    'M.plot[y][x]=[(parseInt(plot[n])==NaN?0:parseInt(plot[n]),(parseInt(plot[n+1])==NaN?0:parseInt(plot[n+1]))];'));
+                    'M.plot[y][x]=[(parseInt(plot[n])==NaN?0:parseInt(plot[n])),(parseInt(plot[n+1])==NaN?0:parseInt(plot[n+1]))];'));
             eval("Game.Objects.Farm.minigame.tools['freeze'].func="+gardenEval(m.tools['freeze'].func.toString()));
             m.plotLimits=[
                 [1,1,5,5],
