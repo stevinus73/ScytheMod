@@ -92,8 +92,7 @@ General._Initialize = function(en, Research) {
                 [0,0,8,8]
             ];
 
-            m.buildPlot();
-            m.computeBoostPlot();
+            m.toRebuild=true;
         }
     }
     this.GardenEdit();
