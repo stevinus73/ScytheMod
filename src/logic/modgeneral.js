@@ -60,7 +60,7 @@ General._Initialize = function(en, Research) {
     General.GardenEdit = function() {
         if (Game.Objects.Farm.minigame) {
             var m = Game.Objects.Farm.minigame;
-            m.edited = false;
+            // m.edited = false;
             m.resetPlot = function() {
                 m.plot=Array(7).fill([0,0]).map(() => Array(7))
                 m.plotBoost=Array(7).fill([1,1,1]).map(() => Array(7))
@@ -90,9 +90,10 @@ General._Initialize = function(en, Research) {
             eval("Game.Objects.Farm.minigame.computeEffs="+gardenEval(m.computeEffs.toString()));
             eval("Game.Objects.Farm.minigame.harvestAll="+gardenEval(m.harvestAll.toString()));
             eval("Game.Objects.Farm.minigame.save="+gardenEval(m.save.toString()));
-            eval("Game.Objects.Farm.minigame.load="+gardenEval(m.load.toString())
-                .replace(`var plot=spl[i++]||0;`,
-                    `var plot=spl[i++]||0;\n\tif(!M.edited){M.resetPlot();M.edited=true;}`));
+            eval("Game.Objects.Farm.minigame.getTile="+m.getTile.toString().replace('x>5','x>6').replace('y>5','y>6'));
+            // eval("Game.Objects.Farm.minigame.load="+gardenEval(m.load.toString())
+            //     .replace(`var plot=spl[i++]||0;`,
+            //         `var plot=spl[i++]||0;\n\tif(!M.edited){M.resetPlot();M.edited=true;}`));
             eval("Game.Objects.Farm.minigame.tools['freeze'].func="+gardenEval(m.tools['freeze'].func.toString()));
             m.plotLimits=[
                 [1,1,5,5],
