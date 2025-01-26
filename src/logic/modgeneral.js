@@ -56,6 +56,7 @@ General._Initialize = function(en, Research) {
             // m.spells['summon crafty pixies'].failDesc = "Resources are used up 25% faster, without any CpS increase for 1 hour.";
         }
     }
+    function gardenEval(fstr){return fstr.replace('{',"{M=Game.Objects.Farm.minigame;").replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;')};
     General.GardenEdit = function() {
         if (Game.Objects.Farm.minigame) {
             var m = Game.Objects.Farm.minigame;
@@ -72,24 +73,16 @@ General._Initialize = function(en, Research) {
                     m.plotBoost[y][x]=[1,1,1];
                 }
             }
-            eval("Game.Objects.Farm.minigame.buildPlot="+m.buildPlot.toString()
-                .replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;').replace('if (plants>=6*6)','if (plants>=8*8)'));
-            eval("Game.Objects.Farm.minigame.computeBoostPlot="+m.computeBoostPlot.toString()
-                .replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;'));
-            eval("Game.Objects.Farm.minigame.reset="+m.reset.toString()
-                .replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;'));
-            eval("Game.Objects.Farm.minigame.logic="+m.logic.toString()
-                .replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;'));
-            eval("Game.Objects.Farm.minigame.computeEffs="+m.computeEffs.toString()
-                .replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;'));
-            eval("Game.Objects.Farm.minigame.harvestAll="+m.harvestAll.toString()
-                .replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;'));
-            eval("Game.Objects.Farm.minigame.save="+m.save.toString()
-                .replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;'));
-            eval("Game.Objects.Farm.minigame.load="+m.load.toString()
-                .replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;'));
-            eval("Game.Objects.Farm.minigame.tools['freeze'].func="+m.tools['freeze'].func.toString()
-                .replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;'));
+            eval("Game.Objects.Farm.minigame.buildPlot="+gardenEval(m.buildPlot.toString())
+                .replace('if (plants>=6*6)','if (plants>=8*8)'));
+            eval("Game.Objects.Farm.minigame.computeBoostPlot="+gardenEval(m.computeBoostPlot.toString()));
+            eval("Game.Objects.Farm.minigame.reset="+gardenEval(m.reset.toString()));
+            eval("Game.Objects.Farm.minigame.logic="+gardenEval(m.logic.toString()));
+            eval("Game.Objects.Farm.minigame.computeEffs="+gardenEval(m.computeEffs.toString()));
+            eval("Game.Objects.Farm.minigame.harvestAll="+gardenEval(m.harvestAll.toString()));
+            eval("Game.Objects.Farm.minigame.save="+gardenEval(m.save.toString()));
+            eval("Game.Objects.Farm.minigame.load="+gardenEval(m.load.toString()));
+            eval("Game.Objects.Farm.minigame.tools['freeze'].func="+gardenEval(m.tools['freeze'].func.toString()));
             m.plotLimits=[
                 [1,1,5,5],
                 [1,1,6,5],
