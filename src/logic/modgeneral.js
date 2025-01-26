@@ -35,8 +35,8 @@ General._Initialize = function(en, Research) {
             m.gods['creation'].desc2 = '<span class="green">Increases yield by 6%.</span> <span class="red">Decreases resource use rate by 20%.</span>';
             m.gods['creation'].desc3 = '<span class="green">Increases yield by 4%.</span> <span class="red">Decreases resource use rate by 15%.</span>';
             m.gods['ruin'].desc1 += ' <span class="red">Buff increases clicks used by +0.5% for every building sold for 10 seconds.</span>',
-			m.gods['ruin'].desc1 += ' <span class="red">Buff increases clicks used by +0.3% for every building sold for 10 seconds.</span>',
-			m.gods['ruin'].desc1 += ' <span class="red">Buff increases clicks used by +0.1% for every building sold for 10 seconds.</span>',
+			m.gods['ruin'].desc2 += ' <span class="red">Buff increases clicks used by +0.3% for every building sold for 10 seconds.</span>',
+			m.gods['ruin'].desc3 += ' <span class="red">Buff increases clicks used by +0.1% for every building sold for 10 seconds.</span>',
             eval("Game.Objects.Temple.minigame.godTooltip="+Game.Objects.Temple.minigame.godTooltip.toString().replace('{',"{M=Game.Objects.Temple.minigame;"));
             eval("Game.Objects.Temple.minigame.slotTooltip="+Game.Objects.Temple.minigame.slotTooltip.toString().replace('{',"{M=Game.Objects.Temple.minigame;"));
             // eval("Game.Objects.Temple.minigame.draw="+Game.Objects.Temple.minigame.draw.toString().replace(
@@ -59,13 +59,48 @@ General._Initialize = function(en, Research) {
     General.GardenEdit = function() {
         if (Game.Objects.Farm.minigame) {
             var m = Game.Objects.Farm.minigame;
+            // this (unfortunately) clears all existing garden plants
+            for (var y=0;y<8;y++) {
+                m.plot[y]=[];
+                for (var x=0;x<8;x++) {
+                    m.plot[y][x]=[0,0];
+                }
+            }
+            for (var y=0;y<8;y++) {
+                m.plotBoost[y]=[];
+                for (var x=0;x<8;x++) {
+                    m.plotBoost[y][x]=[1,1,1];
+                }
+            }
+            eval("Game.Objects.Farm.minigame.buildPlot="+m.buildPlot.toString()
+                .replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;').replace('if (plants>=6*6)','if (plants>=8*8)'));
+            eval("Game.Objects.Farm.minigame.computeBoostPlot="+m.computeBoostPlot.toString()
+                .replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;'));
+            eval("Game.Objects.Farm.minigame.reset="+m.reset.toString()
+                .replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;'));
+            eval("Game.Objects.Farm.minigame.logic="+m.logic.toString()
+                .replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;'));
+            eval("Game.Objects.Farm.minigame.computeEffs="+m.computeEffs.toString()
+                .replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;'));
+            eval("Game.Objects.Farm.minigame.harvestAll="+m.harvestAll.toString()
+                .replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;'));
+            eval("Game.Objects.Farm.minigame.save="+m.save.toString()
+                .replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;'));
+            eval("Game.Objects.Farm.minigame.load="+m.load.toString()
+                .replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;'));
+            eval("Game.Objects.Farm.minigame.tools['freeze'].func="+m.tools['freeze'].func.toString()
+                .replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;'));
             m.plotLimits=[
                 [1,1,5,5],
                 [1,1,6,5],
                 [1,1,6,6],
                 [0,1,6,6],
-                [0,0,6,6]
+                [0,0,6,6],
+                [0,0,8,8]
             ];
+
+            m.buildPlot();
+            m.computeBoostPlot();
         }
     }
     this.GardenEdit();
@@ -265,20 +300,23 @@ General._Initialize = function(en, Research) {
 
     // RANDOM OTHER UPGRADES
 
-    en.ue.addUpgrade("Dyson spheres", "Shipments gain <b>+7%</> CpS per prism. Prisms gain <b>+0.7%</b> CpS per shipment."
+    en.ue.addUpgrade("Dyson spheres", "Shipments gain <b>+7%</b> CpS per prism. Prisms gain <b>+0.7%</b> CpS per shipment."
         +'<q>Not related to the much more underwhelming normal upgrade of the same name.</q>',
         4000000000000000, [1,4,Icons], 768, {pool: 'prestige', posX: 1450, posY: 32.130, parents: 
             [Game.Upgrades['Unshackled shipments']]}
     );
 
-    en.ue.addUpgrade("Shipments gain <b>+25%</b> CpS (multiplicative) per dragon level."
+    en.ue.addUpgrade("Dragon wingtip", "Shipments gain <b>+25%</b> CpS (multiplicative) per dragon level."
         +'<br>'+loc("Cost scales with CpS, but %1 times cheaper with a fully-trained dragon.",10)
-        +'<q>A tiny wingtip shed from your dragon. This may imbue you with the power of flight.</q>',
+        +'<q>A tiny wingtip shed from your dragon. This imbues you with the power of flight.</q>',
         1000000000, [5,24], 25100, {priceFunc:function(me){return Game.unbuffedCps*60*30*((Game.dragonLevel<Game.dragonLevels.length-1)?1:0.1);}}
     );
 
     Game.magicCpS=function(what){
-        if ((what=='Shipment')&&Game.Has("Dyson spheres")) return Math.pow(1.25,Game.dragonLevel)*(1+0.07*Game.Objects.Prism.amount);
+        if (what=='Shipment') {
+            return (Game.Has("Dragon wingtip")?Math.pow(1.25,Game.dragonLevel):1)*
+                (Game.Has("Dyson spheres")?1+0.07*Game.Objects.Prism.amount:1);
+        }
         if ((what=='Prism')&&Game.Has("Dyson spheres")) return (1+0.007*Game.Objects.Shipment.amount);
         return 1;
     }

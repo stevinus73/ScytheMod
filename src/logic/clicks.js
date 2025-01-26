@@ -4,7 +4,7 @@ Clicks._Initialize = function(en, Research) {
     this.en = en;
 
     en.ue.addUpgrade("Big clicks", "The mouse and cursors are <b>four times as efficient</b>. Maximum click space <b>doubled</b>.<q>Big clicks for the big cookie.</q>",
-        50, [1, 6], 140, {unlockAt: 100});
+        50, [1, 6], 140, {unlockAt: 10});
     en.ue.addUpgrade("Butterfly", "The mouse and cursors are <b>four times as efficient</b>. Maximum click space <b>doubled</b>.<q>More like a hummingbird with THAT speed.</q>",
         50000, [12, 1], 140, {unlockAt: 10000});
     en.ue.addUpgrade("Hands-off approach", "Clicks regenerate <b>twice</b> as fast.<q>Ow, my hands are really sore. Good idea.</q>",
