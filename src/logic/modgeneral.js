@@ -263,6 +263,30 @@ General._Initialize = function(en, Research) {
         "Upon harvesting a sugar lump, there is a <b>50% chance</b> that <b>one more lump</b> is dropped."    
     )
 
+    // RANDOM OTHER UPGRADES
+
+    en.ue.addUpgrade("Dyson spheres", "Shipments gain <b>+7%</> CpS per prism. Prisms gain <b>+0.7%</b> CpS per shipment."
+        +'<q>Not related to the much more underwhelming normal upgrade of the same name.</q>',
+        4000000000000000, [1,4,Icons], 768, {pool: 'prestige', posX: 1450, posY: 32.130, parents: 
+            [Game.Upgrades['Unshackled shipments']]}
+    );
+
+    en.ue.addUpgrade("Shipments gain <b>+25%</b> CpS (multiplicative) per dragon level."
+        +'<br>'+loc("Cost scales with CpS, but %1 times cheaper with a fully-trained dragon.",10)
+        +'<q>A tiny wingtip shed from your dragon. This may imbue you with the power of flight.</q>',
+        1000000000, [5,24], 25100, {priceFunc:function(me){return Game.unbuffedCps*60*30*((Game.dragonLevel<Game.dragonLevels.length-1)?1:0.1);}}
+    );
+
+    Game.magicCpS=function(what){
+        if ((what=='Shipment')&&Game.Has("Dyson spheres")) return Math.pow(1.25,Game.dragonLevel)*(1+0.07*Game.Objects.Prism.amount);
+        if ((what=='Prism')&&Game.Has("Dyson spheres")) return (1+0.007*Game.Objects.Shipment.amount);
+        return 1;
+    }
+
+    eval('Game.ClickSpecialPic='+Game.ClickSpecialPic.toString()
+        .replace(`['Dragon scale','Dragon claw','Dragon fang','Dragon teddy bear'];`,
+            `['Dragon scale','Dragon claw','Dragon fang','Dragon teddy bear','Dragon wingtip'];`
+        ));
     
 
     // PRESTIGE (written through the magic of "hope for the best" maths)
