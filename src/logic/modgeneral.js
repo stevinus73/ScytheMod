@@ -56,33 +56,37 @@ General._Initialize = function(en, Research) {
             // m.spells['summon crafty pixies'].failDesc = "Resources are used up 25% faster, without any CpS increase for 1 hour.";
         }
     }
-    function gardenEval(fstr){return fstr.replace('{',"{M=Game.Objects.Farm.minigame;").replaceAll('y<6;','y<8;').replaceAll('x<6;','x<8;')};
+    function gardenEval(fstr){return fstr.replace('{',"{M=Game.Objects.Farm.minigame;").replaceAll('y<6;','y<7;').replaceAll('x<6;','x<7;')};
     General.GardenEdit = function() {
         if (Game.Objects.Farm.minigame) {
             var m = Game.Objects.Farm.minigame;
             // this (unfortunately) clears all existing garden plants
-            for (var y=0;y<8;y++) {
+            for (var y=0;y<7;y++) {
                 m.plot[y]=[];
-                for (var x=0;x<8;x++) {
+                for (var x=0;x<7;x++) {
                     m.plot[y][x]=[0,0];
                 }
             }
-            for (var y=0;y<8;y++) {
+            for (var y=0;y<7;y++) {
                 m.plotBoost[y]=[];
-                for (var x=0;x<8;x++) {
+                for (var x=0;x<7;x++) {
                     m.plotBoost[y][x]=[1,1,1];
                 }
             }
             eval("Game.Objects.Farm.minigame.buildPlot="+gardenEval(m.buildPlot.toString())
-                .replace('if (plants>=6*6)','if (plants>=8*8)')
-                .replace("if (!l('gardenTile-0-0'))","if (!l('gardenTile-8-8'))"));
+                .replace('Math.min(6,Y+s+1)','Math.min(7,Y+s+1)')
+                .replace('Math.min(6,X+s+1)','Math.min(7,X+s+1)')
+                .replace('if (plants>=6*6)','if (plants>=7*7)')
+                .replace("if (!l('gardenTile-0-0'))","if (!l('gardenTile-7-7'))"));
             eval("Game.Objects.Farm.minigame.computeBoostPlot="+gardenEval(m.computeBoostPlot.toString()));
             eval("Game.Objects.Farm.minigame.reset="+gardenEval(m.reset.toString()));
             eval("Game.Objects.Farm.minigame.logic="+gardenEval(m.logic.toString()));
             eval("Game.Objects.Farm.minigame.computeEffs="+gardenEval(m.computeEffs.toString()));
             eval("Game.Objects.Farm.minigame.harvestAll="+gardenEval(m.harvestAll.toString()));
             eval("Game.Objects.Farm.minigame.save="+gardenEval(m.save.toString()));
-            eval("Game.Objects.Farm.minigame.load="+gardenEval(m.load.toString()));
+            eval("Game.Objects.Farm.minigame.load="+gardenEval(m.load.toString())
+                .replace('M.plot[y][x]=[parseInt(plot[n]),parseInt(plot[n+1])];',
+                    'M.plot[y][x]=[(parseInt(plot[n])==NaN?0:parseInt(plot[n]),(parseInt(plot[n+1])==NaN?0:parseInt(plot[n+1]))];'));
             eval("Game.Objects.Farm.minigame.tools['freeze'].func="+gardenEval(m.tools['freeze'].func.toString()));
             m.plotLimits=[
                 [1,1,5,5],
@@ -90,7 +94,7 @@ General._Initialize = function(en, Research) {
                 [1,1,6,6],
                 [0,1,6,6],
                 [0,0,6,6],
-                [0,0,8,8]
+                [0,0,7,7]
             ];
 
             m.toRebuild=true;
@@ -289,6 +293,10 @@ General._Initialize = function(en, Research) {
         "replace");
     en.ue.replaceDescPart(Game.Upgrades['Sucralosia Inutilis'], 
         "Upon harvesting a sugar lump, there is a <b>50% chance</b> that <b>one more lump</b> is dropped."    
+    )
+
+    Game.loadLumps=en.injectCode(Game.loadLumps,`Math.floor(age/Game.lumpOverripeAge)`,
+        `Math.floor((age/Game.lumpOverripeAge)*(Game.Has('Sucralosia Inutilis')?1.5:1));`, "replace"
     )
 
     // RANDOM OTHER UPGRADES
