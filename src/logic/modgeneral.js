@@ -60,25 +60,20 @@ General._Initialize = function(en, Research) {
     General.GardenEdit = function() {
         if (Game.Objects.Farm.minigame) {
             var m = Game.Objects.Farm.minigame;
-            // m.edited = false;
             m.resetPlot = function() {
                 m.plot=Array(7).fill([0,0]).map(() => Array(7))
                 m.plotBoost=Array(7).fill([1,1,1]).map(() => Array(7))
-                // for (var y=0;y<7;y++) {
-                //     m.plot[y]=[];
-                //     for (var x=0;x<7;x++) {
-                //         m.plot[y][x]=[0,0];
-                //     }
-                // }
-                // for (var y=0;y<7;y++) {
-                //     m.plotBoost[y]=[];
-                //     for (var x=0;x<7;x++) {
-                //         m.plotBoost[y][x]=[1,1,1];
-                //     }
-                // }
             }
-            // this (unfortunately) clears all existing garden plants
             m.resetPlot();
+            m.plants = function() {
+                var plants=0;
+                for (var y=0;y<7;y++) {
+                    for (var x=0;x<7;x++) {
+                        if (this.plot[y][x]>0) plants++;
+                    }
+                }
+                return plants;
+            }
             eval("Game.Objects.Farm.minigame.buildPlot="+gardenEval(m.buildPlot.toString())
                 .replace('Math.min(6,Y+s+1)','Math.min(7,Y+s+1)')
                 .replace('Math.min(6,X+s+1)','Math.min(7,X+s+1)')
@@ -87,13 +82,12 @@ General._Initialize = function(en, Research) {
             eval("Game.Objects.Farm.minigame.computeBoostPlot="+gardenEval(m.computeBoostPlot.toString()));
             eval("Game.Objects.Farm.minigame.reset="+gardenEval(m.reset.toString()));
             eval("Game.Objects.Farm.minigame.logic="+gardenEval(m.logic.toString()));
-            eval("Game.Objects.Farm.minigame.computeEffs="+gardenEval(m.computeEffs.toString()));
+            // all plants become 5% less efficient per plant placed above the max of 36
+            eval("Game.Objects.Farm.minigame.computeEffs="+gardenEval(m.computeEffs.toString())
+                    .replace('mult*=M.plotBoost[y][x][1];','mult*=M.plotBoost[y][x][1];mult*=Math.pow(0.95,Math.max(M.plants()-36,0));'));
             eval("Game.Objects.Farm.minigame.harvestAll="+gardenEval(m.harvestAll.toString()));
             eval("Game.Objects.Farm.minigame.save="+gardenEval(m.save.toString()));
             eval("Game.Objects.Farm.minigame.getTile="+m.getTile.toString().replace('x>5','x>6').replace('y>5','y>6'));
-            // eval("Game.Objects.Farm.minigame.load="+gardenEval(m.load.toString())
-            //     .replace(`var plot=spl[i++]||0;`,
-            //         `var plot=spl[i++]||0;\n\tif(!M.edited){M.resetPlot();M.edited=true;}`));
             eval("Game.Objects.Farm.minigame.tools['freeze'].func="+gardenEval(m.tools['freeze'].func.toString()));
             m.plotLimits=[
                 [1,1,5,5],
@@ -101,8 +95,11 @@ General._Initialize = function(en, Research) {
                 [1,1,6,6],
                 [0,1,6,6],
                 [0,0,6,6],
+                [0,0,6,7],
                 [0,0,7,7]
             ];
+            if (l('gardenPlot')){ l('gardenPlot').style.width='280px'; l('gardenPlot').style.height='280px'; }
+            if (l('gardenContent')) {l('gardenContent').style.height='392px'; }
 
             m.toRebuild=true;
         }
