@@ -92,7 +92,7 @@ General._Initialize = function(en, Research) {
             eval("Game.Objects.Farm.minigame.tools['freeze'].func="+gardenEval(m.tools['freeze'].func.toString()));
             eval("Game.Objects.Farm.minigame.harvest="+m.harvest.toString().replace('M.plot[y][x]=[0,0];',
                 `if (tile[1]<me.mature && M.soilsById[M.soil].key=='pebbles' && Math.random()<0.35){`+
-                `if (M.unlockSeed(me)) Game.Popup('('+me.name+')<br>'+loc("Unlocked %1 seed.",me.name),Game.mouseX,Game.mouseY);};\n\t\tM.plot[y][x]=[0,0];`));
+                `if (M.unlockSeed(me)){Game.Popup('('+me.name+')<br>'+loc("Unlocked %1 seed.",me.name),Game.mouseX,Game.mouseY)}};\n\t\tM.plot[y][x]=[0,0];`));
             m.plotLimits=[
                 [1,1,5,5],
                 [1,1,6,5],
