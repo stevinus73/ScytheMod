@@ -60,19 +60,25 @@ General._Initialize = function(en, Research) {
     General.GardenEdit = function() {
         if (Game.Objects.Farm.minigame) {
             var m = Game.Objects.Farm.minigame;
+            m.edited = false;
+            m.resetPlot = function() {
+                m.plot=Array(7).fill([0,0]).map(() => Array(7))
+                m.plotBoost=Array(7).fill([1,1,1]).map(() => Array(7))
+                // for (var y=0;y<7;y++) {
+                //     m.plot[y]=[];
+                //     for (var x=0;x<7;x++) {
+                //         m.plot[y][x]=[0,0];
+                //     }
+                // }
+                // for (var y=0;y<7;y++) {
+                //     m.plotBoost[y]=[];
+                //     for (var x=0;x<7;x++) {
+                //         m.plotBoost[y][x]=[1,1,1];
+                //     }
+                // }
+            }
             // this (unfortunately) clears all existing garden plants
-            for (var y=0;y<7;y++) {
-                m.plot[y]=[];
-                for (var x=0;x<7;x++) {
-                    m.plot[y][x]=[0,0];
-                }
-            }
-            for (var y=0;y<7;y++) {
-                m.plotBoost[y]=[];
-                for (var x=0;x<7;x++) {
-                    m.plotBoost[y][x]=[1,1,1];
-                }
-            }
+            m.resetPlot();
             eval("Game.Objects.Farm.minigame.buildPlot="+gardenEval(m.buildPlot.toString())
                 .replace('Math.min(6,Y+s+1)','Math.min(7,Y+s+1)')
                 .replace('Math.min(6,X+s+1)','Math.min(7,X+s+1)')
@@ -85,8 +91,8 @@ General._Initialize = function(en, Research) {
             eval("Game.Objects.Farm.minigame.harvestAll="+gardenEval(m.harvestAll.toString()));
             eval("Game.Objects.Farm.minigame.save="+gardenEval(m.save.toString()));
             eval("Game.Objects.Farm.minigame.load="+gardenEval(m.load.toString())
-                .replace('M.plot[y][x]=[parseInt(plot[n]),parseInt(plot[n+1])];',
-                    'M.plot[y][x]=[(parseInt(plot[n])==NaN?0:parseInt(plot[n])),(parseInt(plot[n+1])==NaN?0:parseInt(plot[n+1]))];'));
+                .replace(`var plot=spl[i++]||0;`,
+                    `var plot=spl[i++]||0;\n\tif(!M.edited){M.resetPlot();M.edited=true;}`));
             eval("Game.Objects.Farm.minigame.tools['freeze'].func="+gardenEval(m.tools['freeze'].func.toString()));
             m.plotLimits=[
                 [1,1,5,5],
