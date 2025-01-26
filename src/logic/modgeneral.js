@@ -166,14 +166,19 @@ General._Initialize = function(en, Research) {
 
     General.canShiny = function(){return Research.has("Shiny cookies");}
     General.shinies = []
+    General.shinyUps = []
     var strCookieProductionMultiplierPlus=loc("Cookie production multiplier <b>+%1%</b>.",'[x]');
 	var getStrCookieProductionMultiplierPlus=function(x)
 	{return strCookieProductionMultiplierPlus.replace('[x]',x);}
+    General.sPowerCoef = function() {
+        if(Game.prestige>=1000000) return 3;
+        if(Game.prestige>=10000) return 2;
+        if(Game.prestige>=100) return 1;
+        return 0;
+    }
+
     General.shinyPower = function(){
-        if(Game.resets==0) return P.shinyPower[0];
-        if(Game.resets==1) return P.shinyPower[1];
-        if(Game.resets==2) return P.shinyPower[2];
-        return P.shinyPower[3];
+        return P.shinyPower[this.sPowerCoef()];
     }
 
     General.newShinyCookie = function(name, desc, price, icon){
@@ -183,18 +188,49 @@ General._Initialize = function(en, Research) {
         this.shinies.push(name)
     }
 
-    General.newShinyCookie("Star cookies", "Glimmers and shines like a star. May supernova eventually.", 1e4, [2, 2, Icons])
+    General.newShinyUpgrade = function(obj, name, desc) {
+        var me=Game.Objects[obj];
+        en.ue.addUpgrade(name, desc, me.basePrice*25, Game.GetIcon(obj,5), 5000, {
+            descFunc: function(){return loc("%1 are <b>%2%</b> more efficient and <b>%3%</b> cheaper.",
+                [cap(me.plural),[80,40,20,10][General.sPowerCoef()],[60,30,15,7][General.sPowerCoef()]])+'<q>'+desc+'</q>'}
+        })
+        me.cps=en.injectCode(me.cps,'mult*=Game.magicCpS(me.name);',
+            `if (Game.Has('`+name+`')) mult*=[80,40,20,10][mod.general.sPowerCoef()];`, 
+            'after'
+        )
+        eval('Game.modifyBuildingPrice='+Game.modifyBuildingPrice.toString()
+            .replace(`price*=Game.eff('buildingCost');`,
+                `if (Game.Has('`+name+`')) mult*=[60,30,15,7][mod.general.sPowerCoef()];\n\t`+`price*=Game.eff('buildingCost');`))
+        this.shinyUps.push([obj, name])
+    }
+
+    General.newShinyCookie("Star cookies", "Glitters and shines like a star. May supernova eventually.", 1e4, [2, 2, Icons])
     General.newShinyCookie("Emerald cookies", "Beautiful, marvelous, incredible, sublime.", 1e6, [2, 3, Icons])
     General.newShinyCookie("Diamond cookies", "1 in 8,192 chance!", 1e8, [2, 4, Icons])
     General.newShinyCookie("Silver cookies", "Tastes pretty meh, but the shininess is the real special part about all of these cookies.", 1e11, [2, 5, Icons])
     General.newShinyCookie("Tungsten cookies", "The legends didn't lie.", 1e16, [2, 5, Icons])
     General.newShinyCookie("Big-bang nucleosynthesized cookies", "From the beginning of time itself.", 1e20, [2, 1, Icons])
 
+    General.newShinyUpgrade('Cursor', 'A fire mouse', 'No, literally, it\'s on fire. Might need to go to the burn ward.');
+    General.newShinyUpgrade('Grandma', 'Rolling rolling pin', 'Look at those little wheels!');
+    General.newShinyUpgrade('Farm', 'Golden watering pot', 'Your plants may occasionally be contaminated with Au(79).');
+    General.newShinyUpgrade('Mine', 'Efficiency', 'Maybe throw in a beacon for haste.');
+    General.newShinyUpgrade('Factory', 'Steampunk', 'It makes your factories look cooler and gets your workers to work a little faster, too!');
+
+    // en.ue.addUpgrade('Drag clicking', '', 75000000000000, Game.GetIcon('Cursor',7), 5000, {
+    //     descFunc: function(){return 'Multiplies the gain from Thousand fingers by <b>'+[12,6,3,1.5][General.sPowerCoef()]+'</b><q>'+desc+'</q>';}
+    // })
+
     Game.registerHook('logic', function(){
         General.shinies.forEach(function(shiny) {
             var me=Game.Upgrades[shiny]
             if (General.canShiny() && (Game.cookiesEarned >= me.basePrice/20)){Game.Unlock(shiny);}
         })
+        General.shinyUps.forEach(function(shinyUp) {
+            var obj=Game.Objects[shinyUp[0]]
+            if (General.canShiny() && (Game.cookiesEarned >= obj.basePrice*5)){Game.Unlock(shinyUp[1]);}
+        })
+        // if (General.canShiny() && Game.Objects.Cursor.amount>=150){Game.Unlock('Drag clicking')}
     })
 
     Game.registerHook('cps', function(cps) {
@@ -326,8 +362,8 @@ General._Initialize = function(en, Research) {
         "Upon harvesting a sugar lump, there is a <b>50% chance</b> that <b>one more lump</b> is dropped."    
     )
 
-    Game.loadLumps=en.injectCode(Game.loadLumps,`Math.floor(age/Game.lumpOverripeAge)`,
-        `Math.floor((age/Game.lumpOverripeAge)*(Game.Has('Sucralosia Inutilis')?1.5:1));`, "replace"
+    Game.loadLumps=en.injectCode(Game.loadLumps,`amount-1`,
+        `Math.floor((amount-1)*(Game.Has('Sucralosia Inutilis')?1.5:1));`, "replace"
     )
 
     // RANDOM OTHER UPGRADES
