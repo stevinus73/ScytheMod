@@ -74,7 +74,8 @@ General._Initialize = function(en, Research) {
                 }
             }
             eval("Game.Objects.Farm.minigame.buildPlot="+gardenEval(m.buildPlot.toString())
-                .replace('if (plants>=6*6)','if (plants>=8*8)'));
+                .replace('if (plants>=6*6)','if (plants>=8*8)')
+                .replace("if (!l('gardenTile-0-0'))","if (!l('gardenTile-8-8'))"));
             eval("Game.Objects.Farm.minigame.computeBoostPlot="+gardenEval(m.computeBoostPlot.toString()));
             eval("Game.Objects.Farm.minigame.reset="+gardenEval(m.reset.toString()));
             eval("Game.Objects.Farm.minigame.logic="+gardenEval(m.logic.toString()));
