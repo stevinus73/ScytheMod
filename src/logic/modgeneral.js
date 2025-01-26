@@ -362,9 +362,9 @@ General._Initialize = function(en, Research) {
         "Upon harvesting a sugar lump, there is a <b>50% chance</b> that <b>one more lump</b> is dropped."    
     )
 
-    Game.loadLumps=en.injectCode(Game.loadLumps,`amount-1`,
-        `Math.floor((amount-1)*(Game.Has('Sucralosia Inutilis')?1.5:1));`, "replace"
-    )
+    // Game.loadLumps=en.injectCode(Game.loadLumps,`amount-1`,
+    //     `Math.floor((amount-1)*(Game.Has('Sucralosia Inutilis')?1.5:1));`, "replace"
+    // )
 
     // RANDOM OTHER UPGRADES
 
