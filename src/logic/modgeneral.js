@@ -200,7 +200,7 @@ General._Initialize = function(en, Research) {
         )
         eval('Game.modifyBuildingPrice='+Game.modifyBuildingPrice.toString()
             .replace(`price*=Game.eff('buildingCost');`,
-                `if (Game.Has('`+name+`')&&building.name==`+obj+`) price*=[60,30,15,7][mod.general.sPowerCoef()];\n\t\t\t`+`price*=Game.eff('buildingCost');`))
+                `if (Game.Has('`+name+`')&&building.name=='`+obj+`') price*=[60,30,15,7][mod.general.sPowerCoef()];\n\t\t\t`+`price*=Game.eff('buildingCost');`))
         this.shinyUps.push([obj, name])
     }
 

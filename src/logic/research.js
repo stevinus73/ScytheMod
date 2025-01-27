@@ -687,8 +687,8 @@ Research._Initialize = function(en) {
     });
 
     Game.registerHook('reincarnate', function() {
-        if (Game.ascensionMode == 0) this.button.style.display = 'block';
-        else this.button.style.display = 'none';
+        if (Game.ascensionMode == 0) Research.button.style.display = 'block';
+        else Research.button.style.display = 'none';
     });
 
     Game.registerHook('logic', function() {
