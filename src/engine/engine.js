@@ -1,7 +1,5 @@
 import {injectCode, injectCodes} from "./utils.js";
-import { shimmer_engine } from "./shimmers.js";
 import { building_engine, achiev_engine, upgrade_engine, Process } from "./constructs.js";
-import "./cps.js";
 import "./constructs.js";
 
 var IdlersPocket = {};
