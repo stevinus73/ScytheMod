@@ -34,19 +34,11 @@ General._Initialize = function(en, Research) {
             m.gods['creation'].desc1 = '<span class="green">Increases yield by 8%.</span> <span class="red">Decreases resource use rate by 25%.</span>';
             m.gods['creation'].desc2 = '<span class="green">Increases yield by 6%.</span> <span class="red">Decreases resource use rate by 20%.</span>';
             m.gods['creation'].desc3 = '<span class="green">Increases yield by 4%.</span> <span class="red">Decreases resource use rate by 15%.</span>';
-            m.gods['ruin'].desc1 += ' <span class="red">Buff increases clicks used by +0.5% for every building sold for 10 seconds.</span>',
+            m.gods['ruin'].desc1 += ' <span class="red">Buff increases clicks used by +0.6% for every building sold for 10 seconds.</span>',
 			m.gods['ruin'].desc2 += ' <span class="red">Buff increases clicks used by +0.3% for every building sold for 10 seconds.</span>',
-			m.gods['ruin'].desc3 += ' <span class="red">Buff increases clicks used by +0.1% for every building sold for 10 seconds.</span>',
+			m.gods['ruin'].desc3 += ' <span class="red">Buff increases clicks used by +0.15% for every building sold for 10 seconds.</span>',
             eval("Game.Objects.Temple.minigame.godTooltip="+Game.Objects.Temple.minigame.godTooltip.toString().replace('{',"{M=Game.Objects.Temple.minigame;"));
             eval("Game.Objects.Temple.minigame.slotTooltip="+Game.Objects.Temple.minigame.slotTooltip.toString().replace('{',"{M=Game.Objects.Temple.minigame;"));
-            // eval("Game.Objects.Temple.minigame.draw="+Game.Objects.Temple.minigame.draw.toString().replace(
-            //     'else if (M.swaps==1) t=1000*60*60*4;', 
-            //     'else if (M.swaps==1) t=1000*60*60*4;\n\tif (mod.research.has("Polytheism")) t*=0.75;')
-            // );
-            // eval("Game.Objects.Temple.minigame.logic="+Game.Objects.Temple.minigame.logic.toString().replace(
-            //     'else if (M.swaps==1) t=1000*60*60*4;', 
-            //     'else if (M.swaps==1) t=1000*60*60*4;\n\tif (mod.research.has("Polytheism")) t*=0.75;')
-            // );
         }
     }
     General.GrimoireRename = function() {
@@ -194,10 +186,6 @@ General._Initialize = function(en, Research) {
             descFunc: function(){return loc("%1 are <b>%2%</b> more efficient and <b>%3%</b> cheaper.",
                 [cap(me.plural),[80,40,20,10][General.sPowerCoef()],[60,30,15,7][General.sPowerCoef()]])+'<q>'+desc+'</q>'}
         })
-        me.cps=en.injectCode(me.cps,'mult*=Game.magicCpS(me.name);',
-            `if (Game.Has('`+name+`')) mult*=[80,40,20,10][mod.general.sPowerCoef()];`, 
-            'after'
-        )
         eval('Game.modifyBuildingPrice='+Game.modifyBuildingPrice.toString()
             .replace(`price*=Game.eff('buildingCost');`,
                 `if (Game.Has('`+name+`')&&building.name=='`+obj+`') price*=0.01*[60,30,15,7][mod.general.sPowerCoef()];\n\t\t\t`+`price*=Game.eff('buildingCost');`))
@@ -216,10 +204,13 @@ General._Initialize = function(en, Research) {
     General.newShinyUpgrade('Farm', 'Golden watering pot', 'Your plants may occasionally be contaminated with Au(79).');
     General.newShinyUpgrade('Mine', 'Efficiency', 'Maybe throw in a beacon for haste.');
     General.newShinyUpgrade('Factory', 'Steampunk', 'It makes your factories look cooler and gets your workers to work a little faster, too!');
+    General.newShinyUpgrade('Bank', 'Money printer', 'All you have to do is put the cookies in the printer and then the cookies come out. Incredible, I know!');
+    General.newShinyUpgrade('Temple', 'Syncretism', 'Allows you to pretend temples from other religions are also yours!');
+    
 
-    // en.ue.addUpgrade('Drag clicking', '', 75000000000000, Game.GetIcon('Cursor',7), 5000, {
-    //     descFunc: function(){return 'Multiplies the gain from Thousand fingers by <b>'+[12,6,3,1.5][General.sPowerCoef()]+'</b><q>'+desc+'</q>';}
-    // })
+    en.ue.addUpgrade('Drag clicking', '', 75000000000000, Game.GetIcon('Cursor',7), 5000, {
+        descFunc: function(){return 'Multiplies the gain from Thousand fingers by <b>'+[20,10,5,2.5][General.sPowerCoef()]+'</b>.<q>'+desc+'</q>';}
+    })
 
     Game.registerHook('logic', function(){
         General.shinies.forEach(function(shiny) {
@@ -230,7 +221,7 @@ General._Initialize = function(en, Research) {
             var obj=Game.Objects[shinyUp[0]]
             if (General.canShiny() && (Game.cookiesEarned >= obj.basePrice*5)){Game.Unlock(shinyUp[1]);}
         })
-        // if (General.canShiny() && Game.Objects.Cursor.amount>=150){Game.Unlock('Drag clicking')}
+        if (General.canShiny() && Game.Objects.Cursor.amount>=150){Game.Unlock('Drag clicking')}
     })
 
     Game.registerHook('cps', function(cps) {
@@ -377,16 +368,21 @@ General._Initialize = function(en, Research) {
     en.ue.addUpgrade("Dragon wingtip", "Shipments gain <b>+25%</b> CpS (multiplicative) per dragon level."
         +'<br>'+loc("Cost scales with CpS, but %1 times cheaper with a fully-trained dragon.",10)
         +'<q>A tiny wingtip shed from your dragon. This imbues you with the power of flight.</q>',
-        1000000000, [5,24], 25100, {priceFunc:function(me){return Game.unbuffedCps*60*30*((Game.dragonLevel<Game.dragonLevels.length-1)?1:0.1);}}
+        1000000000, [5,23], 25100, {priceFunc:function(me){return Game.unbuffedCps*60*30*((Game.dragonLevel<Game.dragonLevels.length-1)?1:0.1);}}
     );
 
     Game.magicCpS=function(what){
+        var mult=1;
         if (what=='Shipment') {
-            return (Game.Has("Dragon wingtip")?Math.pow(1.25,Game.dragonLevel):1)*
+            mult*=(Game.Has("Dragon wingtip")?Math.pow(1.25,Game.dragonLevel):1)*
                 (Game.Has("Dyson spheres")?1+0.07*Game.Objects.Prism.amount:1);
         }
-        if ((what=='Prism')&&Game.Has("Dyson spheres")) return (1+0.007*Game.Objects.Shipment.amount);
-        return 1;
+        if ((what=='Prism')&&Game.Has("Dyson spheres")) mult*=(1+0.007*Game.Objects.Shipment.amount);
+        if ((what=='Cursor')&&Game.Has("Drag clicking")) mult*=[20,10,5,2.5][General.sPowerCoef()];
+        General.shinyUps.forEach(function(shinyUp) {
+            if ((what==shinyUp[0])&&Game.Has(shinyUp[1])) mult*=[80,40,20,10][General.sPowerCoef()];
+        })
+        return mult;
     }
 
     eval('Game.ClickSpecialPic='+Game.ClickSpecialPic.toString()

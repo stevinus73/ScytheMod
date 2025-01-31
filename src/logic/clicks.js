@@ -38,6 +38,7 @@ Clicks._Initialize = function(en, Research) {
 
     // const baseCursorTime = Game.fps*15;
     this.cursorTimer = P.cursorRate;
+    this.lastClickT = 0;
 
     this.powerClicks = 0;
     this.maxPowerClicks = 0;
@@ -79,45 +80,42 @@ Clicks._Initialize = function(en, Research) {
     // }
 
     Clicks.drainClick = function(now) {
-        var eff=1;
+        var overflowEff=1;
         if (Research.has("Damage control")) eff*=0.8;
         if (Research.has("Temporal stretch")) eff*=0.8;
         if (Research.has("Fractal absorption")) eff*=0.8;
-        var clickNum=1+(this.overflow>0?Math.floor(this.overflow*eff):0); 
-        if (Game.hasBuff("Click frenzy")) clickNum*=2;
-        if (Game.hasBuff("Dragonflight")) clickNum*=2;
-        // var gz = Game.hasBuff("Devastation");
-        // if (gz) clickNum*=(1+Kaizo?gz.arg3:gz.arg2);
+        var clickNum=1+(this.overflow>0?Math.floor(this.overflow*overflowEff):0); 
+        if (Game.hasBuff("Click frenzy")) clickNum*=2.3;
+        if (Game.hasBuff("Dragonflight")) clickNum*=5.5;
+        var gz = Game.hasBuff("Devastation");
+        if (gz) clickNum*=(1+gz.arg1*0.6);
+
         this.clicks-=Math.ceil(clickNum);
         if(this.clicks<0) this.clicks=0;
         this.regenTimer=P.baseRecovery;
         if(!this.overflow_enabled) return;
         var threshold=P.baseThreshold;
         if (Game.Has("Thousand fingers")) threshold*=(1+0.1*Math.floor(Game.Objects['Cursor'].amount/100)); // cursor nerf!
-        if (now-Game.lastClick<=(1000*threshold)) {
-            this.overflow+=P.overflowGain*(Research.has("Sustainable clicks")?0.75:1);
-            if (Research.has("Malevolent power")) Game.recalculateGains = 1;
-        } else {
-            this.overflow-=P.overflowLoss;
-            if (this.overflow<minOverflow) this.overflow=minOverflow;
-            if (Research.has("Malevolent power")) Game.recalculateGains = 1;
-        }
+        if (now-Game.lastClick<=(1000*threshold)) this.overflow+=P.overflowGain*(Research.has("Sustainable clicks")?0.75:1);
+
+        this.lastClickT=0;
+        if (Research.has("Malevolent power")) Game.recalculateGains = 1;
     }
 
     Clicks.getCursorClicks = function() { // cursor nerf!
         var clickNum=0.1*Math.ceil(Game.Objects['Cursor'].amount/100);
-        if (Game.Has("Thousand fingers")) clickNum*=1.3;
-        if (Game.Has("Million fingers")) clickNum*=1.3;
-        if (Game.Has("Billion fingers")) clickNum*=1.3;
-        if (Game.Has("Trillion fingers")) clickNum*=1.3;
-        if (Game.Has("Quadrillion fingers")) clickNum*=1.3;
-        if (Game.Has("Quintillion fingers")) clickNum*=1.3;
-        if (Game.Has("Sextillion fingers")) clickNum*=1.3;
-        if (Game.Has("Septillion fingers")) clickNum*=1.3;
-        if (Game.Has("Octillion fingers")) clickNum*=1.3;
-        if (Game.Has("Nonillion fingers")) clickNum*=1.3;
-        if (Game.Has("Decillion fingers")) clickNum*=1.3;
-        if (Game.Has("Undecillion fingers")) clickNum*=1.3;
+        if (Game.Has("Thousand fingers")) clickNum*=1.2;
+        if (Game.Has("Million fingers")) clickNum*=1.2;
+        if (Game.Has("Billion fingers")) clickNum*=1.2;
+        if (Game.Has("Trillion fingers")) clickNum*=1.2;
+        if (Game.Has("Quadrillion fingers")) clickNum*=1.2;
+        if (Game.Has("Quintillion fingers")) clickNum*=1.2;
+        if (Game.Has("Sextillion fingers")) clickNum*=1.2;
+        if (Game.Has("Septillion fingers")) clickNum*=1.2;
+        if (Game.Has("Octillion fingers")) clickNum*=1.2;
+        if (Game.Has("Nonillion fingers")) clickNum*=1.2;
+        if (Game.Has("Decillion fingers")) clickNum*=1.2;
+        if (Game.Has("Undecillion fingers")) clickNum*=1.2;
         return clickNum;
     }
 
@@ -134,23 +132,26 @@ Clicks._Initialize = function(en, Research) {
             var rate=P.baseRegen;
             if (Game.Has("Hands-off approach")) rate*=0.5;
             if (Research.has("Patience")) rate*=0.7;
-            // if the shimmering veil is active, overflow decreases over time
-            if (Game.Has('Shimmering veil [off]')) {
-                rate*=0.75;
-                this.overflow-=0.05;
-            }
             this.regenTimer=rate;
         }
 
         if (this.cursorTimer>0) this.cursorTimer--;
         else {
-            // this.clicks-=Math.ceil(this.getCursorClicks()); 
+            this.clicks-=Math.ceil(this.getCursorClicks()); 
             if(this.clicks<0) this.clicks=0;
             // if(this.overflow_enabled) this.overflow+=Math.min(Game.Objects['Cursor'].amount/500,0.5); // devious
             this.cursorTimer=P.cursorRate;
         }
 
-        if (!Kaizo && (Game.cookiesEarned+Game.cookiesReset)>=P.overflowT) this.overflow_enabled = true;
+        this.overflow_enabled = true;
+        //if (!Kaizo && (Game.cookiesEarned+Game.cookiesReset)>=P.overflowT) this.overflow_enabled = true;
+
+        this.lastClickT++;
+
+        if (this.lastClickT>=Game.fps*30) {
+            this.overflow-=1/((1+4*Math.max(this.overflow,0))*Game.fps);
+            if (this.overflow<minOverflow) this.overflow=minOverflow;
+        }
     }
 
     Clicks.getClickDisplay = function() {

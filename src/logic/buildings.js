@@ -190,14 +190,13 @@ BModify._Initialize = function(en, Research) {
                 var rate = 0.001 * this.decayedFactor() 
                     * (Math.max(this.availableRes()/this.rsTotal, 0.1))
                     * Math.sqrt(BModify.grandma.grandmaTypes['healer'].allocated);
-                this.rsUsed -= (rate / Game.fps) * this.rsTotal;
+                // this.rsUsed -= (rate / Game.fps) * this.rsTotal;
                 this.rsUsed = Math.max(this.rsUsed, 0);
                 return;
             } else {
                 var dep = (this.RhpS / Game.fps) * this.me.amount * this.decayedFactor() * (this.interest>0?1.5:1);
-                this.rsUsed += dep;
-                BModify.totalDp += dep;
-                //this.rsMaxBoost *= 1+(0.01/Game.fps);
+                // this.rsUsed += dep;
+                // BModify.totalDp += dep;
             }
             // little detail
             if (Math.random()<0.0001) this.rsMaxBoost*=1.01;
