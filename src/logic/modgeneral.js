@@ -207,10 +207,12 @@ General._Initialize = function(en, Research) {
     General.newShinyUpgrade('Factory', 'Steampunk', 'It makes your factories look cooler and gets your workers to work a little faster, too!');
     General.newShinyUpgrade('Bank', 'Money printer', 'All you have to do is put the cookies in the printer and then the cookies come out. Incredible, I know!');
     General.newShinyUpgrade('Temple', 'Syncretism', 'Allows you to pretend temples from other religions are also yours!');
-    
+    General.newShinyUpgrade('Wizard tower', 'Kaizo grimoires', 'Contains interesting spells such as Manifest spring and Liquify politician.');
+    General.newShinyUpgrade('Shipment', 'Project Orion', '...');
+    General.newShinyUpgrade('Alchemy lab', 'Turning cookies into cookies', 'Or, rather, BETTER cookies.');
 
     en.ue.addUpgrade('Drag clicking', '', 75000000000000, Game.GetIcon('Cursor',7), 5000, {
-        descFunc: function(){return 'Multiplies the gain from Thousand fingers by <b>'+[20,10,5,2.5][General.sPowerCoef()]+'</b>.<q>'+desc+'</q>';}
+        descFunc: function(){return 'Cursors are <b>'+[20,10,5,2.5][General.sPowerCoef()]+'</b> times more efficient.';}
     })
 
     Game.registerHook('logic', function(){
@@ -360,13 +362,13 @@ General._Initialize = function(en, Research) {
 
     // RANDOM OTHER UPGRADES
 
-    en.ue.addUpgrade("Dyson spheres", "Shipments gain <b>+7%</b> CpS per prism. Prisms gain <b>+0.7%</b> CpS per shipment."
+    en.ue.addUpgrade("Dyson spheres", "Shipments gain <b>+7%</b> CpS per prism. <br> Prisms gain <b>+0.7%</b> CpS per shipment."
         +'<q>Not related to the much more underwhelming normal upgrade of the same name.</q>',
         4000000000000000, [1,4,Icons], 768, {pool: 'prestige', posX: 1450, posY: 32.130, parents: 
             [Game.Upgrades['Unshackled shipments']]}
     );
 
-    en.ue.addUpgrade("Thought worlds", "Idleverses gain <b>+3%</b> CpS per cortex baker. Cortex bakers gain <b>+0.3%</b> CpS per idleverse."
+    en.ue.addUpgrade("Thought worlds", "Idleverses gain <b>+3%</b> CpS per cortex baker. <br> Cortex bakers gain <b>+0.3%</b> CpS per idleverse."
         +'<q>Gedankenworlds.</q>',
         15000000000000000, [33,0], 768, {pool: 'prestige', posX: 692, posY: 733, parents: 
             [Game.Upgrades['Unshackled idleverses']]}

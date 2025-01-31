@@ -18,25 +18,18 @@ Clicks._Initialize = function(en, Research) {
     // why does this not work :(
     eval("Game.DrawBackground="+Game.DrawBackground.toString().replace("var alphaMult=1;","var alphaMult=0.1+0.9*(mod.clicks.clicks/mod.clicks.maxClicks);")); 
     
-
-    // const baseClicks = 250;
-    // const baseRegen = Game.fps*2;
-    // const baseRecovery = Game.fps*10;
     this.maxClicks = P.baseClicks;
     this.clicks = P.baseClicks;
     this.regenTimer = P.baseRegen;
     en.newVar("clicks", "int");
     en.newVar("maxClicks", "int");
 
-    // const overflowGain = 0.5;
+    
     const minOverflow = -(3*P.overflowGain);
-    // const overflowLoss = 0.35;
-    // const baseThreshold = 0.2;
     this.overflow = minOverflow;
     en.newVar("overflow", "float");
     this.overflow_enabled = false;
 
-    // const baseCursorTime = Game.fps*15;
     this.cursorTimer = P.cursorRate;
     this.lastClickT = 0;
 
@@ -58,26 +51,6 @@ Clicks._Initialize = function(en, Research) {
     }
 
     Clicks.getOverflow = function() {return Math.floor(Math.max(this.overflow,0));}
-
-    // Game.Object.prototype.sell = en.injectMult(Game.Object.prototype.sell, 
-    //     [[",1+sold*0.01", ",1+sold*0.005"],[",1+sold*0.005", ",1+sold*0.003"],[",1+sold*0.0025", ",1+sold*0.001"]], "after"
-    // )
-
-    // for (var i in Game.Objects) {
-    //     var me = Game.Objects[i];
-    //     if (Kaizo) {
-    //         me.sell = en.injectCode(me.sell, "sold*0.01,1+sold*0.01", ",1+sold*0.005", "after")
-    //         me.sell = en.injectCode(me.sell, "sold*0.005,1+sold*0.004", ",1+sold*0.003", "after")
-    //         me.sell = en.injectCode(me.sell, "sold*0.0025,1+sold*0.0015", ",1+sold*0.001", "after")
-    //     } else {
-    //         me.sell = en.injectCode(me.sell, "sold*0.01", ",1+sold*0.005", "after")
-    //         me.sell = en.injectCode(me.sell, "sold*0.005", ",1+sold*0.003", "after")
-    //         me.sell = en.injectCode(me.sell, "sold*0.0025", ",1+sold*0.001", "after")
-    //         me.sell = en.injectCode(me.sell, "if (godLvl==1) old.multClick+=sold*0.01;", "if (godLvl==1) { old.multClick+=sold*0.01; old.arg2+=sold*0.005; }", "replace")
-    //         me.sell = en.injectCode(me.sell, "else if (godLvl==2) old.multClick+=sold*0.005;", "else if (godLvl==2) { old.multClick+=sold*0.005; old.arg2+=sold*0.003; }", "replace")
-    //         me.sell = en.injectCode(me.sell, "else if (godLvl==3) old.multClick+=sold*0.0025;", "else if (godLvl==3) { old.multClick+=sold*0.0025; old.arg2+=sold*0.001; }", "replace")
-    //     }
-    // }
 
     Clicks.drainClick = function(now) {
         var overflowEff=1;
@@ -154,6 +127,16 @@ Clicks._Initialize = function(en, Research) {
         }
     }
 
+    function tCost(tier){return Math.pow(110,tier);}
+    const pcOrder=254;
+    
+    // power clicks
+    en.ue.addUpgrade("Power clicks", "Unlocks <b>power clicks</b>."
+        +'<q>There\'s plenty of knowledgeable people up here, and you\'ve been given some excellent pointers.</q>',
+        tCost(1), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630, posY: -480, huParents: 
+            ['Starter kit']}
+    );
+
     Clicks.getClickDisplay = function() {
         return '<div style="font-size:50%">clicks left: '+this.clicks+' out of '+this.maxClicks
         +(this.overflow_enabled?' (overflow: '+(this.overflow>=1?'+'+this.getOverflow():0)+')':'')+'</div>';
@@ -165,7 +148,7 @@ Clicks._Initialize = function(en, Research) {
         "before");
     
     Game.ClickCookie = en.injectCode(Game.ClickCookie, "|| Game.T<3 ", "|| !mod.clicks.hasClicksLeft() ", "after");
-    Game.ClickCookie = en.injectCode(Game.ClickCookie, "Game.loseShimmeringVeil('click');", "\n\t\tmod.clicks.drainClick(now);", "after");
+    Game.ClickCookie = en.injectCode(Game.ClickCookie, "Game.loseShimmeringVeil('click');", "\n\t\t\t\tmod.clicks.drainClick(now);", "after");
     
     Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
         `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,

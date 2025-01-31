@@ -572,7 +572,7 @@ Research._Initialize = function(en) {
     tieredTree(7, 2, "Broomsticks", "Old cliche, but still works for the most part.") // 2
     tieredTree(7, 3, "The science of magic", "Back in my day, people were claiming magic was actually electromagnetic waves! What schauffish baloney!") // 3
     buildingTree(8);
-    tieredTree(8, 1, "Nuclear boosters", "...") // 1
+    tieredTree(8, 1, "Railgun", "Not actually used to launch ships. Your operators just like shooting stuff at birds.") // 1
     tieredTree(8, 2, "Cosmic trade routes", "Conveniently, they only trade cookies, and they also happen to be non-voluntary one-way roads towards your cookie empire.") // 2
     tieredTree(8, 3, "Ignoring the laws of physics", "Works like a charm! Every science fiction writer always does this!") // 3
     buildingTree(9);

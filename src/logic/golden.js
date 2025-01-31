@@ -165,7 +165,7 @@ G._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Golden glow", "Increases the golden cookie effect cap by <b>1</b>.<div class=\"line\"></div>Unlocks a new Golden switch mode."
         +'<q>Maybe your alchemy labs can do something with this.</q>',
-        7777777777777777, [4,0,Icons], 19300, {pool: 'prestige', posX: -293, posY: 770, 
+        7777777777777777, [4,0,Icons], 0, {pool: 'prestige', posX: -293, posY: 770, 
             parents: [Game.Upgrades['Distilled essence of redoubled luck']], showIf:function(){return Game.Has("Shimmering aura");}}
     );
 
