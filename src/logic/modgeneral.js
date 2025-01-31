@@ -186,6 +186,7 @@ General._Initialize = function(en, Research) {
             descFunc: function(){return loc("%1 are <b>%2%</b> more efficient and <b>%3%</b> cheaper.",
                 [cap(me.plural),[80,40,20,10][General.sPowerCoef()],[60,30,15,7][General.sPowerCoef()]])+'<q>'+desc+'</q>'}
         })
+        en.addCpsHook(obj,function(){return Game.Has(name)?[80,40,20,10][General.sPowerCoef()]:1})
         eval('Game.modifyBuildingPrice='+Game.modifyBuildingPrice.toString()
             .replace(`price*=Game.eff('buildingCost');`,
                 `if (Game.Has('`+name+`')&&building.name=='`+obj+`') price*=0.01*[60,30,15,7][mod.general.sPowerCoef()];\n\t\t\t`+`price*=Game.eff('buildingCost');`))
@@ -365,25 +366,25 @@ General._Initialize = function(en, Research) {
             [Game.Upgrades['Unshackled shipments']]}
     );
 
+    en.ue.addUpgrade("Thought worlds", "Idleverses gain <b>+3%</b> CpS per cortex baker. Cortex bakers gain <b>+0.3%</b> CpS per idleverse."
+        +'<q>Gedankenworlds.</q>',
+        15000000000000000, [33,0], 768, {pool: 'prestige', posX: 692, posY: 733, parents: 
+            [Game.Upgrades['Unshackled idleverses']]}
+    );
+
+    //692,713
+    en.addCpsHook('Cursor',()=>Game.Has("Drag clicking")?[20,10,5,2.5][General.sPowerCoef()]:1);
+    en.addCpsHook('Shipment',()=>Game.Has("Dragon wingtip")?Math.pow(1.25,Game.dragonLevel):1);
+    en.addCpsHook('Shipment',()=>Game.Has("Dyson spheres")?1+0.07*Game.Objects.Prism.amount:1);
+    en.addCpsHook('Prism',()=>Game.Has("Dyson spheres")?1+0.007*Game.Objects.Shipment.amount:1);
+    en.addCpsHook('Idleverse',()=>Game.Has("Thought worlds")?1+0.03*Game.Objects['Cortex baker'].amount:1);
+    en.addCpsHook('Cortex baker',()=>Game.Has("Thought worlds")?1+0.003*Game.Objects.Idleverse.amount:1);
+
     en.ue.addUpgrade("Dragon wingtip", "Shipments gain <b>+25%</b> CpS (multiplicative) per dragon level."
         +'<br>'+loc("Cost scales with CpS, but %1 times cheaper with a fully-trained dragon.",10)
         +'<q>A tiny wingtip shed from your dragon. This imbues you with the power of flight.</q>',
         1000000000, [5,23], 25100, {priceFunc:function(me){return Game.unbuffedCps*60*30*((Game.dragonLevel<Game.dragonLevels.length-1)?1:0.1);}}
     );
-
-    Game.magicCpS=function(what){
-        var mult=1;
-        if (what=='Shipment') {
-            mult*=(Game.Has("Dragon wingtip")?Math.pow(1.25,Game.dragonLevel):1)*
-                (Game.Has("Dyson spheres")?1+0.07*Game.Objects.Prism.amount:1);
-        }
-        if ((what=='Prism')&&Game.Has("Dyson spheres")) mult*=(1+0.007*Game.Objects.Shipment.amount);
-        if ((what=='Cursor')&&Game.Has("Drag clicking")) mult*=[20,10,5,2.5][General.sPowerCoef()];
-        General.shinyUps.forEach(function(shinyUp) {
-            if ((what==shinyUp[0])&&Game.Has(shinyUp[1])) mult*=[80,40,20,10][General.sPowerCoef()];
-        })
-        return mult;
-    }
 
     eval('Game.ClickSpecialPic='+Game.ClickSpecialPic.toString()
         .replace(`['Dragon scale','Dragon claw','Dragon fang','Dragon teddy bear'];`,

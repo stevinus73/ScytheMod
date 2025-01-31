@@ -29,7 +29,6 @@ IdlersPocket._Initialize = function () {
     IdlersPocket.addLoc = function(loc1, loc2) {
         locStrings[loc1] = loc2 ?? loc1;
     }
-    IdlersPocket.shim = shimmer_engine;
     IdlersPocket.be = building_engine;
     IdlersPocket.ae = achiev_engine;
     IdlersPocket.ue = upgrade_engine;
@@ -112,10 +111,13 @@ IdlersPocket._Initialize = function () {
 
     IdlersPocket.gcGainsHooks=[];
     IdlersPocket.gcFreqHooks=[];
+    IdlersPocket.buildingCpsHooks=[];
     IdlersPocket.addGcHook = function(type,fun) {
         if (type=='frequency') this.gcFreqHooks.push(fun);
         if (type=='gains') this.gcGainsHooks.push(fun);
     }
+
+    IdlersPocket.addCpsHook = function(building,fun) {this.buildingCpsHooks.push([building,fun]);}
 
     function _activate(hooks,num){var n=num;hooks.forEach((hook)=>{n=hook(n);});return n;}
 
@@ -130,6 +132,11 @@ IdlersPocket._Initialize = function () {
         `\n\t\t\tmult=Game.Ip.activate('gains',mult);`, 'after')
         Game.shimmerTypes.golden.getTimeMod = en.injectCode(Game.shimmerTypes.golden.getTimeMod, "if (Game.Has('Green yeast digestives')) m*=0.99;",
         `\n\t\t\tm=Game.Ip.activate('frequency',m);`, 'after');
+        Game.magicCpS=function(what) {
+            var mult=1;
+            Game.Ip.buildingCpsHooks.forEach(function(hook){if(what==hook[0]){mult=hook[1](mult);}})
+            return mult;
+        }
     }
 
 
