@@ -190,6 +190,28 @@ Clicks._Initialize = function(en, Research) {
             ['Divine wisdom']}
     );
 
+    en.ue.addUpgrade("Enchanted sleighs", "You can <b>perform power clicks on reindeer</b>, making them give <b>five times</b> more cookies."
+        +'<q>Enchanted with the power of heartfelt love, Christmas presents, and pure unadulterated power.</q>',
+        5555555, [12,9], pcOrder, {pool: 'prestige', posX: -726, posY: -412, huParents: ['Starsnow', 'Heavenly clicks']}
+    )
+
+    en.ue.addUpgrade("Time-warping mice", "Performing power clicks on golden cookies makes effects last <b>50%</b> longer."
+        +'<q>Maybe it\'s better if you use reality-warping in a more profound way than this, though?</q>',
+        277777777, [10,14], pcOrder, {pool: 'prestige', posX: -816, posY: -372, huParents: ['Enchanted sleighs']}
+    )
+
+    en.ue.addUpgrade("Gold-studded mice", "Performing power clicks on golden cookies <b>triples gains</b>."
+        +'<q>They actually taste no better than regular mice. Don\'t ask how I know.</q>',
+        277777777, [10,14], pcOrder, {pool: 'prestige', posX: -816, posY: -452, huParents: ['Enchanted sleighs']}
+    )
+
+    eval('Game.shimmerTypes.reindeer.popFunc='+Game.shimmerTypes.reindeer.popFunc.toString().replace(`moni*=Game.eff('reindeerGain');`,
+        `moni*=Game.eff('reindeerGain');\n\tmoni*=mod.clicks.performPowerClick('reindeer');`));
+
+    eval('Game.shimmerTypes.golden.popFunc='+Game.shimmerTypes.golden.popFunc.toString().replace(`else mult*=Game.eff('wrathCookieGain');`,
+        `else mult*=Game.eff('wrathCookieGain');\n\t\t\t`+
+        `if (Game.isGoldenCookieEffect(choice)){effectDurMod*=mod.clicks.performPowerClick('gEff');} else {mult*=mod.clicks.performPowerClick('gGains');}`))
+
     Clicks.getMaxPowerClicks = function() {
         var max=10;
         if (Game.Has("Heavenly clicks")) max+=5;
@@ -197,20 +219,35 @@ Clicks._Initialize = function(en, Research) {
         return max;
     }
 
+    Clicks.expendPowerClick = function(func) {
+        this.powerClicks--;
+    }
+
     Clicks.performPowerClick = function(func) {
         if (!Game.Has("Power clicks")) return 1;
         if (!this.pcEnabled) return 1;
         if (this.powerClicks<=0) return 1;
-
-        this.powerClicks--;
         if (func=='click') {
             var power=2;
             if (Game.Has("Heavenly clicks")) power++;
             if (Game.Has("Ethereal mouse")) power++;
 
             if (Game.Has("Heavenly clicks")) power*=(1+0.05*this.powerClicks);
+            
+            if (Game.hasBuff("Click frenzy")) return 1;
+            this.expendPowerClick(func);
             return power;
+        } else if (func=='reindeer' && Game.Has("Enchanted sleighs")) {
+            this.expendPowerClick(func);
+            return 5;
+        } else if (func=='gEff' && Game.Has("Time-warping mice")) {
+            this.expendPowerClick(func);
+            return 1.5;
+        } else if (func=='gGains' && Game.Has("Gold-studded mice")) {
+            this.expendPowerClick(func);
+            return 3;
         }
+        return 1;
     }
 
 

@@ -51,13 +51,18 @@ G._Initialize = function(en, Research) {
         'building debuff': ""
     }
 
-    G.isEff = function(choice) {
+    Game.isGoldenCookieEffect = function(choice) {
         return (choice == 'dragonflight' || choice == 'dragon harvest'
             || choice == 'blood frenzy' || choice == 'click frenzy'
             || choice == 'frenzy' || choice == 'building special'
             || choice == 'building debuff' || choice == 'clot'
-            || choice == 'cursed finger'
-        ) && !Game.hasBuff(pluralizedEffs[choice])
+            || choice == 'cursed finger' || choice == 'everything must go'
+            || choice == 'cookie storm'
+        )
+    }
+
+    G.isEff = function(choice) {
+        return Game.isGoldenCookieEffect(choice) && !Game.hasBuff(pluralizedEffs[choice])
     }
     G.currEffs = function() {
         var effs = [];
