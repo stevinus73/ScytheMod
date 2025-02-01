@@ -34,7 +34,6 @@ Clicks._Initialize = function(en, Research) {
     this.lastClickT = 0;
 
     this.powerClicks = 0;
-    this.maxPowerClicks = 0;
     this.pcEnabled = false;
 
     var wrapper=document.createElement('div');
@@ -47,6 +46,7 @@ Clicks._Initialize = function(en, Research) {
         var maxClicks = P.baseClicks;
         if (Game.Has("Big clicks")) maxClicks*=2;
         if (Game.Has("Butterfly")) maxClicks*=2;
+        if (Game.Has("Divine wistom")) maxClicks+=10*this.getMaxPowerClicks();
         this.maxClicks = Math.round(maxClicks);
     }
 
@@ -117,25 +117,46 @@ Clicks._Initialize = function(en, Research) {
         }
 
         this.overflow_enabled = true;
-        //if (!Kaizo && (Game.cookiesEarned+Game.cookiesReset)>=P.overflowT) this.overflow_enabled = true;
 
         this.lastClickT++;
 
-        if (this.lastClickT>=Game.fps*30) {
-            this.overflow-=1/((1+4*Math.max(this.overflow,0))*Game.fps);
+        if (this.lastClickT>=Game.fps*60) {
+            this.overflow-=1/((1+3*Math.max(this.overflow,0))*Game.fps*45);
             if (this.overflow<minOverflow) this.overflow=minOverflow;
         }
     }
 
-    function tCost(tier){return Math.pow(110,tier);}
+    function tCost(tier){return 10*Math.pow(11,tier);}
     const pcOrder=254;
-    
+
     // power clicks
     en.ue.addUpgrade("Power clicks", "Unlocks <b>power clicks</b>."
         +'<q>There\'s plenty of knowledgeable people up here, and you\'ve been given some excellent pointers.</q>',
         tCost(1), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630, posY: -480, huParents: 
             ['Starter kit']}
     );
+
+    en.ue.addUpgrade("Heavenly clicks", "Max power clicks <b>10 &rarr; 15</b>. Click power boost <b>x2 &rarr; x3</b>. <br> "
+        +"Power clicks are <b>5%</b> more powerful per stored power click."
+        +'<q></q>',
+        tCost(2), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630 - 80, posY: -480 - 35, huParents: 
+            ['Power clicks']}
+    );
+
+    en.ue.addUpgrade("Divine wisdom", "You gain <b>+10</b> click storage per power click storage (refers to maximum amount of power clicks)."
+        +'<q>Divine Wisdom 1: Don\'t accidentally delete your save file.</q>',
+        tCost(2), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630 - 30, posY: -480 - 115, huParents: 
+            ['Power clicks']}
+    );
+
+    Clicks.getMaxPowerClicks = function() {
+        var max=10;
+        if (Game.Has("Heavenly clicks")) max+=5;
+        return max;
+    }
+
+
+
 
     Clicks.getClickDisplay = function() {
         return '<div style="font-size:50%">clicks left: '+this.clicks+' out of '+this.maxClicks
