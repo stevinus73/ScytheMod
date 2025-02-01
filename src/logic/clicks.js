@@ -36,11 +36,18 @@ Clicks._Initialize = function(en, Research) {
     this.powerClicks = 0;
     this.pcEnabled = false;
 
-    var wrapper=document.createElement('div');
-    wrapper.style.cssText='position:absolute;bottom:16px;right:8px;z-index:100000;transform-origin:100% 0%;transform:scale(0.75);';
-    wrapper.innerHTML='<div id="pcButton" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon([3,0,Icons])+'"></div>';
-    l('sectionLeft').appendChild(wrapper);
+    var pcWrapper=document.createElement('div');
+    pcWrapper.style.cssText='position:absolute;bottom:16px;right:8px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
+    pcWrapper.innerHTML='<div id="pcButton" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon([3,0,Icons])+'"></div>'
+        +'<div id="pcInfo" class="description">0/0</div>';
+    l('sectionLeft').appendChild(pcWrapper);
     this.pcWidget = l('pcButton');
+
+    var swWrapper=document.createElement('div');
+    swWrapper.style.cssText='position:absolute;bottom:16px;right:96px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
+    swWrapper.innerHTML='<div id="pcSwitch" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon([20,10])+'"></div>';
+    l('sectionLeft').appendChild(swWrapper);
+    this.switch = l('pcSwitch');
 
     Clicks.recalculate = function() {
         var maxClicks = P.baseClicks;
@@ -136,26 +143,34 @@ Clicks._Initialize = function(en, Research) {
             ['Starter kit']}
     );
 
-    en.ue.addUpgrade("Heavenly clicks", "Max power clicks <b>10 &rarr; 15</b>. Click power boost <b>x2 &rarr; x3</b>. <br> "
-        +"Power clicks are <b>5%</b> more powerful per stored power click."
+    en.ue.addUpgrade("Heavenly clicks", "Max power clicks <b>10 &rarr; 15</b>. <br> Click power boost <b>x2 &rarr; x3</b>.<br>Power clicks are <b>5%</b> more powerful per stored power click."
         +'<q></q>',
-        tCost(2), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630 - 80, posY: -480 - 35, huParents: 
+        tCost(2), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630 - 240, posY: -480 - 115, huParents: 
             ['Power clicks']}
     );
 
     en.ue.addUpgrade("Divine wisdom", "You gain <b>+10</b> click storage per power click storage (refers to maximum amount of power clicks)."
         +'<q>Divine Wisdom 1: Don\'t accidentally delete your save file.</q>',
-        tCost(2), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630 - 30, posY: -480 - 115, huParents: 
+        tCost(2), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630 - 80, posY: -480 - 345, huParents: 
             ['Power clicks']}
+    );
+
+    en.ue.addUpgrade("Ethereal clicks", "Max power clicks <b>15 &rarr; 21</b>. <br> Click power boost <b>x3 &rarr; x4</b>."
+        +'<q></q>',
+        tCost(3), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630 - 240*2, posY: -480 - 115*2, huParents: 
+            ['Heavenly clicks']}
     );
 
     Clicks.getMaxPowerClicks = function() {
         var max=10;
         if (Game.Has("Heavenly clicks")) max+=5;
+        if (Game.Has("Ethereal clicks")) max+=6;
         return max;
     }
 
-
+    Clicks.performPowerClick = function() {
+        
+    }
 
 
     Clicks.getClickDisplay = function() {
