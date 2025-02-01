@@ -40,7 +40,8 @@ Clicks._Initialize = function(en, Research) {
     var pcWrapper=document.createElement('div');
     pcWrapper.id='pcWrapper';
     pcWrapper.style.cssText='position:absolute;bottom:48px;right:16px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
-    pcWrapper.innerHTML='<div id="pcButton" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon([3,0,Icons])+'"></div>'
+    pcWrapper.innerHTML='<div id="pcButton" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon([3,0,Icons])+'" '
+        +Game.getDynamicTooltip('mod.clicks.pcTooltip', 'top', true)+'></div>'
         +'<span id="pcInfo" style="position:absolute;top:-32px;left:12px;font-family:\'Merriweather\';font-size:20px;color:#fddfe8;">0/0</span>';
     l('sectionLeft').appendChild(pcWrapper);
     this.pcWidget = l('pcButton');
@@ -49,6 +50,7 @@ Clicks._Initialize = function(en, Research) {
     swWrapper.id='swWrapper';
     swWrapper.style.cssText='position:absolute;bottom:30px;right:108px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
     swWrapper.innerHTML='<div id="pcSwitch" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon([20,10])+'" '
+        +Game.getDynamicTooltip('mod.clicks.pcSwitchTooltip', 'top', true)+'></div>'
         +Game.clickStr+'="mod.clicks.switchClick(-1);"></div>';
     l('sectionLeft').appendChild(swWrapper);
     this.switch = l('pcSwitch');
@@ -190,10 +192,23 @@ Clicks._Initialize = function(en, Research) {
             ['Divine wisdom']}
     );
 
+    en.ue.addUpgrade("Ultra-adrenaline", "Power click capacity <b>21 &rarr; 28</b>.<br>Base click power boost from power clicks <b>x4 &rarr; x5</b>."
+        +"<br>Power clicks are <b>15%</b> more powerful per existing click power buff."
+        +'<q>It\'s hard to describe, but you could say it\'s like feeling a fight-or-flight response every waking minute of your life.</q>',
+        tCost(4), [4,2,Icons], pcOrder, {pool: 'prestige', posX: -630 - 160*3, posY: -480 - 115*3, huParents: 
+            ['Ethereal mouse']}
+    );
+
+    en.ue.addUpgrade("Celestial powers", "not yet implemented"
+        +'<q>Essentially makes you a demi-god.</q>',
+        tCost(4), [4,2,Icons], pcOrder, {pool: 'prestige', posX: -630 - 40*3, posY: -480 - 215*3, huParents: 
+            ['Mystical regeneration']}
+    );
+
     en.ue.addUpgrade("Flare cursor", "Using a power click grants a <b>+77%</b> CpS boost for <b>25 seconds</b> (duration stacks). "
         +"<br>Power clicks accumulate <b>3 minutes</b> faster."
         +'<q>Burns brighter than the sun.</q>',
-        111111, [11,13], pcOrder, {pool: 'prestige', posX: -630 - 320, posY: -480 - 500, huParents: 
+        111111, [11,13], pcOrder, {pool: 'prestige', posX: -630 - 320, posY: -480 - 520, huParents: 
             ['Power clicks', 'Heavenly clicks', 'Divine wisdom']}
     );
 
@@ -215,12 +230,12 @@ Clicks._Initialize = function(en, Research) {
         5555555, [12,9], pcOrder, {pool: 'prestige', posX: -726, posY: -412, huParents: ['Starsnow', 'Heavenly clicks']}
     )
 
-    en.ue.addUpgrade("Time-warping mice", "Performing power clicks on golden cookies makes effects last <b>50%</b> longer."
+    en.ue.addUpgrade("Time-warping mice", "Performing power clicks on golden cookies makes effects last <b>20%</b> longer."
         +'<q>Maybe it\'s better if you use reality-warping in a more profound way than this, though?</q>',
         277777777, [10,14], pcOrder, {pool: 'prestige', posX: -946, posY: -372, huParents: ['Enchanted sleighs']}
     )
 
-    en.ue.addUpgrade("Gold-studded mice", "Performing power clicks on golden cookies <b>triples gains</b>."
+    en.ue.addUpgrade("Gold-studded mice", "Performing power clicks on golden cookies increases gains by <b>50%</b>."
         +'<q>They actually taste no better than regular mice. Don\'t ask how I know.</q>',
         277777777, [10,14], pcOrder, {pool: 'prestige', posX: -946, posY: -452, huParents: ['Enchanted sleighs']}
     )
@@ -244,7 +259,15 @@ Clicks._Initialize = function(en, Research) {
     Clicks.expendPowerClick = function(func) {
         this.powerClicks--;
         Game.SparkleAt(Game.mouseX,Game.mouseY);
-        if (Game.Has("Flare cursor")) Game.gainBuff('power poked', 1.77, 25);
+        if (Game.Has("Flare cursor")) Game.gainBuff('power poked', 1.77, 25*Game.fps);
+
+        if (func=='click') {
+            if (Game.hasBuff("Cursed finger")) Game.Notify("Power clicked the big cookie during a Cursed finger", "Click power massively boosted!",[12,17],6);
+            else Game.Notify("Power clicked the big cookie","Click power boosted!",[3,0,Icons],6);
+        }
+        if (func=='reindeer') Game.Notify("Power clicked a reindeer","Cookies found quintupled!",[3,0,Icons],6);
+        if (func=='gEff') Game.Notify("Power clicked a golden cookie","Effect duration increased by 20%!",[3,0,Icons],6);
+        if (func=='gGains') Game.Notify("Power clicked a golden cookie","Gains increased by 50%!",[3,0,Icons],6);
     }
 
     Clicks.performPowerClick = function(func) {
@@ -258,6 +281,7 @@ Clicks._Initialize = function(en, Research) {
 
             if (Game.Has("Heavenly clicks")) power*=(1+0.05*this.powerClicks);
             if (Game.hasBuff("Click frenzy")) return 1;
+            if (Game.hasBuff("Cursed finger")) {power*=20;Game.killBuff("Cursed finger");} // stolen from idle mod
             this.expendPowerClick(func);
             return power;
         } else if (func=='reindeer' && Game.Has("Enchanted sleighs")) {
@@ -265,15 +289,25 @@ Clicks._Initialize = function(en, Research) {
             return 5;
         } else if (func=='gEff' && Game.Has("Time-warping mice")) {
             this.expendPowerClick(func);
-            return 1.5;
+            return 1.2;
         } else if (func=='gGains' && Game.Has("Gold-studded mice")) {
             this.expendPowerClick(func);
-            return 3;
+            return 1.5;
         }
         return 1;
     }
 
+    Clicks.pcTooltip = function() {
+        return '<div class="prompt" style="min-width:200px;text-align:center;font-size:11px;margin:8px 0px;" id="tooltipBuff"><h3>Power clicks</h3>'
+        +'<div class="line"></div>'+'You have '+this.powerClicks+' power clicks (out of '+this.getMaxPowerClicks()+').<br>'
+        +(this.clicks<this.maxClicks?'You are not currently accumulating power clicks.':
+            'You are currently accumulating power clicks at a rate of one power click every '+(Game.Has('Flare cursor')?7:10)+' minutes.')+'</div>';
+    }
 
+    Clicks.pcSwitchTooltip = function() {
+        return '<div class="prompt" style="min-width:200px;text-align:center;font-size:11px;margin:8px 0px;" id="tooltipBuff"><h3>Power click switch</h3>'
+        +'<div class="line"></div>'+(this.pcEnabled?'Power clicks are currently enabled. Click to disable.':'Power clicks are currently disabled. Click to enable.')+'</div>';
+    }
 
     Clicks.switchClick = function(on) {
         if (on == -1) on = !this.pcEnabled;
