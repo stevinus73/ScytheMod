@@ -6,13 +6,13 @@ Clicks._Initialize = function(en, Research) {
     en.ue.addUpgrade("Big clicks", "The mouse and cursors are <b>four times as efficient</b>. Maximum click space <b>doubled</b>.<q>Big clicks for the big cookie.</q>",
         50, [1, 6], 140, {unlockAt: 10});
     en.ue.addUpgrade("Butterfly", "The mouse and cursors are <b>four times as efficient</b>. Maximum click space <b>doubled</b>.<q>More like a hummingbird with THAT speed.</q>",
-        50000, [12, 1], 140, {unlockAt: 10000});
+        5000, [12, 1], 140, {unlockAt: 1000});
     en.ue.addUpgrade("Hands-off approach", "Clicks regenerate <b>twice</b> as fast.<q>Ow, my hands are really sore. Good idea.</q>",
         50000000, [12, 2], 140, {unlockAt: 1000000});
     
     Game.mouseCps = en.injectCode(Game.mouseCps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')+mod.research.has('Jitter-click')", "after");
     Game.mouseCps = en.injectCode(Game.mouseCps, "if (Game.Has('Dragon claw')) mult*=1.03;", 
-        "\n\t\t\tif(mod.research.has('Malevolent power')) mult*=(1+0.1*mod.clicks.getOverflow());", "after");
+        "\n\t\t\tif(mod.research.has('Malevolent power')) mult*=(1+0.1*mod.clicks.getOverflow())*(Game.Has('Ethereal mouse')?1.5:1);", "after");
     Game.Objects.Cursor.cps = en.injectCode(Game.Objects.Cursor.cps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
     
     // why does this not work :(
@@ -46,7 +46,7 @@ Clicks._Initialize = function(en, Research) {
 
     var swWrapper=document.createElement('div');
     swWrapper.id='swWrapper';
-    swWrapper.style.cssText='position:absolute;bottom:30px;right:48px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
+    swWrapper.style.cssText='position:absolute;bottom:30px;right:72px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
     swWrapper.innerHTML='<div id="pcSwitch" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon([20,10])+'" '
         +Game.clickStr+'="mod.clicks.switchClick(-1);"></div>';
     l('sectionLeft').appendChild(swWrapper);
@@ -113,8 +113,9 @@ Clicks._Initialize = function(en, Research) {
             this.clicks++;
             this.clicks=Math.min(this.clicks, this.maxClicks);
             var rate=P.baseRegen;
-            if (Game.Has("Hands-off approach")) rate*=0.5;
-            if (Research.has("Patience")) rate*=0.7;
+            if (Game.Has("Hands-off approach")) rate/=2;
+            if (Research.has("Patience")) rate/=1.3;
+            if (Game.Has("Mystical regeneration")) rate/=(1+0.015*this.powerClicks);
             this.regenTimer=rate;
         }
 
@@ -151,7 +152,7 @@ Clicks._Initialize = function(en, Research) {
             ['Starter kit']}
     );
 
-    en.ue.addUpgrade("Heavenly clicks", "Max power clicks <b>10 &rarr; 15</b>. <br> Click power boost <b>x2 &rarr; x3</b>.<br>Power clicks are <b>5%</b> more powerful per stored power click."
+    en.ue.addUpgrade("Heavenly clicks", "Max power clicks <b>10 &rarr; 15</b>.<br>Click power boost <b>x2 &rarr; x3</b>.<br>Power clicks are <b>5%</b> more powerful per stored power click."
         +'<q></q>',
         tCost(2), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630 - 240, posY: -480 - 115, huParents: 
             ['Power clicks']}
@@ -163,16 +164,22 @@ Clicks._Initialize = function(en, Research) {
             ['Power clicks']}
     );
 
-    en.ue.addUpgrade("Ethereal clicks", "Max power clicks <b>15 &rarr; 21</b>. <br> Click power boost <b>x3 &rarr; x4</b>."
-        +'<q></q>',
+    en.ue.addUpgrade("Ethereal mouse", "Max power clicks <b>15 &rarr; 21</b>.<br>Click power boost <b>x3 &rarr; x4</b>.<br>Click boost from Malevolent power <b>+50%</b>."
+        +'<q>Slightly transparent.</q>',
         tCost(3), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630 - 240*2, posY: -480 - 115*2, huParents: 
             ['Heavenly clicks']}
+    );
+
+    en.ue.addUpgrade("Mystical regeneration", "Clicks regenerate <b>1.5%</b> faster (multiplicative) per stored power click."
+        +'<q>Fixing! Healing!</q>',
+        tCost(3), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630 - 80*2, posY: -480 - 345*2, huParents: 
+            ['Divine wisdom']}
     );
 
     Clicks.getMaxPowerClicks = function() {
         var max=10;
         if (Game.Has("Heavenly clicks")) max+=5;
-        if (Game.Has("Ethereal clicks")) max+=6;
+        if (Game.Has("Ethereal mouse")) max+=6;
         return max;
     }
 
@@ -183,8 +190,12 @@ Clicks._Initialize = function(en, Research) {
 
         this.powerClicks--;
         if (func=='click') {
+            var power=2;
+            if (Game.Has("Heavenly clicks")) power++;
+            if (Game.Has("Ethereal mouse")) power++;
 
-            return 2;
+            if (Game.Has("Heavenly clicks")) power*=(1+0.05*this.powerClicks);
+            return power;
         }
     }
 
@@ -210,7 +221,7 @@ Clicks._Initialize = function(en, Research) {
     Game.ClickCookie = en.injectCode(Game.ClickCookie, "|| Game.T<3 ", "|| !mod.clicks.hasClicksLeft() ", "after");
     Game.ClickCookie = en.injectCode(Game.ClickCookie, "Game.loseShimmeringVeil('click');", "\n\t\t\t\tmod.clicks.drainClick(now);", "after");
     Game.ClickCookie = en.injectCode(Game.ClickCookie, "amount?amount:Game.computedMouseCps", 
-        "(amount?amount:Game.computedMouseCps)*mod.clicks.performPowerClick('click')")
+        "(amount?amount:Game.computedMouseCps)*mod.clicks.performPowerClick('click')", "replace")
     
     Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
         `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
