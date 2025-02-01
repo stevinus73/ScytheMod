@@ -174,7 +174,7 @@ Clicks._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Divine wisdom", "You gain <b>+10</b> click storage per power click storage (refers to maximum amount of power clicks)."
         +'<q>Divine Wisdom 1: Don\'t accidentally delete your save file.</q>',
-        tCost(2), [11,35], pcOrder, {pool: 'prestige', posX: -630 - 80, posY: -480 - 245, huParents: 
+        tCost(2), [11,35], pcOrder, {pool: 'prestige', posX: -630 - 40, posY: -480 - 215, huParents: 
             ['Power clicks']}
     );
 
@@ -187,15 +187,15 @@ Clicks._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Mystical regeneration", "Clicks regenerate <b>1.5%</b> faster (multiplicative) per stored power click."
         +'<q>Fixing! Healing!</q>',
-        tCost(3), [4,1,Icons], pcOrder, {pool: 'prestige', posX: -630 - 80*2, posY: -480 - 245*2, huParents: 
+        tCost(3), [4,1,Icons], pcOrder, {pool: 'prestige', posX: -630 - 40*2, posY: -480 - 215*2, huParents: 
             ['Divine wisdom']}
     );
 
     en.ue.addUpgrade("Flare cursor", "Using a power click grants a <b>+77%</b> CpS boost for <b>25 seconds</b> (additive). "
         +"<br>Power clicks accumulate <b>3 minutes</b> faster."
         +'<q>Burns brighter than the sun.</q>',
-        111111, [11,13], pcOrder, {pool: 'prestige', posX: -630 - 240, posY: -480 - 360, huParents: 
-            ['Power clicks', 'Ethereal mouse', 'Divine wisdom']}
+        111111, [11,13], pcOrder, {pool: 'prestige', posX: -630 - 320, posY: -480 - 500, huParents: 
+            ['Power clicks', 'Heavenly clicks', 'Divine wisdom']}
     );
 
     en.ue.addUpgrade("Enchanted sleighs", "You can <b>perform power clicks on reindeer</b>, making them give <b>five times</b> more cookies."
