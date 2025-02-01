@@ -214,13 +214,13 @@ Clicks._Initialize = function(en, Research) {
             ['Power clicks', 'Heavenly clicks', 'Divine wisdom']}
     );
 
-    en.ue.addUpgrade("Omnipotent mouse", "Power click capacity <b>28 &rarr; 36</b>."
-        +"<br>The Celestial energy buff also affects overflow.</br>"
-        +'<br>Clicking is <b>25%</b> more powerful.'
-        +'<br>Boosts the special effects of Divine wisdom and Mystical regeneration.'
-        +'<br>Power clicks accumulate <b>1 minute</b> faster.'
+    en.ue.addUpgrade("Omnipotent mouse", "<ul><li>Power click capacity <b>28 &rarr; 36</b>.</li>"
+        +"<li>The Celestial energy buff also affects overflow.</li>"
+        +'<li>Clicking is <b>25%</b> more powerful.</li>'
+        +'<li>Boosts the special effects of Divine wisdom and Mystical regeneration.</li>'
+        +'<li>Power clicks accumulate <b>1 minute</b> faster.</li></ul>'
         +'<q>This is the most powerful mouse you\'ve ever seen. It was made in the greatest forges of heaven. Please, we beg of you, use it wisely.',
-        tCost(5), [11,35], pcOrder, {pool: 'prestige', posX: -630 - 300, posY: -480 - 495, huPrents:
+        tCost(5), [12,0], pcOrder, {pool: 'prestige', posX: -630 - 400, posY: -480 - 660, huParents:
             ['Flare cursor', 'Celestial powers', 'Ultra-adrenaline']}
     )
 
