@@ -155,26 +155,26 @@ Clicks._Initialize = function(en, Research) {
     en.ue.addUpgrade("Heavenly clicks", "Power click capacity <b>10 &rarr; 15</b>.<br>Click power boost from power clicks <b>x2 &rarr; x3</b>."
         +"<br>Power clicks are <b>5%</b> more powerful per stored power click."
         +'<q>Absolutely glowing.</q>',
-        tCost(2), [11,35], pcOrder, {pool: 'prestige', posX: -630 - 240, posY: -480 - 115, huParents: 
+        tCost(2), [11,35], pcOrder, {pool: 'prestige', posX: -630 - 160, posY: -480 - 115, huParents: 
             ['Power clicks']}
     );
 
     en.ue.addUpgrade("Divine wisdom", "You gain <b>+10</b> click storage per power click storage (refers to maximum amount of power clicks)."
         +'<q>Divine Wisdom 1: Don\'t accidentally delete your save file.</q>',
-        tCost(2), [11,35], pcOrder, {pool: 'prestige', posX: -630 - 80, posY: -480 - 345, huParents: 
+        tCost(2), [11,35], pcOrder, {pool: 'prestige', posX: -630 - 80, posY: -480 - 245, huParents: 
             ['Power clicks']}
     );
 
     en.ue.addUpgrade("Ethereal mouse", "Power click capacity <b>15 &rarr; 21</b>.<br>Click power boost from power clicks <b>x3 &rarr; x4</b>."
         +"<br>Click power boost from Malevolent power <b>+50%</b>."
         +'<q>Slightly transparent.</q>',
-        tCost(3), [4,1,Icons], pcOrder, {pool: 'prestige', posX: -630 - 240*2, posY: -480 - 115*2, huParents: 
+        tCost(3), [4,1,Icons], pcOrder, {pool: 'prestige', posX: -630 - 160*2, posY: -480 - 115*2, huParents: 
             ['Heavenly clicks']}
     );
 
     en.ue.addUpgrade("Mystical regeneration", "Clicks regenerate <b>1.5%</b> faster (multiplicative) per stored power click."
         +'<q>Fixing! Healing!</q>',
-        tCost(3), [4,1,Icons], pcOrder, {pool: 'prestige', posX: -630 - 80*2, posY: -480 - 345*2, huParents: 
+        tCost(3), [4,1,Icons], pcOrder, {pool: 'prestige', posX: -630 - 80*2, posY: -480 - 245*2, huParents: 
             ['Divine wisdom']}
     );
 

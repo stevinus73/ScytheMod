@@ -370,7 +370,7 @@ General._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Thought worlds", "Idleverses gain <b>+3%</b> CpS per cortex baker. <br> Cortex bakers gain <b>+0.3%</b> CpS per idleverse."
         +'<q>Gedankenworlds.</q>',
-        15000000000000000, [33,0], 768, {pool: 'prestige', posX: 692, posY: 733, parents: 
+        15000000000000000, [1,5,Icons], 768, {pool: 'prestige', posX: 692, posY: 733, parents: 
             [Game.Upgrades['Unshackled idleverses']]}
     );
 
@@ -483,7 +483,7 @@ General._Initialize = function(en, Research) {
         this.santaDiff-=0.3;
     }
 
-    Game.Upgrades['Heavenly key'].basePrice=11111111111111111111;
+    Game.Upgrades['Heavenly key'].basePrice=111111111111111111111;
     en.ue.replaceDesc(Game.Upgrades['Heavenly key'], "You can <b>ascend</b> to a higher plane of existence, leaving behind your cookies."
         +'<br>Ascend by pressing Legacy.'
         +'<q>This is the key to the pearly (and tasty) gates of pastry heaven.<br>May you use it wisely.</q>'
