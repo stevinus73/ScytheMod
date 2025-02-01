@@ -4,9 +4,9 @@ Clicks._Initialize = function(en, Research) {
     this.en = en;
 
     en.ue.addUpgrade("Big clicks", "The mouse and cursors are <b>four times as efficient</b>. Maximum click space <b>doubled</b>.<q>Big clicks for the big cookie.</q>",
-        50, [1, 6], 140, {unlockAt: 10});
+        50, [1, 6], 140, {unlockAt: 10, buyFunction: function(){Clicks.clicks+=250;}});
     en.ue.addUpgrade("Butterfly", "The mouse and cursors are <b>four times as efficient</b>. Maximum click space <b>doubled</b>.<q>More like a hummingbird with THAT speed.</q>",
-        5000, [12, 1], 140, {unlockAt: 1000});
+        5000, [12, 1], 140, {unlockAt: 1000, buyFunction: function(){Clicks.clicks+=500;}});
     en.ue.addUpgrade("Hands-off approach", "Clicks regenerate <b>twice</b> as fast.<q>Ow, my hands are really sore. Good idea.</q>",
         50000000, [12, 2], 140, {unlockAt: 1000000});
     
@@ -124,7 +124,6 @@ Clicks._Initialize = function(en, Research) {
         else {
             this.clicks-=Math.ceil(this.getCursorClicks()); 
             if(this.clicks<0) this.clicks=0;
-            // if(this.overflow_enabled) this.overflow+=Math.min(Game.Objects['Cursor'].amount/500,0.5); // devious
             this.cursorTimer=P.cursorRate;
         }
 
@@ -191,12 +190,25 @@ Clicks._Initialize = function(en, Research) {
             ['Divine wisdom']}
     );
 
-    en.ue.addUpgrade("Flare cursor", "Using a power click grants a <b>+77%</b> CpS boost for <b>25 seconds</b> (additive). "
+    en.ue.addUpgrade("Flare cursor", "Using a power click grants a <b>+77%</b> CpS boost for <b>25 seconds</b> (duration stacks). "
         +"<br>Power clicks accumulate <b>3 minutes</b> faster."
         +'<q>Burns brighter than the sun.</q>',
         111111, [11,13], pcOrder, {pool: 'prestige', posX: -630 - 320, posY: -480 - 500, huParents: 
             ['Power clicks', 'Heavenly clicks', 'Divine wisdom']}
     );
+
+    new Game.buffType('power poked',function(time,pow)
+		{
+			return {
+				name:'Power poked',
+				desc:"CpS +"+(pow-1)*100+"% for "+Game.sayTime(time*Game.fps,-1)+"!",
+				icon:[19,7],
+				time:time*Game.fps,
+				power:pow,
+                add:true,
+                aura:1
+			};
+		});
 
     en.ue.addUpgrade("Enchanted sleighs", "You can <b>perform power clicks on reindeer</b>, making them give <b>five times</b> more cookies."
         +'<q>Enchanted with the power of heartfelt love, Christmas presents, and pure unadulterated power.</q>',
@@ -231,6 +243,8 @@ Clicks._Initialize = function(en, Research) {
 
     Clicks.expendPowerClick = function(func) {
         this.powerClicks--;
+        Game.SparkleAt(Game.mouseX,Game.mouseY);
+        if (Game.Has("Flare cursor")) Game.gainBuff('power poked', 1.77, 25);
     }
 
     Clicks.performPowerClick = function(func) {
@@ -243,7 +257,6 @@ Clicks._Initialize = function(en, Research) {
             if (Game.Has("Ethereal mouse")) power++;
 
             if (Game.Has("Heavenly clicks")) power*=(1+0.05*this.powerClicks);
-            
             if (Game.hasBuff("Click frenzy")) return 1;
             this.expendPowerClick(func);
             return power;
