@@ -183,6 +183,7 @@ IdlersPocket.LoadMod = function (name, init) {
             if (localStorage.getItem('kzythe') === null){
 
             } else {
+                this.switchSave();
                 init();
             }
         },

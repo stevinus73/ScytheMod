@@ -34,6 +34,7 @@ Clicks._Initialize = function(en, Research) {
     this.lastClickT = 0;
 
     this.powerClicks = 0;
+    this.nextPowerClick = Game.fps*5;
     this.pcEnabled = false;
 
     var pcWrapper=document.createElement('div');
@@ -139,6 +140,15 @@ Clicks._Initialize = function(en, Research) {
         if (Game.Has("Power clicks")) {l('pcWrapper').style.display='block';l('swWrapper').style.display='block';}
         else {l('pcWrapper').style.display='none';l('swWrapper').style.display='none';}
 
+        if (this.clicks==this.maxClicks) {
+            if (this.nextPowerClick>0) this.nextPowerClick--;
+            else {
+                this.powerClicks++;
+                this.powerClicks=Math.min(this.powerClicks, this.maxClicks);
+                this.nextPowerClick=Game.fps*5;
+            }
+        }
+
         l('pcInfo').innerHTML=this.powerClicks+'/'+this.getMaxPowerClicks();
     }
 
@@ -147,7 +157,8 @@ Clicks._Initialize = function(en, Research) {
 
     // power clicks
     en.ue.addUpgrade("Power clicks", "Unlocks <b>power clicks</b>."
-        +'<div class=\"line\"></div>You gain power clicks with full click capacity, up to a maximum capacity of <b>10</b>.'
+        +'<div class="line"></div>You gain power clicks with full click capacity, up to a maximum capacity of <b>10</b>.'
+        +'<div class="line"></div>When power clicks are enabled, clicks on the big cookie are boosted by <b>x2</b> and use up a power click.'
         +'<q>There\'s plenty of knowledgeable people up here, and you\'ve been given some excellent pointers.</q>',
         tCost(1), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630, posY: -480, huParents: 
             ['Starter kit']}
