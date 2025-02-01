@@ -145,7 +145,7 @@ Clicks._Initialize = function(en, Research) {
             else {
                 this.powerClicks++;
                 this.powerClicks=Math.min(this.powerClicks, this.maxClicks);
-                this.nextPowerClick=Game.fps*5;
+                this.nextPowerClick=Game.fps*10*60-(Game.Has("Flare cursor")?Game.fps*3*60:0);
             }
         }
 
@@ -158,13 +158,14 @@ Clicks._Initialize = function(en, Research) {
     // power clicks
     en.ue.addUpgrade("Power clicks", "Unlocks <b>power clicks</b>."
         +'<div class="line"></div>You gain power clicks with full click capacity, up to a maximum capacity of <b>10</b>.'
+        +'<br>Power click production is at a rate of 1 power click every 10 minutes.'
         +'<div class="line"></div>When power clicks are enabled, clicks on the big cookie are boosted by <b>x2</b> and use up a power click.'
         +'<q>There\'s plenty of knowledgeable people up here, and you\'ve been given some excellent pointers.</q>',
         tCost(1), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630, posY: -480, huParents: 
             ['Starter kit']}
     );
 
-    en.ue.addUpgrade("Heavenly clicks", "Power click capacity <b>10 &rarr; 15</b>.<br>Click power boost from power clicks <b>x2 &rarr; x3</b>."
+    en.ue.addUpgrade("Heavenly clicks", "Power click capacity <b>10 &rarr; 15</b>.<br>Base click power boost from power clicks <b>x2 &rarr; x3</b>."
         +"<br>Power clicks are <b>5%</b> more powerful per stored power click."
         +'<q>Absolutely glowing.</q>',
         tCost(2), [11,35], pcOrder, {pool: 'prestige', posX: -630 - 160, posY: -480 - 115, huParents: 
@@ -177,7 +178,7 @@ Clicks._Initialize = function(en, Research) {
             ['Power clicks']}
     );
 
-    en.ue.addUpgrade("Ethereal mouse", "Power click capacity <b>15 &rarr; 21</b>.<br>Click power boost from power clicks <b>x3 &rarr; x4</b>."
+    en.ue.addUpgrade("Ethereal mouse", "Power click capacity <b>15 &rarr; 21</b>.<br>Base click power boost from power clicks <b>x3 &rarr; x4</b>."
         +"<br>Click power boost from Malevolent power <b>+50%</b>."
         +'<q>Slightly transparent.</q>',
         tCost(3), [4,1,Icons], pcOrder, {pool: 'prestige', posX: -630 - 160*2, posY: -480 - 115*2, huParents: 
@@ -190,6 +191,13 @@ Clicks._Initialize = function(en, Research) {
             ['Divine wisdom']}
     );
 
+    en.ue.addUpgrade("Flare cursor", "Using a power click grants a <b>+77%</b> CpS boost for <b>25 seconds</b> (additive). "
+        +"<br>Power clicks accumulate <b>3 minutes</b> faster."
+        +'<q>Burns brighter than the sun.</q>',
+        111111, [11,13], pcOrder, {pool: 'prestige', posX: -630 - 240, posY: -480 - 360, huParents: 
+            ['Power clicks', 'Ethereal mouse', 'Divine wisdom']}
+    );
+
     en.ue.addUpgrade("Enchanted sleighs", "You can <b>perform power clicks on reindeer</b>, making them give <b>five times</b> more cookies."
         +'<q>Enchanted with the power of heartfelt love, Christmas presents, and pure unadulterated power.</q>',
         5555555, [12,9], pcOrder, {pool: 'prestige', posX: -726, posY: -412, huParents: ['Starsnow', 'Heavenly clicks']}
@@ -197,13 +205,15 @@ Clicks._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Time-warping mice", "Performing power clicks on golden cookies makes effects last <b>50%</b> longer."
         +'<q>Maybe it\'s better if you use reality-warping in a more profound way than this, though?</q>',
-        277777777, [10,14], pcOrder, {pool: 'prestige', posX: -816, posY: -372, huParents: ['Enchanted sleighs']}
+        277777777, [10,14], pcOrder, {pool: 'prestige', posX: -946, posY: -372, huParents: ['Enchanted sleighs']}
     )
 
     en.ue.addUpgrade("Gold-studded mice", "Performing power clicks on golden cookies <b>triples gains</b>."
         +'<q>They actually taste no better than regular mice. Don\'t ask how I know.</q>',
-        277777777, [10,14], pcOrder, {pool: 'prestige', posX: -816, posY: -452, huParents: ['Enchanted sleighs']}
+        277777777, [10,14], pcOrder, {pool: 'prestige', posX: -946, posY: -452, huParents: ['Enchanted sleighs']}
     )
+
+    
 
     eval('Game.shimmerTypes.reindeer.popFunc='+Game.shimmerTypes.reindeer.popFunc.toString().replace(`moni*=Game.eff('reindeerGain');`,
         `moni*=Game.eff('reindeerGain');\n\tmoni*=mod.clicks.performPowerClick('reindeer');`));
