@@ -142,11 +142,12 @@ Clicks._Initialize = function(en, Research) {
         l('pcInfo').innerHTML=this.powerClicks+'/'+this.getMaxPowerClicks();
     }
 
-    function tCost(tier){return 10*Math.pow(11,tier);}
+    function tCost(tier){return Math.pow(110,tier);}
     const pcOrder=254;
 
     // power clicks
     en.ue.addUpgrade("Power clicks", "Unlocks <b>power clicks</b>."
+        +'<div class=\"line\"></div>You gain power clicks with full click capacity, up to a maximum capacity of <b>10</b>.'
         +'<q>There\'s plenty of knowledgeable people up here, and you\'ve been given some excellent pointers.</q>',
         tCost(1), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630, posY: -480, huParents: 
             ['Starter kit']}

@@ -364,13 +364,13 @@ General._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Dyson spheres", "Shipments gain <b>+7%</b> CpS per prism. <br> Prisms gain <b>+0.7%</b> CpS per shipment."
         +'<q>Not related to the much more underwhelming normal upgrade of the same name.</q>',
-        4000000000000000, [1,4,Icons], 768, {pool: 'prestige', posX: 1450, posY: 32.130, parents: 
+        4000000000000000, [1,4,Icons], 768, {pool: 'prestige', posX: 1390, posY: 32.130, parents: 
             [Game.Upgrades['Unshackled shipments']]}
     );
 
     en.ue.addUpgrade("Thought worlds", "Idleverses gain <b>+3%</b> CpS per cortex baker. <br> Cortex bakers gain <b>+0.3%</b> CpS per idleverse."
         +'<q>Gedankenworlds.</q>',
-        15000000000000000, [1,5,Icons], 768, {pool: 'prestige', posX: 692, posY: 733, parents: 
+        15000000000000000, [1,5,Icons], 768, {pool: 'prestige', posX: 672, posY: 793, parents: 
             [Game.Upgrades['Unshackled idleverses']]}
     );
 

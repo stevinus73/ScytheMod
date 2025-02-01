@@ -25,14 +25,17 @@ G._Initialize = function(en, Research) {
     Game.decFtMult=function(){return (Game.Has("Decisive fate")?1.5:1);}
 
     // increase click frenzy and cookie chain/storm chance on first ascend + decisive fate
-    en.ue.appendToDesc(Game.Upgrades['Decisive fate'], '<br>Rarer golden cookie outcomes appear <b>50%</b> more often.')
-    G.me.popFunc = en.injectCode(G.me.popFunc, "(Math.random()<0.1","(Math.random()<(Game.Has('Legacy')?0.1:0.75)*Game.decFtMult()", "replace");
-    G.me.popFunc = en.injectCode(G.me.popFunc, "(Math.random()<0.03","(Math.random()<(Game.Has('Legacy')?0.3:0.45)*Game.decFtMult()", "replace");
+    en.ue.appendToDesc(Game.Upgrades['Decisive fate'], '<br>Rarer golden cookie outcomes appear <b>50%</b> more often.');
+    G.me.popFunc = en.injectCode(G.me.popFunc, "(Math.random()<0.1",
+        "(Math.random()<(Game.ascensionMode==0&&Game.Has('Legacy')?0.1:0.75)*Game.decFtMult()", "replace");
+    G.me.popFunc = en.injectCode(G.me.popFunc, "(Math.random()<0.03",
+        "(Math.random()<(Game.ascensionMode==0&&Game.Has('Legacy')?0.03:0.45)*Game.decFtMult()", "replace");
     G.me.popFunc = en.injectCode(G.me.popFunc, "Math.random()<0.1)","Math.random()<0.1*Game.decFtMult())", "replace");
     G.me.popFunc = en.injectCode(G.me.popFunc, "Math.random()<0.25)","Math.random()<0.25*Game.decFtMult())", "replace");
     G.me.popFunc = en.injectCode(G.me.popFunc, "Math.random()<0.15)","Math.random()<0.15*Game.decFtMult())", "replace");
     G.me.popFunc = en.injectCode(G.me.popFunc, "Math.random()<0.3)","Math.random()<0.3*Game.decFtMult())", "replace");
-    G.me.popFunc = en.injectCode(G.me.popFunc, "Math.random()<0.005)","Math.random()<0.05*Game.decFtMult())", "replace");
+    // sweet appears 10x more often
+    G.me.popFunc = en.injectCode(G.me.popFunc, "Math.random()<0.0005)","Math.random()<0.005*Game.decFtMult())", "replace");
 
 
     // i could do all this with for loops but it just seems like a waste of time and unnecessary abstraction

@@ -180,11 +180,20 @@ IdlersPocket.LoadMod = function (name, init) {
 
     var mod = {
         init: function () {
-            init();
+            if (localStorage.getItem('kzythe') === null){
+
+            } else {
+                init();
+            }
         },
     
         save: this._save,
-        load: this._load
+        load: this._load,
+        switchSave: function () {
+            Game.WriteSave();
+		    Game.SaveTo = 'kzythe';
+		    Game.LoadSave();
+        }
     }
     Game.registerMod(name, mod);
 }
