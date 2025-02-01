@@ -50,7 +50,7 @@ Clicks._Initialize = function(en, Research) {
     swWrapper.id='swWrapper';
     swWrapper.style.cssText='position:absolute;bottom:30px;right:108px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
     swWrapper.innerHTML='<div id="pcSwitch" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon([20,10])+'" '
-        +Game.getDynamicTooltip('mod.clicks.pcSwitchTooltip', 'top', true)+'></div>'
+        +Game.getDynamicTooltip('mod.clicks.pcSwitchTooltip', 'top', true)+' '
         +Game.clickStr+'="mod.clicks.switchClick(-1);"></div>';
     l('sectionLeft').appendChild(swWrapper);
     this.switch = l('pcSwitch');
@@ -253,13 +253,14 @@ Clicks._Initialize = function(en, Research) {
         var max=10;
         if (Game.Has("Heavenly clicks")) max+=5;
         if (Game.Has("Ethereal mouse")) max+=6;
+        if (Game.Has("Ultra-adrenaline")) max+=7;
         return max;
     }
 
     Clicks.expendPowerClick = function(func) {
         this.powerClicks--;
         Game.SparkleAt(Game.mouseX,Game.mouseY);
-        if (Game.Has("Flare cursor")) Game.gainBuff('power poked', 1.77, 25*Game.fps);
+        if (Game.Has("Flare cursor")) Game.gainBuff('power poked', 25, 1.77);
 
         if (func=='click') {
             if (Game.hasBuff("Cursed finger")) Game.Notify("Power clicked the big cookie during a Cursed finger", "Click power massively boosted!",[12,17],6);
@@ -278,10 +279,11 @@ Clicks._Initialize = function(en, Research) {
             var power=2;
             if (Game.Has("Heavenly clicks")) power++;
             if (Game.Has("Ethereal mouse")) power++;
+            if (Game.Has("Ultra-adrenaline")) power++;
 
             if (Game.Has("Heavenly clicks")) power*=(1+0.05*this.powerClicks);
             if (Game.hasBuff("Click frenzy")) return 1;
-            if (Game.hasBuff("Cursed finger")) {power*=20;Game.killBuff("Cursed finger");} // stolen from idle mod
+            if (Game.hasBuff("Cursed finger")) {power*=20*Game.eff('click');Game.killBuff("Cursed finger");} // stolen from idle mod
             this.expendPowerClick(func);
             return power;
         } else if (func=='reindeer' && Game.Has("Enchanted sleighs")) {
