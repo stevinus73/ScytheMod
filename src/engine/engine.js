@@ -166,7 +166,7 @@ IdlersPocket._Initialize();
 
 
 
-IdlersPocket.LoadMod = function (name, init) {
+IdlersPocket.LoadMod = function (name, initFunc) {
 
     this._save = function() {
         IdlersPocket.saveCallbacks.forEach((c) => c());
@@ -179,12 +179,14 @@ IdlersPocket.LoadMod = function (name, init) {
     }
 
     var mod = {
+        initMod: initFunc,
         init: function () {
+            window.scytheModWrapper = this;
             if (localStorage.getItem('kzythe') === null){
-
+                this.startingPrompt();
             } else {
                 this.switchSave();
-                init();
+                this.initMod();
             }
         },
     
@@ -194,6 +196,20 @@ IdlersPocket.LoadMod = function (name, init) {
             Game.WriteSave();
 		    Game.SaveTo = 'kzythe';
 		    Game.LoadSave();
+        },
+        startingPrompt: function () {
+            Game.Prompt(`<id KzyLoadingPrompt>
+                <h3>Welcome to ScytheMod</h3>
+                <div class="block">
+                    Some features of this mod require the usage of different save data. When the mod is unloaded, you can return to your vanilla Cookie Clicker save.
+                    <div class="line"></div>
+                    If you click "Continue", the mod will be loaded and a different save slot will be created.
+                    <div class="line"></div>
+                    Join our <a href="https://discord.gg/6eA8UQgaB8">Discord server</a>!
+                    <div class="line"></div>
+                    Credits: Hellranger for testing the mod, yeetdragon24 for 'helping' me make this prompt
+                </div>`,
+            [['Continue','scytheModWrapper.switchSave();scytheModWrapper.initMod();Game.ClosePrompt();'], ['No thanks','Game.ClosePrompt();']]);
         }
     }
     Game.registerMod(name, mod);
