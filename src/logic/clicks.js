@@ -46,7 +46,7 @@ Clicks._Initialize = function(en, Research) {
 
     var swWrapper=document.createElement('div');
     swWrapper.id='swWrapper';
-    swWrapper.style.cssText='position:absolute;bottom:30px;right:72px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
+    swWrapper.style.cssText='position:absolute;bottom:30px;right:108px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
     swWrapper.innerHTML='<div id="pcSwitch" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon([20,10])+'" '
         +Game.clickStr+'="mod.clicks.switchClick(-1);"></div>';
     l('sectionLeft').appendChild(swWrapper);
@@ -115,7 +115,7 @@ Clicks._Initialize = function(en, Research) {
             var rate=P.baseRegen;
             if (Game.Has("Hands-off approach")) rate/=2;
             if (Research.has("Patience")) rate/=1.3;
-            if (Game.Has("Mystical regeneration")) rate/=(1+0.015*this.powerClicks);
+            if (Game.Has("Mystical regeneration")) rate/=Math.pow(1.015,this.powerClicks);
             this.regenTimer=rate;
         }
 
@@ -127,7 +127,7 @@ Clicks._Initialize = function(en, Research) {
             this.cursorTimer=P.cursorRate;
         }
 
-        this.overflow_enabled = true;
+        if (Game.cookiesEarned>100000) this.overflow_enabled = true;
 
         this.lastClickT++;
 
@@ -152,27 +152,29 @@ Clicks._Initialize = function(en, Research) {
             ['Starter kit']}
     );
 
-    en.ue.addUpgrade("Heavenly clicks", "Max power clicks <b>10 &rarr; 15</b>.<br>Click power boost <b>x2 &rarr; x3</b>.<br>Power clicks are <b>5%</b> more powerful per stored power click."
-        +'<q></q>',
-        tCost(2), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630 - 240, posY: -480 - 115, huParents: 
+    en.ue.addUpgrade("Heavenly clicks", "Power click capacity <b>10 &rarr; 15</b>.<br>Click power boost from power clicks <b>x2 &rarr; x3</b>."
+        +"<br>Power clicks are <b>5%</b> more powerful per stored power click."
+        +'<q>Absolutely glowing.</q>',
+        tCost(2), [11,35], pcOrder, {pool: 'prestige', posX: -630 - 240, posY: -480 - 115, huParents: 
             ['Power clicks']}
     );
 
     en.ue.addUpgrade("Divine wisdom", "You gain <b>+10</b> click storage per power click storage (refers to maximum amount of power clicks)."
         +'<q>Divine Wisdom 1: Don\'t accidentally delete your save file.</q>',
-        tCost(2), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630 - 80, posY: -480 - 345, huParents: 
+        tCost(2), [11,35], pcOrder, {pool: 'prestige', posX: -630 - 80, posY: -480 - 345, huParents: 
             ['Power clicks']}
     );
 
-    en.ue.addUpgrade("Ethereal mouse", "Max power clicks <b>15 &rarr; 21</b>.<br>Click power boost <b>x3 &rarr; x4</b>.<br>Click boost from Malevolent power <b>+50%</b>."
+    en.ue.addUpgrade("Ethereal mouse", "Power click capacity <b>15 &rarr; 21</b>.<br>Click power boost from power clicks <b>x3 &rarr; x4</b>."
+        +"<br>Click power boost from Malevolent power <b>+50%</b>."
         +'<q>Slightly transparent.</q>',
-        tCost(3), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630 - 240*2, posY: -480 - 115*2, huParents: 
+        tCost(3), [4,1,Icons], pcOrder, {pool: 'prestige', posX: -630 - 240*2, posY: -480 - 115*2, huParents: 
             ['Heavenly clicks']}
     );
 
     en.ue.addUpgrade("Mystical regeneration", "Clicks regenerate <b>1.5%</b> faster (multiplicative) per stored power click."
         +'<q>Fixing! Healing!</q>',
-        tCost(3), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630 - 80*2, posY: -480 - 345*2, huParents: 
+        tCost(3), [4,1,Icons], pcOrder, {pool: 'prestige', posX: -630 - 80*2, posY: -480 - 345*2, huParents: 
             ['Divine wisdom']}
     );
 

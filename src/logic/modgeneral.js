@@ -385,7 +385,7 @@ General._Initialize = function(en, Research) {
     en.ue.addUpgrade("Dragon wingtip", "Shipments gain <b>+25%</b> CpS (multiplicative) per dragon level."
         +'<br>'+loc("Cost scales with CpS, but %1 times cheaper with a fully-trained dragon.",10)
         +'<q>A tiny wingtip shed from your dragon. This imbues you with the power of flight.</q>',
-        1000000000, [5,23], 25100, {priceFunc:function(me){return Game.unbuffedCps*60*30*((Game.dragonLevel<Game.dragonLevels.length-1)?1:0.1);}}
+        1000000000, [5,25], 25100, {priceFunc:function(me){return Game.unbuffedCps*60*30*((Game.dragonLevel<Game.dragonLevels.length-1)?1:0.1);}}
     );
 
     eval('Game.ClickSpecialPic='+Game.ClickSpecialPic.toString()
