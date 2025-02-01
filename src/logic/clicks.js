@@ -34,7 +34,7 @@ Clicks._Initialize = function(en, Research) {
     this.lastClickT = 0;
 
     this.powerClicks = 0;
-    this.nextPowerClick = Game.fps*5;
+    this.nextPowerClick = Game.fps*10*60;
     this.pcEnabled = false;
 
     var pcWrapper=document.createElement('div');
@@ -59,7 +59,7 @@ Clicks._Initialize = function(en, Research) {
         var maxClicks = P.baseClicks;
         if (Game.Has("Big clicks")) maxClicks*=2;
         if (Game.Has("Butterfly")) maxClicks*=2;
-        if (Game.Has("Divine wisdom")) maxClicks+=10*this.getMaxPowerClicks();
+        if (Game.Has("Divine wisdom")) maxClicks+=(Game.Has("Omnipotent mouse")?15:10)*this.getMaxPowerClicks();
         this.maxClicks = Math.round(maxClicks);
     }
 
@@ -70,11 +70,13 @@ Clicks._Initialize = function(en, Research) {
         if (Research.has("Damage control")) eff*=0.8;
         if (Research.has("Temporal stretch")) eff*=0.8;
         if (Research.has("Fractal absorption")) eff*=0.8;
+        if (Game.Has("Omnipotent mouse") && Game.hasBuff("Celestial energy")) eff*=0.3;
         var clickNum=1+(this.overflow>0?Math.floor(this.overflow*overflowEff):0); 
         if (Game.hasBuff("Click frenzy")) clickNum*=2.3;
         if (Game.hasBuff("Dragonflight")) clickNum*=5.5;
         var gz = Game.hasBuff("Devastation");
         if (gz) clickNum*=(1+gz.arg1*0.6);
+        if (Game.hasBuff("Celestial energy")) clickNum*=0.3;
 
         this.clicks-=Math.ceil(clickNum);
         if(this.clicks<0) this.clicks=0;
@@ -118,7 +120,7 @@ Clicks._Initialize = function(en, Research) {
             var rate=P.baseRegen;
             if (Game.Has("Hands-off approach")) rate/=2;
             if (Research.has("Patience")) rate/=1.3;
-            if (Game.Has("Mystical regeneration")) rate/=Math.pow(1.015,this.powerClicks);
+            if (Game.Has("Mystical regeneration")) rate/=Math.pow((Game.Has('Omnipotent mouse')?1.02:1.015),this.powerClicks);
             this.regenTimer=rate;
         }
 
@@ -141,12 +143,12 @@ Clicks._Initialize = function(en, Research) {
         if (Game.Has("Power clicks")) {l('pcWrapper').style.display='block';l('swWrapper').style.display='block';}
         else {l('pcWrapper').style.display='none';l('swWrapper').style.display='none';}
 
-        if (this.clicks==this.maxClicks) {
+        if (this.clicks==this.maxClicks && Game.Has("Power clicks")) {
             if (this.nextPowerClick>0) this.nextPowerClick--;
             else {
                 this.powerClicks++;
                 this.powerClicks=Math.min(this.powerClicks, this.maxClicks);
-                this.nextPowerClick=Game.fps*10*60-(Game.Has("Flare cursor")?Game.fps*3*60:0);
+                this.nextPowerClick=this.accumulationTime()*Game.fps*60;
             }
         }
 
@@ -193,13 +195,13 @@ Clicks._Initialize = function(en, Research) {
     );
 
     en.ue.addUpgrade("Ultra-adrenaline", "Power click capacity <b>21 &rarr; 28</b>.<br>Base click power boost from power clicks <b>x4 &rarr; x5</b>."
-        +"<br>Power clicks are <b>15%</b> more powerful per existing click power buff."
+        +"<br>You can perform power clicks during Dragonflight and Click frenzy, albeit with reduced strength."
         +'<q>It\'s hard to describe, but you could say it\'s like feeling a fight-or-flight response every waking minute of your life.</q>',
         tCost(4), [4,2,Icons], pcOrder, {pool: 'prestige', posX: -630 - 160*3, posY: -480 - 115*3, huParents: 
             ['Ethereal mouse']}
     );
 
-    en.ue.addUpgrade("Celestial powers", "not yet implemented"
+    en.ue.addUpgrade("Celestial powers", "Power clicking the big cookie <b>consumes no clicks</b> and temporarily <b>massively decreases click consumption</b>."
         +'<q>Essentially makes you a demi-god.</q>',
         tCost(4), [4,2,Icons], pcOrder, {pool: 'prestige', posX: -630 - 40*3, posY: -480 - 215*3, huParents: 
             ['Mystical regeneration']}
@@ -208,15 +210,40 @@ Clicks._Initialize = function(en, Research) {
     en.ue.addUpgrade("Flare cursor", "Using a power click grants a <b>+77%</b> CpS boost for <b>25 seconds</b> (duration stacks). "
         +"<br>Power clicks accumulate <b>3 minutes</b> faster."
         +'<q>Burns brighter than the sun.</q>',
-        111111, [11,13], pcOrder, {pool: 'prestige', posX: -630 - 320, posY: -480 - 520, huParents: 
+        111111, [11,13], pcOrder, {pool: 'prestige', posX: -630 - 200, posY: -480 - 330, huParents: 
             ['Power clicks', 'Heavenly clicks', 'Divine wisdom']}
     );
+
+    en.ue.addUpgrade("Omnipotent mouse", "Power click capacity <b>28 &rarr; 36</b>."
+        +"<br>The Celestial energy buff also affects overflow.</br>"
+        +'<br>Clicking is <b>25%</b> more powerful.'
+        +'<br>Boosts the special effects of Divine wisdom and Mystical regeneration.'
+        +'<br>Power clicks accumulate <b>1 minute</b> faster.'
+        +'<q>This is the most powerful mouse you\'ve ever seen. It was made in the greatest forges of heaven. Please, we beg of you, use it wisely.',
+        tCost(5), [11,35], pcOrder, {pool: 'prestige', posX: -630 - 300, posY: -480 - 495, huPrents:
+            ['Flare cursor', 'Celestial powers', 'Ultra-adrenaline']}
+    )
+
+    //-516,-890
 
     new Game.buffType('power poked',function(time,pow)
 		{
 			return {
 				name:'Power poked',
 				desc:"CpS +"+(pow-1)*100+"% for "+Game.sayTime(time*Game.fps,-1)+"!",
+				icon:[19,7],
+				time:time*Game.fps,
+				power:pow,
+                add:true,
+                aura:1
+			};
+		});
+
+    new Game.buffType('celestial energy',function(time,pow)
+		{
+			return {
+				name:'Celestial energy',
+				desc:"Click consumption -70% for "+Game.sayTime(time*Game.fps,-1)+"!",
 				icon:[19,7],
 				time:time*Game.fps,
 				power:pow,
@@ -254,13 +281,19 @@ Clicks._Initialize = function(en, Research) {
         if (Game.Has("Heavenly clicks")) max+=5;
         if (Game.Has("Ethereal mouse")) max+=6;
         if (Game.Has("Ultra-adrenaline")) max+=7;
+        if (Game.Has("Omnipotent mouse")) max+=8;
         return max;
+    }
+
+    Clicks.accumulationTime = function() {
+        return 10-(Game.Has('Flare cursor')?3:0)-(Game.Has('Omnipotent mouse')?1:0);
     }
 
     Clicks.expendPowerClick = function(func) {
         this.powerClicks--;
         Game.SparkleAt(Game.mouseX,Game.mouseY);
         if (Game.Has("Flare cursor")) Game.gainBuff('power poked', 25, 1.77);
+        if (Game.Has("Celestial powers")) Game.gainBuff('celestial energy', 4, 1);
 
         if (func=='click') {
             if (Game.hasBuff("Cursed finger")) Game.Notify("Power clicked the big cookie during a Cursed finger", "Click power massively boosted!",[12,17],6);
@@ -282,7 +315,7 @@ Clicks._Initialize = function(en, Research) {
             if (Game.Has("Ultra-adrenaline")) power++;
 
             if (Game.Has("Heavenly clicks")) power*=(1+0.05*this.powerClicks);
-            if (Game.hasBuff("Click frenzy")) return 1;
+            if (Game.hasBuff("Click frenzy") || Game.hasBuff("Dragonflight")) {if (Game.Has("Ultra-adrenaline")) power*=0.2; else return 1;}
             if (Game.hasBuff("Cursed finger")) {power*=20*Game.eff('click');Game.killBuff("Cursed finger");} // stolen from idle mod
             this.expendPowerClick(func);
             return power;
@@ -303,7 +336,7 @@ Clicks._Initialize = function(en, Research) {
         return '<div class="prompt" style="min-width:200px;text-align:center;font-size:11px;margin:8px 0px;" id="tooltipBuff"><h3>Power clicks</h3>'
         +'<div class="line"></div>'+'You have '+this.powerClicks+' power clicks (out of '+this.getMaxPowerClicks()+').<br>'
         +(this.clicks<this.maxClicks?'You are not currently accumulating power clicks.':
-            'You are currently accumulating power clicks at a rate of one power click every '+(Game.Has('Flare cursor')?7:10)+' minutes.')+'</div>';
+            'You are currently accumulating power clicks at a rate of one power click every '+this.accumulationTime()*Game.fps*60+' minutes.')+'</div>';
     }
 
     Clicks.pcSwitchTooltip = function() {
@@ -329,9 +362,10 @@ Clicks._Initialize = function(en, Research) {
         "before");
     
     Game.ClickCookie = en.injectCode(Game.ClickCookie, "|| Game.T<3 ", "|| !mod.clicks.hasClicksLeft() ", "after");
-    Game.ClickCookie = en.injectCode(Game.ClickCookie, "Game.loseShimmeringVeil('click');", "\n\t\t\t\tmod.clicks.drainClick(now);", "after");
+    Game.ClickCookie = en.injectCode(Game.ClickCookie, "Game.loseShimmeringVeil('click');", 
+        "\n\t\t\t\tvar pcMult=mod.clicks.performPowerClick('click');\n\t\t\t\tif(pcMult==1||(!Game.Has('Celestial powers'))){mod.clicks.drainClick(now);}", "after");
     Game.ClickCookie = en.injectCode(Game.ClickCookie, "amount?amount:Game.computedMouseCps", 
-        "(amount?amount:Game.computedMouseCps)*mod.clicks.performPowerClick('click')", "replace")
+        "(amount?amount:Game.computedMouseCps)*pcMult", "replace")
     
     Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
         `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
@@ -345,6 +379,10 @@ Clicks._Initialize = function(en, Research) {
     Game.registerHook('logic', function() {
         Clicks.logic();
     });
+    Game.registerHook('cookiesPerClick', function(cpc) {
+        if (Game.Has('Omnipotent mouse')) return cpc*1.25;
+        else return cpc;
+    });
     Game.registerHook('reset', function(wipe) {
         Clicks.clicks = P.baseClicks;
         Clicks.maxClicks = P.baseClicks;
@@ -352,6 +390,7 @@ Clicks._Initialize = function(en, Research) {
         if(wipe) Clicks.overflow_enabled = false;
         Clicks.pc_enabled = false;
         Clicks.powerClicks = 0;
+        Game.nextPowerClick = Game.fps*10*60;
     })
 
     en.saveCallback(function() {
