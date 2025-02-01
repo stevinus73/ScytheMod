@@ -42,7 +42,7 @@ var CreateMod = function (engine) {
         mod.Init(en);
         en.LoadMod('ScytheMod', function() {
             console.log("Loaded ScytheMod - This may have compatibility issues, so beware of mixing it with other mods.");
-            Game.Notify("Welcome!", '<div class="title" style="font-size:8px;margin-top:-2px;">This is ScytheMod, an experimental mod for Cookie Clicker. Careful!</div>',[23, 6]);
+            //Game.Notify("Welcome!", '<div class="title" style="font-size:8px;margin-top:-2px;">This is ScytheMod, an experimental mod for Cookie Clicker. Careful!</div>',[23, 6]);
         });
     })
 }

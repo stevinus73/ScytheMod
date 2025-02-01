@@ -197,6 +197,10 @@ IdlersPocket.LoadMod = function (name, initFunc) {
 		    Game.SaveTo = 'kzythe';
 		    Game.LoadSave();
         },
+        unloadMod: function() {
+            delete Game.mods['ScytheMod'];
+            delete window.mod;
+        },
         startingPrompt: function () {
             Game.Prompt(`<id KzyLoadingPrompt>
                 <h3>Welcome to ScytheMod</h3>
@@ -209,7 +213,7 @@ IdlersPocket.LoadMod = function (name, initFunc) {
                     <div class="line"></div>
                     Credits: Hellranger for testing the mod, yeetdragon24 for 'helping' me make this prompt
                 </div>`,
-            [['Continue','scytheModWrapper.switchSave();scytheModWrapper.initMod();Game.ClosePrompt();'], ['No thanks','Game.ClosePrompt();']]);
+            [['Continue','scytheModWrapper.switchSave();scytheModWrapper.initMod();Game.ClosePrompt();'], ['No thanks','scytheModWrapper.unloadMod();Game.ClosePrompt();']]);
         }
     }
     Game.registerMod(name, mod);
