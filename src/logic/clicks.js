@@ -37,15 +37,18 @@ Clicks._Initialize = function(en, Research) {
     this.pcEnabled = false;
 
     var pcWrapper=document.createElement('div');
-    pcWrapper.style.cssText='position:absolute;bottom:16px;right:8px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
+    pcWrapper.id='pcWrapper';
+    pcWrapper.style.cssText='position:absolute;bottom:48px;right:16px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
     pcWrapper.innerHTML='<div id="pcButton" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon([3,0,Icons])+'"></div>'
-        +'<div id="pcInfo" class="description">0/0</div>';
+        +'<span id="pcInfo" style="position:absolute;top:-32px;left:12px;font-family:\'Merriweather\';font-size:20px;color:#fddfe8;">0/0</span>';
     l('sectionLeft').appendChild(pcWrapper);
     this.pcWidget = l('pcButton');
 
     var swWrapper=document.createElement('div');
-    swWrapper.style.cssText='position:absolute;bottom:16px;right:96px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
-    swWrapper.innerHTML='<div id="pcSwitch" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon([20,10])+'"></div>';
+    swWrapper.id='swWrapper';
+    swWrapper.style.cssText='position:absolute;bottom:30px;right:48px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
+    swWrapper.innerHTML='<div id="pcSwitch" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon([20,10])+'" '
+        +Game.clickStr+'="mod.clicks.switchClick(-1);"></div>';
     l('sectionLeft').appendChild(swWrapper);
     this.switch = l('pcSwitch');
 
@@ -53,7 +56,7 @@ Clicks._Initialize = function(en, Research) {
         var maxClicks = P.baseClicks;
         if (Game.Has("Big clicks")) maxClicks*=2;
         if (Game.Has("Butterfly")) maxClicks*=2;
-        if (Game.Has("Divine wistom")) maxClicks+=10*this.getMaxPowerClicks();
+        if (Game.Has("Divine wisdom")) maxClicks+=10*this.getMaxPowerClicks();
         this.maxClicks = Math.round(maxClicks);
     }
 
@@ -131,6 +134,11 @@ Clicks._Initialize = function(en, Research) {
             this.overflow-=1/((1+3*Math.max(this.overflow,0))*Game.fps*45);
             if (this.overflow<minOverflow) this.overflow=minOverflow;
         }
+
+        if (Game.Has("Power clicks")) {l('pcWrapper').style.display='block';l('swWrapper').style.display='block';}
+        else {l('pcWrapper').style.display='none';l('swWrapper').style.display='none';}
+
+        l('pcInfo').innerHTML=this.powerClicks+'/'+this.getMaxPowerClicks();
     }
 
     function tCost(tier){return 10*Math.pow(11,tier);}
@@ -168,8 +176,24 @@ Clicks._Initialize = function(en, Research) {
         return max;
     }
 
-    Clicks.performPowerClick = function() {
-        
+    Clicks.performPowerClick = function(func) {
+        if (!Game.Has("Power clicks")) return 1;
+        if (!this.pcEnabled) return 1;
+        if (this.powerClicks<=0) return 1;
+
+        this.powerClicks--;
+        if (func=='click') {
+
+            return 2;
+        }
+    }
+
+
+
+    Clicks.switchClick = function(on) {
+        if (on == -1) on = !this.pcEnabled;
+        this.pcEnabled = on;
+        this.switch.style.cssText='opacity:1;float:none;display:block;'+writeIcon([this.pcEnabled?21:20,10]);
     }
 
 
@@ -185,6 +209,8 @@ Clicks._Initialize = function(en, Research) {
     
     Game.ClickCookie = en.injectCode(Game.ClickCookie, "|| Game.T<3 ", "|| !mod.clicks.hasClicksLeft() ", "after");
     Game.ClickCookie = en.injectCode(Game.ClickCookie, "Game.loseShimmeringVeil('click');", "\n\t\t\t\tmod.clicks.drainClick(now);", "after");
+    Game.ClickCookie = en.injectCode(Game.ClickCookie, "amount?amount:Game.computedMouseCps", 
+        "(amount?amount:Game.computedMouseCps)*mod.clicks.performPowerClick('click')")
     
     Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
         `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
@@ -203,6 +229,8 @@ Clicks._Initialize = function(en, Research) {
         Clicks.maxClicks = P.baseClicks;
         Clicks.overflow = P.minOverflow;
         if(wipe) Clicks.overflow_enabled = false;
+        Clicks.pc_enabled = false;
+        Clicks.powerClicks = 0;
     })
 
     en.saveCallback(function() {
