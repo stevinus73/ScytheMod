@@ -671,10 +671,10 @@ Research._Initialize = function(en) {
     })
 
     en.loadCallback(function() {
-        Research.research = en.getVar("research");
+        Research.research = en.getVar("research", Research.research);
         for (var i in Research.trees) {
             Research.trees[i].upgrades.forEach(function(up) {
-                var n = en.getVar("research" + i + up.id);
+                var n = en.getVar("research" + i + up.id, up.bought);
                 if (n == 0) up.bought = false;
                 if (n == 1) up.bought = true;
             })
