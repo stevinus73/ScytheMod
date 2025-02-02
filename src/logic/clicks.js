@@ -132,7 +132,7 @@ Clicks._Initialize = function(en, Research) {
 
         if (this.cursorTimer>0) this.cursorTimer--;
         else {
-            this.clicks-=Math.ceil(this.getCursorClicks()); 
+            if(this.lastClickT<Game.fps*60) this.clicks-=Math.ceil(this.getCursorClicks()); 
             if(this.clicks<0) this.clicks=0;
             this.cursorTimer=P.cursorRate;
         }
@@ -375,7 +375,7 @@ Clicks._Initialize = function(en, Research) {
         return '<div class="prompt" style="min-width:200px;text-align:center;font-size:11px;margin:8px 0px;" id="tooltipBuff"><h3>Power clicks</h3>'
         +'<div class="line"></div>'+'You have '+this.powerClicks+' power clicks (out of '+this.getMaxPowerClicks()+').<br>'
         +(this.clicks<this.maxClicks?'You are not currently accumulating power clicks.':
-            'You are currently accumulating power clicks at a rate of one power click every '+this.accumulationTime()*Game.fps*60+' minutes.')+'</div>';
+            'You are currently accumulating power clicks at a rate of one power click every '+this.accumulationTime()+' minutes.')+'</div>';
     }
 
     Clicks.pcSwitchTooltip = function() {

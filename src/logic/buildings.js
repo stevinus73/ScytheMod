@@ -665,14 +665,14 @@ BModify._Initialize = function(en, Research) {
         }
 
         // scientist grandmas
-        const BaseResearchTime=Game.fps*60*30;
+        const BaseResearchTime=Game.fps*60*60;
         var sci=this.newGrandmaType("scientist", "Scientist grandmas", (me) => Research.has("Interns"),
             function(){return Math.ceil(grandmaM.maxFree()*0.2)}, [1, 0, Icons], 
             "You passively gain research. Speed is faster the more grandmas you have.");
         sci.nextResearch=BaseResearchTime;
         sci.update=function(){
             if (this.allocated>0) {
-                this.nextResearch-=UpdateTicks;
+                this.nextResearch-=1;
                 if (this.nextResearch<=0) {
                     Research.earn(1);
                     this.nextResearch=(BaseResearchTime) / Math.sqrt(this.allocated);

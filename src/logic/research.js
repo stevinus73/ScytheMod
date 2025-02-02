@@ -443,7 +443,7 @@ Research._Initialize = function(en) {
         var me = Game.ObjectsById[i];
         var hfunction = {reqFunc:function(){return me.level >= 5},reqDesc:"upgrade this building to level 5"};
         var deps = [2];
-        me.lumpBuff = new Research.Tech(name, spc+'<q>'+desc+'</q>', 100, hfunction, f, deps, [spr_ref[i], 22], 2.0, 0.6);
+        me.lumpBuff = new Research.Tech(name, spc+'(not yet implemented :( )<q>'+desc+'</q>', 100, hfunction, f, deps, [spr_ref[i], 22], 2.0, 0.6);
     }
     for (var i in Game.Objects) {
         Game.Objects[i].getLumpBuff = function() {
@@ -571,7 +571,7 @@ Research._Initialize = function(en) {
     tieredTree(6, 1, "Summoning artifacts", "Mysteriously shiny artifacts that trick people into giving them a handshake, therefore forfeiting their soul to the devils within.") // 5
     tieredTree(6, 2, "Holy light of cookie heaven", "Psst, don't tell people it's just a lightbulb suspended above you with strings.") // 6
     tieredTree(6, 3, "Lovecraftian mythos", "If we feed them cookies, we should be able to get them to like us.") // 7
-    bLumpBuff(5, "Sugary marble", "Worship swaps regenerate <b>20%</b> faster per temple level (up to level 20).","When the marble collapses, the gods take it as a good sign."); // 8
+    bLumpBuff(6, "Sugary marble", "Worship swaps regenerate <b>20%</b> faster per temple level (up to level 20).","When the marble collapses, the gods take it as a good sign."); // 8
     buildingTree(7);
     tieredTree(7, 1, "Magic-made wands", "Generates a perpetual cycle of usage and creation.") // 1
     tieredTree(7, 2, "Broomsticks", "Old cliche, but still works for the most part.") // 2

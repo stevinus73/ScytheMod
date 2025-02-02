@@ -204,7 +204,7 @@ G._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Golden switch mode selector", "Allows you to <b>change Golden switch modes</b>."+
         "<q>How much would a Golden switch mode switcher switch Golden switch modes if it could switch Golden switch modes?</q>", 
-        0, [21, 10], 40000, {pool:'toggle',priceFunc:function(){return Game.cookiesPs*60*60;},choicesFunction:gsChoicesFunction,choicesPick:gsPick});
+        0, [21, 10], 40000, {pool:'toggle',choicesFunction:gsChoicesFunction,choicesPick:gsPick});
     
     eval("Game.shimmerTypes.golden.spawnConditions="+
         G.me.spawnConditions.toString().replace("Game.Has('Golden switch [off]')","(Game.Has('Golden switch [off]')&&(Game.gsType==0))"));
