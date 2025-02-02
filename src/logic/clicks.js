@@ -39,6 +39,7 @@ Clicks._Initialize = function(en, Research) {
     this.pcCooldown = 0;
     this.pcPerformed = 0;
     this.pcEnabled = false;
+    this.canPowerClick = false;
 
     var pcWrapper=document.createElement('div');
     pcWrapper.id='pcWrapper';
@@ -144,9 +145,17 @@ Clicks._Initialize = function(en, Research) {
             if (this.overflow<minOverflow) this.overflow=minOverflow;
         }
 
-        if (Game.Has("Power clicks")) {l('pcWrapper').style.display='block';l('swWrapper').style.display='block';}
-        else {l('pcWrapper').style.display='none';l('swWrapper').style.display='none';}
-        l('pcInfo').innerHTML=this.powerClicks+'/'+this.getMaxPowerClicks();
+        if (Game.drawT%3) {
+            if (Game.Has("Power clicks")) {l('pcWrapper').style.display='block';l('swWrapper').style.display='block';}
+            else {l('pcWrapper').style.display='none';l('swWrapper').style.display='none';}
+            l('pcInfo').innerHTML=this.powerClicks+'/'+this.getMaxPowerClicks();
+
+            if (this.canPowerClickFunc() != this.canPowerClick) {
+                this.canPowerClick = this.canPowerClickFunc();
+                if (this.canPowerClick) l('pcButton').classList.add('enabled');
+                else l('pcButton').classList.remove('enabled');
+            }
+        }
 
         if (this.clicks==this.maxClicks && Game.Has("Power clicks")) {
             if (this.nextPowerClick>0) this.nextPowerClick--;
@@ -167,7 +176,7 @@ Clicks._Initialize = function(en, Research) {
         +'<div class="line"></div>You gain power clicks with full click capacity, up to a maximum capacity of <b>10</b>.'
         +'<div class="line"></div>Power click production is at a rate of 1 power click every 10 minutes.'
         +'<div class="line"></div>When power clicks are enabled, clicks on the big cookie are boosted by <b>x2</b> and use up a power click.'
-        +'<div class="line"></div>Power clicks have a cooldown of <b>0.5s</b>.'
+        +'<div class="line"></div>Power clicks have a cooldown of <b>0.5</b> seconds.'
         +'<q>There\'s plenty of knowledgeable people up here, and you\'ve been given some excellent pointers.</q>',
         tCost(1), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630, posY: -480, huParents: 
             ['Starter kit']}
@@ -325,11 +334,16 @@ Clicks._Initialize = function(en, Research) {
         if (func=='gGains') Game.Notify("Power clicked a golden cookie","Gains increased by 50%!",[3,0,Icons],6);
     }
 
+    Clicks.canPowerClickFunc = function() {
+        if (!Game.Has("Power clicks")) return false;
+        if (!this.pcEnabled) return false;
+        if (this.powerClicks<=0) return false;
+        if (this.pcCooldown>0) return false;
+        return true;
+    }
+
     Clicks.performPowerClick = function(func) {
-        if (!Game.Has("Power clicks")) return 1;
-        if (!this.pcEnabled) return 1;
-        if (this.powerClicks<=0) return 1;
-        if (this.pcCooldown>0) return 1;
+        if (!this.canPowerClickFunc()) return 1;
         if (func=='click') {
             var power=2;
             if (Game.Has("Heavenly clicks")) power++;
@@ -411,7 +425,7 @@ Clicks._Initialize = function(en, Research) {
         if(wipe) {Clicks.overflow_enabled = false; Clicks.pcPerformed = false;}
         Clicks.switchClick(false);
         Clicks.powerClicks = 0;
-        Game.nextPowerClick = Game.fps*10*60;
+        Clicks.nextPowerClick = Game.fps*10*60;
     })
 
     en.saveCallback(function() {
