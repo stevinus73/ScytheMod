@@ -70,7 +70,7 @@ General._Initialize = function(en, Research) {
             // M.spellsById=[];var n=0;
 		    // for (var i in M.spells){M.spells[i].id=n;M.spellsById[n]=M.spells[i];n++;}
 
-            eval("Game.Objects['Wizard tower'].minigame.spellTooltip="+M.spellTooltip.toString().replace('{',"{M=Game.Objects['Wizard tower'].minigame;"));
+            //eval("Game.Objects['Wizard tower'].minigame.spellTooltip="+M.spellTooltip.toString().replace('{',"{M=Game.Objects['Wizard tower'].minigame;"));
         }
     }
     General.GardenEdit = function() {
