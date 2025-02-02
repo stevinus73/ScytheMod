@@ -531,10 +531,14 @@ Research._Initialize = function(en) {
     tieredTree(3, 1, "Mineral scentilocation", "Recent advances have led to the creation of a machine that can detect tasty minerals via their natural scent-giving properties.") // 1
     tieredTree(3, 2, "Nanomining", "Scratch all the giant drills and pickaxes! The fabric of reality itself has been found to contain fundamental particles that can be made into cookies. This will surely have no unforeseen consequences on the stability of the universe, y'know?") // 2
     tieredTree(3, 3, "Quantum tunneling", "I... don't think that's what it's supposed to mean.") // 3
+    bLumpBuff(3, "Candy cane drill", "Buildings sell back for <b>2%</b> more per mine level (up to level 20).","These things don't even work! What use could they possibly be for?")
+    eval('Game.Object.prototype.getSellMultiplier='+Game.Object.prototype.getSellMultiplier.toString().replace('var giveBack=0.25;','var giveBack=0.25+Game.Objects.Mine.getLumpBuff()*0.02;'));
     buildingTree(4);
-    tieredTree(4, 1, "Caramel lubricant", "Cleans up those old gears and machines and gets them back to working in no time!") // 1
+    tieredTree(4, 1, "Lubricant", "Cleans up those old gears and machines and gets them back to working in no time!") // 1
     tieredTree(4, 2, "Fuel aeration", "A new mechanism that conserves fuel used while making it more powerful.") // 2
     tieredTree(4, 3, "Brownian ratchet gears", "They run infinitely and infinitely, with absolutely no energy put in. I guess your cookies are breaking the laws of physics?") // 3
+    bLumpBuff(4, "Chocolate gears", "Upgrades are <b>3%</b> cheaper per factory level (up to level 20).","I think someone got lazy with the upgrade ideas again.")
+    eval('Game.Upgrade.prototype.getSellMultiplier='+Game.Upgrade.prototype.getSellMultiplier.toString().replace('price*=Game.eff(\'upgradeCost\');','price*=Game.eff(\'upgradeCost\');\n\t\tprice*=Math.pow(0.97,Game.Objects.Factory.getLumpBuff());'));
     buildingTree(5);
     tieredTree(5, 1, "Cookiecoin", "Your new cookie-themed crypto currency, to make cookies off of all those crypto nerds.") // 1
     tieredTree(5, 2, "Financial gobbledygook", "This makes your banking system more legitimate and less likely to get investigated by those pesky government agents.") // 2
@@ -567,6 +571,7 @@ Research._Initialize = function(en) {
     tieredTree(6, 1, "Summoning artifacts", "Mysteriously shiny artifacts that trick people into giving them a handshake, therefore forfeiting their soul to the devils within.") // 5
     tieredTree(6, 2, "Holy light of cookie heaven", "Psst, don't tell people it's just a lightbulb suspended above you with strings.") // 6
     tieredTree(6, 3, "Lovecraftian mythos", "If we feed them cookies, we should be able to get them to like us.") // 7
+    bLumpBuff(5, "Sugary marble", "Worship swaps regenerate <b>20%</b> faster per temple level (up to level 20).","When the marble collapses, the gods take it as a good sign."); // 8
     buildingTree(7);
     tieredTree(7, 1, "Magic-made wands", "Generates a perpetual cycle of usage and creation.") // 1
     tieredTree(7, 2, "Broomsticks", "Old cliche, but still works for the most part.") // 2

@@ -25,7 +25,7 @@ Clicks._Initialize = function(en, Research) {
     en.newVar("maxClicks", "int");
 
     
-    const minOverflow = -(3*P.overflowGain);
+    const minOverflow = -(10*P.overflowGain);
     this.overflow = minOverflow;
     en.newVar("overflow", "float");
     this.overflow_enabled = false;
@@ -35,6 +35,7 @@ Clicks._Initialize = function(en, Research) {
 
     this.powerClicks = 0;
     this.nextPowerClick = Game.fps*10*60;
+    this.pcPerformed = 0;
     this.pcEnabled = false;
 
     var pcWrapper=document.createElement('div');
@@ -70,7 +71,8 @@ Clicks._Initialize = function(en, Research) {
         if (Research.has("Damage control")) overflowEff*=0.8;
         if (Research.has("Temporal stretch")) overflowEff*=0.8;
         if (Research.has("Fractal absorption")) overflowEff*=0.8;
-        if (Game.Has("Omnipotent mouse") && Game.hasBuff("Celestial energy")) overflowEff*=0.3;
+        // hidden feature now
+        if (Game.Has("Omnipotent mouse") && Game.hasBuff("Celestial energy")) overflowEff*=0.5;
         var clickNum=1+(this.overflow>0?Math.floor(this.overflow*overflowEff):0); 
         if (Game.hasBuff("Click frenzy")) clickNum*=2.3;
         if (Game.hasBuff("Dragonflight")) clickNum*=5.5;
@@ -84,8 +86,7 @@ Clicks._Initialize = function(en, Research) {
         if(!this.overflow_enabled) return;
         var threshold=P.baseThreshold;
         if (Game.Has("Thousand fingers")) threshold*=(1+0.1*Math.floor(Game.Objects['Cursor'].amount/100)); // cursor nerf!
-        if (now-Game.lastClick<=(1000*threshold)) this.overflow+=P.overflowGain
-            *(Research.has("Sustainable clicks")?0.75:1)*(Game.Has("Omnipotent mouse") && Game.hasBuff("Celestial energy")?0.5:1);
+        if (now-Game.lastClick<=(1000*threshold)) this.overflow+=P.overflowGain*(Research.has("Sustainable clicks")?0.75:1);
 
         this.lastClickT=0;
         if (Research.has("Malevolent power")) Game.recalculateGains = 1;
@@ -216,7 +217,7 @@ Clicks._Initialize = function(en, Research) {
     );
 
     en.ue.addUpgrade("Omnipotent mouse", "<ul><li>&bull; Power click capacity <b>28 &rarr; 36</b>.</li>"
-        +"<li>&bull; The Celestial energy buff makes overflow accumulate slower.</li>"
+        +"<li>&bull; The Celestial energy buff also makes overflow accumulate slower.</li>"
         +'<li>&bull; Clicking is <b>25%</b> more powerful.</li>'
         +'<li>&bull; Boosts the special effects of Divine wisdom and Mystical regeneration.</li>'
         +'<li>&bull; Power clicks accumulate <b>1 minute</b> faster.</li></ul>'
@@ -224,6 +225,10 @@ Clicks._Initialize = function(en, Research) {
         tCost(5), [12,0], pcOrder, {pool: 'prestige', posX: -630 - 330, posY: -480 - 550, huParents:
             ['Flare cursor', 'Celestial powers', 'Ultra-adrenaline']}
     )
+
+    en.ae.addAchievement("Power click", "Perform a <b>power click</b>.", [3,0,Icons], 'Eldeer', {});
+    en.ae.addAchievement("Clickstack", "Perform a <b>power click</b> under a <b>Click frenzy or Dragonflight</b>.<q>A bit weak, for sure, but fine.</q>", 
+        [3,0,Icons], 'Eldeer', {});
 
     //-516,-890
 
@@ -298,6 +303,8 @@ Clicks._Initialize = function(en, Research) {
 
     Clicks.expendPowerClick = function(func) {
         this.powerClicks--;
+        this.pcPerformed++;
+        Game.Win('Power click');
         Game.SparkleAt(Game.mouseX,Game.mouseY);
         if (Game.Has("Flare cursor")) Game.gainBuff('power poked', 25, 1.77);
         if (Game.Has("Celestial powers")) Game.gainBuff('celestial energy', 4, 1);
@@ -322,7 +329,10 @@ Clicks._Initialize = function(en, Research) {
             if (Game.Has("Ultra-adrenaline")) power++;
 
             if (Game.Has("Heavenly clicks")) power*=(1+0.05*this.powerClicks);
-            if (Game.hasBuff("Click frenzy") || Game.hasBuff("Dragonflight")) {if (Game.Has("Ultra-adrenaline")) power*=0.2; else return 1;}
+            if (Game.hasBuff("Click frenzy") || Game.hasBuff("Dragonflight")) {
+                if (Game.Has("Ultra-adrenaline")) {power*=0.2; Game.Win("Clickstack");}
+                else return 1;
+            }
             if (Game.hasBuff("Cursed finger")) {power*=20*Game.eff('click');Game.killBuff("Cursed finger");} // stolen from idle mod
             this.expendPowerClick(func);
             return power;
@@ -394,8 +404,8 @@ Clicks._Initialize = function(en, Research) {
         Clicks.clicks = P.baseClicks;
         Clicks.maxClicks = P.baseClicks;
         Clicks.overflow = P.minOverflow;
-        if(wipe) Clicks.overflow_enabled = false;
-        Clicks.pc_enabled = false;
+        if(wipe) {Clicks.overflow_enabled = false; Clicks.pcPerformed = false;}
+        Clicks.switchClick(false);
         Clicks.powerClicks = 0;
         Game.nextPowerClick = Game.fps*10*60;
     })
