@@ -70,10 +70,11 @@ IdlersPocket._Initialize = function () {
         this.var_ident.push(name);
     }
 
-    IdlersPocket.trackVars = function(obj, varList) {
-        this.obj_track.push({obj: obj, variables: varList});
+    IdlersPocket.trackVars = function(obj, varList, objName) {
+        var rname=objName?'-'+objName:'';
+        this.obj_track.push({obj: obj, variables: varList, objName: rname});
         varList.forEach((v) => {
-            IdlersPocket.newVar(v[0],v[1]??'int');
+            IdlersPocket.newVar(v[0]+rname,v[1]??'int');
         })
     }
 
@@ -181,7 +182,7 @@ IdlersPocket.LoadMod = function (name, initFunc) {
         IdlersPocket.saveCallbacks.forEach((c) => c());
         IdlersPocket.obj_track.forEach((me) => {
             me.variables.forEach((v) => {
-                IdlersPocket.setVar(v[0], me.obj[v[0]]);
+                IdlersPocket.setVar(v[0]+me.objName, me.obj[v[0]]);
             })
         })
         return IdlersPocket._encryptVars();
@@ -193,7 +194,7 @@ IdlersPocket.LoadMod = function (name, initFunc) {
         IdlersPocket.loadCallbacks.forEach((c) => c());
         IdlersPocket.obj_track.forEach((me) => {
             me.variables.forEach((v) => {
-                me.obj[v[0]] = IdlersPocket.getVar(v[0], me.obj[v[0]]);
+                me.obj[v[0]] = IdlersPocket.getVar(v[0]+me.objName, me.obj[v[0]]);
             })
         })
     }

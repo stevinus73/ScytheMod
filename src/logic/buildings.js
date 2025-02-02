@@ -75,12 +75,7 @@ BModify._Initialize = function(en, Research) {
         this.pause = false;
         this.statsView = false;
 
-        en.newVar("RhpS"+this.me.id,  "float");
-        en.newVar("yield"+this.me.id, "float");
-        en.newVar("rsTotal"+this.me.id, "int");
-        en.newVar("rsUsed"+this.me.id,  "int");
-        en.newVar("rsMaxBoost"+this.me.id, "float");
-        en.newVar("pause"+this.me.id,   "int");
+        en.trackVars(this,[["RhpS","float"],["yield","float"],["rsTotal"],["rsUsed"],["rsMaxBoost","float"],["pause"],["interest"],["statsView"]],this.id);
 
         BModify.rsManagers.push(this);
 
@@ -633,7 +628,7 @@ BModify._Initialize = function(en, Research) {
             this.grandmaTypes[name] = grandmaType;
             return grandmaType;
         }
-        en.newVar("allocT", "int");
+        en.trackVars(BModify.Grandmas, [['allocT','storage']]);
 
         this.switchStats = function(on) {
             if (on == -1) on = !this.statsView;
@@ -994,26 +989,10 @@ BModify._Initialize = function(en, Research) {
     }
 
     en.saveCallback(function() {
-        BModify.rsManagers.forEach(function(me) {
-            en.setVar("RhpS"+me.id,    me.RhpS);
-            en.setVar("yield"+me.id,   me.yield);
-            en.setVar("rsTotal"+me.id, me.rsTotal);
-            en.setVar("rsUsed"+me.id,  me.rsUsed);
-            en.setVar("rsMaxBoost"+me.id,  me.rsMaxBoost);
-            en.setVar("pause"+me.id,   me.pause ? 1 : 0);
-        })
         en.setVar("bankRefill", BModify.bankRefill);
     })
 
     en.loadCallback(function() {
-        BModify.rsManagers.forEach(function(me) {
-            me.RhpS =    en.getVar("RhpS"+me.id,    me.RhpS);
-            me.yield =   en.getVar("yield"+me.id,   me.yield);
-            me.rsTotal = en.getVar("rsTotal"+me.id, me.rsTotal);
-            me.rsUsed =  en.getVar("rsUsed"+me.id,  me.rsUsed);
-            me.rsMaxBoost = en.getVar("rsMaxBoost"+me.id,  me.rsMaxBoost);
-            me.pause =  (en.getVar("pause"+me.id,   me.pause) > 0) ? true: false;
-        })
         BModify.bankRefill = en.getVar("bankRefill", BModify.bankRefill);
     })
 
