@@ -165,15 +165,17 @@ IdlersPocket._Initialize = function () {
 IdlersPocket._Initialize();
 
 
-
+Game.ModLoaded=false;
 IdlersPocket.LoadMod = function (name, initFunc) {
 
     this._save = function() {
+        if (!Game.ModLoaded) return;
         IdlersPocket.saveCallbacks.forEach((c) => c());
         return IdlersPocket._encryptVars();
     }
 
     this._load = function(str) {
+        if (!Game.ModLoaded) return;
         IdlersPocket._decryptVars(str);
         IdlersPocket.loadCallbacks.forEach((c) => c());
     }
@@ -187,6 +189,8 @@ IdlersPocket.LoadMod = function (name, initFunc) {
             } else {
                 this.switchSave();
                 this.initMod();
+                Game.ModLoaded = true;
+                Game.LoadSave();
             }
         },
     
@@ -195,7 +199,7 @@ IdlersPocket.LoadMod = function (name, initFunc) {
         switchSave: function () {
             Game.WriteSave();
 		    Game.SaveTo = 'kzythe';
-		    Game.LoadSave();
+		    //Game.LoadSave();
         },
         unloadMod: function() {
             delete Game.mods['ScytheMod'];
