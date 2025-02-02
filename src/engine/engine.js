@@ -41,20 +41,20 @@ IdlersPocket._Initialize = function () {
     IdlersPocket.saveCallbacks = [];
 
     IdlersPocket.vars = new Map();
-    IdlersPocket.var_ident = [];
     IdlersPocket.obj_track = [];
     Game.Ip = this;
 
     
     IdlersPocket._encryptVars = function() {
-        return Array.from(this.vars.values(), (v) => utf8_to_b64(v.value)).join("|");
+        return Array.from(this.vars.entries().toArray(), (v) => utf8_to_b64(v[0]+'*'+v[1].value)).join("|");
     }
     IdlersPocket._decryptVars = function(str) {
         Array.from(str.split("|"), (v) => b64_to_utf8(v)).forEach(function (item, index) {
             var parsed = 0;
-            var n = IdlersPocket.vars.get(IdlersPocket.var_ident[index]);
-            if (n.type == 'float') parsed = parseFloat(item);
-            if (n.type == 'int') parsed = parseInt(item);
+            var itemArr = item.split('*');
+            var n = IdlersPocket.vars.get(itemArr[0]);
+            if (n.type == 'float') parsed = parseFloat(itemArr[1]);
+            if (n.type == 'int') parsed = parseInt(itemArr[1]);
             n.value = parsed;
         });
     }
@@ -67,7 +67,6 @@ IdlersPocket._Initialize = function () {
     IdlersPocket.newVar = function (name, type) {
         var n = {type: type, value: 0};
         this.vars.set(name, n);
-        this.var_ident.push(name);
     }
 
     IdlersPocket.trackVars = function(obj, varList, objName) {
