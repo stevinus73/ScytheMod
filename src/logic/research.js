@@ -532,7 +532,7 @@ Research._Initialize = function(en) {
     tieredTree(3, 2, "Nanomining", "Scratch all the giant drills and pickaxes! The fabric of reality itself has been found to contain fundamental particles that can be made into cookies. This will surely have no unforeseen consequences on the stability of the universe, y'know?") // 2
     tieredTree(3, 3, "Quantum tunneling", "I... don't think that's what it's supposed to mean.") // 3
     bLumpBuff(3, "Candy cane drill", "Buildings sell back for <b>2%</b> more per mine level (up to level 20).","These things don't even work! What use could they possibly be for?")
-    eval('Game.Object.prototype.getSellMultiplier='+Game.Object.prototype.getSellMultiplier.toString().replace('var giveBack=0.25;','var giveBack=0.25+Game.Objects.Mine.getLumpBuff()*0.02;'));
+    //eval('Game.Object.prototype.getSellMultiplier='+Game.Object.prototype.getSellMultiplier.toString().replace('var giveBack=0.25;','var giveBack=0.25+Game.Objects.Mine.getLumpBuff()*0.02;'));
     buildingTree(4);
     tieredTree(4, 1, "Lubricant", "Cleans up those old gears and machines and gets them back to working in no time!") // 1
     tieredTree(4, 2, "Fuel aeration", "A new mechanism that conserves fuel used while making it more powerful.") // 2
