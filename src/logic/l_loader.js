@@ -21,6 +21,9 @@ mod.Init = function(engine) {
     this.G = G;
     this.G._Initialize(this.en, this.research);
     this.en.Process();
+    
+    Game.ModLoaded=true;
+    Game.LoadSave();
 }
 
 export { mod }
