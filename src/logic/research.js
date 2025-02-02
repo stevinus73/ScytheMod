@@ -538,7 +538,7 @@ Research._Initialize = function(en) {
     tieredTree(4, 2, "Fuel aeration", "A new mechanism that conserves fuel used while making it more powerful.") // 2
     tieredTree(4, 3, "Brownian ratchet gears", "They run infinitely and infinitely, with absolutely no energy put in. I guess your cookies are breaking the laws of physics?") // 3
     bLumpBuff(4, "Chocolate gears", "Upgrades are <b>3%</b> cheaper per factory level (up to level 20).","I think someone got lazy with the upgrade ideas again.")
-    eval('Game.Upgrade.prototype.getSellMultiplier='+Game.Upgrade.prototype.getSellMultiplier.toString().replace('price*=Game.eff(\'upgradeCost\');','price*=Game.eff(\'upgradeCost\');\n\t\tprice*=Math.pow(0.97,Game.Objects.Factory.getLumpBuff());'));
+    //eval('Game.Upgrade.prototype.getSellMultiplier='+Game.Upgrade.prototype.getSellMultiplier.toString().replace('price*=Game.eff(\'upgradeCost\');','price*=Game.eff(\'upgradeCost\');\n\t\tprice*=Math.pow(0.97,Game.Objects.Factory.getLumpBuff());'));
     buildingTree(5);
     tieredTree(5, 1, "Cookiecoin", "Your new cookie-themed crypto currency, to make cookies off of all those crypto nerds.") // 1
     tieredTree(5, 2, "Financial gobbledygook", "This makes your banking system more legitimate and less likely to get investigated by those pesky government agents.") // 2

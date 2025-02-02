@@ -43,9 +43,32 @@ General._Initialize = function(en, Research) {
     }
     General.GrimoireRename = function() {
         if (Game.Objects['Wizard tower'].minigame) { 
-            var m = Game.Objects['Wizard tower'].minigame;
-            // m.spells['summon crafty pixies'].desc = "Resources are used up 50% slower, without any CpS decrease for 1 minute.";
-            // m.spells['summon crafty pixies'].failDesc = "Resources are used up 25% faster, without any CpS increase for 1 hour.";
+            var M = Game.Objects['Wizard tower'].minigame;
+            M.spells['conjure baked goods'].desc = "Trigger a 1-minute Frenzy and summon 10 minutes worth of your CpS.";
+            M.spells['conjure baked goods'].costPercent = 0.25;
+            M.spells['conjure baked goods'].win=function() {
+                var val=Math.max(7,Game.cookiesPs*60*10);
+                Game.Earn(val);
+                Game.gainBuff('frenzy',60,7);
+                Game.Notify(loc("Conjure Baked Goods")+(EN?'!':''),loc("You magic <b>%1</b> out of thin air.",loc("%1 cookie",LBeautify(val))),[21,11],6);
+                Game.Popup('<div style="font-size:80%;">'+loc("+%1!",loc("%1 cookie",LBeautify(val)))+'</div>',Game.mouseX,Game.mouseY);
+            }
+
+            M.spells['starlight']={
+                name: "Starlight",
+                desc: "???",
+                failDesc: "???",
+                icon: [9,9],
+                costMin: 16,
+                costPercent: 0.75,
+                win: function(){},
+                fail: function(){}
+            }
+
+            M.spellsById=[];var n=0;
+		    for (var i in M.spells){M.spells[i].id=n;M.spellsById[n]=M.spells[i];n++;}
+
+            eval("Game.Objects['Wizard tower'].minigame.spellTooltip="+m.spellTooltip.toString().replace('{',"{M=Game.Objects['Wizard tower'].minigame;"));
         }
     }
     General.GardenEdit = function() {
