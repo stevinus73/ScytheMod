@@ -54,21 +54,21 @@ General._Initialize = function(en, Research) {
                 Game.Popup('<div style="font-size:80%;">'+loc("+%1!",loc("%1 cookie",LBeautify(val)))+'</div>',Game.mouseX,Game.mouseY);
             }
 
-            M.spells['starlight']={
-                name: "Starlight",
-                desc: "???",
-                failDesc: "???",
-                icon: [9,9],
-                costMin: 16,
-                costPercent: 0.75,
-                win: function(){
-                    Game.gainBuff('starlight',45,1);
-                },
-                fail: function(){}
-            }
+            // M.spells['starlight']={
+            //     name: "Starlight",
+            //     desc: "???",
+            //     failDesc: "???",
+            //     icon: [9,9],
+            //     costMin: 16,
+            //     costPercent: 0.75,
+            //     win: function(){
+            //         Game.gainBuff('starlight',45,1);
+            //     },
+            //     fail: function(){}
+            // }
 
-            M.spellsById=[];var n=0;
-		    for (var i in M.spells){M.spells[i].id=n;M.spellsById[n]=M.spells[i];n++;}
+            // M.spellsById=[];var n=0;
+		    // for (var i in M.spells){M.spells[i].id=n;M.spellsById[n]=M.spells[i];n++;}
 
             eval("Game.Objects['Wizard tower'].minigame.spellTooltip="+M.spellTooltip.toString().replace('{',"{M=Game.Objects['Wizard tower'].minigame;"));
         }
