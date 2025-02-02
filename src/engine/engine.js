@@ -42,6 +42,7 @@ IdlersPocket._Initialize = function () {
 
     IdlersPocket.vars = new Map();
     IdlersPocket.var_ident = [];
+    IdlersPocket.obj_track = [];
     Game.Ip = this;
 
     
@@ -67,6 +68,13 @@ IdlersPocket._Initialize = function () {
         var n = {type: type, value: 0};
         this.vars.set(name, n);
         this.var_ident.push(name);
+    }
+
+    IdlersPocket.trackVars = function(obj, varList) {
+        this.obj_track.push({obj: obj, variables: varList});
+        varList.forEach((v) => {
+            IdlersPocket.newVar(v[0],v[1]??'int');
+        })
     }
 
     /**
@@ -169,8 +177,13 @@ Game.ModLoaded=false;
 IdlersPocket.LoadMod = function (name, initFunc) {
 
     this._save = function() {
-        if (!Game.ModLoaded) return;
+        if (!Game.ModLoaded) return '';
         IdlersPocket.saveCallbacks.forEach((c) => c());
+        IdlersPocket.obj_track.forEach((me) => {
+            me.variables.forEach((v) => {
+                IdlersPocket.setVar(v[0], me.obj[v[0]]);
+            })
+        })
         return IdlersPocket._encryptVars();
     }
 
@@ -178,13 +191,18 @@ IdlersPocket.LoadMod = function (name, initFunc) {
         if (!Game.ModLoaded) return;
         IdlersPocket._decryptVars(str);
         IdlersPocket.loadCallbacks.forEach((c) => c());
+        IdlersPocket.obj_track.forEach((me) => {
+            me.variables.forEach((v) => {
+                me.obj[v[0]] = IdlersPocket.getVar(v[0], me.obj[v[0]]);
+            })
+        })
     }
 
     var mod = {
         initMod: initFunc,
         init: function () {
             window.scytheModWrapper = this;
-            if (localStorage.getItem('kzythe') === null){
+            if ((localStorage.getItem('kzythe') === null)&&(!Game.modSaveData['ScytheMod'])){
                 this.startingPrompt();
             } else {
                 this.switchSave();

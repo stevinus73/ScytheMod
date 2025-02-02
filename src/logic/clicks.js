@@ -35,11 +35,16 @@ Clicks._Initialize = function(en, Research) {
     this.lastClickT = 0;
 
     this.powerClicks = 0;
+    en.newVar("powerClicks", "int");
     this.nextPowerClick = Game.fps*10*60;
     this.pcCooldown = 0;
     this.pcPerformed = 0;
+    en.newVar("pcPerformed", "int");
     this.pcEnabled = false;
+    en.newVar("pcEnabled", "int");
     this.canPowerClick = false;
+
+    en.trackVars(Clicks, [['clicks'],['maxClicks'],['overflow','float'],['powerClicks'],['pcPerformed'],['pcEnabled']]);
 
     var pcWrapper=document.createElement('div');
     pcWrapper.id='pcWrapper';
@@ -428,17 +433,17 @@ Clicks._Initialize = function(en, Research) {
         Clicks.nextPowerClick = Game.fps*10*60;
     })
 
-    en.saveCallback(function() {
-        en.setVar("clicks", Clicks.clicks);
-        en.setVar("maxClicks", Clicks.maxClicks);
-        en.setVar("overflow", Clicks.overflow);
-    })
+    // en.saveCallback(function() {
+    //     en.setVar("clicks", Clicks.clicks);
+    //     en.setVar("maxClicks", Clicks.maxClicks);
+    //     en.setVar("overflow", Clicks.overflow);
+    // })
 
-    en.loadCallback(function() {
-        Clicks.clicks = en.getVar("clicks", Clicks.clicks);
-        Clicks.maxClicks = en.getVar("maxClicks", Clicks.maxClicks);
-        Clicks.overflow = en.getVar("overflow", Clicks.overflow);
-    })
+    // en.loadCallback(function() {
+    //     Clicks.clicks = en.getVar("clicks", Clicks.clicks);
+    //     Clicks.maxClicks = en.getVar("maxClicks", Clicks.maxClicks);
+    //     Clicks.overflow = en.getVar("overflow", Clicks.overflow);
+    // })
 
     en.rebuildBigCookieButton();
 }
