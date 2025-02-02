@@ -217,7 +217,7 @@ IdlersPocket.LoadMod = function (name, initFunc) {
                     <div class="line"></div>
                     Credits: Hellranger for testing the mod, yeetdragon24 for 'helping' me make this prompt
                 </div>`,
-            [['Continue','scytheModWrapper.switchSave();scytheModWrapper.initMod();Game.ClosePrompt();'], ['No thanks','scytheModWrapper.unloadMod();Game.ClosePrompt();']]);
+            [['Continue','scytheModWrapper.switchSave();scytheModWrapper.initMod();Game.ModLoaded=true;Game.ClosePrompt();'], ['No thanks','scytheModWrapper.unloadMod();Game.ClosePrompt();']]);
         }
     }
     Game.registerMod(name, mod);
