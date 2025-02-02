@@ -84,7 +84,8 @@ Clicks._Initialize = function(en, Research) {
         if(!this.overflow_enabled) return;
         var threshold=P.baseThreshold;
         if (Game.Has("Thousand fingers")) threshold*=(1+0.1*Math.floor(Game.Objects['Cursor'].amount/100)); // cursor nerf!
-        if (now-Game.lastClick<=(1000*threshold)) this.overflow+=P.overflowGain*(Research.has("Sustainable clicks")?0.75:1);
+        if (now-Game.lastClick<=(1000*threshold)) this.overflow+=P.overflowGain
+            *(Research.has("Sustainable clicks")?0.75:1)*(Game.Has("Omnipotent mouse") && Game.hasBuff("Celestial energy")?0.5:1);
 
         this.lastClickT=0;
         if (Research.has("Malevolent power")) Game.recalculateGains = 1;
@@ -214,11 +215,11 @@ Clicks._Initialize = function(en, Research) {
             ['Power clicks', 'Heavenly clicks', 'Divine wisdom']}
     );
 
-    en.ue.addUpgrade("Omnipotent mouse", "<ul><li>&bull;Power click capacity <b>28 &rarr; 36</b>.</li>"
-        +"<li>&bull;The Celestial energy buff also affects overflow.</li>"
-        +'<li>&bull;Clicking is <b>25%</b> more powerful.</li>'
-        +'<li>&bull;Boosts the special effects of Divine wisdom and Mystical regeneration.</li>'
-        +'<li>&bull;Power clicks accumulate <b>1 minute</b> faster.</li></ul>'
+    en.ue.addUpgrade("Omnipotent mouse", "<ul><li>&bull; Power click capacity <b>28 &rarr; 36</b>.</li>"
+        +"<li>&bull; The Celestial energy buff makes overflow accumulate slower.</li>"
+        +'<li>&bull; Clicking is <b>25%</b> more powerful.</li>'
+        +'<li>&bull; Boosts the special effects of Divine wisdom and Mystical regeneration.</li>'
+        +'<li>&bull; Power clicks accumulate <b>1 minute</b> faster.</li></ul>'
         +'<q>This is the most powerful mouse you\'ve ever seen. It was made in the greatest forges of heaven. Please, we beg of you, use it wisely. (Also, what a mouthful!)',
         tCost(5), [12,0], pcOrder, {pool: 'prestige', posX: -630 - 330, posY: -480 - 550, huParents:
             ['Flare cursor', 'Celestial powers', 'Ultra-adrenaline']}
