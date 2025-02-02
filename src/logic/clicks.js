@@ -214,12 +214,12 @@ Clicks._Initialize = function(en, Research) {
             ['Power clicks', 'Heavenly clicks', 'Divine wisdom']}
     );
 
-    en.ue.addUpgrade("Omnipotent mouse", "<ul><li>Power click capacity <b>28 &rarr; 36</b>.</li>"
-        +"<li>The Celestial energy buff also affects overflow.</li>"
-        +'<li>Clicking is <b>25%</b> more powerful.</li>'
-        +'<li>Boosts the special effects of Divine wisdom and Mystical regeneration.</li>'
-        +'<li>Power clicks accumulate <b>1 minute</b> faster.</li></ul>'
-        +'<q>This is the most powerful mouse you\'ve ever seen. It was made in the greatest forges of heaven. Please, we beg of you, use it wisely.',
+    en.ue.addUpgrade("Omnipotent mouse", "<ul><li>&bull;Power click capacity <b>28 &rarr; 36</b>.</li>"
+        +"<li>&bull;The Celestial energy buff also affects overflow.</li>"
+        +'<li>&bull;Clicking is <b>25%</b> more powerful.</li>'
+        +'<li>&bull;Boosts the special effects of Divine wisdom and Mystical regeneration.</li>'
+        +'<li>&bull;Power clicks accumulate <b>1 minute</b> faster.</li></ul>'
+        +'<q>This is the most powerful mouse you\'ve ever seen. It was made in the greatest forges of heaven. Please, we beg of you, use it wisely. (Also, what a mouthful!)',
         tCost(5), [12,0], pcOrder, {pool: 'prestige', posX: -630 - 400, posY: -480 - 660, huParents:
             ['Flare cursor', 'Celestial powers', 'Ultra-adrenaline']}
     )
@@ -266,6 +266,12 @@ Clicks._Initialize = function(en, Research) {
         +'<q>They actually taste no better than regular mice. Don\'t ask how I know.</q>',
         277777777, [10,14], pcOrder, {pool: 'prestige', posX: -946, posY: -452, huParents: ['Enchanted sleighs']}
     )
+
+    
+    // en.ue.addUpgrade("Wrinkled cursors", "You can <b>perform power clicks on wrinklers</b>, making them instantly explode into <b>+66%</b> more cookies."
+    //     +'<q>Okay, that\'s just disgusting.</q>',
+    //     5555555, [19,8], pcOrder, {pool: 'prestige', posX: -516, posY: -890, huParents: ['Mystical regeneration', 'Sacrilegious corruption']}
+    // )
 
     
 
