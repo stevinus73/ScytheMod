@@ -67,10 +67,10 @@ Clicks._Initialize = function(en, Research) {
 
     Clicks.drainClick = function(now) {
         var overflowEff=1;
-        if (Research.has("Damage control")) eff*=0.8;
-        if (Research.has("Temporal stretch")) eff*=0.8;
-        if (Research.has("Fractal absorption")) eff*=0.8;
-        if (Game.Has("Omnipotent mouse") && Game.hasBuff("Celestial energy")) eff*=0.3;
+        if (Research.has("Damage control")) overflowEff*=0.8;
+        if (Research.has("Temporal stretch")) overflowEff*=0.8;
+        if (Research.has("Fractal absorption")) overflowEff*=0.8;
+        if (Game.Has("Omnipotent mouse") && Game.hasBuff("Celestial energy")) overflowEff*=0.3;
         var clickNum=1+(this.overflow>0?Math.floor(this.overflow*overflowEff):0); 
         if (Game.hasBuff("Click frenzy")) clickNum*=2.3;
         if (Game.hasBuff("Dragonflight")) clickNum*=5.5;
@@ -220,7 +220,7 @@ Clicks._Initialize = function(en, Research) {
         +'<li>&bull;Boosts the special effects of Divine wisdom and Mystical regeneration.</li>'
         +'<li>&bull;Power clicks accumulate <b>1 minute</b> faster.</li></ul>'
         +'<q>This is the most powerful mouse you\'ve ever seen. It was made in the greatest forges of heaven. Please, we beg of you, use it wisely. (Also, what a mouthful!)',
-        tCost(5), [12,0], pcOrder, {pool: 'prestige', posX: -630 - 400, posY: -480 - 660, huParents:
+        tCost(5), [12,0], pcOrder, {pool: 'prestige', posX: -630 - 330, posY: -480 - 550, huParents:
             ['Flare cursor', 'Celestial powers', 'Ultra-adrenaline']}
     )
 
