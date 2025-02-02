@@ -5,7 +5,7 @@ const fparams = {
         baseRecovery: Game.fps*10,
         overflowGain: 0.07,
         overflowLoss: 0.2,
-        maxOverflow: 120,
+        maxOverflow: 100,
         baseThreshold: 0.3,
         overflowT: 1e5,
         cursorRate: Game.fps*15,

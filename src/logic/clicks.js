@@ -16,7 +16,8 @@ Clicks._Initialize = function(en, Research) {
     Game.Objects.Cursor.cps = en.injectCode(Game.Objects.Cursor.cps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
     
     // why does this not work :(
-    eval("Game.DrawBackground="+Game.DrawBackground.toString().replace("var alphaMult=1;","var alphaMult=0.1+0.9*(mod.clicks.clicks/mod.clicks.maxClicks);")); 
+    eval("Game.DrawBackground="+Game.DrawBackground.toString().replace("var alphaMult=1;",
+        "var alphaMult=(0.1+0.9*(mod.clicks.clicks/mod.clicks.maxClicks))*(Game.hasBuff('Power poked')?3:1);")); 
     
     this.maxClicks = P.baseClicks;
     this.clicks = P.baseClicks;
@@ -35,6 +36,7 @@ Clicks._Initialize = function(en, Research) {
 
     this.powerClicks = 0;
     this.nextPowerClick = Game.fps*10*60;
+    this.pcCooldown = 0;
     this.pcPerformed = 0;
     this.pcEnabled = false;
 
@@ -87,6 +89,7 @@ Clicks._Initialize = function(en, Research) {
         var threshold=P.baseThreshold;
         if (Game.Has("Thousand fingers")) threshold*=(1+0.1*Math.floor(Game.Objects['Cursor'].amount/100)); // cursor nerf!
         if (now-Game.lastClick<=(1000*threshold)) this.overflow+=P.overflowGain*(Research.has("Sustainable clicks")?0.75:1);
+        this.overflow=Math.min(this.overflow,P.maxOverflow);
 
         this.lastClickT=0;
         if (Research.has("Malevolent power")) Game.recalculateGains = 1;
@@ -136,7 +139,6 @@ Clicks._Initialize = function(en, Research) {
         if (Game.cookiesEarned>100000) this.overflow_enabled = true;
 
         this.lastClickT++;
-
         if (this.lastClickT>=Game.fps*60) {
             this.overflow-=1/((1+3*Math.max(this.overflow,0))*Game.fps*45);
             if (this.overflow<minOverflow) this.overflow=minOverflow;
@@ -144,6 +146,7 @@ Clicks._Initialize = function(en, Research) {
 
         if (Game.Has("Power clicks")) {l('pcWrapper').style.display='block';l('swWrapper').style.display='block';}
         else {l('pcWrapper').style.display='none';l('swWrapper').style.display='none';}
+        l('pcInfo').innerHTML=this.powerClicks+'/'+this.getMaxPowerClicks();
 
         if (this.clicks==this.maxClicks && Game.Has("Power clicks")) {
             if (this.nextPowerClick>0) this.nextPowerClick--;
@@ -153,8 +156,7 @@ Clicks._Initialize = function(en, Research) {
                 this.nextPowerClick=this.accumulationTime()*Game.fps*60;
             }
         }
-
-        l('pcInfo').innerHTML=this.powerClicks+'/'+this.getMaxPowerClicks();
+        this.pcCooldown--;
     }
 
     function tCost(tier){return Math.pow(110,tier);}
@@ -163,8 +165,9 @@ Clicks._Initialize = function(en, Research) {
     // power clicks
     en.ue.addUpgrade("Power clicks", "Unlocks <b>power clicks</b>."
         +'<div class="line"></div>You gain power clicks with full click capacity, up to a maximum capacity of <b>10</b>.'
-        +'<br>Power click production is at a rate of 1 power click every 10 minutes.'
+        +'<div class="line"></div>Power click production is at a rate of 1 power click every 10 minutes.'
         +'<div class="line"></div>When power clicks are enabled, clicks on the big cookie are boosted by <b>x2</b> and use up a power click.'
+        +'<div class="line"></div>Power clicks have a cooldown of <b>0.5s</b>.'
         +'<q>There\'s plenty of knowledgeable people up here, and you\'ve been given some excellent pointers.</q>',
         tCost(1), [3,0,Icons], pcOrder, {pool: 'prestige', posX: -630, posY: -480, huParents: 
             ['Starter kit']}
@@ -178,6 +181,7 @@ Clicks._Initialize = function(en, Research) {
     );
 
     en.ue.addUpgrade("Divine wisdom", "You gain <b>+10</b> click storage per power click storage (refers to maximum amount of power clicks)."
+        +'<br>Power click cooldown <b>0.5s &rarr; 0.45s</b>.'
         +'<q>Divine Wisdom 1: Don\'t accidentally delete your save file.</q>',
         tCost(2), [11,35], pcOrder, {pool: 'prestige', posX: -630 - 40, posY: -480 - 215, huParents: 
             ['Power clicks']}
@@ -191,6 +195,7 @@ Clicks._Initialize = function(en, Research) {
     );
 
     en.ue.addUpgrade("Mystical regeneration", "Clicks regenerate <b>1.5%</b> faster (multiplicative) per stored power click."
+        +'<br>Power click cooldown <b>0.45s &rarr; 0.4s</b>.'
         +'<q>Fixing! Healing!</q>',
         tCost(3), [4,1,Icons], pcOrder, {pool: 'prestige', posX: -630 - 40*2, posY: -480 - 215*2, huParents: 
             ['Divine wisdom']}
@@ -204,6 +209,7 @@ Clicks._Initialize = function(en, Research) {
     );
 
     en.ue.addUpgrade("Celestial powers", "Power clicking the big cookie <b>consumes no clicks</b> and temporarily <b>massively decreases click consumption</b>."
+        +'<br>Power click cooldown <b>0.4s &rarr; 0.35s</b>.'
         +'<q>Essentially makes you a demi-god.</q>',
         tCost(4), [4,2,Icons], pcOrder, {pool: 'prestige', posX: -630 - 40*3, posY: -480 - 215*3, huParents: 
             ['Mystical regeneration']}
@@ -218,7 +224,7 @@ Clicks._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Omnipotent mouse", "<ul><li>&bull; Power click capacity <b>28 &rarr; 36</b>.</li>"
         +"<li>&bull; The Celestial energy buff also makes overflow accumulate slower.</li>"
-        +'<li>&bull; Clicking is <b>25%</b> more powerful.</li>'
+        +'<li>&bull; Power click cooldown <b>0.35s &rarr; 0.3s</b>.</li>'
         +'<li>&bull; Boosts the special effects of Divine wisdom and Mystical regeneration.</li>'
         +'<li>&bull; Power clicks accumulate <b>1 minute</b> faster.</li></ul>'
         +'<q>This is the most powerful mouse you\'ve ever seen. It was made in the greatest forges of heaven. Please, we beg of you, use it wisely. (Also, what a mouthful!)',
@@ -298,11 +304,12 @@ Clicks._Initialize = function(en, Research) {
     }
 
     Clicks.accumulationTime = function() {
-        return 10-(Game.Has('Flare cursor')?3:0)-(Game.Has('Omnipotent mouse')?1:0);
+        return 10-Game.Has('Flare cursor')*3-Game.Has('Omnipotent mouse');
     }
 
     Clicks.expendPowerClick = function(func) {
         this.powerClicks--;
+        this.pcCooldown=Game.fps*0.5-Game.fps*0.05*Game.Has('Divine wisdom')-Game.fps*0.05*Game.Has('Mystical regeneration')-Game.fps*0.05*Game.Has('Celestial powers');
         this.pcPerformed++;
         Game.Win('Power click');
         Game.SparkleAt(Game.mouseX,Game.mouseY);
@@ -322,6 +329,7 @@ Clicks._Initialize = function(en, Research) {
         if (!Game.Has("Power clicks")) return 1;
         if (!this.pcEnabled) return 1;
         if (this.powerClicks<=0) return 1;
+        if (this.pcCooldown>0) return 1;
         if (func=='click') {
             var power=2;
             if (Game.Has("Heavenly clicks")) power++;
@@ -395,10 +403,6 @@ Clicks._Initialize = function(en, Research) {
     })
     Game.registerHook('logic', function() {
         Clicks.logic();
-    });
-    Game.registerHook('cookiesPerClick', function(cpc) {
-        if (Game.Has('Omnipotent mouse')) return cpc*1.25;
-        else return cpc;
     });
     Game.registerHook('reset', function(wipe) {
         Clicks.clicks = P.baseClicks;
