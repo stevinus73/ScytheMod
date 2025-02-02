@@ -6,6 +6,8 @@ G._Initialize = function(en, Research) {
     // for stats
     this.fortunesEarned = 0;
 
+    en.trackVars(G,[['maxEffs','fortunesEarned']]);
+
     // tweaking around some stuffs lel
     G.me.popFunc = en.injectCode(G.me.popFunc, 
         "buff=Game.gainBuff('click frenzy',Math.ceil(13*effectDurMod),777);",

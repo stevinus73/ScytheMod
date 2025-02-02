@@ -22,26 +22,20 @@ Clicks._Initialize = function(en, Research) {
     this.maxClicks = P.baseClicks;
     this.clicks = P.baseClicks;
     this.regenTimer = P.baseRegen;
-    en.newVar("clicks", "int");
-    en.newVar("maxClicks", "int");
 
     
     const minOverflow = -(10*P.overflowGain);
     this.overflow = minOverflow;
-    en.newVar("overflow", "float");
     this.overflow_enabled = false;
 
     this.cursorTimer = P.cursorRate;
     this.lastClickT = 0;
 
     this.powerClicks = 0;
-    en.newVar("powerClicks", "int");
     this.nextPowerClick = Game.fps*10*60;
     this.pcCooldown = 0;
     this.pcPerformed = 0;
-    en.newVar("pcPerformed", "int");
     this.pcEnabled = false;
-    en.newVar("pcEnabled", "int");
     this.canPowerClick = false;
 
     en.trackVars(Clicks, [['clicks'],['maxClicks'],['overflow','float'],['powerClicks'],['pcPerformed'],['pcEnabled']]);
