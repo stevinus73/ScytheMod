@@ -144,7 +144,7 @@ IdlersPocket._Initialize = function () {
         `\n\t\t\tm=Game.Ip.activate('frequency',m);`, 'after');
         Game.magicCpS=function(what) {
             var mult=1;
-            Game.Ip.buildingCpsHooks.forEach(function(hook){if(what==hook[0]){mult=hook[1](mult);}})
+            Game.Ip.buildingCpsHooks.forEach(function(hook){if(what==hook[0]){mult*=hook[1]();}})
             return mult;
         }
     }
@@ -170,6 +170,11 @@ IdlersPocket._Initialize = function () {
             AddEvent(bigCookie, 'touchend', function (event) { Game.BigCookieState = 0; if (event) event.preventDefault(); });
         }
     }
+
+    // patched orteil bs
+    eval('Game.CalculateGains='+Game.calculateGains.toString().replace(
+        "Game.cookiesPs=Game.runModHookOnValue('cps',Game.cookiesPs);","mult*=Game.runModHookOnValue('cps',Game.cookiesPs)/Game.cookiesPs;"+
+        "Game.cookiesPs=Game.runModHookOnValue('cps',Game.cookiesPs);"));
 }
 
 IdlersPocket._Initialize();
