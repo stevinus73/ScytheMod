@@ -10,7 +10,7 @@ Clicks._Initialize = function(en, Research) {
     en.ue.addUpgrade("Hands-off approach", "Clicks regenerate <b>twice</b> as fast.<q>Ow, my hands are really sore. Good idea.</q>",
         50000000, [12, 2], 140, {unlockAt: 1000000});
     
-    Game.mouseCps = en.injectCode(Game.mouseCps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')+mod.research.has('Jitter-click')", "after");
+    Game.mouseCps = en.injectCode(Game.mouseCps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
     Game.mouseCps = en.injectCode(Game.mouseCps, "if (Game.Has('Dragon claw')) mult*=1.03;", 
         "\n\t\t\tif(mod.research.has('Malevolent power')) mult*=(1+0.1*mod.clicks.getOverflow())*(Game.Has('Ethereal mouse')?1.5:1);", "after");
     Game.Objects.Cursor.cps = en.injectCode(Game.Objects.Cursor.cps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
@@ -136,7 +136,7 @@ Clicks._Initialize = function(en, Research) {
             this.cursorTimer=P.cursorRate;
         }
 
-        if (Game.cookiesEarned>100000) this.overflow_enabled = true;
+        if (Game.cookiesEarned>1000000) this.overflow_enabled = true;
 
         this.lastClickT++;
         if (this.lastClickT>=Game.fps*60) {
@@ -418,10 +418,11 @@ Clicks._Initialize = function(en, Research) {
         Clicks.logic();
     });
     Game.registerHook('reset', function(wipe) {
-        Clicks.clicks = P.baseClicks;
-        Clicks.maxClicks = P.baseClicks;
+        Clicks.recalculate();
+        Clicks.clicks = Clicks.maxClicks;
         Clicks.overflow = P.minOverflow;
-        if(wipe) {Clicks.overflow_enabled = false; Clicks.pcPerformed = false;}
+        Clicks.overflow_enabled = false;
+        if(wipe) {Clicks.pcPerformed = false;}
         Clicks.switchClick(false);
         Clicks.powerClicks = 0;
         Clicks.nextPowerClick = Game.fps*10*60;

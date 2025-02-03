@@ -181,13 +181,14 @@ General._Initialize = function(en, Research) {
      * Shiny cookies
      */
 
-    General.canShiny = function(){return Research.has("Shiny cookies");}
+    General.canShiny = function(){return Research.has("Shiny cookies") || (Game.ascensionMode==1);}
     General.shinies = []
     General.shinyUps = []
     var strCookieProductionMultiplierPlus=loc("Cookie production multiplier <b>+%1%</b>.",'[x]');
 	var getStrCookieProductionMultiplierPlus=function(x)
 	{return strCookieProductionMultiplierPlus.replace('[x]',x);}
     General.sPowerCoef = function() {
+        if(Game.ascensionMode==1) return 0;
         if(Game.prestige>=1000000) return 3;
         if(Game.prestige>=10000) return 2;
         if(Game.prestige>=100) return 1;

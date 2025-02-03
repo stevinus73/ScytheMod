@@ -22,6 +22,15 @@ mod.Init = function(engine) {
     this.G._Initialize(this.en, this.research);
     this.en.Process();
     
+    // misc stuff
+    Game.Achievements['Speed baking I'].ddesc=loc("Get to <b>%1</b> baked in <b>%2</b>.",[loc("%1 cookie",LBeautify(1e6)),Game.sayTime(60*30*Game.fps)]);
+    Game.Achievements['Speed baking II'].ddesc=loc("Get to <b>%1</b> baked in <b>%2</b>.",[loc("%1 cookie",LBeautify(1e6)),Game.sayTime(60*20*Game.fps)]);
+    Game.Achievements['Speed baking III'].ddesc=loc("Get to <b>%1</b> baked in <b>%2</b>.",[loc("%1 cookie",LBeautify(1e6)),Game.sayTime(60*10*Game.fps)]);
+    eval('Game.Logic='+Game.Logic.toString().replace('timePlayed<=1000*60*35','timePlayed<=1000*60*30'));
+    eval('Game.Logic='+Game.Logic.toString().replace('timePlayed<=1000*60*25','timePlayed<=1000*60*20'));
+    eval('Game.Logic='+Game.Logic.toString().replace('timePlayed<=1000*60*15','timePlayed<=1000*60*10'));
+
+
     Game.ModLoaded=true;
     Game.LoadSave();
 }

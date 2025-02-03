@@ -502,7 +502,7 @@ Research._Initialize = function(en) {
             'if (mod.research.has("Repeated electrical shock")) mult*=1.06;'
         ]
     )
-    new Research.Tech("Jitter-click", "The mouse is <b>four times</b> as efficient.", 25, req(() => Game.cookieClicks, 150, "cookie clicks"), f, [0], [11, 0], -0.2, -0.1); // 7
+    new Research.Tech("Jitter-click", "Clicking is <b>5%</b> more powerful.", 25, req(() => Game.cookieClicks, 150, "cookie clicks"), f, [0], [11, 0], -0.2, -0.1); // 7
     new Research.Tech("Sustainable clicks", "Overflow accumulates <b>25%</b> slower.<q>Remember to ride your clickcycle to work!</q>", 45, f, f, [7], [11, 1], -0.5, -0.2); // 8
     new Research.Tech("Damage control", "Decreases overflow effect on clicks used by <b>20%</b>.<q>If it's too much, just ascend.</q>", 85, f, f, [8], [11, 15], -0.8, -0.3); // 9
     new Research.Tech("Patience", "Increases click regeneration by <b>30%</b>. <q>A watched pot never boils.</q>", 90, f, f, [8], [11, 21], -0.6, -0.5); // 10
