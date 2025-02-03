@@ -90,6 +90,13 @@ IdlersPocket._Initialize = function () {
     }
 
     /**
+     * 
+     */
+    IdlersPocket.hasVariable = function(name) {
+        return this.vars.has(name);
+    }
+
+    /**
      * Returns the value of the variable corresponding to the name.
      * @param {string} name - name of variable 
      */
