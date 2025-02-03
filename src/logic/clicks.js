@@ -3,9 +3,9 @@ var Clicks = {}
 Clicks._Initialize = function(en, Research) {
     this.en = en;
 
-    en.ue.addUpgrade("Big clicks", "The mouse and cursors are <b>four times as efficient</b>. Maximum click space <b>doubled</b>.<q>Big clicks for the big cookie.</q>",
+    en.ue.addUpgrade("Big clicks", "The mouse is <b>four times as efficient</b> and the cursors are <b>twice as efficient</b>. Maximum click space <b>doubled</b>.<q>Big clicks for the big cookie.</q>",
         50, [1, 6], 140, {unlockAt: 10, buyFunction: function(){Clicks.clicks+=250;Clicks.recalculate();}});
-    en.ue.addUpgrade("Butterfly", "The mouse and cursors are <b>four times as efficient</b>. Maximum click space <b>doubled</b>.<q>More like a hummingbird with THAT speed.</q>",
+    en.ue.addUpgrade("Butterfly", "The mouse is <b>four times as efficient</b> and the cursors are <b>twice as efficient</b>. Maximum click space <b>doubled</b>.<q>More like a hummingbird with THAT speed.</q>",
         5000, [12, 1], 140, {unlockAt: 1000, buyFunction: function(){Clicks.clicks+=500;Clicks.recalculate();}});
     en.ue.addUpgrade("Hands-off approach", "Clicks regenerate <b>twice</b> as fast.<q>Ow, my hands are really sore. Good idea.</q>",
         50000000, [12, 2], 140, {unlockAt: 1000000});
@@ -13,7 +13,7 @@ Clicks._Initialize = function(en, Research) {
     Game.mouseCps = en.injectCode(Game.mouseCps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
     Game.mouseCps = en.injectCode(Game.mouseCps, "if (Game.Has('Dragon claw')) mult*=1.03;", 
         "\n\t\t\tif(mod.research.has('Malevolent power')) mult*=(1+0.1*mod.clicks.getOverflow())*(Game.Has('Ethereal mouse')?1.5:1);", "after");
-    Game.Objects.Cursor.cps = en.injectCode(Game.Objects.Cursor.cps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
+    Game.Objects.Cursor.cps = en.injectCode(Game.Objects.Cursor.cps, "Game.Has('Ambidextrous')", "+Game.Has('Big clicks')+Game.Has('Butterfly')", "after");
     
     // why does this not work :(
     eval("Game.DrawBackground="+Game.DrawBackground.toString().replace("var alphaMult=1;",
