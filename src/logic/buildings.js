@@ -66,8 +66,6 @@ BModify._Initialize = function(en, Research) {
         this.baseRs = baseRS;
         this.rsTotal = baseRS;
         this.getBaseRsMax = function(){return this.baseRs*5*Math.pow(20-this.id, 0.3);}
-        this.rsMax = this.getBaseRsMax();
-        this.rsMaxBoost = 1;
         this.rsUsed = 0;
         this.interest = 0;
 
@@ -75,7 +73,7 @@ BModify._Initialize = function(en, Research) {
         this.pause = false;
         this.statsView = false;
 
-        en.trackVars(this,[["RhpS","float"],["yield","float"],["rsTotal"],["rsUsed"],["rsMaxBoost","float"],["pause"],["interest"],["statsView"]],this.id);
+        en.trackVars(this,[["RhpS","float"],["yield","float"],["rsTotal"],["rsUsed"],["pause"],["interest"],["statsView"]],this.id);
 
         BModify.rsManagers.push(this);
 
@@ -85,7 +83,7 @@ BModify._Initialize = function(en, Research) {
             if (this.depleted || this.pause)
                 dmult = 0;
             if ((this.id == 2) && Research.has("Regrowth")) dmult = 1;
-            return cps * dmult;
+            return cps * dmult * Game.magicCpS(this.me.name);
         }
 
         // overwrites vanilla cps function for building
@@ -148,7 +146,6 @@ BModify._Initialize = function(en, Research) {
 
             this.yield = this.baseYield*yieldmult;
             this.RhpS = this.baseRhpS*rhpsmult;
-            this.rsMax = this.getBaseRsMax()*rsmult*this.rsMaxBoost;
             this.update();
         }
         
@@ -159,18 +156,18 @@ BModify._Initialize = function(en, Research) {
 
         this.availableRes = function(){return this.rsTotal-this.rsUsed;}
 
-        this.gainRes = function(amnt){
-            var num=Math.min(amnt, this.rsMax-this.rsTotal);
-            this.update();
-            this.rsTotal+=num;
-            return num;
-        }
-        this.loseRes = function(amnt){
-            var num=Math.min(amnt, this.availableRes()*0.9);
-            this.update();
-            this.rsTotal-=num;
-            return num;
-        }
+        // this.gainRes = function(amnt){
+        //     var num=Math.min(amnt, this.rsMax-this.rsTotal);
+        //     this.update();
+        //     this.rsTotal+=num;
+        //     return num;
+        // }
+        // this.loseRes = function(amnt){
+        //     var num=Math.min(amnt, this.availableRes()*0.9);
+        //     this.update();
+        //     this.rsTotal-=num;
+        //     return num;
+        // }
 
         // called once per Game.Logic loop
         this.harvest = function() {
@@ -193,8 +190,6 @@ BModify._Initialize = function(en, Research) {
                 // this.rsUsed += dep;
                 // BModify.totalDp += dep;
             }
-            // little detail
-            if (Math.random()<0.0001) this.rsMaxBoost*=1.01;
         }
 
         // resets everythin'
@@ -207,8 +202,6 @@ BModify._Initialize = function(en, Research) {
 
             this.rsTotal = this.baseRs;
             this.rsUsed = 0;
-            this.rsMax = this.getBaseRsMax();
-            this.rsMaxBoost = 1;
             this.interest = 0;
 
             this.depleted = false;
@@ -369,7 +362,7 @@ BModify._Initialize = function(en, Research) {
 	    		this.mbarFull.style.width=Math.max(Math.round((this.availableRes()/this.rsTotal)*100), 0)+'%';
                 if ((this.id == 2) && Research.has("Regrowth")) this.mbar.style.background='lightGreen';
 			    this.mbar.style.width='350px';
-                this.mbarText.innerHTML=Beautify(Math.max((this.availableRes()/this.rsTotal)*100, 0), 1)+'% left ('+Beautify(this.rsMax)+' max)';
+                this.mbarText.innerHTML=Beautify(Math.max((this.availableRes()/this.rsTotal)*100, 0), 1)+'% left';
                 if (this.depleted) this.mbarInfo.innerHTML='This resource has been depleted';
                 else if (this.pause) this.mbarInfo.innerHTML='Currently paused';
                 else if ((this.id == 2) && Research.has("Regrowth")) this.mbarInfo.innerHTML='Regrowth is currently active.';
@@ -384,7 +377,7 @@ BModify._Initialize = function(en, Research) {
         for (var i in this.me.tieredUpgrades) {
             if (!Game.Tiers[this.me.tieredUpgrades[i].tier].special) {
                 en.ue.appendToDesc(this.me.tieredUpgrades[i], 
-                    "Total "+this.rsNames[0].toLowerCase()+" <b>doubled</b>.");
+                    "Total "+this.rsNames[0].toLowerCase()+" <b>+20%</b>.");
             }
         }
     }
