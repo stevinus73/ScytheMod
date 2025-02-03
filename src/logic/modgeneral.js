@@ -212,7 +212,7 @@ General._Initialize = function(en, Research) {
             descFunc: function(){return loc("%1 are <b>%2%</b> more efficient and <b>%3%</b> cheaper.",
                 [cap(me.plural),[80,40,20,10][General.sPowerCoef()],[60,30,15,7][General.sPowerCoef()]])+'<q>'+desc+'</q>'}
         })
-        en.addCpsHook(obj,function(){return Game.Has(name)?[80,40,20,10][General.sPowerCoef()]:1})
+        en.addCpsHook(obj,function(){return 1+0.01*(Game.Has(name)?[80,40,20,10][General.sPowerCoef()]:0)})
         eval('Game.modifyBuildingPrice='+Game.modifyBuildingPrice.toString()
             .replace(`price*=Game.eff('buildingCost');`,
                 `if (Game.Has('`+name+`')&&building.name=='`+obj+`') price*=0.01*[60,30,15,7][mod.general.sPowerCoef()];\n\t\t\t`+`price*=Game.eff('buildingCost');`))
