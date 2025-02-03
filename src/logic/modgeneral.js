@@ -243,13 +243,14 @@ General._Initialize = function(en, Research) {
     General.newShinyUpgrade('Prism', 'Parabolic mirrors', 'Mathematics is one of the most powerful tools of a cookie baker.');
     General.newShinyUpgrade('Chancemaker', 'Rolling more d20s', 'This will make more 1s appear on average, but who cares!');
     General.newShinyUpgrade('Fractal engine', 'Recursive magnifying lens', 'Don\'t think too hard about it.');
-    General.newShinyUpgrade('Javascript console', 'Debugging', 'Wait, if the error was here, then it must be that...no, no, that\'s wrong/');
-    General.newShinyUpgrade('Idleverse', 'Bowling balls', 'They look exactly like idleverses and serve as excellent decoys for terrorist organizations/');
+    General.newShinyUpgrade('Javascript console', 'Debugging', 'Wait, if the error was here, then it must be that...no, no, that\'s wrong.');
+    General.newShinyUpgrade('Idleverse', 'Bowling balls', 'They look exactly like idleverses and serve as excellent decoys for terrorist organizations.');
     General.newShinyUpgrade('Cortex baker', 'Myelination', 'More axon speed!');
     General.newShinyUpgrade('You', 'Group huddle', 'Again, don\'t think too hard about it.');
 
     en.ue.addUpgrade('Drag clicking', '', 75000000000000, Game.GetIcon('Cursor',7), 5000, {
-        descFunc: function(){return 'Cursors are <b>'+[20,10,5,2.5][General.sPowerCoef()]+'</b> times more efficient.';}
+        descFunc: function(){return 'Cursors are <b>'+[20,10,5,2.5][General.sPowerCoef()]+'</b> times more efficient (includes gain from Thousand fingers).'
+            +'<q>Wheeee!</q>';}
     })
 
     Game.registerHook('logic', function(){
