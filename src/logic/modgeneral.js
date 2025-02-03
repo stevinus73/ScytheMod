@@ -223,8 +223,9 @@ General._Initialize = function(en, Research) {
     General.newShinyCookie("Emerald cookies", "Beautiful, marvelous, incredible, sublime.", 1e6, [2, 3, Icons])
     General.newShinyCookie("Diamond cookies", "1 in 8,192 chance!", 1e8, [2, 4, Icons])
     General.newShinyCookie("Silver cookies", "Tastes pretty meh, but the shininess is the real special part about all of these cookies.", 1e11, [2, 5, Icons])
-    General.newShinyCookie("Tungsten cookies", "The legends didn't lie.", 1e16, [2, 5, Icons])
-    General.newShinyCookie("Big-bang nucleosynthesized cookies", "From the beginning of time itself.", 1e20, [2, 1, Icons])
+    General.newShinyCookie("Tungsten cookies", "The legends didn't lie.", 1e14, [2, 5, Icons])
+    General.newShinyCookie("Big-bang nucleosynthesized cookies", "From the beginning of time itself.", 1e18, [2, 1, Icons])
+    General.newShinyCookie("Computer-generated cookies", "Now 47.68% more likely to overthrow humanity!", 1e22, [2, 3])
 
     General.newShinyUpgrade('Cursor', 'A fire mouse', 'No, literally, it\'s on fire. Might need to go to the burn ward.');
     General.newShinyUpgrade('Grandma', 'Rolling rolling pin', 'Look at those little wheels!');
@@ -241,7 +242,11 @@ General._Initialize = function(en, Research) {
     General.newShinyUpgrade('Antimatter condenser', 'Yellower molecules', 'Well, technically, there is no such thing as color since light can\'t- SHUT UP!');
     General.newShinyUpgrade('Prism', 'Parabolic mirrors', 'Mathematics is one of the most powerful tools of a cookie baker.');
     General.newShinyUpgrade('Chancemaker', 'Rolling more d20s', 'This will make more 1s appear on average, but who cares!');
-    
+    General.newShinyUpgrade('Fractal engine', 'Recursive magnifying lens', 'Don\'t think too hard about it.');
+    General.newShinyUpgrade('Javascript console', 'Debugging', 'Wait, if the error was here, then it must be that...no, no, that\'s wrong/');
+    General.newShinyUpgrade('Idleverse', 'Bowling balls', 'They look exactly like idleverses and serve as excellent decoys for terrorist organizations/');
+    General.newShinyUpgrade('Cortex baker', 'Myelination', 'More axon speed!');
+    General.newShinyUpgrade('You', 'Group huddle', 'Again, don\'t think too hard about it.');
 
     en.ue.addUpgrade('Drag clicking', '', 75000000000000, Game.GetIcon('Cursor',7), 5000, {
         descFunc: function(){return 'Cursors are <b>'+[20,10,5,2.5][General.sPowerCoef()]+'</b> times more efficient.';}
