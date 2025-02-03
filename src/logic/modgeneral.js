@@ -236,6 +236,12 @@ General._Initialize = function(en, Research) {
     General.newShinyUpgrade('Wizard tower', 'Kaizo grimoires', 'Contains interesting spells such as Manifest spring and Liquify politician.');
     General.newShinyUpgrade('Shipment', 'Project Orion', '...');
     General.newShinyUpgrade('Alchemy lab', 'Turning cookies into cookies', 'Or, rather, BETTER cookies.');
+    General.newShinyUpgrade('Portal', 'Esoteric dough', '[redacted]');
+    General.newShinyUpgrade('Time machine', 'Spring forward', 'Fall back!');
+    General.newShinyUpgrade('Antimatter condenser', 'Yellower molecules', 'Well, technically, there is no such thing as color since light can\'t- SHUT UP!');
+    General.newShinyUpgrade('Prism', 'Parabolic mirrors', 'Mathematics is one of the most powerful tools of a cookie baker.');
+    General.newShinyUpgrade('Chancemaker', 'Rolling more d20s', 'This will make more 1s appear on average, but who cares!');
+    
 
     en.ue.addUpgrade('Drag clicking', '', 75000000000000, Game.GetIcon('Cursor',7), 5000, {
         descFunc: function(){return 'Cursors are <b>'+[20,10,5,2.5][General.sPowerCoef()]+'</b> times more efficient.';}

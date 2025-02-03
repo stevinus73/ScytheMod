@@ -621,7 +621,7 @@ BModify._Initialize = function(en, Research) {
             this.grandmaTypes[name] = grandmaType;
             return grandmaType;
         }
-        en.trackVars(BModify.Grandmas, [['allocT','storage']]);
+        en.trackVars(BModify.Grandmas, [['allocT'],['storage']]);
 
         this.switchStats = function(on) {
             if (on == -1) on = !this.statsView;
