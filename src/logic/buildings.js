@@ -78,6 +78,7 @@ BModify._Initialize = function(en, Research) {
         BModify.rsManagers.push(this);
 
         this.getRawCpS = function() {
+            this.recalculate();
             var cps = this.RhpS * this.yield * this.decayedFactor();
             var dmult = 1;
             if (this.depleted || this.pause)
