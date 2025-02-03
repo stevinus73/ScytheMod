@@ -49,10 +49,11 @@ IdlersPocket._Initialize = function () {
         return Array.from(this.vars.entries().toArray(), (v) => utf8_to_b64(v[0]+'*'+v[1].value)).join("|");
     }
     IdlersPocket._decryptVars = function(str) {
-        Array.from(str.split("|"), (v) => b64_to_utf8(v)).forEach(function (item, index) {
+        Array.from(str.split("|"), (v) => b64_to_utf8(v)).forEach(function (item) {
             var parsed = 0;
             var itemArr = item.split('*');
             var n = IdlersPocket.vars.get(itemArr[0]);
+            if (!IdlersPocket.vars.has(itemArr[0])) return;
             if (n.type == 'float') parsed = parseFloat(itemArr[1]);
             if (n.type == 'int') parsed = parseInt(itemArr[1]);
             n.value = parsed;
