@@ -622,7 +622,7 @@ BModify._Initialize = function(en, Research) {
             this.grandmaTypes[name] = grandmaType;
             return grandmaType;
         }
-        en.trackVars(BModify.Grandmas, [['allocT'],['storage']]);
+        en.trackVars(BModify.grandma, [['allocT'],['storage']]);
 
         this.switchStats = function(on) {
             if (on == -1) on = !this.statsView;
@@ -769,11 +769,9 @@ BModify._Initialize = function(en, Research) {
         )
         en.saveCallback(function() {
             for (var i in grandmaM.grandmaTypes) grandmaM.grandmaTypes[i].save();
-            en.setVar("allocT", grandmaM.allocT);
         })
         en.loadCallback(function() {
             for (var i in grandmaM.grandmaTypes) grandmaM.grandmaTypes[i].load();
-            grandmaM.allocT = en.getVar("allocT", grandmaM.allocT);
         })
 
         this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);", 
