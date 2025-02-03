@@ -95,7 +95,7 @@ var Process = function(en) {
     en.loadCallback(function() {
         var spl=en.getVar("upPacked", '').split(' ');
         for (var i=0;i<spl.length;i+=2){
-            var mestr=[spl[i*2],spl[i*2+1]];
+            var mestr=[spl[i],spl[i+1]];
             var me=Game.UpgradesById[parseInt(mestr[0])];
             var packedstr=mestr[1].split('');
             me.unlocked=parseInt(packedstr[0]);me.bought=parseInt(packedstr[1]);
@@ -103,7 +103,7 @@ var Process = function(en) {
         }
         spl=en.getVar("achPacked", '').split(' ');
         for (var i=0;i<spl.length;i+=2){
-            var mestr=[spl[i*2],spl[i*2+1]];
+            var mestr=[spl[i],spl[i+1]];
             var me=Game.AchievementsById[parseInt(mestr[0])];
             me.won=parseInt(mestr[1]);
             if (me.bought && Game.CountsAsAchievementOwned(me.pool)) Game.AchievementsOwned++;
