@@ -418,7 +418,7 @@ Clicks._Initialize = function(en, Research) {
         Clicks.logic();
     });
     Game.registerHook('reset', function(wipe) {
-        Clicks.recalculate();
+        Clicks.maxClicks = P.baseClicks+((Game.Has("Divine wisdom")&&!wipe)?(Game.Has("Omnipotent mouse")?15:10)*this.getMaxPowerClicks():0);
         Clicks.clicks = Clicks.maxClicks;
         Clicks.overflow = P.minOverflow;
         Clicks.overflow_enabled = false;
