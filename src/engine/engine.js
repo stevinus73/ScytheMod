@@ -56,6 +56,7 @@ IdlersPocket._Initialize = function () {
             if (!IdlersPocket.vars.has(itemArr[0])) return;
             if (n.type == 'float') parsed = parseFloat(itemArr[1]);
             if (n.type == 'int') parsed = parseInt(itemArr[1]);
+            if (n.type == 'string') parsed = itemArr[1];
             n.value = parsed;
         });
     }

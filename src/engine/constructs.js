@@ -1,5 +1,7 @@
 import {injectCode, injectCodes} from "./utils.js";
 
+var FirstUpgrade=Game.UpgradesById.length;
+
 var building_engine={};
 var achiev_engine={};
 achiev_engine.achievementQueue = [];
@@ -52,6 +54,7 @@ upgrade_engine.strReplace = function(upgrade, find, replace) {
 }
 
 var Process = function(en) {
+
     upgrade_engine.upgradeQueue.forEach(function(upgrade) {
         upgrade.me = new Game.Upgrade(upgrade.name, upgrade.desc, upgrade.price, upgrade.icon);
         for (var i in upgrade.other) { // transfer
@@ -60,10 +63,7 @@ var Process = function(en) {
         if (Game.last.unlockAt) Game.UnlockAt.push({cookies: Game.last.unlockAt, name: upgrade.name});
         if (Game.last.pool=='prestige') Game.PrestigeUpgrades.push(Game.last);
         Game.last.order = upgrade.order + Game.last.id*0.001;
-        en.newVar("moddedUpUl"+Game.last.id, "int");
-        en.newVar("moddedUpB"+Game.last.id, "int");
-        en.setVar("moddedUpUl"+Game.last.id, 0);
-        en.setVar("moddedUpB"+Game.last.id, 0);
+        en.newVar("upPacked", "string");
     })
 
     // adding parents to heavenly upgrades (blame orteil, not me)
@@ -77,26 +77,37 @@ var Process = function(en) {
             Game.last[i] = achiev.other[i];
         }
         Game.last.order = Game.Achievements[achiev.prev].order + Game.last.id*0.001;
-        en.newVar("moddedAchW"+Game.last.id, "int");
-        en.setVar("moddedAchW"+Game.last.id, 0);
+        en.newVar("achPacked", "string");
     })
     en.saveCallback(function() {
+        var toCompress=[];
         upgrade_engine.upgradeQueue.forEach(function(up) {
-            en.setVar("moddedUpUl"+up.me.id, up.me.unlocked);
-            en.setVar("moddedUpB"+up.me.id, up.me.bought);
+            toCompress.push(up.me.id,[Math.min(up.me.unlocked,1),Math.min(up.me.bought,1)].join(''));
         })
+        en.setVar("upPacked", toCompress.join(' '));
+
+        toCompress=[];
         achiev_engine.achievementQueue.forEach(function(achiev) {
-            en.setVar("moddedAchW"+achiev.me.id, achiev.me.won);
+            toCompress.push(achiev.me.id,Math.min(achiev.me.won));
         })
+        en.setVar("achPacked", toCompress.join(' '));
     })
     en.loadCallback(function() {
-        upgrade_engine.upgradeQueue.forEach(function(up) {
-            up.me.unlocked = en.getVar("moddedUpUl"+up.me.id, up.me.unlocked);
-            up.me.bought = en.getVar("moddedUpB"+up.me.id, up.me.bought);
-        })
-        achiev_engine.achievementQueue.forEach(function(achiev) {
-            achiev.me.won = en.getVar("moddedAchW"+achiev.me.id, achiev.me.won);
-        })
+        var spl=en.getVar("upPacked", '').split(' ');
+        for (var i=0;i<spl.length;i+=2){
+            var mestr=[spl[i*2],spl[i*2+1]];
+            var me=Game.UpgradesById[parseInt(mestr[0])];
+            var packedstr=mestr[1].split('');
+            me.unlocked=parseInt(packedstr[0]);me.bought=parseInt(packedstr[1]);
+            if (me.bought && Game.CountsAsUpgradeOwned(me.pool)) Game.UpgradesOwned++;
+        }
+        spl=en.getVar("achPacked", '').split(' ');
+        for (var i=0;i<spl.length;i+=2){
+            var mestr=[spl[i*2],spl[i*2+1]];
+            var me=Game.AchievementsById[parseInt(mestr[0])];
+            me.won=parseInt(mestr[1]);
+            if (me.bought && Game.CountsAsAchievementOwned(me.pool)) Game.AchievementsOwned++;
+        }
     })
     LocalizeUpgradesAndAchievs();
     upgrade_engine.replaceQueue.forEach(function(repl) {
