@@ -173,8 +173,7 @@ IdlersPocket._Initialize = function () {
 
     // patched orteil bs
     eval('Game.CalculateGains='+Game.CalculateGains.toString().replace(
-        "Game.cookiesPs=Game.runModHookOnValue('cps',Game.cookiesPs);","mult*=Game.runModHookOnValue('cps',Game.cookiesPs)/Game.cookiesPs;"+
-        "Game.cookiesPs=Game.runModHookOnValue('cps',Game.cookiesPs);"));
+        "Game.cookiesPs=Game.runModHookOnValue('cps',Game.cookiesPs);","mult*=Game.runModHookOnValue('cps',Game.cookiesPs)/Game.cookiesPs;"));
 }
 
 IdlersPocket._Initialize();
