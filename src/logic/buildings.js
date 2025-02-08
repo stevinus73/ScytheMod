@@ -315,7 +315,6 @@ BModify._Initialize = function(en, Research) {
             return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+str+'</div>';
         }
 
-        // will be implemented NOW
         this.refillTooltipL = function() {
             var str = "Click to <b>refill available resources by 35%</b> and prevent depletion for <b>1 minute</b> for <b>60%</b> of your max power clicks.";
             return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+str+'</div>';
@@ -387,7 +386,7 @@ BModify._Initialize = function(en, Research) {
         for (var i in this.me.tieredUpgrades) {
             if (!Game.Tiers[this.me.tieredUpgrades[i].tier].special) {
                 en.ue.appendToDesc(this.me.tieredUpgrades[i], 
-                    "Total "+this.rsNames[0].toLowerCase()+" <b>+20%</b>.");
+                    "<br>Total "+this.rsNames[0].toLowerCase()+" <b>+20%</b>.");
             }
         }
     }
