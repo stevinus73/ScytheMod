@@ -88,7 +88,7 @@ BModify._Initialize = function(en, Research) {
 
         // overwrites vanilla cps function for building
         this.me.cps = function(me) {
-            this.recalculate();
+            me.rsManager.recalculate();
             return me.rsManager.getRawCpS();
         };
 
