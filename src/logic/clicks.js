@@ -132,8 +132,8 @@ Clicks._Initialize = function(en, Research) {
         }
 
         if (Game.drawT%3) {
-            if (Game.Has("Power clicks")) {l('pcWrapper').style.display='block';l('swWrapper').style.display='block';}
-            else {l('pcWrapper').style.display='none';l('swWrapper').style.display='none';}
+            if (Game.Has("Power clicks")) {l('wrapper0').style.display='block';l('wrapper1').style.display='block';}
+            else {l('wrapper0').style.display='none';l('wrapper1').style.display='none';}
             l('pcInfo').innerHTML=this.powerClicks+'/'+this.getMaxPowerClicks();
 
             if (this.canPowerClickFunc() != this.canPowerClick) {
