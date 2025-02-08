@@ -67,18 +67,17 @@ BModify._Initialize = function(en, Research) {
         this.rsTotal = baseRS;
         this.getBaseRsMax = function(){return this.baseRs*5*Math.pow(20-this.id, 0.3);}
         this.rsUsed = 0;
-        this.interest = 0;
 
         this.depleted = false;
         this.pause = false;
         this.statsView = false;
+        this.barred = 0;
 
-        en.trackVars(this,[["RhpS","float"],["yield","float"],["rsTotal"],["rsUsed"],["pause"],["interest"],["statsView"]],this.id);
+        en.trackVars(this,[["RhpS","float"],["yield","float"],["rsTotal"],["rsUsed"],["pause"],["statsView"]],this.id);
 
         BModify.rsManagers.push(this);
 
         this.getRawCpS = function() {
-            this.recalculate();
             var cps = this.RhpS * this.yield * this.decayedFactor();
             var dmult = 1;
             if (this.depleted || this.pause)
@@ -89,6 +88,7 @@ BModify._Initialize = function(en, Research) {
 
         // overwrites vanilla cps function for building
         this.me.cps = function(me) {
+            this.recalculate();
             return me.rsManager.getRawCpS();
         };
 
@@ -120,7 +120,10 @@ BModify._Initialize = function(en, Research) {
 
             if (me.fortune && Game.Has(me.fortune.name)) yieldmult*=1.07;
             yieldmult*=(1+BModify.grandma.grandmaTypes['G'+me.id].buildingBuff());
-            if ((this.id == 2) && Research.has("Regrowth")) yieldmult*=3;
+            if ((this.id == 2) && Research.has("Regrowth")) {
+                yieldmult*=3;
+                if(this.barred>0) yieldmult*=12; // secret feature
+            }
             yieldmult*=(1+0.025*Game.Objects.Farm.getLumpBuff());
 
             if (me.tieredResearch) {
@@ -152,7 +155,7 @@ BModify._Initialize = function(en, Research) {
         
         // decay factor applied to rhps
         this.decayedFactor = function() {
-            return Math.pow(0.997, Math.min(this.me.amount, 600));
+            return Math.pow(0.998, Math.min(this.me.amount, 600));
         }
 
         this.availableRes = function(){return this.rsTotal-this.rsUsed;}
@@ -183,14 +186,15 @@ BModify._Initialize = function(en, Research) {
                 var rate = 0.001 * this.decayedFactor() 
                     * (Math.max(this.availableRes()/this.rsTotal, 0.1))
                     * Math.sqrt(BModify.grandma.grandmaTypes['healer'].allocated);
-                // this.rsUsed -= (rate / Game.fps) * this.rsTotal;
+                this.rsUsed -= (rate / Game.fps) * this.rsTotal;
                 this.rsUsed = Math.max(this.rsUsed, 0);
                 return;
-            } else {
-                var dep = (this.RhpS / Game.fps) * this.me.amount * this.decayedFactor() * (this.interest>0?1.5:1);
-                // this.rsUsed += dep;
-                // BModify.totalDp += dep;
-            }
+            } else if (this.barred<0) {
+                var dep = (this.RhpS / Game.fps) * this.me.amount * this.decayedFactor() ;
+                this.rsUsed += dep;
+                BModify.totalDp += dep;
+            } 
+            this.barred--;
         }
 
         // resets everythin'
@@ -203,7 +207,6 @@ BModify._Initialize = function(en, Research) {
 
             this.rsTotal = this.baseRs;
             this.rsUsed = 0;
-            this.interest = 0;
 
             this.depleted = false;
             this.switch(false);
@@ -292,8 +295,8 @@ BModify._Initialize = function(en, Research) {
             if (this.pause) sty='style="color:cyan"';
             if (this.depleted) sty='style="color:red"';
             str+='<div class="listing" '+sty+'> <b>'+this.rsNames[0]+' use rate ('+this.rsNames[2]+'/second) per '+this.me.dname.toLowerCase()+': </b>'+
-                Beautify((this.pause || this.depleted) ? 0 : this.RhpS*(this.interest>0?1.5:1), 1);
-            str+=' ('+Beautify(this.RhpS * this.me.amount * this.decayedFactor()*(this.interest>0?1.5:1), 1)+' for '+Beautify(this.me.amount)+' '+this.me.plural.toLowerCase();
+                Beautify((this.pause || this.depleted) ? 0 : this.RhpS, 1);
+            str+=' ('+Beautify(this.RhpS * this.me.amount * this.decayedFactor())+' for '+Beautify(this.me.amount)+' '+this.me.plural.toLowerCase();
             str+=')</div>';
             str+='<div class="listing"> <b>Base yield: </b>'+Beautify(this.yield, 1)+ " cookies/"+this.rsNames[1]+'</div>';
             str+='<div class="listing"> <b>Total amount of '+this.rsNames[0].toLowerCase()+' discovered:</b> '+Beautify(this.rsTotal) + " " + this.rsNames[2]+'</div>';
@@ -311,10 +314,9 @@ BModify._Initialize = function(en, Research) {
             return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+str+'</div>';
         }
 
-        // will be implemented soon
+        // will be implemented NOW
         this.refillTooltipL = function() {
-            var str = "Click to <b>refill available resources by 35%</b> and prevent depletion for <b>1 minute</b> for ??? power clicks.";
-            str += "<br><small>(not yet implemented)</small>";
+            var str = "Click to <b>refill available resources by 35%</b> and prevent depletion for <b>1 minute</b> for <b>60%</b> of your max power clicks.";
             return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+str+'</div>';
         }
 
@@ -324,55 +326,61 @@ BModify._Initialize = function(en, Research) {
             return price;
         }
         this.refillTooltipR = function() {
-            if (!Game.Objects.Bank.minigame) return '';
-            var col = (Game.Objects.Bank.minigame.profit >= this.refillPrice()) ? '#73f21e' : '#f21e3c';
-            var str = "Click to <b>refill available resources by 50%</b> for <span style='color:"+col+";'>$"+this.refillPrice()+"</span>.";
-            str += "<br>However, this will cause resources to deplete <b>50%</b> faster for <b>20 minutes</b> without any CpS boost.";
+            // if (!Game.Objects.Bank.minigame) return '';
+            // var col = (Game.Objects.Bank.minigame.profit >= this.refillPrice()) ? '#73f21e' : '#f21e3c';
+            // var str = "Click to <b>refill available resources by 50%</b> for <span style='color:"+col+";'>$"+this.refillPrice()+"</span>.";
+            // str += "<br>However, this will cause resources to deplete <b>50%</b> faster for <b>20 minutes</b> without any CpS boost.";
 
-            str += (BModify.bankRefill>0?"<br><small class='red'>(usable again in "+Game.sayTime(BModify.bankRefill+Game.fps, -1)+")</small>"
-                :"<br><small>(Cooldown time upon use: "+(this.depleted?"<span class='red'>3 hours</span>":"1 hour")+")</small>");
-            return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+str+'</div>';
+            // str += (BModify.bankRefill>0?"<br><small class='red'>(usable again in "+Game.sayTime(BModify.bankRefill+Game.fps, -1)+")</small>"
+            //     :"<br><small>(Cooldown time upon use: "+(this.depleted?"<span class='red'>3 hours</span>":"1 hour")+")</small>");
+            return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;"></div>';
         }
 
         AddEvent(this.refillL,'click',function(){
+            if (!Game.Has("Power gate")) return;
             var me = Game.ObjectsById[id].rsManager;
-            
-            console.log("Refill L");
+            if (mod.clicks.powerClicks<0.6*mod.clicks.getMaxPowerClicks()) return;
+            me.rsUsed -= 0.5 * me.rsTotal;
+            me.rsUsed = Math.max(me.rsUsed, 0);
+            me.rsAvailable = me.rsTotal - me.rsUsed;
+            me.update();
+            Game.recalculateGains = 1;
+            me.barred = Game.fps*60;
+            mod.clicks.powerClicks -= 0.6*mod.clicks.getMaxPowerClicks();
             PlaySound('snd/pop'+Math.floor(Math.random()*3+1)+'.mp3',0.75);
         });
 
         AddEvent(this.refillR,'click',function(){
-            if (!Game.Objects.Bank.minigame) return;
-            var me = Game.ObjectsById[id].rsManager;
-            var mini = Game.Objects.Bank.minigame;
-            if ((mini.profit >= me.refillPrice()) && (BModify.bankRefill<=0)) {
-                mini.profit -= me.refillPrice();
-                me.rsUsed -= 0.5 * me.rsTotal;
-                me.rsUsed = Math.max(me.rsUsed, 0);
-                me.rsAvailable = me.rsTotal - me.rsUsed;
-                me.update();
-                Game.recalculateGains = 1;
-                BModify.bankRefill = Game.fps * 60 * (me.depleted ? 180 : 60);
-                me.interest = Game.fps * 60 * 20;
-                PlaySound('snd/pop'+Math.floor(Math.random()*3+1)+'.mp3',0.75);
-            }
+            // if (!Game.Objects.Bank.minigame) return;
+            // var me = Game.ObjectsById[id].rsManager;
+            // var mini = Game.Objects.Bank.minigame;
+            // if ((mini.profit >= me.refillPrice()) && (BModify.bankRefill<=0)) {
+            //     mini.profit -= me.refillPrice();
+            //     me.rsUsed -= 0.5 * me.rsTotal;
+            //     me.rsUsed = Math.max(me.rsUsed, 0);
+            //     me.rsAvailable = me.rsTotal - me.rsUsed;
+            //     me.update();
+            //     Game.recalculateGains = 1;
+            //     PlaySound('snd/pop'+Math.floor(Math.random()*3+1)+'.mp3',0.75);
+            // }
         });
 
         this.draw = function() {
 	    	if (Game.drawT%5==0) {
 	    		this.mbarFull.style.width=Math.max(Math.round((this.availableRes()/this.rsTotal)*100), 0)+'%';
+                if (this.barred)
                 if ((this.id == 2) && Research.has("Regrowth")) this.mbar.style.background='lightGreen';
 			    this.mbar.style.width='350px';
                 this.mbarText.innerHTML=Beautify(Math.max((this.availableRes()/this.rsTotal)*100, 0), 1)+'% left';
                 if (this.depleted) this.mbarInfo.innerHTML='This resource has been depleted';
                 else if (this.pause) this.mbarInfo.innerHTML='Currently paused';
+                else if (this.barred>0) this.mbarInfo.innerHTML='This resource is under the effects of the Power gate';
                 else if ((this.id == 2) && Research.has("Regrowth")) this.mbarInfo.innerHTML='Regrowth is currently active.';
                 else this.mbarInfo.innerHTML='Depletion rate: -'
                     +Beautify(Math.max(((this.RhpS*this.me.amount*this.decayedFactor())/this.rsTotal)*100, 0), 2)+'%/s (-'
                     +Beautify(Math.max(((this.RhpS*this.me.amount*this.decayedFactor())/this.rsTotal)*100*60, 0), 2)+'%/min)';
 		    }
 		    this.mbarFull.style.backgroundPosition=(-Game.T*0.5)+'px';
-            if (this.interest>0) this.interest--;
         }
 
         for (var i in this.me.tieredUpgrades) {
@@ -387,125 +395,26 @@ BModify._Initialize = function(en, Research) {
         return 'RS_Manager';
     }
 
-    // BModify.Explorer = function() {
-    //     var wrapper=document.createElement('div');
-    //     wrapper.style.cssText='position:absolute;top:80px;left:0px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
-    //     wrapper.innerHTML='<div id="exploreButton" class="crate heavenly" style="opacity:1;float:none;display:block;'
-    //         +writeIcon([3,2,Icons])+'" '
-    //         +Game.getDynamicTooltip('mod.bModify.explorer.tooltip','bottom')
-    //         +Game.clickStr+'="mod.bModify.explorer.StartExplore()"></div>';
-    //     l('sectionLeft').appendChild(wrapper);
-    //     this.explore=l('exploreButton');
+    BModify.gateTooltip = function() {
+        var str = "Click to <b>refill available resources by 10%</b> and prevent depletion for <b>5 minutes</b> for <b>"+this.gateCost()+"</b> power clicks.";
+        return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+str+'</div>';
+    }
 
-    //     this.nextExplore=0;
-    //     this.exploring=false;
-    //     this.exploreCooldown=0;
-    //     this.ticks=0;
+    BModify.gateCost = function() {return Math.floor(mod.clicks.getMaxPowerClicks()*0.4);}
 
-    //     var me=this;
-
-    //     this.ExplorePrice=function(){return Math.max(1000000,60*60*Game.cookiesPs);}
-
-    //     this.tooltip=function() {
-    //         var str='<div style="padding:8px;width:400px;font-size:11px;text-align:center;">'+
-	// 		(this.exploring?'You are currently on an exploration trip ('+this.ticks+' reports).':
-    //             'You are not currently on an exploration trip.')+
-    //             '<div class="line"></div>'+
-    //             (this.exploreCooldown>0?'You are tired, and will need to wait '+Game.sayTime(this.exploreCooldown,-1)+' before you can send another trip.':
-    //             (this.exploring?'Click to recall this exploration trip.':'Click to send an exploration trip.'))+
-    //             '<br/> Every now and then, your explorers will send back a report, as well as any goods they might have obtained.'+
-    //             '<br/> However, there is a chance that your exploration trip might suddenly end.'+
-    //             '<div class="line"></div>'+
-    //             'You will need <span class="price'+(Game.cookies>=this.ExplorePrice()?'':' disabled')+'">'+Beautify(this.ExplorePrice())+
-    //             '</span> to '+(this.exploring?'recall this exploration trip':'send a new exploration trip.');
-            
-
-    //         return str;
-    //     }
-
-    //     this.EndExplore=function() {
-    //         this.exploring=false;
-    //         this.exploreCooldown=Game.fps*60*30;
-    //         this.explore.classList.remove('enabled');
-    //     }
-
-    //     this.StartExplore=function() {
-    //         if (Game.cookies<this.ExplorePrice()) return;
-    //         if (this.exploreCooldown>0) return;
-    //         Game.cookies-=this.ExplorePrice();
-    //         if (this.exploring) {
-    //             this.EndExplore();
-    //             return;
-    //         }
-    //         this.exploring=true;
-    //         this.explore.classList.add('enabled');
-    //     }
-
-    //     this.Report=function() {
-    //         this.ticks++;
-    //         var failRate=Math.min(0.005*(this.ticks-5),0.25);
-    //         var choices=['building reward','multiply cookies','none','none'];
-    //         if (Game.canLumps() && Math.random()<0.0001) choices.push('free sugar lump');
-    //         if (Math.random()<0.15) choices.push('gold rush');
-    //         if (Math.random()<0.3 && (Game.season=='christmas')) choices.push('free reindeers');
-            
-    //         var choice=choose(choices);
-    //         if (Math.random()<failRate) choice='fail';
-
-    //         if (choice=='none') {
-    //             Game.Notify(loc("Exploration report"),choose(
-    //                 ['The wind is howling.', 'There\'s a chill in the air.', 'Nothing but endless sky for days.']),[3,2,Icons]);
-    //         } else if (choice=='building reward') {
-    //             for (var i in Game.Objects) {
-    //                 var building=Game.Objects[i];
-    //                 if (building.rsManager) building.rsManager.gainRes(Math.min(building.rsManager.rsTotal*0.15,20000));
-    //                 else choice='multiply cookies';
-    //             }
-    //         } else if (choice=='multiply cookies') {
-	// 			var gains=Math.min(Game.cookies*0.5,Game.cookiesPs*60*20)+100;
-    //             Game.Earn(gains);
-    //             Game.Notify(loc("Exploration report"),choose(
-    //                 ['Discovered a hidden treasure trove of cookies!', 'Harvested an ancient cookie deposit!', 'Your team got lucky.'])
-    //                 +' '+loc("Found <b>%1</b>!",loc("%1 cookie",LBeautify(gains))),[3,2,Icons]);
-    //         } else if (choice=='free sugar lump') {
-    //             Game.gainLumps(1);
-    //             Game.Notify(loc("Exploration report"),loc("Sweet!<br><small>Found 1 sugar lump!</small>"),[3,2,Icons]);
-    //         } else if (choice=='free reindeers') {
-    //             new Game.shimmer('reindeer');
-    //             new Game.shimmer('reindeer');
-    //             new Game.shimmer('reindeer');
-    //             Game.Notify(loc("Exploration report"),"Santa's blessings - a few reindeer from his sleigh.",[3,2,Icons]);
-    //         } else if (choice=='fail') {
-    //             Game.Notify(loc("Drat!"),"Your exploration trip comes to a sudden end.",[3,2,Icons]);
-    //             this.EndExplore();
-    //         }
-    //     }
-
-    //     new Game.buffType('gold rush',function(time,pow)
-	// 	{
-	// 		return {
-	// 			name:'Gold rush',
-	// 			desc:loc("You find %1% more golden cookies for the next %2.",[25,Game.sayTime(time*Game.fps,-1)]),
-	// 			icon:[23,6],
-	// 			time:time*Game.fps,
-    //             aura:1
-	// 		};
-	// 	});
-
-    //     Game.registerHook('logic', function() {
-    //         if (me.exploring) {
-    //             me.nextExplore--;
-    //             if (me.nextExplore<=0) {
-    //                 me.Report();
-    //                 me.nextExplore=Game.fps*5//*60;
-    //             }
-    //         } else {
-    //             me.exploreCooldown--;
-    //             if (me.exploreCooldown<0) me.exploreCooldown=0;
-    //         }
-    //     });
-    // }
-
+    BModify.gate = function() {
+        if (mod.clicks.powerClicks<this.gateCost()) return;
+        this.rsManagers.forEach((me) => {
+            me.rsUsed -= 0.1 * me.rsTotal;
+            me.rsUsed = Math.max(me.rsUsed, 0);
+            me.rsAvailable = me.rsTotal - me.rsUsed;
+            me.update();
+            Game.recalculateGains = 1;
+            me.barred = Game.fps*60*5;
+            mod.clicks.powerClicks -= this.gateCost();
+            PlaySound('snd/pop'+Math.floor(Math.random()*3+1)+'.mp3',0.75);
+        })
+    }
     
     const UpdateTicks = 10;
 

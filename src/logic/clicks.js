@@ -40,23 +40,10 @@ Clicks._Initialize = function(en, Research) {
 
     en.trackVars(Clicks, [['clicks'],['maxClicks'],['overflow','float'],['powerClicks'],['pcPerformed'],['pcEnabled']]);
 
-    var pcWrapper=document.createElement('div');
-    pcWrapper.id='pcWrapper';
-    pcWrapper.style.cssText='position:absolute;bottom:48px;right:16px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
-    pcWrapper.innerHTML='<div id="pcButton" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon([3,0,Icons])+'" '
-        +Game.getDynamicTooltip('mod.clicks.pcTooltip', 'top', true)+'></div>'
-        +'<span id="pcInfo" style="position:absolute;top:-32px;left:12px;font-family:\'Merriweather\';font-size:20px;color:#fddfe8;">0/0</span>';
-    l('sectionLeft').appendChild(pcWrapper);
-    this.pcWidget = l('pcButton');
-
-    var swWrapper=document.createElement('div');
-    swWrapper.id='swWrapper';
-    swWrapper.style.cssText='position:absolute;bottom:30px;right:108px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
-    swWrapper.innerHTML='<div id="pcSwitch" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon([20,10])+'" '
-        +Game.getDynamicTooltip('mod.clicks.pcSwitchTooltip', 'top', true)+' '
-        +Game.clickStr+'="mod.clicks.switchClick(-1);"></div>';
-    l('sectionLeft').appendChild(swWrapper);
-    this.switch = l('pcSwitch');
+    this.pcWidget=en.createLeftWidget([48,16],[3,0,Icons],'mod.clicks.pcTooltip','');
+    this.switch=en.createLeftWidget([96,16],[20,10],'mod.clicks.pcSwitchTooltip','mod.clicks.switchClick(-1);');
+    this.gate=en.createLeftWidget([144,16],[15,11],'mod.bModify.gateTooltip','mod.bModify.gate();');
+    l('widget0').innerHTML+='<span id="pcInfo" style="position:absolute;top:-32px;left:12px;font-family:\'Merriweather\';font-size:20px;color:#fddfe8;">0/0</span>';
 
     Clicks.recalculate = function() {
         var maxClicks = P.baseClicks;
@@ -288,9 +275,13 @@ Clicks._Initialize = function(en, Research) {
     )
 
     
-    // en.ue.addUpgrade("Wrinkled cursors", "You can <b>perform power clicks on wrinklers</b>, making them instantly explode into <b>+66%</b> more cookies."
-    //     +'<q>Okay, that\'s just disgusting.</q>',
-    //     5555555, [19,8], pcOrder, {pool: 'prestige', posX: -516, posY: -890, huParents: ['Mystical regeneration', 'Sacrilegious corruption']}
+    en.ue.addUpgrade("Wrinkled cursors", "You can <b>perform power clicks on wrinklers</b>, making them instantly explode into <b>+66%</b> more cookies."
+        +'<q>Okay, that\'s just disgusting. (not yet implemented)</q>',
+        5555555, [19,8], pcOrder, {pool: 'prestige', posX: -516, posY: -890, huParents: ['Mystical regeneration', 'Sacrilegious corruption']}
+    )
+
+    // en.ue.addUpgrade("Power gate", "You can <b>spend power clicks</b> to halt depletion.<q>Uh... Gate to what, exactly?</q>",
+    //     16000000,[]
     // )
 
     

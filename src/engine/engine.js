@@ -178,6 +178,19 @@ IdlersPocket._Initialize = function () {
         }
     }
 
+    this.id=0;
+    IdlersPocket.createLeftWidget = function(position, sprite, tooltipStr, clickStr) {
+        var wrapper=document.createElement('div');
+        wrapper.id='wrapper'+this.id;
+        wrapper.style.cssText='position:absolute;bottom:'+position[0]+'px;right:'+position[1]+'px;z-index:100000;transform-origin:100% 0%;transform:scale(0.9);';
+        wrapper.innerHTML='<div id="widget'+this.id+'" class="crate heavenly" style="opacity:1;float:none;display:block;'+writeIcon(sprite)+'" '
+            +Game.getDynamicTooltip(tooltipStr, 'top', true)+'></div>'
+            +Game.clickStr+'="'+clickStr+'"></div>';
+        l('sectionLeft').appendChild(wrapper);
+        this.id++;
+        return l('widget'+this.id);
+    }
+
     // patched orteil bs
     eval('Game.CalculateGains='+Game.CalculateGains.toString().replace(
         "Game.cookiesPs=Game.runModHookOnValue('cps',Game.cookiesPs);",
