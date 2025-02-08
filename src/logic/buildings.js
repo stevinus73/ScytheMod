@@ -150,6 +150,7 @@ BModify._Initialize = function(en, Research) {
 
             this.yield = this.baseYield*yieldmult;
             this.RhpS = this.baseRhpS*rhpsmult;
+            this.rsTotal = this.baseRs*rsmult;
             this.update();
         }
         
