@@ -391,7 +391,7 @@ General._Initialize = function(en, Research) {
         `if (Math.random()<0.1) types.push(1);`,
         "replace");
     Game.computeLumpTimes=en.injectCode(Game.computeLumpTimes,
-        `if (Game.Has('Glucose-charged air')) {Game.lumpMatureAge/=2000;Game.lumpRipeAge/=2000;Game.lumpOverripeAge/=2000;}`,
+        `)*0.05;`,//`if (Game.Has('Glucose-charged air')) {Game.lumpMatureAge/=2000;Game.lumpRipeAge/=2000;Game.lumpOverripeAge/=2000;}`,
         `\n\t\t\tif (Game.Has('Sweet yarn lumps')){Game.lumpMatureAge/=1+Game.getMilk()*0.04;Game.lumpRipeAge/=1+Game.getMilk()*0.04;}`,
         "after");
     en.ue.replaceDescPart(Game.Upgrades['Sucralosia Inutilis'], 
