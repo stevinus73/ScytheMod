@@ -391,7 +391,7 @@ General._Initialize = function(en, Research) {
         `if (Math.random()<0.1) types.push(1);`,
         "replace");
     Game.computeLumpTimes=en.injectCode(Game.computeLumpTimes,
-        `)*0.05;`,//`if (Game.Has('Glucose-charged air')) {Game.lumpMatureAge/=2000;Game.lumpRipeAge/=2000;Game.lumpOverripeAge/=2000;}`,
+        `Game.lumpMatureAge/=1+Game.auraMult('Dragon\\'s Curve')*0.05;Game.lumpRipeAge/=1+Game.auraMult('Dragon\\'s Curve')*0.05;`,
         `\n\t\t\tif (Game.Has('Sweet yarn lumps')){Game.lumpMatureAge/=1+Game.getMilk()*0.04;Game.lumpRipeAge/=1+Game.getMilk()*0.04;}`,
         "after");
     en.ue.replaceDescPart(Game.Upgrades['Sucralosia Inutilis'], 
@@ -562,6 +562,6 @@ General._Initialize = function(en, Research) {
         eval('me.getReverseSumPrice'=me.getReverseSumPrice.toString().replace('Game.priceIncrease','Game.priceIncreaseFunc(this.id)'));
     }
 
-    Game.priceIncreaseFunc = function(id) {return Game.priceIncrease-0.0005*(20-Game.id)};
+    Game.priceIncreaseFunc = function(id) {return Game.priceIncrease-0.0005*(20-id)};
 }
 export { General }
