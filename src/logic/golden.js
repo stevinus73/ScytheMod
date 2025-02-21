@@ -249,9 +249,9 @@ G._Initialize = function(en, Research) {
         }
 	};
     en.addGcHook('gains',function(m){return m*(Game.Has('Golden switch [off]')&&(Game.gsType==1)?1.6:1)})
-    en.addGcHook('frequency',function(m){return m*(Game.Has('Golden switch [off]')&&(Game.gsType==1)?(1/1.35):1)})
+    en.addGcHook('frequency',function(m){return m/(Game.Has('Golden switch [off]')&&(Game.gsType==1)?(1/1.35):1)})
     en.addGcHook('gains',function(m){return m*(Game.Has('Golden switch [off]')&&(Game.gsType==2)?1.25:1)})
-    en.addGcHook('frequency',function(m){return m*(Game.Has('Golden switch [off]')&&(Game.gsType==2)?(1/1.20):1)})
+    en.addGcHook('frequency',function(m){return m/(Game.Has('Golden switch [off]')&&(Game.gsType==2)?(1/1.20):1)})
 	Game.Upgrades['Golden switch [off]'].descFunc=funcOff;
     Game.Upgrades['Golden switch [on]'].descFunc=funcOn;
 
@@ -282,6 +282,9 @@ G._Initialize = function(en, Research) {
     Game.registerHook('logic', function() {
         if (Game.T%(Game.fps)==0) G.update();
     });
+
+    // rust
+    this.rust = 0;
 }
 
 export {G}

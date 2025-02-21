@@ -622,8 +622,8 @@ Research._Initialize = function(en) {
     en.addGcHook('gains',function(m){return m*(mod.research.hasTiered(14, 2)?1.57:1)})
     en.addGcHook('gains',function(m){return m*(mod.research.hasTiered(14, 3)?1.37:1)})
     en.addGcHook('gains',function(m){return m*(mod.research.has("Hoard of treasure")?1.10:1)})
-    en.addGcHook('frequency',function(m){return m*(mod.research.has("Pure one-hundred-percent gold")?1.05:1)})
-    en.addGcHook('frequency',function(m){return m*(mod.research.has("The true purpose of luck")?1.03:1)})
+    en.addGcHook('frequency',function(m){return m/(mod.research.has("Pure one-hundred-percent gold")?1.05:1)})
+    en.addGcHook('frequency',function(m){return m/(mod.research.has("The true purpose of luck")?1.03:1)})
     Game.Objects.Chancemaker.cps = en.injectChain(Game.Objects.Chancemaker.cps, "mult*=Game.magicCpS(me.name);", 
         [
             'if (mod.research.hasTiered(14, 1)) mult*=1.77;',
