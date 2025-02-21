@@ -40,7 +40,7 @@ IdlersPocket.saveCallbacks = [];
 
 IdlersPocket.vars = new Map();
 IdlersPocket.obj_track = [];
-Game.Ip = this;
+Game.Ip = IdlersPocket;
 
 
 IdlersPocket._encryptVars = function () {
