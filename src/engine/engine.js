@@ -175,7 +175,7 @@ IdlersPocket.rebuildBigCookieButton = function () {
     }
 }
 
-this.id = 0;
+IdlersPocket.id = 0;
 IdlersPocket.createLeftWidget = function (position, sprite, tooltipStr, clickStr) {
     var wrapper = document.createElement('div');
     wrapper.id = 'wrapper' + this.id;
@@ -197,7 +197,7 @@ eval('Game.CalculateGains='+Game.CalculateGains.toString().replace(
 Game.ModLoaded=false;
 IdlersPocket.LoadMod = function (name, initFunc) {
 
-    this._save = function() {
+    var msave = function() {
         if (!Game.ModLoaded) return '';
         IdlersPocket.saveCallbacks.forEach((c) => c());
         IdlersPocket.obj_track.forEach((me) => {
@@ -208,7 +208,7 @@ IdlersPocket.LoadMod = function (name, initFunc) {
         return IdlersPocket._encryptVars();
     }
 
-    this._load = function(str) {
+    var mload = function(str) {
         if (!Game.ModLoaded) return;
         IdlersPocket._decryptVars(str);
         IdlersPocket.loadCallbacks.forEach((c) => c());
@@ -231,8 +231,8 @@ IdlersPocket.LoadMod = function (name, initFunc) {
             }
         },
     
-        save: this._save,
-        load: this._load,
+        save: msave,
+        load: mload,
         switchSave: function () {
             Game.WriteSave();
 		    Game.SaveTo = 'kzythe';
