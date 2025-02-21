@@ -92,21 +92,26 @@ var Process = function(en) {
         })
         en.setVar("achPacked", toCompress.join(' '));
     })
-    en.loadCallback(function() {
-        var spl=en.hasVariable("upPacked")?en.getVar("upPacked").split(' '):[];
-        for (var i=0;i<spl.length;i+=2){
-            var mestr=[spl[i],spl[i+1]];
-            var me=Game.UpgradesById[parseInt(mestr[0])];
-            var packedstr=mestr[1].split('');
-            me.unlocked=parseInt(packedstr[0]);me.bought=parseInt(packedstr[1]);
-            if (me.bought && Game.CountsAsUpgradeOwned(me.pool)) Game.UpgradesOwned++;
+    en.loadCallback(function () {
+        var spl = [];
+        if (en.hasVariable("upPacked")) {
+            var spl = en.getVar("upPacked").split(' ');
+            for (var i = 0; i < spl.length; i += 2) {
+                var mestr = [spl[i], spl[i + 1]];
+                var me = Game.UpgradesById[parseInt(mestr[0])];
+                var packedstr = mestr[1].split('');
+                me.unlocked = parseInt(packedstr[0]); me.bought = parseInt(packedstr[1]);
+                if (me.bought && Game.CountsAsUpgradeOwned(me.pool)) Game.UpgradesOwned++;
+            }
         }
-        spl=en.hasVariable("achPacked")?en.getVar("achPacked").split(' '):[];
-        for (var i=0;i<spl.length;i+=2){
-            var mestr=[spl[i],spl[i+1]];
-            var me=Game.AchievementsById[parseInt(mestr[0])];
-            me.won=parseInt(mestr[1]);
-            if (me.bought && Game.CountsAsAchievementOwned(me.pool)) Game.AchievementsOwned++;
+        if (en.hasVariable("achPacked")) {
+            spl = en.getVar("achPacked").split(' ');
+            for (var i = 0; i < spl.length; i += 2) {
+                var mestr = [spl[i], spl[i + 1]];
+                var me = Game.AchievementsById[parseInt(mestr[0])];
+                me.won = parseInt(mestr[1]);
+                if (me.bought && Game.CountsAsAchievementOwned(me.pool)) Game.AchievementsOwned++;
+            }
         }
     })
     LocalizeUpgradesAndAchievs();
