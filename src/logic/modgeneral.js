@@ -390,13 +390,17 @@ General._Initialize = function(en, Research) {
         `if (Math.random()<(Game.Has('Sucralosia Inutilis')?0.15:0.1)) types.push(1);`,
         `if (Math.random()<0.1) types.push(1);`,
         "replace");
+    Game.computeLumpTimes=en.injectCode(Game.computeLumpTimes,
+        `Game.lumpMatureAge/=1+Game.auraMult('Dragon\'s Curve')*0.05;Game.lumpRipeAge/=1+Game.auraMult('Dragon\'s Curve')*0.05;`,
+        `\n\t\t\tif (Game.Has('Sweet yarn lumps')){Game.lumpMatureAge/=1+Game.getMilk()*0.04;Game.lumpRipeAge/=1+Game.getMilk()*0.04;}`,
+        "after");
     en.ue.replaceDescPart(Game.Upgrades['Sucralosia Inutilis'], 
-        "Upon harvesting a sugar lump, there is a <b>50% chance</b> that <b>one more lump</b> is dropped."    
+        "Upon harvesting a sugar lump, there is a <b>50% chance</b> that <b>one more lump</b> is dropped <small>(does not affect offline earnings)</small>."    
     )
 
-    // Game.loadLumps=en.injectCode(Game.loadLumps,`amount-1`,
-    //     `Math.floor((amount-1)*(Game.Has('Sucralosia Inutilis')?1.5:1));`, "replace"
-    // )
+    en.ue.addUpgrade("Sweet yarn lumps", "Sugar lumps <b>grow faster</b> the more milk you have."
+        +'<q>thank you so meowch for giving meow this highly lickable yarn ball</q>',
+        90000000000000, [18,26], 20000, {});
 
     // RANDOM OTHER UPGRADES
 
@@ -541,6 +545,7 @@ General._Initialize = function(en, Research) {
                 '<q>This is the key to the pearly (and tasty) gates of pastry heaven, granting you access to your entire stockpile of heavenly chips for baking purposes.'+
                 '<br>May you use them wisely.</q>'
         }
+        if (Game.cookiesEarned>=1e13) Game.Unlock('Sweet yarn lumps');
     });
     // misc
     Game.Achievements['Speed baking I'].ddesc=loc("Get to <b>%1</b> baked in <b>%2</b>.",[loc("%1 cookie",LBeautify(1e6)),Game.sayTime(60*30*Game.fps)]);

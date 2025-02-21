@@ -163,7 +163,7 @@ G._Initialize = function(en, Research) {
     // this just makes it harder to get cf+df
     G.me.popFunc = en.injectCode(G.me.popFunc,
         "if (Math.random()<0.8) Game.killBuff('Click frenzy');",
-        "if (Math.random()<0.95) Game.killBuff('Click frenzy');",
+        "if (Math.random()<0.9) Game.killBuff('Click frenzy');",
         "replace"
     )
     en.ae.addAchievement("The click to end all clicks", 
@@ -285,6 +285,19 @@ G._Initialize = function(en, Research) {
 
     // rust
     this.rust = 0;
+    en.addGcHook('frequency',function(m){return m/(1.3-0.8*G.rust);})
+    en.addGcHook('effDuration',function(m){return m*(1-0.5*G.rust);})
+
+    G.me.popFunc = en.injectCode(G.me.popFunc, "Game.DropEgg(0.9);", "\n\t\t\tG.accumulateRust();", "after");
+    G.me.missFunc = en.injectCode(G.me.missFunc, "if (me.spawnLead) Game.missedGoldenClicks++;", "\n\t\t\tG.clearRust();", "after");
+
+    G.accumulateRust = function() {
+
+    }
+
+    G.clearRust = function() {
+        
+    }
 }
 
 export {G}

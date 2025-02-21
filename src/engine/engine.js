@@ -125,10 +125,12 @@ IdlersPocket.saveCallback = function (callback) {
 
 IdlersPocket.gcGainsHooks = [];
 IdlersPocket.gcFreqHooks = [];
+IdlersPocket.gcDurHooks = [];
 IdlersPocket.buildingCpsHooks = [];
 IdlersPocket.addGcHook = function (type, fun) {
     if (type == 'frequency') this.gcFreqHooks.push(fun);
     if (type == 'gains') this.gcGainsHooks.push(fun);
+    if (type == 'effDuration') this.gcDurHooks.push(fun);
 }
 
 IdlersPocket.addCpsHook = function (building, fun) { this.buildingCpsHooks.push([building, fun]); }
@@ -138,12 +140,15 @@ function _activate(hooks, num) { var n = num; hooks.forEach((hook) => { n = hook
 IdlersPocket.activate = function (type, num) {
     if (type == 'frequency') return _activate(this.gcFreqHooks, num);
     if (type == 'gains') return _activate(this.gcGainsHooks, num);
+    if (type == 'effDuration') return _activate(this.gcDurHooks, num);
     return num;
 }
 
 IdlersPocket.finalizeHooks = function () {
     Game.shimmerTypes.golden.popFunc = en.injectCode(Game.shimmerTypes.golden.popFunc, "if (Game.Has('Dragon fang')) mult*=1.03;",
-        `\n\t\t\tmult=Game.Ip.activate('gains',mult);`, 'after')
+        `\n\t\t\tmult=Game.Ip.activate('gains',mult);`, 'after');
+    Game.shimmerTypes.golden.popFunc = en.injectCode(Game.shimmerTypes.golden.popFunc, "else effectDurMod*=Game.eff('wrathCookieEffDur');",
+        `\n\t\t\teffectDurMod=Game.Ip.activate('effDuration',effectDurMod);`, 'after');
     Game.shimmerTypes.golden.getTimeMod = en.injectCode(Game.shimmerTypes.golden.getTimeMod, "if (Game.Has('Green yeast digestives')) m*=0.99;",
         `\n\t\t\tm=Game.Ip.activate('frequency',m);`, 'after');
     Game.magicCpS = function (what) {
@@ -173,6 +178,22 @@ IdlersPocket.rebuildBigCookieButton = function () {
         AddEvent(bigCookie, 'touchstart', function (event) { Game.BigCookieState = 1; if (event) event.preventDefault(); });
         AddEvent(bigCookie, 'touchend', function (event) { Game.BigCookieState = 0; if (event) event.preventDefault(); });
     }
+}
+
+// the function your father called
+Game.getMilk = function () {
+    Game.milkProgress = Game.AchievementsOwned / 25;
+    var milkMult = 1;
+    if (Game.Has('Santa\'s milk and cookies')) milkMult *= 1.05;
+    milkMult *= 1 + Game.auraMult('Breath of Milk') * 0.05;
+    if (Game.hasGod) {
+        var godLvl = Game.hasGod('mother');
+        if (godLvl == 1) milkMult *= 1.1;
+        else if (godLvl == 2) milkMult *= 1.05;
+        else if (godLvl == 3) milkMult *= 1.03;
+    }
+    milkMult *= Game.eff('milk');
+    return milkMult * Game.milkProgress;
 }
 
 IdlersPocket.id = 0;
