@@ -45,7 +45,7 @@ Game.Ip = IdlersPocket;
 
 IdlersPocket._encryptVars = function () {
     var str = [];
-    IdlersPocket.vars.forEach((key, value) => {
+    IdlersPocket.vars.forEach((value, key) => {
         str.push(utf8_to_b64(key + '*' + value.value));
     })
     return str.join("|");
