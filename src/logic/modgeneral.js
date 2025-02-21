@@ -391,7 +391,7 @@ General._Initialize = function(en, Research) {
         `if (Math.random()<0.1) types.push(1);`,
         "replace");
     Game.computeLumpTimes=en.injectCode(Game.computeLumpTimes,
-        `Game.lumpMatureAge/=1+Game.auraMult('Dragon\'s Curve')*0.05;Game.lumpRipeAge/=1+Game.auraMult('Dragon\'s Curve')*0.05;`,
+        `if (Game.Has('Glucose-charged air')) {Game.lumpMatureAge/=2000;Game.lumpRipeAge/=2000;Game.lumpOverripeAge/=2000;}`,
         `\n\t\t\tif (Game.Has('Sweet yarn lumps')){Game.lumpMatureAge/=1+Game.getMilk()*0.04;Game.lumpRipeAge/=1+Game.getMilk()*0.04;}`,
         "after");
     en.ue.replaceDescPart(Game.Upgrades['Sucralosia Inutilis'], 
@@ -400,7 +400,7 @@ General._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Sweet yarn lumps", "Sugar lumps <b>grow faster</b> the more milk you have."
         +'<q>thank you so meowch for giving meow this highly lickable yarn ball</q>',
-        90000000000000, [18,26], 20000, {});
+        90000000000000, [18,26], 20000, {kitten: 1});
 
     // RANDOM OTHER UPGRADES
 
@@ -554,5 +554,14 @@ General._Initialize = function(en, Research) {
     eval('Game.Logic='+Game.Logic.toString().replace('timePlayed<=1000*60*35','timePlayed<=1000*60*30'));
     eval('Game.Logic='+Game.Logic.toString().replace('timePlayed<=1000*60*25','timePlayed<=1000*60*20'));
     eval('Game.Logic='+Game.Logic.toString().replace('timePlayed<=1000*60*15','timePlayed<=1000*60*10'));
+
+    for (var i in Game.Objects) {
+        var me = Game.Objects[i];
+        eval('me.getPrice'=me.getPrice.toString().replace('Game.priceIncrease','Game.priceIncreaseFunc(this.id)'));
+        eval('me.getSumPrice'=me.getSumPrice.toString().replace('Game.priceIncrease','Game.priceIncreaseFunc(this.id)'));
+        eval('me.getReverseSumPrice'=me.getReverseSumPrice.toString().replace('Game.priceIncrease','Game.priceIncreaseFunc(this.id)'));
+    }
+
+    Game.priceIncreaseFunc = function(id) {return Game.priceIncrease-0.0005*(20-Game.id)};
 }
 export { General }
