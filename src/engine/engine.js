@@ -58,7 +58,7 @@ IdlersPocket._decryptVars = function (str) {
         if (!IdlersPocket.vars.has(itemArr[0])) return;
         if (n.type == 'float') parsed = parseFloat(itemArr[1]);
         if (n.type == 'int') parsed = parseInt(itemArr[1]);
-        if (n.type == 'string') parsed = String(itemArr[1]);
+        if (n.type == 'string') parsed = itemArr[1];
         n.value = parsed;
     });
 }
@@ -194,11 +194,11 @@ eval('Game.CalculateGains='+Game.CalculateGains.toString().replace(
         "mult*=(Game.cookiesPs>0?Game.runModHookOnValue('cps',Game.cookiesPs)/Game.cookiesPs:1);"));
 
 
-Game.ModLoaded=false;
+IdlersPocket.ModLoaded=false;
 IdlersPocket.LoadMod = function (name, initFunc) {
 
     var msave = function() {
-        if (!Game.ModLoaded) return '';
+        if (!IdlersPocket.ModLoaded) return '';
         IdlersPocket.saveCallbacks.forEach((c) => c());
         IdlersPocket.obj_track.forEach((me) => {
             me.variables.forEach((v) => {
@@ -209,7 +209,7 @@ IdlersPocket.LoadMod = function (name, initFunc) {
     }
 
     var mload = function(str) {
-        if (!Game.ModLoaded) return;
+        if (!IdlersPocket.ModLoaded) return;
         IdlersPocket._decryptVars(str);
         IdlersPocket.loadCallbacks.forEach((c) => c());
         IdlersPocket.obj_track.forEach((me) => {
@@ -226,17 +226,16 @@ IdlersPocket.LoadMod = function (name, initFunc) {
             if ((localStorage.getItem('kzythe') === null)&&(!Game.modSaveData['ScytheMod'])){
                 this.startingPrompt();
             } else {
-                this.switchSave();
-                this.initMod();
+                this.loadMod();
             }
         },
     
         save: msave,
         load: mload,
-        switchSave: function () {
+        loadMod: function () {
             Game.WriteSave();
 		    Game.SaveTo = 'kzythe';
-		    Game.LoadSave();
+            this.initMod();
         },
         unloadMod: function() {
             delete Game.mods['ScytheMod'];
@@ -254,7 +253,7 @@ IdlersPocket.LoadMod = function (name, initFunc) {
                     <div class="line"></div>
                     Credits: Hellranger for testing the mod, yeetdragon24 for 'helping' me make this prompt
                 </div>`,
-            [['Continue','scytheModWrapper.switchSave();scytheModWrapper.initMod();Game.ClosePrompt();'], ['No thanks','scytheModWrapper.unloadMod();Game.ClosePrompt();']]);
+            [['Continue','scytheModWrapper.loadMod();Game.ClosePrompt();'], ['No thanks','scytheModWrapper.unloadMod();Game.ClosePrompt();']]);
         }
     }
     Game.registerMod(name, mod);
