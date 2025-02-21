@@ -42,7 +42,7 @@ var CreateMod = function (engine) {
         GetModule(tl, function(l) {
             mod = l.mod;
             mod.Init(en);
-            IdlersPocket.ModLoaded = true;
+            en.ModLoaded = true;
 		    Game.LoadSave();
         })
     })

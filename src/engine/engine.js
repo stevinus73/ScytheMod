@@ -188,7 +188,7 @@ IdlersPocket.createLeftWidget = function (position, sprite, tooltipStr, clickStr
     return l('widget' + this.id);
 }
 
-    // patched orteil bs
+// patched orteil bs
 eval('Game.CalculateGains='+Game.CalculateGains.toString().replace(
     "Game.cookiesPs=Game.runModHookOnValue('cps',Game.cookiesPs);",
         "mult*=(Game.cookiesPs>0?Game.runModHookOnValue('cps',Game.cookiesPs)/Game.cookiesPs:1);"));

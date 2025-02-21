@@ -520,7 +520,7 @@ General._Initialize = function(en, Research) {
         this.timeSinceLast=0;
         this.santaDiff-=0.3;
     }
-
+    // key
     Game.Upgrades['Heavenly key'].basePrice=111111111111111111111;
     en.ue.replaceDesc(Game.Upgrades['Heavenly key'], "You can <b>ascend</b> to a higher plane of existence, leaving behind your cookies."
         +'<br>Ascend by pressing Legacy.'
@@ -542,5 +542,12 @@ General._Initialize = function(en, Research) {
                 '<br>May you use them wisely.</q>'
         }
     });
+    // misc
+    Game.Achievements['Speed baking I'].ddesc=loc("Get to <b>%1</b> baked in <b>%2</b>.",[loc("%1 cookie",LBeautify(1e6)),Game.sayTime(60*30*Game.fps)]);
+    Game.Achievements['Speed baking II'].ddesc=loc("Get to <b>%1</b> baked in <b>%2</b>.",[loc("%1 cookie",LBeautify(1e6)),Game.sayTime(60*20*Game.fps)]);
+    Game.Achievements['Speed baking III'].ddesc=loc("Get to <b>%1</b> baked in <b>%2</b>.",[loc("%1 cookie",LBeautify(1e6)),Game.sayTime(60*10*Game.fps)]);
+    eval('Game.Logic='+Game.Logic.toString().replace('timePlayed<=1000*60*35','timePlayed<=1000*60*30'));
+    eval('Game.Logic='+Game.Logic.toString().replace('timePlayed<=1000*60*25','timePlayed<=1000*60*20'));
+    eval('Game.Logic='+Game.Logic.toString().replace('timePlayed<=1000*60*15','timePlayed<=1000*60*10'));
 }
 export { General }
