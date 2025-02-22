@@ -564,9 +564,9 @@ General._Initialize = function(en, Research) {
 
     for (var i in Game.Objects) {
         var me = Game.Objects[i];
-        eval('Game.Objects['+i+'].getPrice='+me.getPrice.toString().replace('Game.priceIncrease','Game.priceIncreaseFunc(this.id)'));
-        eval('Game.Objects['+i+'].getSumPrice='+me.getSumPrice.toString().replace('Game.priceIncrease','Game.priceIncreaseFunc(this.id)'));
-        eval('Game.Objects['+i+'].getReverseSumPrice='+me.getReverseSumPrice.toString().replace('Game.priceIncrease','Game.priceIncreaseFunc(this.id)'));
+        eval('Game.Objects["'+i+'"].getPrice='+me.getPrice.toString().replace('Game.priceIncrease','Game.priceIncreaseFunc(this.id)'));
+        eval('Game.Objects["'+i+'"].getSumPrice='+me.getSumPrice.toString().replace('Game.priceIncrease','Game.priceIncreaseFunc(this.id)'));
+        eval('Game.Objects["'+i+'"].getReverseSumPrice='+me.getReverseSumPrice.toString().replace('Game.priceIncrease','Game.priceIncreaseFunc(this.id)'));
     }
 
     Game.priceIncreaseFunc = function(id) {return Game.priceIncrease-0.0005*(20-id)};
