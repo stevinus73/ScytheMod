@@ -38,6 +38,8 @@ Research._Initialize = function(en) {
         '#researchAmount{font-size: 12px; color: #6cf; position: absolute; right: 36px; top: 6px; text-align: right; width: 200px;}'+
         '.research.price:before{width:48px;height:48px;left:-20px;top:-14px;'+writeIcon([1, 0, Icons])+'transform:scale(0.5);}'+
         '.noscroll{overflow-y: hidden;}'+
+        '#statsSwitchesButton{cursor: pointer;}</style>'+
+        '#statsSwitches{top: 32px;}</style>'+
         '#researchButton{cursor: pointer;}</style>'
     )
     l("centerArea").insertAdjacentHTML('beforeend', '<div id="research"></div>')
@@ -351,7 +353,13 @@ Research._Initialize = function(en) {
         this.crates.innerHTML = crateStr;
 
         // stats
-        this.stats.innerHTML='<div class="section">'+(EN?"Statistics":loc("Stats"))+'</div>';
+        var str = '<div class="section">Stats and Switches</div>'+
+        '<div class="subsection">'+
+		'<div class="title" style="position:relative;">'+(this.has("Otherworldly sight")?'Esoteric statistics':'???')+
+		'</div><div id="modStats" style="display:'+(this.has("Otherworldly sight")?'block':'none')+';">'+
+        '</div>';
+
+        this.stats.innerHTML = str;
     }
 
     Research.update = function() {
@@ -462,7 +470,8 @@ Research._Initialize = function(en) {
     new Research.Tech("Thinktank", "Direct research gains <b>+10%</b>. <q>Big brains think together!</q>", 200, breq('Cortex baker', 200), f, [5], [34, 0], -0.3, -0.5); // 6
     new Research.Tech("Cookie funding", "You passively gain research <b>faster</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 150, breq('Bank', 250), f, [2], [2, 0, Icons], 0.5, -0.3); //7
     new Research.Tech("Shiny cookies", "Unlocks <b>shiny cookies</b>, special cookies that grant a large CpS multiplier. <div class=\"line\"></div>Shiny cookies' power decreases the more you ascend.", 37, f, f, [1], [2, 1, Icons], -0.4, 0.7); // 8
-    
+    new Research.Tech("Otherworldly sight", "Unlocks <b>esoteric statistics</b>, which give much more information about the mod.", 1, f, f, [1], [27, 26], -0.2, 0.8);
+
     var spr_ref = [0,1,2,3,4,15,16,17,5,6,7,8,13,14,19,20,32,33,34,35];
     var tier_ref = [21,26,27];
     var buildingTree = function(i) {
