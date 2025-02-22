@@ -315,14 +315,13 @@ Research._Initialize = function(en) {
             this.container.style.display = "block";
             l("rows").style.display = "none";
             l("centerArea").style.overflowY = "hidden";
-            this.button.firstChild.textContent = "Close Stats And Switches";
-            this.draw();
+            this.statsButton.firstChild.textContent = "Close Stats And Switches";
             this.switch(false);
         } else {
             this.container.style.display = "none";
             l("rows").style.display = "block";
             l("centerArea").style.overflowY = "auto";
-            this.button.firstChild.textContent = "View Stats And Switches";
+            this.statsButton.firstChild.textContent = "View Stats And Switches";
             if (Game.onMenu == '') {
                 for (var i in Game.Objects) {
                     var me = Game.Objects[i];
