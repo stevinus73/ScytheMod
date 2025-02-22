@@ -282,8 +282,6 @@ G._Initialize = function(en, Research) {
                         Game.getDynamicTooltip('mod.G.rustTooltip', 'this')+'></div>'+
 						'<div style="margin-top:8px;"><span class="title" style="font-size:22px;">Rust: '+Beautify(this.rust*100,1)+'%</span> '
 					'</div>';
-        
-        this.rust = G.accumulateRust(0.0003*(1/120));
     }
     
     Game.registerHook('logic', function() {
