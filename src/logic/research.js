@@ -46,6 +46,18 @@ Research._Initialize = function(en) {
     l("centerArea").insertAdjacentHTML('beforeend', '<div id="statsSwitches"></div>')
     this.container = l("research");
     this.stats = l("statsSwitches");
+    var str = '<div class="section">Stats and Switches</div>'+
+        '<div class="subsection">'+
+		'<div class="title" style="position:relative;">Esoteric statistics'+
+		'</div><div id="modStats" style="display:none;">'+
+        '</div></div>';
+
+    str += '<div class="subsection">'+
+		'<div class="title" style="position:relative;">Switches'+
+		'</div><div id="modGui">'+
+        '</div></div>';
+
+    this.stats.innerHTML = str;
     this.container.insertAdjacentHTML('beforeend', '<div id="researchCrates"></div>')
     this.crates = l("researchCrates");
     this.container.insertAdjacentHTML('beforeend', '<div id="researchContent" style="position: absolute;"></div>')
@@ -353,18 +365,7 @@ Research._Initialize = function(en) {
         this.crates.innerHTML = crateStr;
 
         // stats
-        var str = '<div class="section">Stats and Switches</div>'+
-        '<div class="subsection">'+
-		'<div class="title" style="position:relative;">'+(this.has("Otherworldly sight")?'Esoteric statistics':'???')+
-		'</div><div id="modStats" style="display:'+(this.has("Otherworldly sight")?'block':'none')+';">'+
-        '</div></div>';
-
-        str += '<div class="subsection">'+
-		'<div class="title" style="position:relative;">Switches'+
-		'</div><div id="modGui">'+
-        '</div></div>';
-
-        this.stats.innerHTML = str;
+        l("modStats").style.display=(this.has("Otherworldly sight")?'block':'none');
     }
 
     Research.appendStat = function(str) {
