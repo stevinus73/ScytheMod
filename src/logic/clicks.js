@@ -45,6 +45,11 @@ Clicks._Initialize = function(en, Research) {
     this.gate=en.createLeftWidget([208,16],[15,11],'mod.bModify.gateTooltip','mod.bModify.gate();');
     l('widget0').innerHTML+='<span id="pcInfo" style="position:absolute;top:-32px;left:12px;font-family:\'Merriweather\';font-size:20px;color:#fddfe8;">0/0</span>';
 
+    Research.appendStat('<div class="subsection">'+
+				'<div class="title">Clicks</div>'+
+				'<div id="clickStats"></div>'+
+				'</div>');
+
     Clicks.recalculate = function() {
         var maxClicks = P.baseClicks;
         if (Game.Has("Big clicks")) maxClicks*=2;
@@ -404,6 +409,13 @@ Clicks._Initialize = function(en, Research) {
     Game.registerHook('cps', function(cps) {
         Clicks.recalculate();
         return cps;
+    })
+    Game.registerHook('check', function() {
+        l('clickStats').innerHTML= '<div class="listing"><div class="icon" style="float:left;background-position:'+(-0*48)+'px '+(-0*48)+'px;"></div>'+
+						'<div style="margin-top:8px;"><span class="title" style="font-size:22px;">Clicks: '+Clicks.clicks+' out of '
+                        +Clicks.maxClicks+'</span> '+
+                        '<br>Overflow: <b>'+Clicks.getOverflow()+'</b></div>'+
+					'</div>';
     })
     Game.registerHook('logic', function() {
         Clicks.logic();

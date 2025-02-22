@@ -32,14 +32,14 @@ Research._Initialize = function(en) {
 
     l("centerArea").insertAdjacentHTML('beforeend', 
         '<style>#research{z-index: 1; background: url("img/starbg.jpg"); position: absolute; inset: 40px 0px 0px; display: none; cursor: move;}'+
-        '#statsSwitches{z-index: 1; background: #000 url(img/darkNoise.jpg); position: absolute; inset: 40px 0px 0px; display: none;}'+
+        '#statsSwitches{z-index: 1; background: url("img/starbg.jpg"); position: absolute; inset: 40px 0px 0px; display: none;}'+
         '#researchDisplay{cursor: pointer; position: absolute; right: 0px; bottom: -12px; width: 32px; height: 32px; z-index: 1000; filter:drop-shadow(0px 3px 2px #000); -webkit-filter:drop-shadow(0px 3px 2px #000);}'+
         '#researchIcon{width: 48px; height: 48px; right: -8px; top: -8px; position: absolute; pointer-events: none;}'+
         '#researchAmount{font-size: 12px; color: #6cf; position: absolute; right: 36px; top: 6px; text-align: right; width: 200px;}'+
         '.research.price:before{width:48px;height:48px;left:-20px;top:-14px;'+writeIcon([1, 0, Icons])+'transform:scale(0.5);}'+
         '.noscroll{overflow-y: hidden;}'+
         '#statsSwitchesButton{cursor: pointer;}'+
-        '#statsSwitches{top: 32px;}'+
+        '#statsSwitches{top: 64px;}'+
         '#researchButton{cursor: pointer;}</style>'
     )
     l("centerArea").insertAdjacentHTML('beforeend', '<div id="research"></div>')
@@ -357,13 +357,22 @@ Research._Initialize = function(en) {
         '<div class="subsection">'+
 		'<div class="title" style="position:relative;">'+(this.has("Otherworldly sight")?'Esoteric statistics':'???')+
 		'</div><div id="modStats" style="display:'+(this.has("Otherworldly sight")?'block':'none')+';">'+
-        '</div>';
+        '</div></div>';
+
+        str += '<div class="subsection">'+
+		'<div class="title" style="position:relative;">Switches'+
+		'</div><div id="modGui">'+
+        '</div></div>';
 
         this.stats.innerHTML = str;
     }
 
     Research.appendStat = function(str) {
         l("modStats").insertAdjacentHTML('beforeend', str);
+    }
+
+    Research.appendGui = function(str) {
+        l("modGui").insertAdjacentHTML('beforeend', str);
     }
 
     Research.update = function() {
