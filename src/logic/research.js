@@ -315,11 +315,14 @@ Research._Initialize = function(en) {
         if (on == -1) on = !this.statsOn;
         this.statsOn = on;
         if (this.statsOn) {
+            this.stats.style.display = "block";
             l("rows").style.display = "none";
             l("centerArea").style.overflowY = "hidden";
             this.statsButton.firstChild.textContent = "Close Stats And Switches";
+            this.draw();
             this.switch(false);
         } else {
+            this.stats.style.display = "none";
             l("rows").style.display = "block";
             l("centerArea").style.overflowY = "auto";
             this.statsButton.firstChild.textContent = "View Stats And Switches";
@@ -346,6 +349,9 @@ Research._Initialize = function(en) {
             crateStr += this.trees[i].getCrate();
         }
         this.crates.innerHTML = crateStr;
+
+        // stats
+        this.stats.innerHTML='<div class="section">'+(EN?"Statistics":loc("Stats"))+'</div>';
     }
 
     Research.update = function() {
