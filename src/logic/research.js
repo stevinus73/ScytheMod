@@ -32,6 +32,7 @@ Research._Initialize = function(en) {
 
     l("centerArea").insertAdjacentHTML('beforeend', 
         '<style>#research{z-index: 1; background: url("img/starbg.jpg"); position: absolute; inset: 40px 0px 0px; display: none; cursor: move;}'+
+        '#statsSwitches{z-index: 1; background: #000 url(img/darkNoise.jpg); position: absolute; inset: 40px 0px 0px; display: none;}'+
         '#researchDisplay{cursor: pointer; position: absolute; right: 0px; bottom: -12px; width: 32px; height: 32px; z-index: 1000; filter:drop-shadow(0px 3px 2px #000); -webkit-filter:drop-shadow(0px 3px 2px #000);}'+
         '#researchIcon{width: 48px; height: 48px; right: -8px; top: -8px; position: absolute; pointer-events: none;}'+
         '#researchAmount{font-size: 12px; color: #6cf; position: absolute; right: 36px; top: 6px; text-align: right; width: 200px;}'+
@@ -40,7 +41,9 @@ Research._Initialize = function(en) {
         '#researchButton{cursor: pointer;}</style>'
     )
     l("centerArea").insertAdjacentHTML('beforeend', '<div id="research"></div>')
+    l("centerArea").insertAdjacentHTML('beforeend', '<div id="statsSwitches"></div>')
     this.container = l("research");
+    this.stats = l("statsSwitches");
     this.container.insertAdjacentHTML('beforeend', '<div id="researchCrates"></div>')
     this.crates = l("researchCrates");
     this.container.insertAdjacentHTML('beforeend', '<div id="researchContent" style="position: absolute;"></div>')
@@ -250,11 +253,11 @@ Research._Initialize = function(en) {
             var classes = 'crate upgrade';
             if (this.curr) classes += ' enabled';
             var clickStr = `mod.research.setCurrTree('`+this.name+`');mod.research.draw();`;
-            return '<div data-id="'+this.name+"tree"+'" '+Game.clickStr+'="'+clickStr+'"'+
-            ' class="'+classes+'" '+Game.getDynamicTooltip(`mod.research.trees['`+this.name+`'].getTooltip`, 
+            return '<div data-id="'+this.name+"tree"+'" '+Game.clickStr+'="'+clickStr+'"'
+            +' class="'+classes+'" '+Game.getDynamicTooltip(`mod.research.trees['`+this.name+`'].getTooltip`, 
                 'top', true)
             +' id="researchTreeCrate'+this.name+'" '+
-            'style="'+writeIcon(this.sprite)+' z-index:2;"></div>';
+            'style="'+writeIcon(this.sprite)+' z-index:2; top:64px;"></div>';
         }
 
         this.getTooltip = function() {
