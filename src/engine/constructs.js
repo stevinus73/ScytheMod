@@ -1,7 +1,5 @@
 import {injectCode, injectCodes} from "./utils.js";
 
-var FirstUpgrade=Game.UpgradesById.length;
-
 var building_engine={};
 var achiev_engine={};
 achiev_engine.achievementQueue = [];
@@ -82,13 +80,13 @@ var Process = function(en) {
     en.saveCallback(function () {
         var toCompress = [];
         upgrade_engine.upgradeQueue.forEach(function (up) {
-            toCompress.push(up.me.id, [Math.min(up.me.unlocked, 1), Math.min(up.me.bought, 1)].join(''));
+            toCompress.push(up.me.name, [Math.min(up.me.unlocked, 1), Math.min(up.me.bought, 1)].join(''));
         })
         en.setVar("upPacked", toCompress.join(' '));
 
         toCompress = [];
         achiev_engine.achievementQueue.forEach(function (achiev) {
-            toCompress.push(achiev.me.id, Math.min(achiev.me.won));
+            toCompress.push(achiev.me.name, Math.min(achiev.me.won));
         })
         en.setVar("achPacked", toCompress.join(' '));
     })
@@ -98,9 +96,8 @@ var Process = function(en) {
             var spl = en.getVar("upPacked").split(' ');
             if ((spl.length % 2 == 0) && (spl.length > 0)) {
                 for (var i = 0; i < spl.length; i += 2) {
-                    var mestr = [spl[i], spl[i + 1]];
-                    var me = Game.UpgradesById[parseInt(mestr[0])];
-                    var packedstr = mestr[1].split('');
+                    var me = Game.Upgrades[parseInt(spl[i])];
+                    var packedstr = spl[i + 1].split('');
                     me.unlocked = parseInt(packedstr[0]); me.bought = parseInt(packedstr[1]);
                     if (me.bought && Game.CountsAsUpgradeOwned(me.pool)) Game.UpgradesOwned++;
                 }
@@ -110,9 +107,8 @@ var Process = function(en) {
             spl = en.getVar("achPacked").split(' ');
             if ((spl.length % 2 == 0) && (spl.length > 0)) {
                 for (var i = 0; i < spl.length; i += 2) {
-                    var mestr = [spl[i], spl[i + 1]];
-                    var me = Game.AchievementsById[parseInt(mestr[0])];
-                    me.won = parseInt(mestr[1]);
+                    var me = Game.Achievements[parseInt(spl[i])];
+                    me.won = parseInt([i + 1]);
                     if (me.bought && Game.CountsAsAchievementOwned(me.pool)) Game.AchievementsOwned++;
                 }
             }
