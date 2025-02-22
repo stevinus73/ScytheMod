@@ -308,9 +308,9 @@ G._Initialize = function(en, Research) {
 
     G.accumulateRust = function(n) {
         var amnt = n;
-        amnt *= Math.max((1/3)*Math.LN10(Math.max(Game.BuildingsOwned,1)),1);
-        amnt *= Math.max((2/3)*Math.LN10(Math.max(Game.AchievementsOwned,1)),1);
-        amnt *= Math.max((2/3)*Math.LN10(Math.max(Game.UpgradesOwned,1)),1);
+        amnt *= Math.max((1/3)*Math.log10(Math.max(Game.BuildingsOwned,1)),1);
+        amnt *= Math.max((2/3)*Math.log10(Math.max(Game.AchievementsOwned,1)),1);
+        amnt *= Math.max((2/3)*Math.log10(Math.max(Game.UpgradesOwned,1)),1);
         amnt *= (1+this.rust);
         amnt *= 0.7 + 0.6*Math.random();
         this.rust = Math.min(1, this.rust+amnt);
