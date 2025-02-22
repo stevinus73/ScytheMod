@@ -23,8 +23,8 @@ Research._Initialize = function(en) {
     str += 'background: url(//cdn.dashnet.org/cookieclicker/img/shadedBorders.png),url(//cdn.dashnet.org/cookieclicker/img/BGmarket.jpg)" '
     str += 'onclick="mod.research.switchStats(-1)">'
     str += '<div>View Stats And Switches</div></div>'
-    this.statsButton = l("statsSwitchesButton");
     l("buildingsMaster").insertAdjacentHTML('afterbegin', str);
+    this.statsButton = l("statsSwitchesButton");
 
 
     this.researchOn = false;
