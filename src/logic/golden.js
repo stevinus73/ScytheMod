@@ -292,11 +292,15 @@ G._Initialize = function(en, Research) {
     G.me.missFunc = en.injectCode(G.me.missFunc, "if (me.spawnLead) Game.missedGoldenClicks++;", "\n\t\t\tG.clearRust();", "after");
 
     G.accumulateRust = function() {
-
+        var amnt = 0.07;
+        this.rust = Math.min(1, this.rust+amnt);
     }
 
     G.clearRust = function() {
-        
+        var amnt = 0.03;
+        this.rust = Math.max(0, this.rust-amnt);
+		Game.Popup('<div style="font-size:80%;">Rust cleared!</div>',Game.mouseX,Game.mouseY);
+        Game.SparkleAt(Game.mouseX,Game.mouseY);
     }
 }
 

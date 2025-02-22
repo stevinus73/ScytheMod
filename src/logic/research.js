@@ -16,7 +16,20 @@ Research._Initialize = function(en) {
     l("buildingsMaster").style.zIndex=2;
     l("buildingsMaster").insertAdjacentHTML('afterbegin', str);
     this.button = l("researchButton");
+
+
+    str = '';
+    str += '<div class="smallFancyButton framed" id="statsButton" style="margin-top: 0px; position:relative;' 
+    str += 'background: url(//cdn.dashnet.org/cookieclicker/img/shadedBorders.png),url(//cdn.dashnet.org/cookieclicker/img/BGmarket.jpg)" '
+    str += 'onclick="mod.research.switchStats(-1)">'
+    str += '<div>View Stats And Switches</div></div>'
+    this.statsButton = l("statsButton");
+    l("buildingsMaster").insertAdjacentHTML('afterbegin', str);
+
+
     this.researchOn = false;
+    this.statsOn = false;
+
     l("centerArea").insertAdjacentHTML('beforeend', 
         '<style>#research{z-index: 1; background: url("img/starbg.jpg"); position: absolute; inset: 40px 0px 0px; display: none; cursor: move;}'+
         '#researchDisplay{cursor: pointer; position: absolute; right: 0px; bottom: -12px; width: 32px; height: 32px; z-index: 1000; filter:drop-shadow(0px 3px 2px #000); -webkit-filter:drop-shadow(0px 3px 2px #000);}'+
@@ -279,6 +292,7 @@ Research._Initialize = function(en) {
             l("centerArea").style.overflowY = "hidden";
             this.button.firstChild.textContent = "Close Research";
             this.draw();
+            this.switchStats(false);
         } else {
             this.container.style.display = "none";
             l("rows").style.display = "block";
@@ -294,8 +308,34 @@ Research._Initialize = function(en) {
         }
     }
 
+    Research.switchStats = function(on) {
+        if (on == -1) on = !this.statsOn;
+        this.statsOn = on;
+        if (this.statsOn) {
+            this.container.style.display = "block";
+            l("rows").style.display = "none";
+            l("centerArea").style.overflowY = "hidden";
+            this.button.firstChild.textContent = "Close Stats And Switches";
+            this.draw();
+            this.switch(false);
+        } else {
+            this.container.style.display = "none";
+            l("rows").style.display = "block";
+            l("centerArea").style.overflowY = "auto";
+            this.button.firstChild.textContent = "View Stats And Switches";
+            if (Game.onMenu == '') {
+                for (var i in Game.Objects) {
+                    var me = Game.Objects[i];
+                    me.toResize = true;
+                    if (me.minigame && me.minigame.onResize) me.minigame.onResize();
+                }
+            }
+        }
+    }
+
     Research.clear = function() {
         this.switch(false);
+        this.switchStats(false);
     }
 
     Research.draw = function() {
@@ -336,7 +376,7 @@ Research._Initialize = function(en) {
 
         var ts = 'translate('+Math.floor(-this.userX)+'px,'+Math.floor(-this.userY)+'px)';
         this.content.style.transform = ts;
-        if (Game.onMenu != '') this.switch(false);
+        if (Game.onMenu != '') {this.switch(false);this.switchStats(false);}
 
         this.num.textContent = this.research;
     }
@@ -654,6 +694,8 @@ Research._Initialize = function(en) {
     tieredTree(19, 3, "Genetic clone selection", "Recloning the DNA of existing clones allows natural selection to take place, as due to errors in the gene copying mechanism, some clones are more efficient than others. Maybe, with enough time, they could even surpass you?") // 3
 
     this.setCurrTree("General");
+
+    // stats n' switches
 
     for (var i in Research.trees) {
         Research.trees[i].upgrades.forEach(function(up) {

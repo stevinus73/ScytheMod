@@ -20,6 +20,13 @@ General._Initialize = function(en, Research) {
     en.ue.strReplace(Game.Upgrades['Trillion fingers'], "20", "10");
     en.ue.strReplace(Game.Upgrades['Quadrillion fingers'], "20", "10");
     en.ue.strReplace(Game.Upgrades['Quintillion fingers'], "20", "10");
+    Game.Upgrades['Thousand fingers'].basePrice /= 25;
+    Game.Upgrades['Sextillion fingers'].basePrice *= 10**3;
+    Game.Upgrades['Septillion fingers'].basePrice *= 10**6;
+    Game.Upgrades['Octillion fingers'].basePrice *= 10**9;
+    Game.Upgrades['Nonillion fingers'].basePrice *= 10**12;
+    Game.Upgrades['Decillion fingers'].basePrice *= 10**15;
+    Game.Upgrades['Undecillion fingers'].basePrice *= 10**18;
 
     /**
      * Name changes + effect deletion (uses eval but this shouldn't really matter due to Game.loadMinigames rarely being called)
@@ -555,13 +562,13 @@ General._Initialize = function(en, Research) {
     eval('Game.Logic='+Game.Logic.toString().replace('timePlayed<=1000*60*25','timePlayed<=1000*60*20'));
     eval('Game.Logic='+Game.Logic.toString().replace('timePlayed<=1000*60*15','timePlayed<=1000*60*10'));
 
-    // for (var i in Game.Objects) {
-    //     var me = Game.Objects[i];
-    //     eval('me.getPrice'=me.getPrice.toString().replace('Game.priceIncrease','Game.priceIncreaseFunc(this.id)'));
-    //     eval('me.getSumPrice'=me.getSumPrice.toString().replace('Game.priceIncrease','Game.priceIncreaseFunc(this.id)'));
-    //     eval('me.getReverseSumPrice'=me.getReverseSumPrice.toString().replace('Game.priceIncrease','Game.priceIncreaseFunc(this.id)'));
-    // }
+    for (var i in Game.Objects) {
+        var me = Game.Objects[i];
+        eval('Game.Objects['+i+'].getPrice='+me.getPrice.toString().replace('Game.priceIncrease','Game.priceIncreaseFunc(this.id)'));
+        eval('Game.Objects['+i+'].getSumPrice='+me.getSumPrice.toString().replace('Game.priceIncrease','Game.priceIncreaseFunc(this.id)'));
+        eval('Game.Objects['+i+'].getReverseSumPrice='+me.getReverseSumPrice.toString().replace('Game.priceIncrease','Game.priceIncreaseFunc(this.id)'));
+    }
 
-    // Game.priceIncreaseFunc = function(id) {return Game.priceIncrease-0.0005*(20-id)};
+    Game.priceIncreaseFunc = function(id) {return Game.priceIncrease-0.0005*(20-id)};
 }
 export { General }
