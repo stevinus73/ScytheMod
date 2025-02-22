@@ -38,8 +38,8 @@ Research._Initialize = function(en) {
         '#researchAmount{font-size: 12px; color: #6cf; position: absolute; right: 36px; top: 6px; text-align: right; width: 200px;}'+
         '.research.price:before{width:48px;height:48px;left:-20px;top:-14px;'+writeIcon([1, 0, Icons])+'transform:scale(0.5);}'+
         '.noscroll{overflow-y: hidden;}'+
-        '#statsSwitchesButton{cursor: pointer;}</style>'+
-        '#statsSwitches{top: 32px;}</style>'+
+        '#statsSwitchesButton{cursor: pointer;}'+
+        '#statsSwitches{top: 32px;}'+
         '#researchButton{cursor: pointer;}</style>'
     )
     l("centerArea").insertAdjacentHTML('beforeend', '<div id="research"></div>')
@@ -360,6 +360,10 @@ Research._Initialize = function(en) {
         '</div>';
 
         this.stats.innerHTML = str;
+    }
+
+    Research.appendStat = function(str) {
+        l("modStats").insertAdjacentHTML('beforeend', str);
     }
 
     Research.update = function() {
