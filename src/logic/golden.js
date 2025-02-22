@@ -277,6 +277,11 @@ G._Initialize = function(en, Research) {
 
         var effs=G.currEffs();
         if (effs.length>this.maxEffs) Game.killBuff(choose(effs));
+
+        l("rustStats").innerHTML='<div class="listing"><div class="icon" style="float:left;background-position:'+(-0*48)+'px '+(-0*48)+'px;" '+
+                        Game.getDynamicTooltip('mod.G.rustTooltip', 'this')+'></div>'+
+						'<div style="margin-top:8px;"><span class="title" style="font-size:22px;">Rust: '+Beautify(this.rust*100,2)+'%</span> '
+					'</div>';
     }
     
     Game.registerHook('logic', function() {
@@ -291,16 +296,26 @@ G._Initialize = function(en, Research) {
     G.me.popFunc = en.injectCode(G.me.popFunc, "Game.DropEgg(0.9);", "\n\t\t\tG.accumulateRust();", "after");
     G.me.missFunc = en.injectCode(G.me.missFunc, "if (me.spawnLead) Game.missedGoldenClicks++;", "\n\t\t\tG.clearRust();", "after");
 
+    Research.appendStat('<div class="subsection"><div class="title">Rust</div><div id="rustStats"></div></div>');
+
     G.accumulateRust = function() {
-        var amnt = 0.07;
+        var amnt = 0.03;
+        amnt *= 0.7 + 0.6*Math.random();
         this.rust = Math.min(1, this.rust+amnt);
     }
 
     G.clearRust = function() {
-        var amnt = 0.03;
+        var amnt = 0.02;
+        amnt *= 0.7 + 0.6*Math.random();
         this.rust = Math.max(0, this.rust-amnt);
 		Game.Popup('<div style="font-size:80%;">Rust cleared!</div>',Game.mouseX,Game.mouseY);
         Game.SparkleAt(Game.mouseX,Game.mouseY);
+    }
+
+    G.rustTooltip = function() {
+        var str = "<b>Rust</b> accumulates when clicking golden cookies.";
+        str += "<br>skill issue.";
+        return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+str+'</div>';
     }
 }
 
