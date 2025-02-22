@@ -84,74 +84,74 @@ General._Initialize = function(en, Research) {
         function gardenEval(fstr){return fstr.replace('{',"{M=Game.Objects.Farm.minigame;").replaceAll('y<6;','y<7;').replaceAll('x<6;','x<7;')};
         if (Game.Objects.Farm.minigame) {
             var m = Game.Objects.Farm.minigame;
-            m.resetPlot = function() {
-                m.plot=Array(7).fill([0,0]).map(() => Array(7))
-                m.plotBoost=Array(7).fill([1,1,1]).map(() => Array(7))
-            }
-            m.resetPlot();
-            m.getNumPlants = function() {
-                var plants=0;
-                for (var y=0;y<7;y++) {
-                    for (var x=0;x<7;x++) {
-                        if (this.plot[y][x]>0) plants++;
-                    }
-                }
-                return plants;
-            }
-            eval("Game.Objects.Farm.minigame.buildPlot="+gardenEval(m.buildPlot.toString())
-                .replace('Math.min(6,Y+s+1)','Math.min(7,Y+s+1)')
-                .replace('Math.min(6,X+s+1)','Math.min(7,X+s+1)')
-                .replace('if (plants>=6*6)','if (plants>=7*7)')
-                .replace("if (!l('gardenTile-0-0'))","if (!l('gardenTile-7-7'))"));
-            eval("Game.Objects.Farm.minigame.computeBoostPlot="+gardenEval(m.computeBoostPlot.toString()));
-            eval("Game.Objects.Farm.minigame.reset="+gardenEval(m.reset.toString()));
-            eval("Game.Objects.Farm.minigame.logic="+gardenEval(m.logic.toString())
-                .replace(`if (M.soilsById[M.soil].key=='pebbles' && Math.random()<0.35)`, 'if (false)'));
-            // all plants become 5% less efficient per plant placed above the max of 36
-            eval("Game.Objects.Farm.minigame.computeEffs="+gardenEval(m.computeEffs.toString())
-                    .replace('mult*=M.plotBoost[y][x][1];','mult*=M.plotBoost[y][x][1];mult*=Math.pow(0.95,Math.max(M.getNumPlants()-36,0));'));
-            eval("Game.Objects.Farm.minigame.harvestAll="+gardenEval(m.harvestAll.toString()));
-            eval("Game.Objects.Farm.minigame.save="+gardenEval(m.save.toString()));
-            eval("Game.Objects.Farm.minigame.getTile="+m.getTile.toString().replace('x>5','x>6').replace('y>5','y>6'));
-            eval("Game.Objects.Farm.minigame.tools['freeze'].func="+gardenEval(m.tools['freeze'].func.toString()));
-            eval("Game.Objects.Farm.minigame.harvest="+m.harvest.toString().replace('M.plot[y][x]=[0,0];',
-                `if (tile[1]<me.mature && M.soilsById[M.soil].key=='pebbles' && Math.random()<0.35){`+
-                `if (M.unlockSeed(me)){Game.Popup('('+me.name+')<br>'+loc("Unlocked %1 seed.",me.name),Game.mouseX,Game.mouseY)}};\n\t\tM.plot[y][x]=[0,0];`));
-            m.plotLimits=[
-                [1,1,5,5],
-                [1,1,6,5],
-                [1,1,6,6],
-                [0,1,6,6],
-                [0,0,6,6],
-                [0,0,6,7],
-                [0,0,7,7]
-            ];
-            if (l('gardenPlot')){ l('gardenPlot').style.width='280px'; l('gardenPlot').style.height='280px'; }
-            if (l('gardenContent')) {l('gardenContent').style.height='392px'; }
+            // m.resetPlot = function() {
+            //     m.plot=Array(7).fill([0,0]).map(() => Array(7))
+            //     m.plotBoost=Array(7).fill([1,1,1]).map(() => Array(7))
+            // }
+            // m.resetPlot();
+            // m.getNumPlants = function() {
+            //     var plants=0;
+            //     for (var y=0;y<7;y++) {
+            //         for (var x=0;x<7;x++) {
+            //             if (this.plot[y][x]>0) plants++;
+            //         }
+            //     }
+            //     return plants;
+            // }
+            // eval("Game.Objects.Farm.minigame.buildPlot="+gardenEval(m.buildPlot.toString())
+            //     .replace('Math.min(6,Y+s+1)','Math.min(7,Y+s+1)')
+            //     .replace('Math.min(6,X+s+1)','Math.min(7,X+s+1)')
+            //     .replace('if (plants>=6*6)','if (plants>=7*7)')
+            //     .replace("if (!l('gardenTile-0-0'))","if (!l('gardenTile-7-7'))"));
+            // eval("Game.Objects.Farm.minigame.computeBoostPlot="+gardenEval(m.computeBoostPlot.toString()));
+            // eval("Game.Objects.Farm.minigame.reset="+gardenEval(m.reset.toString()));
+            // eval("Game.Objects.Farm.minigame.logic="+gardenEval(m.logic.toString())
+            //     .replace(`if (M.soilsById[M.soil].key=='pebbles' && Math.random()<0.35)`, 'if (false)'));
+            // // all plants become 5% less efficient per plant placed above the max of 36
+            // eval("Game.Objects.Farm.minigame.computeEffs="+gardenEval(m.computeEffs.toString())
+            //         .replace('mult*=M.plotBoost[y][x][1];','mult*=M.plotBoost[y][x][1];mult*=Math.pow(0.95,Math.max(M.getNumPlants()-36,0));'));
+            // eval("Game.Objects.Farm.minigame.harvestAll="+gardenEval(m.harvestAll.toString()));
+            // eval("Game.Objects.Farm.minigame.save="+gardenEval(m.save.toString()));
+            // eval("Game.Objects.Farm.minigame.getTile="+m.getTile.toString().replace('x>5','x>6').replace('y>5','y>6'));
+            // eval("Game.Objects.Farm.minigame.tools['freeze'].func="+gardenEval(m.tools['freeze'].func.toString()));
+            // eval("Game.Objects.Farm.minigame.harvest="+m.harvest.toString().replace('M.plot[y][x]=[0,0];',
+            //     `if (tile[1]<me.mature && M.soilsById[M.soil].key=='pebbles' && Math.random()<0.35){`+
+            //     `if (M.unlockSeed(me)){Game.Popup('('+me.name+')<br>'+loc("Unlocked %1 seed.",me.name),Game.mouseX,Game.mouseY)}};\n\t\tM.plot[y][x]=[0,0];`));
+            // m.plotLimits=[
+            //     [1,1,5,5],
+            //     [1,1,6,5],
+            //     [1,1,6,6],
+            //     [0,1,6,6],
+            //     [0,0,6,6],
+            //     [0,0,6,7],
+            //     [0,0,7,7]
+            // ];
+            // if (l('gardenPlot')){ l('gardenPlot').style.width='280px'; l('gardenPlot').style.height='280px'; }
+            // if (l('gardenContent')) {l('gardenContent').style.height='392px'; }
 
-            m.toRebuild=true;
-            // soils change
-            m.soils.dirt.tick=3;
-            m.soils.dirt.effsStr=m.soils.dirt.effsStr.replace(
-                loc("tick every %1",'<b>'+Game.sayTime(5*60*Game.fps)+'</b>'),
-                loc("tick every %1",'<b>'+Game.sayTime(3*60*Game.fps)+'</b>')
-            )
-            m.soils.fertilizer.tick=2;
-            m.soils.fertilizer.effsStr=m.soils.fertilizer.effsStr.replace(
-                loc("tick every %1",'<b>'+Game.sayTime(3*60*Game.fps)+'</b>'),
-                loc("tick every %1",'<b>'+Game.sayTime(2*60*Game.fps)+'</b>')
-            )
-            m.soils.pebbles.tick=10;
-            m.soils.pebbles.effsStr=m.soils.pebbles.effsStr.replace(
-                loc("tick every %1",'<b>'+Game.sayTime(5*60*Game.fps)+'</b>'),
-                loc("tick every %1",'<b>'+Game.sayTime(10*60*Game.fps)+'</b>')
-            ).replace("of collecting seeds automatically when plants expire", 
-                "of collecting seeds when unearthing plants");
-            m.soils.woodchips.tick=3;
-            m.soils.woodchips.effsStr=m.soils.woodchips.effsStr.replace(
-                loc("tick every %1",'<b>'+Game.sayTime(5*60*Game.fps)+'</b>'),
-                loc("tick every %1",'<b>'+Game.sayTime(3*60*Game.fps)+'</b>')
-            )
+            // m.toRebuild=true;
+            // // soils change
+            // m.soils.dirt.tick=3;
+            // m.soils.dirt.effsStr=m.soils.dirt.effsStr.replace(
+            //     loc("tick every %1",'<b>'+Game.sayTime(5*60*Game.fps)+'</b>'),
+            //     loc("tick every %1",'<b>'+Game.sayTime(3*60*Game.fps)+'</b>')
+            // )
+            // m.soils.fertilizer.tick=2;
+            // m.soils.fertilizer.effsStr=m.soils.fertilizer.effsStr.replace(
+            //     loc("tick every %1",'<b>'+Game.sayTime(3*60*Game.fps)+'</b>'),
+            //     loc("tick every %1",'<b>'+Game.sayTime(2*60*Game.fps)+'</b>')
+            // )
+            // m.soils.pebbles.tick=10;
+            // m.soils.pebbles.effsStr=m.soils.pebbles.effsStr.replace(
+            //     loc("tick every %1",'<b>'+Game.sayTime(5*60*Game.fps)+'</b>'),
+            //     loc("tick every %1",'<b>'+Game.sayTime(10*60*Game.fps)+'</b>')
+            // ).replace("of collecting seeds automatically when plants expire", 
+            //     "of collecting seeds when unearthing plants");
+            // m.soils.woodchips.tick=3;
+            // m.soils.woodchips.effsStr=m.soils.woodchips.effsStr.replace(
+            //     loc("tick every %1",'<b>'+Game.sayTime(5*60*Game.fps)+'</b>'),
+            //     loc("tick every %1",'<b>'+Game.sayTime(3*60*Game.fps)+'</b>')
+            // )
 
         }
     }

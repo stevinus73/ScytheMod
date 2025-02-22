@@ -312,13 +312,11 @@ Research._Initialize = function(en) {
         if (on == -1) on = !this.statsOn;
         this.statsOn = on;
         if (this.statsOn) {
-            this.container.style.display = "block";
             l("rows").style.display = "none";
             l("centerArea").style.overflowY = "hidden";
             this.statsButton.firstChild.textContent = "Close Stats And Switches";
             this.switch(false);
         } else {
-            this.container.style.display = "none";
             l("rows").style.display = "block";
             l("centerArea").style.overflowY = "auto";
             this.statsButton.firstChild.textContent = "View Stats And Switches";
