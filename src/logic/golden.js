@@ -6,7 +6,7 @@ G._Initialize = function(en, Research) {
     // for stats
     this.fortunesEarned = 0;
 
-    en.trackVars(G,[['maxEffs','fortunesEarned']]);
+    en.trackVars(G,[['maxEffs','fortunesEarned', 'rust']]);
 
     // tweaking around some stuffs lel
     G.me.popFunc = en.injectCode(G.me.popFunc, 
@@ -278,10 +278,12 @@ G._Initialize = function(en, Research) {
         var effs=G.currEffs();
         if (effs.length>this.maxEffs) Game.killBuff(choose(effs));
 
-        l("rustStats").innerHTML='<div class="listing"><div class="icon" style="float:left;background-position:'+(-0*48)+'px '+(-0*48)+'px;" '+
+        l("rustStats").innerHTML='<div class="listing"><div class="icon" style="float:left;background-position:'+(-15*48)+'px '+(-5*48)+'px;" '+
                         Game.getDynamicTooltip('mod.G.rustTooltip', 'this')+'></div>'+
-						'<div style="margin-top:8px;"><span class="title" style="font-size:22px;">Rust: '+Beautify(this.rust*100,2)+'%</span> '
+						'<div style="margin-top:8px;"><span class="title" style="font-size:22px;">Rust: '+Beautify(this.rust*100,1)+'%</span> '
 					'</div>';
+        
+        this.rust = G.accumulateRust(0.0003*(1/120));
     }
     
     Game.registerHook('logic', function() {
@@ -293,19 +295,30 @@ G._Initialize = function(en, Research) {
     en.addGcHook('frequency',function(m){return m/(1.3-0.8*G.rust);})
     en.addGcHook('effDuration',function(m){return m*(1-0.5*G.rust);})
 
-    G.me.popFunc = en.injectCode(G.me.popFunc, "Game.DropEgg(0.9);", "\n\t\t\tmod.G.accumulateRust();", "after");
-    G.me.missFunc = en.injectCode(G.me.missFunc, "if (me.spawnLead) Game.missedGoldenClicks++;", "\n\t\t\tmod.G.clearRust();", "after");
+    G.me.popFunc = en.injectCode(G.me.popFunc, "Game.DropEgg(0.9);", "\n\t\t\tmod.G.accumulateRustGc(me.spawnLead);", "after");
+    G.me.missFunc = en.injectCode(G.me.missFunc, "if (me.spawnLead) Game.missedGoldenClicks++;", "\n\t\t\tmod.G.clearRust(me.spawnLead);", "after");
 
     Research.appendStat('<div class="subsection"><div class="title">Rust</div><div id="rustStats"></div></div>');
 
-    G.accumulateRust = function() {
-        var amnt = 0.03;
+    G.accumulateRustGc = function(isNat) {
+        var amnt = 0.01;
+        if (!isNat) amnt *= 0.2;
+        this.accumulateRust(amnt);
+    }
+
+    G.accumulateRust = function(n) {
+        var amnt = n;
+        amnt *= Math.max((1/3)*Math.LN10(Math.max(Game.BuildingsOwned,1)),1);
+        amnt *= Math.max((2/3)*Math.LN10(Math.max(Game.AchievementsOwned,1)),1);
+        amnt *= Math.max((2/3)*Math.LN10(Math.max(Game.UpgradesOwned,1)),1);
+        amnt *= (1+this.rust);
         amnt *= 0.7 + 0.6*Math.random();
         this.rust = Math.min(1, this.rust+amnt);
     }
 
-    G.clearRust = function() {
-        var amnt = 0.02;
+    G.clearRust = function(isNat) {
+        var amnt = 0.04;
+        if (!isNat) amnt *= 0.03;
         amnt *= 0.7 + 0.6*Math.random();
         this.rust = Math.max(0, this.rust-amnt);
 		Game.Popup('<div style="font-size:80%;">Rust cleared!</div>',Game.mouseX,Game.mouseY);
@@ -313,8 +326,9 @@ G._Initialize = function(en, Research) {
     }
 
     G.rustTooltip = function() {
-        var str = "<b>Rust</b> accumulates when clicking golden cookies.";
-        str += "<br>skill issue.";
+        var str = "<b>Rust</b> accumulates when clicking golden cookies, or slowly naturally.";
+        str += "<br>Having rust lowers golden cookie frequency and effect duration.";
+        str += "<br>You can reverse rust by letting golden cookies disappear.";
         return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+str+'</div>';
     }
 }
