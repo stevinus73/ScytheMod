@@ -108,7 +108,7 @@ G._Initialize = function(en, Research) {
         "before"
     )
 
-    en.ae.addAchievement("Elder fortune", "Obtain the Fortune buff <b>during an elder frenzy</b>.",
+    en.ae.addAchievement("Elder fortune", "Obtain the Fortune effect <b>during an elder frenzy</b>.",
         [27, 6], "Eldeer", {});
 
     G.fortuneEarn = function(mult) {
@@ -287,48 +287,6 @@ G._Initialize = function(en, Research) {
     Game.registerHook('logic', function() {
         if (Game.T%(Game.fps)==0) G.update();
     });
-
-    // rust
-    this.rust = 0;
-    en.addGcHook('frequency',function(m){return m/(1.3-0.8*G.rust);})
-    en.addGcHook('effDuration',function(m){return m*(1-0.5*G.rust);})
-
-    G.me.popFunc = en.injectCode(G.me.popFunc, "Game.DropEgg(0.9);", "\n\t\t\tmod.G.accumulateRustGc(me.spawnLead);", "after");
-    G.me.missFunc = en.injectCode(G.me.missFunc, "if (me.spawnLead) Game.missedGoldenClicks++;", "\n\t\t\tmod.G.clearRust(me.spawnLead);", "after");
-
-    Research.appendStat('<div class="subsection"><div class="title">Rust</div><div id="rustStats"></div></div>');
-
-    G.accumulateRustGc = function(isNat) {
-        var amnt = 0.01;
-        if (!isNat) amnt *= 0.2;
-        this.accumulateRust(amnt);
-    }
-
-    G.accumulateRust = function(n) {
-        var amnt = n;
-        amnt *= Math.max((1/3)*Math.log10(Math.max(Game.BuildingsOwned,1)),1);
-        amnt *= Math.max((2/3)*Math.log10(Math.max(Game.AchievementsOwned,1)),1);
-        amnt *= Math.max((2/3)*Math.log10(Math.max(Game.UpgradesOwned,1)),1);
-        amnt *= (1+this.rust);
-        amnt *= 0.7 + 0.6*Math.random();
-        this.rust = Math.min(1, this.rust+amnt);
-    }
-
-    G.clearRust = function(isNat) {
-        var amnt = 0.04;
-        if (!isNat) amnt *= 0.03;
-        amnt *= 0.7 + 0.6*Math.random();
-        this.rust = Math.max(0, this.rust-amnt);
-		Game.Popup('<div style="font-size:80%;">Rust cleared!</div>',Game.mouseX,Game.mouseY);
-        Game.SparkleAt(Game.mouseX,Game.mouseY);
-    }
-
-    G.rustTooltip = function() {
-        var str = "<b>Rust</b> accumulates when clicking golden cookies, or slowly naturally.";
-        str += "<br>Having rust lowers golden cookie frequency and effect duration.";
-        str += "<br>You can reverse rust by letting golden cookies disappear.";
-        return '<div style="padding:8px;width:300px;font-size:11px;text-align:center;">'+str+'</div>';
-    }
 }
 
 export {G}

@@ -408,6 +408,25 @@ General._Initialize = function(en, Research) {
     en.ue.addUpgrade("Sweet yarn lumps", "Sugar lumps <b>grow faster</b> the more milk you have."
         +'<q>thank you so meowch for giving meow this highly lickable yarn ball</q>',
         90000000000000, [18,26], 20000, {kitten: 1});
+    
+    
+    
+    // STARDUST & MAGIC
+    en.ue.addUpgrade("Magical strength", "Buildings gain <b>+5%</b> CpS (multiplicative) per 10 buildings owned past 100.<br>"
+        +'<q>Call upon the power of magic to boost your cookie production!</q>',
+        1234, [0,3,Icons], 768, {pool: 'prestige', posX: 0, posY: -64, parents: 
+            [Game.Upgrades['Legacy']], showIf:function(){return Game.prestige>12345;}}
+    );
+
+    for (var i in Game.Objects) {
+        en.addCpsHook(i, ()=>{
+            if (Game.Has("Magical strength") && Game.Objects[i].amount>=100) {
+                return 1+Math.pow(1.05,Math.floor((Game.Objects[i].amount-100)/10));
+            } else return 1;
+        })
+    }
+
+
 
     // RANDOM OTHER UPGRADES
 

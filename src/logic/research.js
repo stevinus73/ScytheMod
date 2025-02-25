@@ -585,11 +585,51 @@ Research._Initialize = function(en) {
     tieredTreeG(1, 2, "Hair whitener", "Studies show that the whiter the grandmas' hair is, the older they are, and therefore, the more powerful they are.", "Grandmas are <b>15%</b> more efficient.") // 2
     tieredTreeG(1, 3, "Other people's grandmas", "You sure do seem to have a lot of grandmas. But! If you pull grandmas from other people, you might be able to get even more grandmas.", "Grandmas are <b>15%</b> more efficient.") // 3
     bLumpBuff(1, "Cotton-candy grandmas", "Grandma types are <b>4%</b> more powerful per grandma level (up to level 20).", "Cotton candy injected via IV.");
-    // var unlockGP = {reqFunc: function(){return Game.Objects['Grandma'].amount>=6 && Game.HasAchiev('Elder')}, reqDesc: "have <b>7 different grandma types</b>"}
-    // new Research.Tech("Bingo center/Research facility", "Grandma-operated science lab and leisure club. <b>This will unlock the Bingo center/Research facility upgrade in the Store.</b> <q>What could possibly keep those grandmothers in check?...<br>Bingo.</q>", 40, unlockGP, f, [0], [11, 9], 0.4, 0.4); // 5
-    // Game.Logic = en.injectCode(Game.Logic, "Game.HasAchiev('Elder'))", 
-    //     "mod.research.has('Bingo center/Research facility'))", "replace"
-    // )
+    var unlockGP = {reqFunc: function(){return Game.elderWrath>0;}, reqDesc: "start the <b>grandmapocalypse</b>"}
+    
+    
+    //WRINKLERS
+    eval("Game.UpdateWrinklers="+Game.UpdateWrinklers.toString().replace('me.sucked*=toSuck;','me.sucked*=(toSuck*Game.getSuckMultiplier());')
+        .replace(`if (Game.Has('Unholy bait')) chance*=5;`,`if (Game.Has('Unholy bait')) chance*=(2*Game.getWrinklerSpawnMultiplier());`));
+    // kinda hacky but i'll take it
+    en.ue.strReplace(Game.Upgrades['Unholy bait'],'5 times', '2 times');
+    new Research.Tech("Hyperfolded digestion", "Wrinklers explode into <b>twice</b> as much cookies. <small>(Note: base wrinkler digestion is nerfed.)</small> Unlocks <b>new wrinkler upgrades</b>.", 66, unlockGP, 
+        function(){Game.Unlock("Genetic breeder");}, [0], [19, 8], 0, 0.3); // 5
+    new Research.Tech("Enticing waft", "Wrinklers appear <b>twice</b> as fast. <small>(Note: base wrinkler spawnrate is nerfed.)</small> Unlocks <b>new wrinkler upgrades</b>.", 88, unlockGP, 
+        function(){Game.Unlock("Cookie crumb trail");}, [5], [19, 8], 0, 0.6); // 6
+
+
+    Game.getSuckMultiplier=function() {
+        var mult=1;
+        if (Research.has("Hyperfolded digestion")) mult*=2;
+        if (Game.Has("Genetic breeder")) mult*=1.66;
+        if (Game.Has("Psychic signal implant")) mult*=1.66;
+        if (Game.Has("Eating contests")) mult*=1.66;
+        if (Game.Has("Safety hangings")) mult*=1.66;
+        return mult/3;
+    }
+
+    Game.getWrinklerSpawnMultiplier=function() {
+        var mult=1;
+        if (Research.has("Enticing waft")) mult*=2;
+        if (Game.Has("Cookie crumb trail")) mult*=1.66;
+        return mult/2;
+    }
+
+    var digestStr="Wrinklers explode into <b>66%</b> more cookies.";
+    en.ue.addUpgrade('Genetic breeder', digestStr+'<q>Took a long while to capture those wrinklers, but we did it... And one of them escaped already.</q>', 6.666*1e15, [19,8], 15000, 
+        {buyFunction:function(){Game.Unlock("Psychic signal implant");}})
+    en.ue.addUpgrade('Psychic signal implant', digestStr+'<q>Eat my cookies, or else.</q>', 6.666*1e20, [19,8], 15000, 
+        {buyFunction:function(){Game.Unlock("Eating contests");}})
+    en.ue.addUpgrade('Eating contests', digestStr+'<q>Speaking of eating...</q>', 6.666*1e25, [19,8], 15000, 
+        {buyFunction:function(){Game.Unlock("Safety hangings");}})
+    en.ue.addUpgrade('Safety hangings', digestStr+'<q>Wrinklers can often fall off the big cookie for a few seconds due to their sliminess, leading to a loss in digestion. These tooth-fitting hangings will prevent that.</q>', 6.666*1e30, [19,8], 15000, 
+        {buyFunction:function(){}})
+    
+    var spawnStr="Wrinklers spawn <b>66%</b> more often.";
+    en.ue.addUpgrade('Cookie crumb trail', digestStr+'<q>A trail of cookie crumbs leading to the big cookie.</q>', 6.666*1e16, [19,8], 15000, 
+        {buyFunction:function(){}})
+    
     buildingTree(2);
     tieredTree(2, 1, "Monocookie agriculture", "Gearing your farms to only cultivate cookies."); // 1
     tieredTree(2, 2, "Better hoes", "Actually, scratch that. Who would waste netherite on a hoe?"); // 2

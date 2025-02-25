@@ -45,7 +45,7 @@ Clicks._Initialize = function(en, Research) {
     this.gate=en.createLeftWidget([208,16],[15,11],'mod.bModify.gateTooltip','mod.bModify.gate();');
     l('widget0').innerHTML+='<span id="pcInfo" style="position:absolute;top:-32px;left:12px;font-family:\'Merriweather\';font-size:20px;color:#fddfe8;">0/0</span>';
 
-    Research.appendStat('<div class="subsection"><div class="title">Clicks</div><div id="clickStats"></div></div>');
+    Research.appendStat('<div class="subsection"><div id="clickStats"></div></div>');
 
     Clicks.recalculate = function() {
         var maxClicks = P.baseClicks;
