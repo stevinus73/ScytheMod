@@ -277,11 +277,6 @@ G._Initialize = function(en, Research) {
 
         var effs=G.currEffs();
         if (effs.length>this.maxEffs) Game.killBuff(choose(effs));
-
-        l("rustStats").innerHTML='<div class="listing"><div class="icon" style="float:left;background-position:'+(-15*48)+'px '+(-5*48)+'px;" '+
-                        Game.getDynamicTooltip('mod.G.rustTooltip', 'this')+'></div>'+
-						'<div style="margin-top:8px;"><span class="title" style="font-size:22px;">Rust: '+Beautify(this.rust*100,1)+'%</span> '
-					'</div>';
     }
     
     Game.registerHook('logic', function() {

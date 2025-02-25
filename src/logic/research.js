@@ -592,7 +592,7 @@ Research._Initialize = function(en) {
     eval("Game.UpdateWrinklers="+Game.UpdateWrinklers.toString().replace('me.sucked*=toSuck;','me.sucked*=(toSuck*Game.getSuckMultiplier());')
         .replace(`if (Game.Has('Unholy bait')) chance*=5;`,`if (Game.Has('Unholy bait')) chance*=(2*Game.getWrinklerSpawnMultiplier());`));
     // kinda hacky but i'll take it
-    en.ue.strReplace(Game.Upgrades['Unholy bait'],'5 times', '2 times');
+    en.ue.strReplace(Game.Upgrades['Unholy bait'],'5 times', 'twice');
     new Research.Tech("Hyperfolded digestion", "Wrinklers explode into <b>twice</b> as much cookies. <small>(Note: base wrinkler digestion is nerfed.)</small> Unlocks <b>new wrinkler upgrades</b>.", 66, unlockGP, 
         function(){Game.Unlock("Genetic breeder");}, [0], [19, 8], 0, 0.3); // 5
     new Research.Tech("Enticing waft", "Wrinklers appear <b>twice</b> as fast. <small>(Note: base wrinkler spawnrate is nerfed.)</small> Unlocks <b>new wrinkler upgrades</b>.", 88, unlockGP, 
@@ -627,7 +627,7 @@ Research._Initialize = function(en) {
         {buyFunction:function(){}})
     
     var spawnStr="Wrinklers spawn <b>66%</b> more often.";
-    en.ue.addUpgrade('Cookie crumb trail', digestStr+'<q>A trail of cookie crumbs leading to the big cookie.</q>', 6.666*1e16, [19,8], 15000, 
+    en.ue.addUpgrade('Cookie crumb trail', spawnStr+'<q>A trail of cookie crumbs leading to the big cookie.</q>', 6.666*1e16, [19,8], 15000, 
         {buyFunction:function(){}})
     
     buildingTree(2);
