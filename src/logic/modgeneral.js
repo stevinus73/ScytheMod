@@ -414,7 +414,7 @@ General._Initialize = function(en, Research) {
     // STARDUST & MAGIC
     en.ue.addUpgrade("Magical strength", "Buildings gain <b>+5%</b> CpS (multiplicative) per 10 buildings owned past 100.<br>"
         +'<q>Call upon the power of magic to boost your cookie production!</q>',
-        1234, [0,3,Icons], 768, {pool: 'prestige', posX: 0, posY: -64, parents: 
+        1234, [0,3,Icons], 768, {pool: 'prestige', posX: 0, posY: -192, parents: 
             [Game.Upgrades['Legacy']], showIf:function(){return Game.prestige>12345;}}
     );
 

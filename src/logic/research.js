@@ -128,7 +128,7 @@ Research._Initialize = function(en) {
             Research.research -= this.priceB;
             this.bought = true;
             Research.numUpgrades++;
-            //this.onBuy();
+            this.onBuy();
             Research.draw();
             Game.recalculateGains = 1;
         }
