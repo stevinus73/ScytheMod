@@ -128,7 +128,7 @@ Research._Initialize = function(en) {
             Research.research -= this.priceB;
             this.bought = true;
             Research.numUpgrades++;
-            this.onBuy();
+            //this.onBuy();
             Research.draw();
             Game.recalculateGains = 1;
         }
@@ -809,6 +809,9 @@ Research._Initialize = function(en) {
 
     Game.registerHook('logic', function() {
         Research.update();
+
+        if (Research.has("Hyperfolded digestion")) Game.Unlock("Genetic breeder");
+        if (Research.has("Enticing waft")) Game.Unlock("Cookie crumb trail");
     });
 
     Game.registerHook('check', function() {
