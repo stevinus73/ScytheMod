@@ -13,7 +13,7 @@ Research._Initialize = function(en) {
     str += 'onclick="mod.research.switch(-1)">'
     str += '<div>View Research</div></div>'
     l("comments").insertAdjacentHTML('beforeend','<div id="researchDisplay"></div>')
-    l("buildingsMaster").style.zIndex=2;
+    l("buildingsMaster").style.zIndex=20;
     l("buildingsMaster").insertAdjacentHTML('afterbegin', str);
     this.button = l("researchButton");
 
@@ -45,7 +45,9 @@ Research._Initialize = function(en) {
     l("centerArea").insertAdjacentHTML('beforeend', '<div id="research"></div>')
     l("centerArea").insertAdjacentHTML('beforeend', '<div id="statsSwitches"></div>')
     this.container = l("research");
+    this.container.style.zIndex=10;
     this.stats = l("statsSwitches");
+    this.stats.style.zIndex=10;
     var str = '<div class="section">Stats and Switches</div>'+
         '<div class="subsection">'+
 		'<div class="title" style="position:relative;">Esoteric statistics'+
@@ -589,8 +591,22 @@ Research._Initialize = function(en) {
     
     
     //WRINKLERS
+    Game.inRect = function(x,y,rect)
+    {
+        //find out if the point x,y is in the rotated rectangle rect{w,h,r,o} (width,height,rotation in radians,y-origin) (needs to be normalized)
+        //I found this somewhere online I guess
+        var dx = x+Math.sin(-rect.r)*(-(rect.h/2-rect.o)),dy=y+Math.cos(-rect.r)*(-(rect.h/2-rect.o));
+        var h1 = Math.sqrt(dx*dx + dy*dy);
+        var currA = Math.atan2(dy,dx);
+        var newA = currA - rect.r;
+        var x2 = Math.cos(newA) * h1;
+        var y2 = Math.sin(newA) * h1;
+        if (x2 > -0.5 * rect.w && x2 < 0.5 * rect.w && y2 > -0.5 * rect.h && y2 < 0.5 * rect.h) return true;
+        return false;
+    }
     eval("Game.UpdateWrinklers="+Game.UpdateWrinklers.toString().replace('me.sucked*=toSuck;','me.sucked*=(toSuck*Game.getSuckMultiplier());')
-        .replace(`if (Game.Has('Unholy bait')) chance*=5;`,`if (Game.Has('Unholy bait')) chance*=(2*Game.getWrinklerSpawnMultiplier());`));
+        .replace(`if (Game.Has('Unholy bait')) chance*=5;`,`if (Game.Has('Unholy bait')) chance*=(2*Game.getWrinklerSpawnMultiplier());`)
+        .replace(`inRect`,`Game.inRect`));
     // kinda hacky but i'll take it
     en.ue.strReplace(Game.Upgrades['Unholy bait'],'5 times', 'twice');
     new Research.Tech("Hyperfolded digestion", "Wrinklers explode into <b>twice</b> as much cookies. <small>(Note: base wrinkler digestion is nerfed.)</small> Unlocks <b>new wrinkler upgrades</b>.", 66, unlockGP, 
