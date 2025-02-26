@@ -82,18 +82,18 @@ var Process = function(en) {
         upgrade_engine.upgradeQueue.forEach(function (up) {
             toCompress.push(up.me.name, [Math.min(up.me.unlocked, 1), Math.min(up.me.bought, 1)].join(''));
         })
-        en.setVar("upPacked", toCompress.join(' '));
+        en.setVar("upPacked", toCompress.join('^'));
 
         toCompress = [];
         achiev_engine.achievementQueue.forEach(function (achiev) {
             toCompress.push(achiev.me.name, Math.min(achiev.me.won));
         })
-        en.setVar("achPacked", toCompress.join(' '));
+        en.setVar("achPacked", toCompress.join('^'));
     })
     en.loadCallback(function () {
         var spl = [];
         if (en.hasVariable("upPacked")) {
-            var spl = en.getVar("upPacked").split(' ');
+            var spl = en.getVar("upPacked").split('^');
             if ((spl.length % 2 == 0) && (spl.length > 0)) {
                 for (var i = 0; i < spl.length; i += 2) {
                     var me = Game.Upgrades[parseInt(spl[i])];
@@ -104,7 +104,7 @@ var Process = function(en) {
             }
         }
         if (en.hasVariable("achPacked")) {
-            spl = en.getVar("achPacked").split(' ');
+            spl = en.getVar("achPacked").split('^');
             if ((spl.length % 2 == 0) && (spl.length > 0)) {
                 for (var i = 0; i < spl.length; i += 2) {
                     var me = Game.Achievements[parseInt(spl[i])];
