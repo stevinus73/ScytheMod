@@ -384,8 +384,8 @@ Clicks._Initialize = function(en, Research) {
 
     Clicks.getClickDisplay = function() {
         return '<div style="font:20px sans-serif;margin:3px;display:flex;align-items:center;justify-content:center;">'
-        +'<div class="icon" style="transform:scale(0.75);'+writeIcon([0,0])+'"></div>'
-        +'clicks left: '+this.clicks+' out of '+this.maxClicks
+        +'<div class="icon" style="'+writeIcon([0,0])+'"></div>'
+        +'clicks left: '+this.clicks+'/'+this.maxClicks
         +(this.overflow_enabled?' (overflow: '+(this.overflow>=1?'+'+this.getOverflow():0)+')':'')+'</div>';
     }
 
@@ -441,8 +441,6 @@ Clicks._Initialize = function(en, Research) {
     //     Clicks.maxClicks = en.getVar("maxClicks", Clicks.maxClicks);
     //     Clicks.overflow = en.getVar("overflow", Clicks.overflow);
     // })
-
-    en.rebuildBigCookieButton();
 }
 
 export { Clicks }

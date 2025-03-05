@@ -283,6 +283,7 @@ IdlersPocket.LoadMod = function (name, initFunc) {
 
 IdlersPocket.Process = function() {
     this.finalizeHooks();
+    this.rebuildBigCookieButton();
     Process(this);
 }
 

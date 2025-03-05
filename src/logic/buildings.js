@@ -47,7 +47,7 @@ BModify._Initialize = function(en, Research) {
 
     BModify.getEnergyDisplay = function() {
         return '<div style="font:20px sans-serif;margin:3px;display:flex;align-items:center;justify-content:center;">'
-        +'<div class="icon" style="transform:scale(0.75);'+writeIcon([0,4,Icons])+'"></div>'
+        +'<div class="icon" style="'+writeIcon([0,4,Icons])+'"></div>'
         +'Energy: '+this.energy+'/'+this.maxEnergy+'</div>';
     }
 
