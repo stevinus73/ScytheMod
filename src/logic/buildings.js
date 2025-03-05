@@ -29,8 +29,44 @@ BModify._Initialize = function(en, Research) {
         [0, 2, Icons], "Septcentennial", {});
     en.ae.addAchievement("Climate change", "Deplete <b>200,000</b> units of resource in total. <q>Guys, it exists.</q>",
         [0, 1, Icons], "Septcentennial", {});
-    
-    en.newVar("bankRefill", "int");
+
+    BModify.energy = 0;
+    BModify.maxEnergy = 100;
+    BModify.consumption = 0;
+    BModify.production = 0;
+    BModify.efficiency = 1;
+    BModify.stress = 0;
+    BModify.speed = 1;
+    for (var i in Game.Objects) {
+        Game.Objects[i].baseConsumption=Math.round(Math.pow(2.2,Game.Objects[i].id)*(1.15*Game.Objects[i].id+1));
+    }
+
+    Game.Draw = en.injectCode(Game.Draw, `l('cookies').innerHTML=str;`, 
+        `str=str+mod.bModify.getEnergyDisplay();`, 
+        "before");
+
+    BModify.getEnergyDisplay = function() {
+        return '<div style="font:20px sans-serif;margin:6px;">'
+        +'<div class="icon" style="'+writeIcon([0,4])+'"></div>'
+        +'Energy: '+this.energy+'/'+this.maxEnergy+'</div>';
+    }
+
+    BModify.gainEnergy = function(en, pcMax) {
+        var mult = 1;
+        this.energy += (en * mult + pcMax*this.maxEnergy);
+        if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
+    }
+
+    BModify.energyCalc = function() {
+
+    }
+
+    Game.ClickCookie = en.injectCode(Game.ClickCookie, "Game.loseShimmeringVeil('click');", "BModify.gainEnergy(5,0);", "after");
+    eval('Game.shimmerTypes.golden.popFunc='+Game.shimmerTypes.golden.popFunc.toString().replace("var buff=0;",
+        "var buff=0; \n\t\tBModify.gainEnergy((me.spawnLead?250:10),(me.spawnLead?0.15:0.01));"
+    ));
+
+    en.trackVars(this,[["energy"],["maxEnergy"],["consumption","float"],["production","float"],["efficiency","float"],["stress","float"],["speed","float"]]);
 
     var sstr='<style>'
         +'.resBar{max-width:95%;margin:4px auto;height:16px;}'
@@ -83,7 +119,7 @@ BModify._Initialize = function(en, Research) {
             if (this.depleted || this.pause)
                 dmult = 0;
             if ((this.id == 2) && Research.has("Regrowth")) dmult = 1;
-            return cps * dmult * Game.magicCpS(this.me.name);
+            return cps * dmult * Game.magicCpS(this.me.name) * BModify.efficiency;
         }
 
         // overwrites vanilla cps function for building
@@ -884,6 +920,9 @@ BModify._Initialize = function(en, Research) {
         BModify.grandma.update()
         if (Game.T%UpdateTicks==0) {
             BModify.grandma.draw()
+        }
+        if (Game.T%Game.fps==0) {
+            BModify.energyCalc()
         }
         if (BModify.bankRefill>0) BModify.bankRefill--
     }
