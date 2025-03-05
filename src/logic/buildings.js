@@ -46,8 +46,8 @@ BModify._Initialize = function(en, Research) {
         "before");
 
     BModify.getEnergyDisplay = function() {
-        return '<div style="font:20px sans-serif;margin:6px;">'
-        +'<div class="icon" style="'+writeIcon([0,4])+'"></div>'
+        return '<div style="font:20px sans-serif;margin:3px;display:flex;align-items:center;justify-content:center;">'
+        +'<div class="icon" style="transform:scale(0.75);'+writeIcon([0,4,Icons])+'"></div>'
         +'Energy: '+this.energy+'/'+this.maxEnergy+'</div>';
     }
 
@@ -61,9 +61,9 @@ BModify._Initialize = function(en, Research) {
 
     }
 
-    Game.ClickCookie = en.injectCode(Game.ClickCookie, "Game.loseShimmeringVeil('click');", "BModify.gainEnergy(5,0);", "after");
+    Game.ClickCookie = en.injectCode(Game.ClickCookie, "Game.loseShimmeringVeil('click');", "mod.bModify.gainEnergy(5,0);", "after");
     eval('Game.shimmerTypes.golden.popFunc='+Game.shimmerTypes.golden.popFunc.toString().replace("var buff=0;",
-        "var buff=0; \n\t\tBModify.gainEnergy((me.spawnLead?250:10),(me.spawnLead?0.15:0.01));"
+        "var buff=0; \n\t\tmod.bModify.gainEnergy((me.spawnLead?250:10),(me.spawnLead?0.15:0.01));"
     ));
 
     en.trackVars(this,[["energy"],["maxEnergy"],["consumption","float"],["production","float"],["efficiency","float"],["stress","float"],["speed","float"]]);
