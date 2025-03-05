@@ -272,7 +272,8 @@ IdlersPocket.LoadMod = function (name, initFunc) {
                     <div class="line"></div>
                     Join our <a href="https://discord.gg/6eA8UQgaB8">Discord server</a>!
                     <div class="line"></div>
-                    Credits: Hellranger for testing the mod, yeetdragon24 for 'helping' me make this prompt
+                    Credits: Hellranger for testing the mod, yeetdragon24 for 'helping' me make this prompt, leoguy for giving me a few ideas, and samyli for spritework.
+                    If you've helped create the mod and your name isn't in the credits, it's probably due to laziness; feel free to ask me for attribution.
                 </div>`,
             [['Continue','scytheModWrapper.loadMod();Game.ClosePrompt();'], ['No thanks','scytheModWrapper.unloadMod();Game.ClosePrompt();']]);
         }

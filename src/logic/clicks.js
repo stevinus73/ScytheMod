@@ -41,8 +41,8 @@ Clicks._Initialize = function(en, Research) {
     en.trackVars(Clicks, [['clicks'],['maxClicks'],['overflow','float'],['powerClicks'],['pcPerformed'],['pcEnabled']]);
 
     this.pcWidget=en.createLeftWidget([48,16],[3,0,Icons],'mod.clicks.pcTooltip','');
-    this.switch=en.createLeftWidget([128,16],[20,10],'mod.clicks.pcSwitchTooltip','mod.clicks.switchClick(-1);');
-    this.gate=en.createLeftWidget([208,16],[15,11],'mod.bModify.gateTooltip','mod.bModify.gate();');
+    this.switch=en.createLeftWidget([144,16],[20,10],'mod.clicks.pcSwitchTooltip','mod.clicks.switchClick(-1);');
+    this.gate=en.createLeftWidget([240,16],[15,11],'mod.bModify.gateTooltip','mod.bModify.gate();');
     l('widget0').innerHTML+='<span id="pcInfo" style="position:absolute;top:-32px;left:12px;font-family:\'Merriweather\';font-size:20px;color:#fddfe8;">0/0</span>';
 
     Research.appendStat('<div class="subsection"><div id="clickStats"></div></div>');
@@ -263,7 +263,7 @@ Clicks._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Enchanted sleighs", "You can <b>perform power clicks on reindeer</b>, making them give <b>five times</b> more cookies."
         +'<q>Enchanted with the power of heartfelt love, Christmas presents, and pure unadulterated power.</q>',
-        5555555, [12,9], pcOrder, {pool: 'prestige', posX: -726, posY: -412, huParents: ['Starsnow', 'Heavenly clicks']}
+        5555555, [12,9], pcOrder, {pool: 'prestige', posX: -726, posY: -412, huParents: ['Starsnow', 'Ethereal mouse']}
     )
 
     en.ue.addUpgrade("Time-warping mice", "Performing power clicks on golden cookies makes effects last <b>20%</b> longer."
@@ -383,7 +383,9 @@ Clicks._Initialize = function(en, Research) {
 
 
     Clicks.getClickDisplay = function() {
-        return '<div style="font-size:15px;margin:18px;">clicks left: '+this.clicks+' out of '+this.maxClicks
+        return '<div style="font-size:200%;margin:18px;">'
+        +'<div class="icon" style="float:left;'+writeIcon([0,0])+'"></div>'
+        +'clicks left: '+this.clicks+' out of '+this.maxClicks
         +(this.overflow_enabled?' (overflow: '+(this.overflow>=1?'+'+this.getOverflow():0)+')':'')+'</div>';
     }
 
