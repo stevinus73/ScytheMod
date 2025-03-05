@@ -61,7 +61,7 @@ BModify._Initialize = function(en, Research) {
     BModify.energyCalc = function() {
         this.consumption = 0;
         for (var i in Game.Objects) {
-            this.consumption += 0.1 * Game.Objects[i].baseConsumption;
+            this.consumption += 0.1 * Game.Objects[i].baseConsumption * Game.Objects[i].amount;
         }
         this.baseEfficiency = (this.consumption > 0 ? this.production / this.consumption : 0);
         if (this.energy > this.maxEnergy*0.02) this.baseEfficiency = 1;
