@@ -31,9 +31,10 @@ BModify._Initialize = function(en, Research) {
         [0, 1, Icons], "Septcentennial", {});
 
     BModify.energy = 0;
-    BModify.maxEnergy = 100;
+    BModify.maxEnergy = 1000000;
     BModify.consumption = 0;
     BModify.production = 0;
+    BModify.baseEfficiency = 1;
     BModify.efficiency = 1;
     BModify.stress = 0;
     BModify.speed = 1;
@@ -46,27 +47,61 @@ BModify._Initialize = function(en, Research) {
         "before");
 
     BModify.getEnergyDisplay = function() {
-        return '<div style="font:20px sans-serif;margin:3px;display:flex;align-items:center;justify-content:center;">'
-        +'<div class="icon" style="'+writeIcon([0,4,Icons])+'"></div>'
-        +'Energy: '+this.energy+'/'+this.maxEnergy+'</div>';
+        return '<div style="font:14px sans-serif;margin:3px;display:flex;align-items:center;justify-content:center;">'
+        +'<div class="icon" style="transform:scale(0.6);'+writeIcon([0,4,Icons])+'"></div>'
+        +'Energy: '+Beautify(this.energy)+'/'+Beautify(this.maxEnergy)+'</div>';
     }
 
     BModify.gainEnergy = function(en, pcMax) {
         var mult = 1;
-        this.energy += (en * mult + pcMax*this.maxEnergy);
+        this.energy += (en * mult + pcMax * this.maxEnergy);
         if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
     }
 
     BModify.energyCalc = function() {
-
+        this.consumption = 0;
+        for (var i in Game.Objects) {
+            this.consumption += 0.1 * Game.Objects[i].baseConsumption;
+        }
+        this.baseEfficiency = (this.consumption > 0 ? this.production / this.consumption : 0);
+        if (this.energy > this.maxEnergy*0.02) this.baseEfficiency = 1;
+        if (this.production >= this.consumption) this.baseEfficiency = 1;
+        this.efficiency = this.baseEfficiency;
     }
+
+    BModify.energyUpdate = function() {
+        this.energy += (this.production - this.consumption) / Game.fps;
+        if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
+        if (this.energy < 0) this.energy = 0;
+    }
+
+    Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
+        `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
+        `\n\t\t\t\t'<div class="listing"><b>Energy:</b> '+Beautify(mod.bModify.energy)+'/'+Beautify(mod.bModify.maxEnergy)+'</div>'+`, "after"
+    )
+
+    Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
+        `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
+        `\n\t\t\t\t'<div class="listing"><b>Efficiency:</b> '+Beautify(mod.bModify.efficiency*100)+'%</div>'+`, "after"
+    )
+
+    Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
+        `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
+        `\n\t\t\t\t'<div class="listing"><b>Consumption per second:</b> '+Beautify(mod.bModify.consumption,1)+'</div>'+`, "after"
+    )
+    
+    Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
+        `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
+        `\n\t\t\t\t'<div class="listing"><b>Production per second:</b> '+Beautify(mod.bModify.production,1)+'</div>'+`, "after"
+    )
 
     Game.ClickCookie = en.injectCode(Game.ClickCookie, "Game.loseShimmeringVeil('click');", "mod.bModify.gainEnergy(5,0);", "after");
     eval('Game.shimmerTypes.golden.popFunc='+Game.shimmerTypes.golden.popFunc.toString().replace("var buff=0;",
         "var buff=0; \n\t\tmod.bModify.gainEnergy((me.spawnLead?250:10),(me.spawnLead?0.15:0.01));"
     ));
 
-    en.trackVars(this,[["energy"],["maxEnergy"],["consumption","float"],["production","float"],["efficiency","float"],["stress","float"],["speed","float"]]);
+    en.trackVars(this,[["energy"],["maxEnergy"],["consumption","float"],["production","float"],["baseEfficiency","float"],
+        ["efficiency","float"],["stress","float"],["speed","float"]]);
 
     var sstr='<style>'
         +'.resBar{max-width:95%;margin:4px auto;height:16px;}'
@@ -119,7 +154,7 @@ BModify._Initialize = function(en, Research) {
             if (this.depleted || this.pause)
                 dmult = 0;
             if ((this.id == 2) && Research.has("Regrowth")) dmult = 1;
-            return cps * dmult * Game.magicCpS(this.me.name) * BModify.efficiency;
+            return cps * dmult * Game.magicCpS(this.me.name);
         }
 
         // overwrites vanilla cps function for building
@@ -915,6 +950,7 @@ BModify._Initialize = function(en, Research) {
     }
     BModify.Logic = function() {
         BModify.Harvest()
+        BModify.energyUpdate()
         BModify.rsManagers.forEach(mn => mn.draw())
         BModify.mine.ores.forEach(mn => mn.draw())
         BModify.grandma.update()
@@ -934,6 +970,10 @@ BModify._Initialize = function(en, Research) {
     en.loadCallback(function() {
         BModify.bankRefill = en.getVar("bankRefill", BModify.bankRefill);
     })
+
+    for (var i in Game.Objects) {
+        en.addCpsHook(i,()=>BModify.efficiency);
+    }
 
     Game.registerHook('cps', function(cps) {
         BModify.Recalculate();
