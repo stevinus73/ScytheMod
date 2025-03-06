@@ -31,13 +31,14 @@ BModify._Initialize = function(en, Research) {
         [0, 1, Icons], "Septcentennial", {});
 
     BModify.energy = 0;
-    BModify.maxEnergy = 1000000;
+    BModify.maxEnergy = 1000;
     BModify.consumption = 0;
     BModify.production = 0;
     BModify.baseEfficiency = 1;
     BModify.efficiency = 1;
     BModify.stress = 0;
     BModify.speed = 1;
+    BModify.powerPlants = 0;
     for (var i in Game.Objects) {
         Game.Objects[i].baseConsumption=Math.round(Math.pow(2.2,Game.Objects[i].id)*(1.15*Game.Objects[i].id+1));
     }
@@ -64,7 +65,7 @@ BModify._Initialize = function(en, Research) {
             this.consumption += 0.1 * Game.Objects[i].baseConsumption * Game.Objects[i].amount;
         }
         this.baseEfficiency = (this.consumption > 0 ? this.production / this.consumption : 0);
-        if (this.energy > this.maxEnergy*0.02) this.baseEfficiency = 1;
+        if (this.energy > 0) this.baseEfficiency = 1;
         if (this.production >= this.consumption) this.baseEfficiency = 1;
         this.efficiency = this.baseEfficiency;
     }
@@ -75,23 +76,30 @@ BModify._Initialize = function(en, Research) {
         if (this.energy < 0) this.energy = 0;
     }
 
-    Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
-        `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
-        `\n\t\t\t\t'<div class="listing"><b>Energy:</b> '+Beautify(mod.bModify.energy)+'/'+Beautify(mod.bModify.maxEnergy)+'</div>'+`, "after"
-    )
+    Game.GetIcon=function(type,tier) {
+		var col=0;
+		if (type=='Kitten') col=18; else col=Game.Objects[type].iconColumn;
+		return (Game.Tiers[tier].source?[col,Game.Tiers[tier].iconRow,Game.Tiers[tier].source]:[col,Game.Tiers[tier].iconRow]);
+	}
+
+    Game.Tiers['power']={name:'Energizium',unlock:3,iconRow:17,source:Icons,color:'#57c1ff',special:1,price:40};
+
+    var order = 18500;
+    function EnergyTiered(bid, name, desc) {
+        desc="All energy gains <b>x2</b>. Buildings gain <b>"+(bid==0?100:200-bid*10)+"%</b> more CpS from speed.<q>"+desc+"</q>";
+
+        en.ue.addUpgrade(name, desc, Game.Tiers['Energizium'].price, Game.GetIcon(Game.Objects[bid].name,'Energizium'), order, {tier:'Energizium'});
+    }
+
+    for (var i=0;i<20;i++) {
+        EnergyTiered(i,i+'test','');
+    }
 
     Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
         `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
-        `\n\t\t\t\t'<div class="listing"><b>Efficiency:</b> '+Beautify(mod.bModify.efficiency*100)+'%</div>'+`, "after"
-    )
-
-    Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
-        `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
-        `\n\t\t\t\t'<div class="listing"><b>Consumption per second:</b> '+Beautify(mod.bModify.consumption,1)+'</div>'+`, "after"
-    )
-    
-    Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
-        `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
+        `\n\t\t\t\t'<div class="listing"><b>Energy:</b> '+Beautify(mod.bModify.energy)+'/'+Beautify(mod.bModify.maxEnergy)+'</div>'+`+
+        `\n\t\t\t\t'<div class="listing"><b>Efficiency:</b> '+Beautify(mod.bModify.efficiency*100)+'%</div>'+`+
+        `\n\t\t\t\t'<div class="listing"><b>Consumption per second:</b> '+Beautify(mod.bModify.consumption,1)+'</div>'+`+
         `\n\t\t\t\t'<div class="listing"><b>Production per second:</b> '+Beautify(mod.bModify.production,1)+'</div>'+`, "after"
     )
 
@@ -101,7 +109,7 @@ BModify._Initialize = function(en, Research) {
     ));
 
     en.trackVars(this,[["energy"],["maxEnergy"],["consumption","float"],["production","float"],["baseEfficiency","float"],
-        ["efficiency","float"],["stress","float"],["speed","float"]]);
+        ["efficiency","float"],["stress","float"],["speed","float"], ["powerPlants"]]);
 
     var sstr='<style>'
         +'.resBar{max-width:95%;margin:4px auto;height:16px;}'
