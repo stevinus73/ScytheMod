@@ -82,7 +82,7 @@ BModify._Initialize = function(en, Research) {
 		return (Game.Tiers[tier].source?[col,Game.Tiers[tier].iconRow,Game.Tiers[tier].source]:[col,Game.Tiers[tier].iconRow]);
 	}
 
-    Game.Tiers['power']={name:'Energizium',unlock:3,iconRow:17,source:Icons,color:'#57c1ff',special:1,price:40};
+    Game.Tiers['Energizium']={name:'Energizium',unlock:3,iconRow:17,source:Icons,color:'#57c1ff',special:1,price:40};
 
     var order = 18500;
     function EnergyTiered(bid, name, desc) {
