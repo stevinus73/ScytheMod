@@ -88,7 +88,7 @@ BModify._Initialize = function(en, Research) {
     function EnergyTiered(bid, name, desc) {
         desc="All energy gains <b>x2</b>. Buildings gain <b>"+(bid==0?100:200-bid*10)+"%</b> more CpS from speed.<q>"+desc+"</q>";
 
-        en.ue.addUpgrade(name, desc, Game.Tiers['Energizium'].price, Game.GetIcon(Game.Objects[bid].name,'Energizium'), order, {tier:'Energizium'});
+        en.ue.addUpgrade(name, desc, Game.Tiers['Energizium'].price, Game.GetIcon(Game.ObjectsById[bid].name,'Energizium'), order, {tier:'Energizium'});
     }
 
     for (var i=0;i<20;i++) {
