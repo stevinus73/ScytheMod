@@ -107,7 +107,7 @@ BModify._Initialize = function (en, Research) {
 
         // draw power plant widget
         var str = '';
-        str += '<a class="option" '+Game.clickStr+'="mod.bModify.buySellP();" style="position:relative;margin:0px;margin-bottom:2px;float:right;" '+Game.getTooltip('<div style="min-width:200px;text-align:center;font-size:11px;">hello!</div>')+'> Buy Power Plant </a>';
+        str += '<a class="option fancyText" '+Game.clickStr+'="mod.bModify.buySellP();" style="width:120px;height:32px;"> Buy Power Plant </a>';
         l("pWidget").innerHTML = str;
     }
 
