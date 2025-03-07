@@ -383,7 +383,7 @@ Clicks._Initialize = function(en, Research) {
 
 
     Clicks.getClickDisplay = function() {
-        return '<div style="font:14px sans-serif;margin:3px;display:flex;align-items:center;justify-content:center;">'
+        return '<div class=\"line\"></div><div style="font:14px sans-serif;margin:3px;display:flex;align-items:center;justify-content:center;">'
         +'<div class="icon" style="transform:scale(0.9);'+writeIcon([0,0])+'"></div>'
         +'clicks left: '+this.clicks+'/'+this.maxClicks
         +(this.overflow_enabled?' (overflow: '+(this.overflow>=1?'+'+this.getOverflow():0)+')':'')+'</div>';
