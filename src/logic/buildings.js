@@ -115,12 +115,15 @@ BModify._Initialize = function (en, Research) {
     }
 
     var expstr = 'Maximum energy multiplied by <b>10</b>.';
-    BModify.maxEnergyUp = ['Battery tower', 'Energy facility', 'Lightning jar', 'Pocket power dimension', 'Save expander'];
-    en.ue.addUpgrade('Battery tower', expstr+'<q>Inspired by Universal Paperclips... again? This is lame.</q>', 1e5, [0, 4, Icons]);
-    en.ue.addUpgrade('Energy facility', expstr+'<q>Deep underground, or in Area 47, or up in the sky, or whatever...</q>', 1e8*Math.sqrt(10), [0, 4, Icons]);
-    en.ue.addUpgrade('Lightning jar', expstr+'<q>Now you can catch a lightning bolt!</q>', 1e12, [0, 4, Icons]);
-    en.ue.addUpgrade('Pocket power dimension', expstr+'<q>A dimension completely filled to the brim with energy and paperclips.</q>', 1e15*Math.sqrt(10), [0, 4, Icons]);
-    en.ue.addUpgrade('Save expander', expstr+'<q>By the way, I\'m not optimizing the mod\'s savefile anytime soon. </q>', 1e19, [0, 4, Icons]);
+    BModify.maxEnergyUp = ['Battery tower', 'Energy facility', 'Lightning jar', 'Pocket power dimension', 'Save expander', 'Ether holder', 'Multiversal storage'];
+    en.ue.addUpgrade('Battery tower', expstr+'<q>Inspired by Universal Paperclips... again? This is lame.</q>', 1e5, [0, 4, Icons], order, {});
+    en.ue.addUpgrade('Energy facility', expstr+'<q>Deep underground, or in Area 47, or up in the sky, or whatever...</q>', 1e8, [0, 4, Icons], order, {});
+    en.ue.addUpgrade('Lightning jar', expstr+'<q>Now you can catch a lightning bolt!</q>', 1e11, [0, 4, Icons], order, {});
+    en.ue.addUpgrade('Pocket power dimension', expstr+'<q>A dimension completely filled to the brim with energy and paperclips.</q>', 1e14, [0, 4, Icons], order, {});
+    en.ue.addUpgrade('Save expander', expstr+'<q>By the way, I\'m not optimizing the mod\'s savefile anytime soon.</q>', 1e17, [0, 4, Icons], order, {});
+    en.ue.addUpgrade('Ether holder', expstr+'<q>Lighter than air.</q>', 1e20, [0, 4, Icons], order, {});
+    en.ue.addUpgrade('Mutiversal storage', expstr+'<q>Set aside some of your idleverses for this purpose.</q>', 1e23, [0, 4, Icons], order, {});
+
 
     Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
         `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
