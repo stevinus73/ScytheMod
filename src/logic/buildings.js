@@ -98,6 +98,7 @@ BModify._Initialize = function (en, Research) {
 
     BModify.buySellP = function () {
         console.log("beep beep boop boop");
+        this.powerPlants++;
     }
 
     BModify.energyUpdate = function () {
@@ -107,7 +108,8 @@ BModify._Initialize = function (en, Research) {
 
         // draw power plant widget
         var str = '';
-        str += '<a class="option fancyText" '+Game.clickStr+'="mod.bModify.buySellP();" style="width:120px;height:32px;"> Buy Power Plant </a>';
+        str += '<div class="title" style="position:relative">Power Plants: ' + Beautify(this.powerPlants) + '</div>';
+        str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.buySellP();" style="width:120px;"> Buy Power Plant </a>';
         l("pWidget").innerHTML = str;
     }
 
@@ -165,7 +167,7 @@ BModify._Initialize = function (en, Research) {
 
     // POWER PLANTS
 
-    l('rows').insertAdjacentHTML('afterbegin', 
+    l('rows').insertAdjacentHTML('afterbegin',
         '<div id="pWidget" style="position: relative; padding-bottom: 16px; width: 100%; height: 128px; background: black;"></div>');
 
     en.trackVars(this, [["energy"], ["maxEnergy"], ["consumption", "float"], ["production", "float"], ["baseEfficiency", "float"],
