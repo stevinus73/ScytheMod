@@ -48,7 +48,7 @@ BModify._Initialize = function (en, Research) {
         "before");
 
     BModify.getEnergyDisplay = function () {
-        return '<div style="font:14px sans-serif;margin:3px;display:flex;align-items:center;justify-content:center;">'
+        return '<div style="font:14px sans-serif;display:flex;align-items:center;justify-content:center;">'
             + '<div class="icon" style="transform:scale(0.9);' + writeIcon([0, 4, Icons]) + '"></div>'
             + 'Energy: ' + Beautify(this.energy) + '/' + Beautify(this.maxEnergy) + '</div>';
     }
@@ -104,7 +104,8 @@ BModify._Initialize = function (en, Research) {
 
     var order = 18500;
     function EnergyTiered(bid, name, desc) {
-        desc = "All energy gains <b>x2</b>. Buildings gain <b>" + (bid == 0 ? 100 : 200 - bid * 10) + "%</b> more CpS from speed.<q>" + desc + "</q>";
+        desc = "All energy gains <b>x2</b>. " + cfl(Game.ObjectsById[bid].plural) + " gain <b>" + (bid == 0 ? 100 : 200 - bid * 10) 
+            + "%</b> more CpS from speed.<q>" + desc + "</q>";
 
         en.ue.addUpgrade(name, desc, Game.Tiers['Energizium'].price, Game.GetIcon(Game.ObjectsById[bid].name, 'Energizium'), order, { tier: 'Energizium' });
         Game.ObjectsById[bid].energyTiered = name;
@@ -138,8 +139,12 @@ BModify._Initialize = function (en, Research) {
         "var buff=0; \n\t\tmod.bModify.gainEnergy((me.spawnLead?250:10),(me.spawnLead?0.15:0.01));"
     ));
 
+    // POWER PLANTS
+
+    l('rows').insertAdjacentHTML('afterbegin', '<div id="pWidget" style="position: relative; padding-bottom: 16px; width: 100%; height: 128px;"></div>');
+
     en.trackVars(this, [["energy"], ["maxEnergy"], ["consumption", "float"], ["production", "float"], ["baseEfficiency", "float"],
-    ["efficiency", "float"], ["stress", "float"], ["speed", "float"], ["powerPlants"]]);
+        ["efficiency", "float"], ["stress", "float"], ["speed", "float"], ["powerPlants"]]);
 
     var sstr = '<style>'
         + '.resBar{max-width:95%;margin:4px auto;height:16px;}'
