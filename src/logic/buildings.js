@@ -110,6 +110,10 @@ BModify._Initialize = function (en, Research) {
         Game.ObjectsById[bid].energyTiered = name;
     }
 
+    for (var i in Game.Objects) {
+        EnergyTiered(Game.Objects[i].id, i+'_EnergyTiered', '...');
+    }
+
     var expstr = 'Maximum energy multiplied by <b>10</b>.';
     BModify.maxEnergyUp = ['Battery tower', 'Energy facility', 'Lightning jar', 'Pocket power dimension', 'Save expander'];
     en.ue.addUpgrade('Battery tower', expstr+'<q>Inspired by Universal Paperclips... again? This is lame.</q>', 1e5, [0, 4, Icons]);
