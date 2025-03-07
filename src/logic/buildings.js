@@ -86,12 +86,29 @@ BModify._Initialize = function (en, Research) {
         this.maxEnergyUp.forEach((up) => {
             if (Game.Has(up)) this.maxEnergy *= 10;
         })
+
+        // unlock upgrades
+        for (var i in Game.Objects) {
+            if (Game.Objects[i].amount >= 4) Game.Unlock(Game.Objects[i].energyTiered);
+        }
+
+        // if (Game.cookiesEarned > 1e3) l("pWidget").style.display = 'block';
+        // else l("pWidget").style.display = 'none';
+    }
+
+    BModify.buySellP = function () {
+        console.log("beep beep boop boop");
     }
 
     BModify.energyUpdate = function () {
         this.energy += (this.production - this.consumption) / Game.fps;
         if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
         if (this.energy < 0) this.energy = 0;
+
+        // draw power plant widget
+        var str = '';
+        str += '<a class="option" '+Game.clickStr+'="mod.bModify.buySellP();" style="position:relative;margin:0px;margin-bottom:2px;float:right;" '+Game.getTooltip('<div style="min-width:200px;text-align:center;font-size:11px;">hello!</div>')+'> Buy Power Plant </a>';
+        l("pWidget").innerHTML = str;
     }
 
     Game.GetIcon = function (type, tier) {
@@ -100,11 +117,11 @@ BModify._Initialize = function (en, Research) {
         return (Game.Tiers[tier].source ? [col, Game.Tiers[tier].iconRow, Game.Tiers[tier].source] : [col, Game.Tiers[tier].iconRow]);
     }
 
-    Game.Tiers['Energizium'] = { name: 'Energizium', unlock: 3, iconRow: 17, source: Icons, color: '#57c1ff', special: 1, price: 40 };
+    Game.Tiers['Energizium'] = { name: 'Energizium', unlock: 4, iconRow: 17, source: Icons, color: '#57c1ff', special: 1, price: 30 };
 
     var order = 18500;
     function EnergyTiered(bid, name, desc) {
-        desc = "All energy gains <b>x2</b>. " + cfl(Game.ObjectsById[bid].plural) + " gain <b>" + (bid == 0 ? 100 : 200 - bid * 10) 
+        desc = "All energy gains <b>x2</b>. " + cfl(Game.ObjectsById[bid].plural) + " gain <b>" + (bid == 0 ? 100 : 200 - bid * 10)
             + "%</b> more CpS from speed.<q>" + desc + "</q>";
 
         en.ue.addUpgrade(name, desc, Game.Tiers['Energizium'].price, Game.GetIcon(Game.ObjectsById[bid].name, 'Energizium'), order, { tier: 'Energizium' });
@@ -112,18 +129,25 @@ BModify._Initialize = function (en, Research) {
     }
 
     for (var i in Game.Objects) {
-        EnergyTiered(Game.Objects[i].id, i+'_EnergyTiered', '...');
+        EnergyTiered(Game.Objects[i].id, i + '_EnergyTiered', '...');
     }
 
     var expstr = 'Maximum energy multiplied by <b>10</b>.';
     BModify.maxEnergyUp = ['Battery tower', 'Energy facility', 'Lightning jar', 'Pocket power dimension', 'Save expander', 'Ether holder', 'Multiversal storage'];
-    en.ue.addUpgrade('Battery tower', expstr+'<q>Inspired by Universal Paperclips... again? This is lame.</q>', 1e5, [0, 4, Icons], order, {});
-    en.ue.addUpgrade('Energy facility', expstr+'<q>Deep underground, or in Area 47, or up in the sky, or whatever...</q>', 1e8, [0, 4, Icons], order, {});
-    en.ue.addUpgrade('Lightning jar', expstr+'<q>Now you can catch a lightning bolt!</q>', 1e11, [0, 4, Icons], order, {});
-    en.ue.addUpgrade('Pocket power dimension', expstr+'<q>A dimension completely filled to the brim with energy and paperclips.</q>', 1e14, [0, 4, Icons], order, {});
-    en.ue.addUpgrade('Save expander', expstr+'<q>By the way, I\'m not optimizing the mod\'s savefile anytime soon.</q>', 1e17, [0, 4, Icons], order, {});
-    en.ue.addUpgrade('Ether holder', expstr+'<q>Lighter than air.</q>', 1e20, [0, 4, Icons], order, {});
-    en.ue.addUpgrade('Mutiversal storage', expstr+'<q>Set aside some of your idleverses for this purpose.</q>', 1e23, [0, 4, Icons], order, {});
+    en.ue.addUpgrade('Battery tower', expstr + '<q>Inspired by Universal Paperclips... again? This is lame.</q>', 1e5,
+        [0, 4, Icons], order, { unlockAt: 1e4 });
+    en.ue.addUpgrade('Energy facility', expstr + '<q>Deep underground, or in Area 47, or up in the sky, or whatever...</q>', 1e8,
+        [0, 4, Icons], order, { unlockAt: 1e7 });
+    en.ue.addUpgrade('Lightning jar', expstr + '<q>Now you can catch a lightning bolt!</q>', 1e11,
+        [0, 4, Icons], order, { unlockAt: 1e10 });
+    en.ue.addUpgrade('Pocket power dimension', expstr + '<q>A dimension completely filled to the brim with energy and paperclips.</q>', 1e14,
+        [0, 4, Icons], order, { unlockAt: 1e13 });
+    en.ue.addUpgrade('Save expander', expstr + '<q>By the way, I\'m not optimizing the mod\'s savefile anytime soon.</q>', 1e17,
+        [0, 4, Icons], order, { unlockAt: 1e16 });
+    en.ue.addUpgrade('Ether holder', expstr + '<q>Lighter than air.</q>', 1e20,
+        [0, 4, Icons], order, { unlockAt: 1e19 });
+    en.ue.addUpgrade('Multiversal storage', expstr + '<q>Set aside some of your idleverses for this purpose.</q>', 1e23,
+        [0, 4, Icons], order, { unlockAt: 1e22 });
 
 
     Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
@@ -141,10 +165,11 @@ BModify._Initialize = function (en, Research) {
 
     // POWER PLANTS
 
-    l('rows').insertAdjacentHTML('afterbegin', '<div id="pWidget" style="position: relative; padding-bottom: 16px; width: 100%; height: 128px;"></div>');
+    l('rows').insertAdjacentHTML('afterbegin', 
+        '<div id="pWidget" style="position: relative; padding-bottom: 16px; width: 100%; height: 128px; background: black;"></div>');
 
     en.trackVars(this, [["energy"], ["maxEnergy"], ["consumption", "float"], ["production", "float"], ["baseEfficiency", "float"],
-        ["efficiency", "float"], ["stress", "float"], ["speed", "float"], ["powerPlants"]]);
+    ["efficiency", "float"], ["stress", "float"], ["speed", "float"], ["powerPlants"]]);
 
     var sstr = '<style>'
         + '.resBar{max-width:95%;margin:4px auto;height:16px;}'
