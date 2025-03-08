@@ -108,15 +108,15 @@ BModify._Initialize = function (en, Research) {
         str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.buyP();"> Buy '+ident+' (<span id="pPriceTag" class="price"></span>) </a>' + '<br>';
         str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.ppBSAmnt=1;mod.bModify.drawP();"> 1 </a>';
         str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.ppBSAmnt=10;mod.bModify.drawP();"> 10 </a>';
-        str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.ppBSAmnt=100;mod.bModify.drawP();"> 100 </a>';
-        str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.sellP();"> Sell '+ident+' (<span id="pSellTag" class="price"></span>) </a>' + '<br>';
+        str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.ppBSAmnt=100;mod.bModify.drawP();"> 100 </a>' + '<br>';
+        str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.sellP();"> Sell '+ident+' (<span id="pSellTag" class="price"></span>) </a>';
         l("pContent").innerHTML = str;
 
-        l("pPriceTag").innerHTML = Beautify(this.getPrice()) + " cookies";
-        if (Game.cookies > this.getPrice()) l("pPriceTag").classList.remove("disabled");
+        l("pPriceTag").innerHTML = Beautify(this.getCumulativePrice()) + " cookies";
+        if (Game.cookies > this.getCumulativePrice()) l("pPriceTag").classList.remove("disabled");
         else l("pPriceTag").classList.add("disabled");
 
-        l("pSellTag").innerHTML = (this.powerPlants > 0 ? Beautify(this.getSellPrice()) : 0) + " cookies";
+        l("pSellTag").innerHTML = (this.powerPlants > 0 ? Beautify(this.getCumulativeSellPrice()) : 0) + " cookies";
     }
 
     BModify.buyP = function () {
@@ -129,13 +129,14 @@ BModify._Initialize = function (en, Research) {
 
     BModify.buy = function () {
         if (Game.cookies < this.getPrice()) return;
+        Game.Spend(this.getSellPrice());
         this.powerPlants++;
         this.drawP();
     }
 
     BModify.sell = function () {
         if (this.powerPlants == 0) return;
-        Game.Spend(this.getSellPrice());
+        Game.Earn(this.getSellPrice());
         this.powerPlants--;
         this.drawP();
     }
@@ -144,8 +145,25 @@ BModify._Initialize = function (en, Research) {
         return Math.ceil(100 * Math.pow(1.13, this.powerPlants));
     }
 
+    BModify.getCumulativePrice = function () {
+        var price = 0;
+        for (var i = 0; i < this.ppBSAmnt; i++) {
+            price += Math.ceil(100 * Math.pow(1.13, this.powerPlants + i));
+        }
+        return price;
+    }
+
     BModify.getSellPrice = function () {
         return Math.ceil(50 * Math.pow(1.13, this.powerPlants - 1));
+    }
+
+    BModify.getCumulativeSellPrice = function () {
+        var amnt = Math.min(this.ppBSAmnt, this.powerPlants - 1);
+        var price = 0;
+        for (var i = 0; i < amnt; i++) {
+            price += Math.ceil(50 * Math.pow(1.13, this.powerPlants - i - 1));
+        }
+        return price;
     }
 
     BModify.energyUpdate = function () {
