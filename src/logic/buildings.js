@@ -40,7 +40,7 @@ BModify._Initialize = function (en, Research) {
     BModify.speed = 1;
     BModify.powerPlants = 0;
     for (var i in Game.Objects) {
-        Game.Objects[i].baseConsumption = Math.round(Math.pow(2.2, Game.Objects[i].id) * (1.15 * Game.Objects[i].id + 1));
+        Game.Objects[i].baseConsumption = 0.1 * Math.round(Math.pow(2.3, Game.Objects[i].id) * (Game.Objects[i].id + 1));
     }
 
     Game.Draw = en.injectCode(Game.Draw, `l('cookies').innerHTML=str;`,
@@ -70,7 +70,7 @@ BModify._Initialize = function (en, Research) {
     BModify.energyCalc = function () {
         this.consumption = 0;
         for (var i in Game.Objects) {
-            this.consumption += 0.1 * Game.Objects[i].baseConsumption * Game.Objects[i].amount;
+            this.consumption += Game.Objects[i].baseConsumption * Game.Objects[i].amount;
         }
 
         this.production = this.powerPlants;
@@ -147,26 +147,26 @@ BModify._Initialize = function (en, Research) {
     var scale = 1.23;
 
     BModify.getPrice = function () {
-        return Math.ceil(1000 * Math.pow(scale, this.powerPlants));
+        return Math.ceil(100 * Math.pow(scale, this.powerPlants)) * (this.powerPlants + 1);
     }
 
     BModify.getCumulativePrice = function () {
         var price = 0;
         for (var i = 0; i < this.ppBSAmnt; i++) {
-            price += Math.ceil(1000 * Math.pow(scale, this.powerPlants + i));
+            price += Math.ceil(100 * Math.pow(scale, this.powerPlants + i)) * (this.powerPlants + i + 1);
         }
         return price;
     }
 
     BModify.getSellPrice = function () {
-        return Math.ceil(500 * Math.pow(scale, this.powerPlants - 1));
+        return Math.ceil(50 * Math.pow(scale, this.powerPlants - 1)) * (this.powerPlants);
     }
 
     BModify.getCumulativeSellPrice = function () {
         var amnt = Math.min(this.ppBSAmnt, this.powerPlants - 1);
         var price = 0;
         for (var i = 0; i < amnt; i++) {
-            price += Math.ceil(500 * Math.pow(scale, this.powerPlants - i - 1));
+            price += Math.ceil(50 * Math.pow(scale, this.powerPlants - i - 1) * (this.powerPlants - i));
         }
         return price;
     }
@@ -187,14 +187,14 @@ BModify._Initialize = function (en, Research) {
         return (Game.Tiers[tier].source ? [col, Game.Tiers[tier].iconRow, Game.Tiers[tier].source] : [col, Game.Tiers[tier].iconRow]);
     }
 
-    Game.Tiers['Energizium'] = { name: 'Energizium', unlock: 4, iconRow: 17, source: Icons, color: '#57c1ff', special: 1, price: 30 };
+    Game.Tiers['Energizium'] = { name: 'Energizium', unlock: 4, iconRow: 17, source: Icons, color: '#57c1ff', special: 1, price: 15 };
 
     var order = 18500;
     function EnergyTiered(bid, name, desc) {
         desc = "All energy gains <b>x2</b>. " + cfl(Game.ObjectsById[bid].plural) + " gain <b>" + (bid == 0 ? 100 : 200 - bid * 10)
             + "%</b> more CpS from speed.<q>" + desc + "</q>";
 
-        en.ue.addUpgrade(name, desc, Game.Tiers['Energizium'].price * Game.ObjectsById[bid].basePrice,
+        en.ue.addUpgrade(name, desc, Game.Tiers['Energizium'].price * Game.ObjectsById[bid].basePrice * bid,
             Game.GetIcon(Game.ObjectsById[bid].name, 'Energizium'), order, { tier: 'Energizium' });
         Game.ObjectsById[bid].energyTiered = name;
     }
