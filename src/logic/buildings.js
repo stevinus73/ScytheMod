@@ -50,7 +50,7 @@ BModify._Initialize = function (en, Research) {
     BModify.getEnergyDisplay = function () {
         return '<div style="font:14px sans-serif;display:flex;align-items:center;justify-content:center;">'
             + '<div class="icon" style="transform:scale(0.9);' + writeIcon([0, 4, Icons]) + '"></div>'
-            + 'Energy: ' + Beautify(this.energy) + '/' + Beautify(this.maxEnergy) + '</div>';
+            + 'Energy: ' + Beautify(Math.ceil(this.energy)) + '/' + Beautify(this.maxEnergy) + '</div>';
     }
 
     BModify.getGainMultiplier = function () {
@@ -94,6 +94,15 @@ BModify._Initialize = function (en, Research) {
 
         // if (Game.cookiesEarned > 1e3) l("pWidget").style.display = 'block';
         // else l("pWidget").style.display = 'none';
+        this.drawP();
+    }
+
+    BModify.drawP = function() {
+        // draw power plant widget
+        var str = '';
+        str += '<div class="title" style="position:relative">Power Plants: ' + Beautify(this.powerPlants) + '</div>';
+        str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.buySellP();" style="width:120px;"> Buy Power Plant </a>';
+        l("pWidget").innerHTML = str;
     }
 
     BModify.buySellP = function () {
@@ -105,12 +114,6 @@ BModify._Initialize = function (en, Research) {
         this.energy += (this.production - this.consumption) / Game.fps;
         if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
         if (this.energy < 0) this.energy = 0;
-
-        // draw power plant widget
-        var str = '';
-        str += '<div class="title" style="position:relative">Power Plants: ' + Beautify(this.powerPlants) + '</div>';
-        str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.buySellP();" style="width:120px;"> Buy Power Plant </a>';
-        l("pWidget").innerHTML = str;
     }
 
     Game.GetIcon = function (type, tier) {
@@ -126,7 +129,8 @@ BModify._Initialize = function (en, Research) {
         desc = "All energy gains <b>x2</b>. " + cfl(Game.ObjectsById[bid].plural) + " gain <b>" + (bid == 0 ? 100 : 200 - bid * 10)
             + "%</b> more CpS from speed.<q>" + desc + "</q>";
 
-        en.ue.addUpgrade(name, desc, Game.Tiers['Energizium'].price, Game.GetIcon(Game.ObjectsById[bid].name, 'Energizium'), order, { tier: 'Energizium' });
+        en.ue.addUpgrade(name, desc, Game.Tiers['Energizium'].price * Game.ObjectsById[bid].basePrice,
+            Game.GetIcon(Game.ObjectsById[bid].name, 'Energizium'), order, { tier: 'Energizium' });
         Game.ObjectsById[bid].energyTiered = name;
     }
 
