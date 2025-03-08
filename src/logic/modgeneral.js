@@ -412,8 +412,8 @@ General._Initialize = function(en, Research) {
     
     
     // STARDUST & MAGIC
-    en.ue.addUpgrade("Magical strength", "Buildings gain <b>+5%</b> CpS (multiplicative) per 10 buildings owned past 100.<br>"
-        +'<q>Call upon the power of magic to boost your cookie production!</q>',
+    en.ue.addUpgrade("Magical strength", "Buildings gain <b>+3%</b> CpS (multiplicative) per 10 buildings owned past 100.<br>"
+        +'<q>Like magicCpS, but cooler.</q>',
         1234, [0,3,Icons], 768, {pool: 'prestige', posX: 0, posY: -192, parents: 
             [Game.Upgrades['Legacy']], showIf:function(){return Game.prestige>12345;}}
     );
@@ -421,7 +421,7 @@ General._Initialize = function(en, Research) {
     for (var i in Game.Objects) {
         en.addCpsHook(i, ()=>{
             if (Game.Has("Magical strength") && Game.Objects[i].amount>=100) {
-                return 1+Math.pow(1.05,Math.floor((Game.Objects[i].amount-100)/10));
+                return 1+Math.pow(1.03,Math.floor((Game.Objects[i].amount-100)/10));
             } else return 1;
         })
     }

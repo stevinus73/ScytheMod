@@ -91,10 +91,6 @@ BModify._Initialize = function (en, Research) {
         for (var i in Game.Objects) {
             if (Game.Objects[i].amount >= 4) Game.Unlock(Game.Objects[i].energyTiered);
         }
-
-        if (Game.cookiesEarned > 1e3 && Game.onMenu == '') l("pWidget").style.display = 'block';
-        else l("pWidget").style.display = 'none';
-        this.drawP();
     }
 
     this.ppBSAmnt = 1;
@@ -103,7 +99,12 @@ BModify._Initialize = function (en, Research) {
         // draw power plant widget
         var ident = (this.ppBSAmnt==1?'Power Plant':this.ppBSAmnt+' Power Plants');
         var str = '';
-        str += '<div class="title" style="position:relative">Power Plants: ' + Beautify(this.powerPlants) + '</div>';
+
+        str += '<div class="listing"><div class="icon" style="float:left;'+writeIcon([16,7])+'"></div>'+
+						'<div style="margin-top:8px;"><span class="title" style="font-size:22px;">Power plants: '+Beautify(this.powerPlants)+'</span> '+
+                        '<br>producing <b>'+Beautify(this.production)+'</b> energy per second</div>'+
+					'</div>';
+        //'<div class="title" style="position:relative">Power Plants: ' + Beautify(this.powerPlants) + '</div>';
         str += '<div class="line"></div>';
         str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.buyP();"> Buy '+ident+' (<span id="pPriceTag" class="price"></span>) </a>' + '<br>';
         str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.ppBSAmnt=1;mod.bModify.drawP();"> 1 </a>';
@@ -129,7 +130,7 @@ BModify._Initialize = function (en, Research) {
 
     BModify.buy = function () {
         if (Game.cookies < this.getPrice()) return;
-        Game.Spend(this.getSellPrice());
+        Game.Spend(this.getPrice());
         this.powerPlants++;
         this.drawP();
     }
@@ -141,27 +142,29 @@ BModify._Initialize = function (en, Research) {
         this.drawP();
     }
 
+    var scale = 1.23;
+
     BModify.getPrice = function () {
-        return Math.ceil(100 * Math.pow(1.13, this.powerPlants));
+        return Math.ceil(100 * Math.pow(scale, this.powerPlants));
     }
 
     BModify.getCumulativePrice = function () {
         var price = 0;
         for (var i = 0; i < this.ppBSAmnt; i++) {
-            price += Math.ceil(100 * Math.pow(1.13, this.powerPlants + i));
+            price += Math.ceil(100 * Math.pow(scale, this.powerPlants + i));
         }
         return price;
     }
 
     BModify.getSellPrice = function () {
-        return Math.ceil(50 * Math.pow(1.13, this.powerPlants - 1));
+        return Math.ceil(50 * Math.pow(scale, this.powerPlants - 1));
     }
 
     BModify.getCumulativeSellPrice = function () {
         var amnt = Math.min(this.ppBSAmnt, this.powerPlants - 1);
         var price = 0;
         for (var i = 0; i < amnt; i++) {
-            price += Math.ceil(50 * Math.pow(1.13, this.powerPlants - i - 1));
+            price += Math.ceil(50 * Math.pow(scale, this.powerPlants - i - 1));
         }
         return price;
     }
@@ -170,6 +173,11 @@ BModify._Initialize = function (en, Research) {
         this.energy += (this.production - this.consumption) / Game.fps;
         if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
         if (this.energy < 0) this.energy = 0;
+
+        // draw ppwidget
+        if (Game.cookiesEarned > 1e3 && Game.onMenu == '') l("pWidget").style.display = 'block';
+        else l("pWidget").style.display = 'none';
+        this.drawP();
     }
 
     Game.GetIcon = function (type, tier) {
@@ -228,8 +236,8 @@ BModify._Initialize = function (en, Research) {
     // POWER PLANTS
 
     l('rows').insertAdjacentHTML('afterbegin',
-        '<div id="pWidget" style="position:relative;padding-bottom:16px;width:100%;height:128px;background:url(' + Game.resPath + 'img/shadedBorders.png),url(' + Game.resPath + 'img/darkNoise.jpg);">'
-        + '<div id="pContent" style="margin:8px;"></div></div>');
+        '<div id="pWidget" style="position:relative;padding-bottom:16px;width:100%;height:256px;background:url(' + Game.resPath + 'img/shadedBorders.png),url(' + Game.resPath + 'img/darkNoise.jpg);">'
+        + '<div class="separatorBottom"></div>' + '<div id="pContent" style="padding:24px;"></div></div>');
 
     en.trackVars(this, [["energy"], ["maxEnergy"], ["consumption", "float"], ["production", "float"], ["baseEfficiency", "float"],
     ["efficiency", "float"], ["stress", "float"], ["speed", "float"], ["powerPlants"]]);
