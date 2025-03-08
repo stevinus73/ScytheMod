@@ -10,7 +10,7 @@ Clicks._Initialize = function(en, Research) {
     en.ue.addUpgrade("Hands-off approach", "Clicks regenerate <b>twice</b> as fast.<q>Ow, my hands are really sore. Good idea.</q>",
         5000000, [12, 2], 140, {unlockAt: 1000000});
 
-    en.ae.addAchievement("Hyperclick", "Click <b>5,000</b> times."+'<div class=\"line\"></div>Owning this achievement makes Big clicks and Butterfly <b>20 times</b> cheaper permanently.',
+    en.ae.addAchievement("Hyperclick", "Click <b>5,000</b> times in one ascension."+'<div class=\"line\"></div>Owning this achievement makes Big clicks and Butterfly <b>20 times</b> cheaper permanently.',
         [0, 0], "Just wrong", {});
 
     // en.ae.replaceDesc(Game.Achievements['Clickathlon'], loc("Make <b>%1</b> from clicking.",loc("%1 cookie",LBeautify(1e5)))+

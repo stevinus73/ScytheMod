@@ -91,6 +91,8 @@ BModify._Initialize = function (en, Research) {
         for (var i in Game.Objects) {
             if (Game.Objects[i].amount >= 4) Game.Unlock(Game.Objects[i].energyTiered);
         }
+
+        this.drawP();
     }
 
     this.ppBSAmnt = 1;
@@ -145,26 +147,26 @@ BModify._Initialize = function (en, Research) {
     var scale = 1.23;
 
     BModify.getPrice = function () {
-        return Math.ceil(100 * Math.pow(scale, this.powerPlants));
+        return Math.ceil(1000 * Math.pow(scale, this.powerPlants));
     }
 
     BModify.getCumulativePrice = function () {
         var price = 0;
         for (var i = 0; i < this.ppBSAmnt; i++) {
-            price += Math.ceil(100 * Math.pow(scale, this.powerPlants + i));
+            price += Math.ceil(1000 * Math.pow(scale, this.powerPlants + i));
         }
         return price;
     }
 
     BModify.getSellPrice = function () {
-        return Math.ceil(50 * Math.pow(scale, this.powerPlants - 1));
+        return Math.ceil(500 * Math.pow(scale, this.powerPlants - 1));
     }
 
     BModify.getCumulativeSellPrice = function () {
         var amnt = Math.min(this.ppBSAmnt, this.powerPlants - 1);
         var price = 0;
         for (var i = 0; i < amnt; i++) {
-            price += Math.ceil(50 * Math.pow(scale, this.powerPlants - i - 1));
+            price += Math.ceil(500 * Math.pow(scale, this.powerPlants - i - 1));
         }
         return price;
     }
@@ -177,7 +179,6 @@ BModify._Initialize = function (en, Research) {
         // draw ppwidget
         if (Game.cookiesEarned > 1e3 && Game.onMenu == '') l("pWidget").style.display = 'block';
         else l("pWidget").style.display = 'none';
-        this.drawP();
     }
 
     Game.GetIcon = function (type, tier) {
@@ -230,7 +231,7 @@ BModify._Initialize = function (en, Research) {
 
     Game.ClickCookie = en.injectCode(Game.ClickCookie, "Game.loseShimmeringVeil('click');", "mod.bModify.gainEnergy(10,0);", "after");
     eval('Game.shimmerTypes.golden.popFunc=' + Game.shimmerTypes.golden.popFunc.toString().replace("var buff=0;",
-        "var buff=0; \n\t\tmod.bModify.gainEnergy((me.spawnLead?250:10),(me.spawnLead?0.15:0.01));"
+        "var buff=0; \n\t\tmod.bModify.gainEnergy((me.spawnLead?250:30),(me.spawnLead?0.15:0.01));"
     ));
 
     // POWER PLANTS
