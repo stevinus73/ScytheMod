@@ -4,13 +4,17 @@ Clicks._Initialize = function(en, Research) {
     this.en = en;
 
     en.ue.addUpgrade("Big clicks", "The mouse is <b>four times</b> as efficient and the cursors are <b>twice</b> as efficient. Maximum click space <b>doubled</b>.<q>Big clicks for the big cookie.</q>",
-        1000, [1, 6], 140, {unlockAt: 10, buyFunction: function(){Clicks.clicks+=250;Clicks.recalculate();}, priceFunc: function(){return this.basePrice*(Game.Has('Clickathlon')?0.05:1);}});
+        1000, [1, 6], 140, {unlockAt: 10, buyFunction: function(){Clicks.clicks+=250;Clicks.recalculate();}, priceFunc: function(){return this.basePrice*(Game.Has('Hyperclick')?0.05:1);}});
     en.ue.addUpgrade("Butterfly", "The mouse is <b>four times</b> as efficient and the cursors are <b>twice</b> as efficient. Maximum click space <b>doubled</b>.<q>More like a hummingbird with THAT speed.</q>",
-        100000, [12, 1], 140, {unlockAt: 1000, buyFunction: function(){Clicks.clicks+=500;Clicks.recalculate();}, priceFunc: function(){return this.basePrice*(Game.Has('Clickathlon')?0.05:1);}});
+        100000, [12, 1], 140, {unlockAt: 1000, buyFunction: function(){Clicks.clicks+=500;Clicks.recalculate();}, priceFunc: function(){return this.basePrice*(Game.Has('Hyperclick')?0.05:1);}});
     en.ue.addUpgrade("Hands-off approach", "Clicks regenerate <b>twice</b> as fast.<q>Ow, my hands are really sore. Good idea.</q>",
         5000000, [12, 2], 140, {unlockAt: 1000000});
 
-    en.ae.appendToDesc(Game.Achievements['Clickathlon'], '<div class=\"line\"></div>Owning this achievement makes Big clicks and Butterfly <b>20 times cheaper</b> permanently.');
+    en.ae.addAchievement("Hyperclick", "Click <b>5,000</b> times."+'<div class=\"line\"></div>Owning this achievement makes Big clicks and Butterfly <b>20 times</b> cheaper permanently.',
+        [0, 0], "Just wrong", {});
+
+    // en.ae.replaceDesc(Game.Achievements['Clickathlon'], loc("Make <b>%1</b> from clicking.",loc("%1 cookie",LBeautify(1e5)))+
+    //     '<div class=\"line\"></div>Owning this achievement makes Big clicks and Butterfly <b>20 times cheaper</b> permanently.');
     
     Game.mouseCps = en.injectCode(Game.mouseCps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
     Game.mouseCps = en.injectCode(Game.mouseCps, "if (Game.Has('Dragon claw')) mult*=1.03;", 
@@ -83,6 +87,7 @@ Clicks._Initialize = function(en, Research) {
         this.overflow=Math.min(this.overflow,P.maxOverflow);
 
         this.lastClickT=0;
+        if (Game.cookieClicks>5000) Game.Win("Hyperclick");
         if (Research.has("Malevolent power")) Game.recalculateGains = 1;
     }
 

@@ -92,28 +92,43 @@ BModify._Initialize = function (en, Research) {
             if (Game.Objects[i].amount >= 4) Game.Unlock(Game.Objects[i].energyTiered);
         }
 
-        // if (Game.cookiesEarned > 1e3) l("pWidget").style.display = 'block';
-        // else l("pWidget").style.display = 'none';
+        if (Game.cookiesEarned > 1e3 && Game.onMenu == '') l("pWidget").style.display = 'block';
+        else l("pWidget").style.display = 'none';
         this.drawP();
     }
 
-    BModify.drawP = function() {
+    BModify.drawP = function () {
         // draw power plant widget
         var str = '';
         str += '<div class="title" style="position:relative">Power Plants: ' + Beautify(this.powerPlants) + '</div>';
-        str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.buySellP();" style="width:120px;"> Buy Power Plant </a>';
+        str += '<div class="line"></div>';
+        str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.buyP();"> Buy Power Plant (<span id="pPriceTag" class="price"></span>) </a>';
+        str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.sellP();"> Sell Power Plant (<span id="pSellTag" class="price"></span>) </a>';
         l("pWidget").innerHTML = str;
     }
 
-    BModify.buySellP = function () {
-        console.log("beep beep boop boop");
+    BModify.buyP = function () {
         this.powerPlants++;
+        this.drawP();
+    }
+
+    BModify.sellP = function () {
+        if (this.powerPlants > 0) this.powerPlants--;
+        this.drawP();
+    }
+
+    BModify.getPrice = function () {
+        return Math.ceil(100 * Math.pow(1.13, this.powerPlants));
     }
 
     BModify.energyUpdate = function () {
         this.energy += (this.production - this.consumption) / Game.fps;
         if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
         if (this.energy < 0) this.energy = 0;
+
+        l("pPriceTag").innerHTML = Beautify(this.getPrice()) + " cookies";
+        if (Game.cookies > this.getPrice()) l("pPriceTag").classList.remove("disabled");
+        else l("pPriceTag").classList.add("disabled");
     }
 
     Game.GetIcon = function (type, tier) {
@@ -172,7 +187,8 @@ BModify._Initialize = function (en, Research) {
     // POWER PLANTS
 
     l('rows').insertAdjacentHTML('afterbegin',
-        '<div id="pWidget" style="position: relative; padding-bottom: 16px; width: 100%; height: 128px; background: black;"></div>');
+        '<div id="pWidget" style="position:relative;padding-bottom:16px;width:100%;height:128px;background:url(' + Game.resPath + 'img/shadedBorders.png),url(' + Game.resPath + 'img/darkNoise.jpg);">'
+        + '<div id="pContent" style="margin:8px;"></div></div>');
 
     en.trackVars(this, [["energy"], ["maxEnergy"], ["consumption", "float"], ["production", "float"], ["baseEfficiency", "float"],
     ["efficiency", "float"], ["stress", "float"], ["speed", "float"], ["powerPlants"]]);
