@@ -104,7 +104,7 @@ BModify._Initialize = function (en, Research) {
         str += '<div class="line"></div>';
         str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.buyP();"> Buy Power Plant (<span id="pPriceTag" class="price"></span>) </a>';
         str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.sellP();"> Sell Power Plant (<span id="pSellTag" class="price"></span>) </a>';
-        l("pWidget").innerHTML = str;
+        l("pContent").innerHTML = str;
     }
 
     BModify.buyP = function () {
@@ -126,9 +126,11 @@ BModify._Initialize = function (en, Research) {
         if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
         if (this.energy < 0) this.energy = 0;
 
-        l("pPriceTag").innerHTML = Beautify(this.getPrice()) + " cookies";
-        if (Game.cookies > this.getPrice()) l("pPriceTag").classList.remove("disabled");
-        else l("pPriceTag").classList.add("disabled");
+        if (l("pPriceTag")) {
+            l("pPriceTag").innerHTML = Beautify(this.getPrice()) + " cookies";
+            if (Game.cookies > this.getPrice()) l("pPriceTag").classList.remove("disabled");
+            else l("pPriceTag").classList.add("disabled");
+        }
     }
 
     Game.GetIcon = function (type, tier) {
