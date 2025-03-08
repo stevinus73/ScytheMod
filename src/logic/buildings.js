@@ -194,7 +194,7 @@ BModify._Initialize = function (en, Research) {
         desc = "All energy gains <b>x2</b>. " + cfl(Game.ObjectsById[bid].plural) + " gain <b>" + (bid == 0 ? 100 : 200 - bid * 10)
             + "%</b> more CpS from speed.<q>" + desc + "</q>";
 
-        en.ue.addUpgrade(name, desc, Game.Tiers['Energizium'].price * Game.ObjectsById[bid].basePrice * bid,
+        en.ue.addUpgrade(name, desc, Game.Tiers['Energizium'].price * Game.ObjectsById[bid].basePrice * (bid + 1),
             Game.GetIcon(Game.ObjectsById[bid].name, 'Energizium'), order, { tier: 'Energizium' });
         Game.ObjectsById[bid].energyTiered = name;
     }
