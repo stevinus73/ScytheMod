@@ -97,23 +97,46 @@ BModify._Initialize = function (en, Research) {
         this.drawP();
     }
 
+    this.ppBSAmnt = 1;
+
     BModify.drawP = function () {
         // draw power plant widget
+        var ident = (this.ppBSAmnt==1?'Power Plant':this.ppBSAmnt+' Power Plants');
         var str = '';
         str += '<div class="title" style="position:relative">Power Plants: ' + Beautify(this.powerPlants) + '</div>';
         str += '<div class="line"></div>';
-        str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.buyP();"> Buy Power Plant (<span id="pPriceTag" class="price"></span>) </a>';
-        str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.sellP();"> Sell Power Plant (<span id="pSellTag" class="price"></span>) </a>';
+        str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.buyP();"> Buy '+ident+' (<span id="pPriceTag" class="price"></span>) </a>' + '<br>';
+        str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.ppBSAmnt=1;mod.bModify.drawP();"> 1 </a>';
+        str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.ppBSAmnt=10;mod.bModify.drawP();"> 10 </a>';
+        str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.ppBSAmnt=100;mod.bModify.drawP();"> 100 </a>';
+        str += '<a class="smallFancyButton" ' + Game.clickStr + '="mod.bModify.sellP();"> Sell '+ident+' (<span id="pSellTag" class="price"></span>) </a>' + '<br>';
         l("pContent").innerHTML = str;
+
+        l("pPriceTag").innerHTML = Beautify(this.getPrice()) + " cookies";
+        if (Game.cookies > this.getPrice()) l("pPriceTag").classList.remove("disabled");
+        else l("pPriceTag").classList.add("disabled");
+
+        l("pSellTag").innerHTML = (this.powerPlants > 0 ? Beautify(this.getSellPrice()) : 0) + " cookies";
     }
 
     BModify.buyP = function () {
+        for (var i = 0; i < this.ppBSAmnt; i++) this.buy();
+    }
+
+    BModify.sellP = function () {
+        for (var i = 0; i < this.ppBSAmnt; i++) this.sell();
+    }
+
+    BModify.buy = function () {
+        if (Game.cookies < this.getPrice()) return;
         this.powerPlants++;
         this.drawP();
     }
 
-    BModify.sellP = function () {
-        if (this.powerPlants > 0) this.powerPlants--;
+    BModify.sell = function () {
+        if (this.powerPlants == 0) return;
+        Game.Spend(this.getSellPrice());
+        this.powerPlants--;
         this.drawP();
     }
 
@@ -121,16 +144,14 @@ BModify._Initialize = function (en, Research) {
         return Math.ceil(100 * Math.pow(1.13, this.powerPlants));
     }
 
+    BModify.getSellPrice = function () {
+        return Math.ceil(50 * Math.pow(1.13, this.powerPlants - 1));
+    }
+
     BModify.energyUpdate = function () {
         this.energy += (this.production - this.consumption) / Game.fps;
         if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
         if (this.energy < 0) this.energy = 0;
-
-        if (l("pPriceTag")) {
-            l("pPriceTag").innerHTML = Beautify(this.getPrice()) + " cookies";
-            if (Game.cookies > this.getPrice()) l("pPriceTag").classList.remove("disabled");
-            else l("pPriceTag").classList.add("disabled");
-        }
     }
 
     Game.GetIcon = function (type, tier) {
