@@ -200,8 +200,12 @@ BModify._Initialize = function (en, Research) {
     }
 
     for (var i in Game.Objects) {
-        EnergyTiered(Game.Objects[i].id, i + '_EnergyTiered', '...');
+        EnergyTiered(Game.Objects[i].id, i + ' power', '... (will make actual upgrades)');
     }
+
+    // EnergyTiered(0, "Mouse wheels", "The hamster wheels of the clicking world.");
+    // EnergyTiered(1, "Elder batteries", "These actually increase in power the older they get.");
+    // EnergyTiered(2, "Wind turbines", "Wheeeee!");
 
     var expstr = 'Maximum energy multiplied by <b>10</b>.';
     BModify.maxEnergyUp = ['Battery tower', 'Energy facility', 'Lightning jar', 'Pocket power dimension', 'Save expander', 'Ether holder', 'Multiversal storage'];
@@ -403,8 +407,8 @@ BModify._Initialize = function (en, Research) {
                 return;
             } else if (this.barred < 0) {
                 var dep = (this.RhpS / Game.fps) * this.me.amount * this.decayedFactor();
-                this.rsUsed += dep;
-                BModify.totalDp += dep;
+                // this.rsUsed += dep;
+                // BModify.totalDp += dep;
             }
             this.barred--;
         }
