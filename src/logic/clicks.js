@@ -87,7 +87,6 @@ Clicks._Initialize = function(en, Research) {
         this.overflow=Math.min(this.overflow,P.maxOverflow);
 
         this.lastClickT=0;
-        if (Game.cookieClicks>5000) Game.Win("Hyperclick");
         if (Research.has("Malevolent power")) Game.recalculateGains = 1;
     }
 
@@ -124,6 +123,9 @@ Clicks._Initialize = function(en, Research) {
             if (Game.Has("Mystical regeneration")) rate/=Math.pow((Game.Has('Omnipotent mouse')?1.02:1.015),this.powerClicks);
             this.regenTimer=rate;
         }
+
+        
+        if (Game.cookieClicks>5000) Game.Win("Hyperclick");
 
         if (this.cursorTimer>0) this.cursorTimer--;
         else {
@@ -427,7 +429,7 @@ Clicks._Initialize = function(en, Research) {
         Clicks.logic();
     });
     Game.registerHook('reset', function(wipe) {
-        Clicks.maxClicks = P.baseClicks+((Game.Has("Divine wisdom")&&!wipe)?(Game.Has("Omnipotent mouse")?15:10)*this.getMaxPowerClicks():0);
+        Clicks.maxClicks = P.baseClicks+((Game.Has("Divine wisdom")&&!wipe)?(Game.Has("Omnipotent mouse")?15:10)*Clicks.getMaxPowerClicks():0);
         Clicks.clicks = Clicks.maxClicks;
         Clicks.overflow = P.minOverflow;
         Clicks.overflow_enabled = false;
