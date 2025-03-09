@@ -120,7 +120,7 @@ var Process = function (en) {
             var spl = en.getVar("upPacked").split('^');
             if ((spl.length % 2 == 0) && (spl.length > 0)) {
                 for (var i = 0; i < spl.length; i += 2) {
-                    var me = Game.Upgrades[parseInt(spl[i])];
+                    var me = Game.Upgrades[spl[i]];
                     var packedstr = spl[i + 1].split('');
                     me.unlocked = parseInt(packedstr[0]); me.bought = parseInt(packedstr[1]);
                     if (me.bought && Game.CountsAsUpgradeOwned(me.pool)) Game.UpgradesOwned++;
@@ -131,7 +131,7 @@ var Process = function (en) {
             spl = en.getVar("achPacked").split('^');
             if ((spl.length % 2 == 0) && (spl.length > 0)) {
                 for (var i = 0; i < spl.length; i += 2) {
-                    var me = Game.Achievements[parseInt(spl[i])];
+                    var me = Game.Achievements[spl[i]];
                     me.won = parseInt([i + 1]);
                     if (me.bought && Game.CountsAsAchievementOwned(me.pool)) Game.AchievementsOwned++;
                 }
