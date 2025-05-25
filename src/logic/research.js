@@ -26,6 +26,8 @@ Research._Initialize = function(en) {
     l("buildingsMaster").insertAdjacentHTML('afterbegin', str);
     this.statsButton = l("statsSwitchesButton");
 
+    en.newVar('techData', 'string');
+
 
     this.researchOn = false;
     this.statsOn = false;
@@ -104,6 +106,16 @@ Research._Initialize = function(en) {
         this.id = this.tree.id;
         this.bought = false;
         this.priceB = 0;
+
+        this.loadSave = function(str) {
+            var sstr = str.split(' ');
+            this.req = sstr[0];
+            this.bought = sstr[1];
+        }
+
+        this.writeSave = function() {
+            return this.req + ' ' + this.bought;
+        }
 
         this.canBuy = function() {
             var parentBuy = true;
@@ -264,6 +276,21 @@ Research._Initialize = function(en) {
         this.upgradesByName = {};
         this.curr = false;
 
+        this.loadSave = function(str) {
+            var me = this;
+            str.split('&').forEach((up, index) => {
+                me.upgrades[index].loadSave(up);
+            })
+        }
+
+        this.writeSave = function() {
+            let toCompress = [];
+            this.upgrades.forEach((up) => {
+                toCompress.push(up.writeSave());
+            })
+            return toCompress.join('&');
+        }
+
         this.getCrate = function() {
             if (!this.requirements()) return '';
             var classes = 'crate upgrade';
@@ -351,6 +378,21 @@ Research._Initialize = function(en) {
             }
         }
     }
+
+        Research.loadSave = function(str) {
+            var me = this;
+            str.split('/').forEach((tree) => {
+                me.trees[tree.split('>')[0]].loadSave(trees.split('>')[1]);
+            })
+        }
+
+        Research.writeSave = function() {
+            let toCompress = [];
+            this.upgrades.forEach((tree) => {
+                toCompress.push(tree.name + '>' + tree.writeSave());
+            })
+            return toCompress.join('/');
+        }
 
     Research.clear = function() {
         this.switch(false);
@@ -782,30 +824,32 @@ Research._Initialize = function(en) {
 
     // stats n' switches
 
-    for (var i in Research.trees) {
-        Research.trees[i].upgrades.forEach(function(up) {
-            en.newVar("research" + i + up.id, "int");
-        })
-    }
+    // for (var i in Research.trees) {
+    //     Research.trees[i].upgrades.forEach(function(up) {
+    //         en.newVar("research" + i + up.id, "int");
+    //     })
+    // }
 
     en.saveCallback(function() {
         en.setVar("research", Research.research);
-        for (var i in Research.trees) {
-            Research.trees[i].upgrades.forEach(function(up) {
-                en.setVar("research" + i + up.id, up.bought ? 1 : 0);
-            })
-        }
+        // for (var i in Research.trees) {
+        //     Research.trees[i].upgrades.forEach(function(up) {
+        //         en.setVar("research" + i + up.id, up.bought ? 1 : 0);
+        //     })
+        // }
+        en.setVar("techData", Research.writeSave());
     })
 
     en.loadCallback(function() {
         Research.research = en.getVar("research", Research.research);
-        for (var i in Research.trees) {
-            Research.trees[i].upgrades.forEach(function(up) {
-                var n = en.getVar("research" + i + up.id, up.bought);
-                if (n == 0) up.bought = false;
-                if (n == 1) up.bought = true;
-            })
-        }
+        // for (var i in Research.trees) {
+        //     Research.trees[i].upgrades.forEach(function(up) {
+        //         var n = en.getVar("research" + i + up.id, up.bought);
+        //         if (n == 0) up.bought = false;
+        //         if (n == 1) up.bought = true;
+        //     })
+        // }
+        Research.loadSave(en.getVar("techData"), Research.writeSave());
     })
 
     Game.registerHook('reset', function(wipe) {
