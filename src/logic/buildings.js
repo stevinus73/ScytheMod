@@ -30,6 +30,8 @@ BModify._Initialize = function (en, Research) {
     en.ae.addAchievement("Climate change", "Deplete <b>200,000</b> units of resource in total. <q>Guys, it exists.</q>",
         [0, 1, Icons], "Septcentennial", {});
 
+    en.newVar('rsData', 'string');
+
     BModify.energy = 0;
     BModify.maxEnergy = 1000;
     BModify.consumption = 0;
@@ -266,6 +268,20 @@ BModify._Initialize = function (en, Research) {
     //<div id="buildingBG2" style="position:absolute;left:42px;top:58px;background-position:0px -1152px;opacity:50%;background-image:url('img/buildings.png');width:64px;height:64px;transform:scale(2.625);"></div>
     l("centerArea").insertAdjacentHTML('beforeend', sstr)
 
+    BModify.loadRS = function (str) {
+        str.split('&').forEach((me, index) => {
+            BModify.rsManagers[index].loadSave(me);
+        })
+    }
+
+    BModify.writeRS = function () {
+        var toCompress = [];
+        this.rsManagers.forEach((me) => {
+            toCompress.push(me.writeSave());
+        })
+        return toCompress.join('&');
+    }
+
     BModify.RS_Manager = function (id, baseRS, rsNames) {
         this.id = id;
         this.me = Game.ObjectsById[this.id];
@@ -288,7 +304,7 @@ BModify._Initialize = function (en, Research) {
         this.statsView = false;
         this.barred = 0;
 
-        en.trackVars(this, [["RhpS", "float"], ["yield", "float"], ["rsTotal"], ["rsUsed"], ["pause"], ["statsView"]], this.id);
+        //en.trackVars(this, [["RhpS", "float"], ["yield", "float"], ["rsTotal"], ["rsUsed"], ["pause"], ["statsView"]], this.id);
 
         BModify.rsManagers.push(this);
 
@@ -306,6 +322,20 @@ BModify._Initialize = function (en, Research) {
             me.rsManager.recalculate();
             return me.rsManager.getRawCpS();
         };
+
+        this.loadSave = function(str) {
+            var sstr = str.split(' ');
+            this.RhpS = sstr[0];
+            this.yield = sstr[1];
+            this.rsTotal = sstr[2];
+            this.rsUsed = sstr[3];
+            this.pause = sstr[4];
+            this.statsView = sstr[5];
+        }
+
+        this.writeSave = function() {
+            return this.RhpS + ' ' + this.yield + ' ' + this.rsTotal + ' ' + this.rsUsed + ' ' + this.pause + ' ' + this.statsView;
+        }
 
         // called once every calculateGains()
         this.recalculate = function () {
@@ -962,122 +992,122 @@ BModify._Initialize = function (en, Research) {
         this.ores = [];
         this.id = 0;
 
-        this.Ore = function (baseRs, baseRhpS, name1, name2, sprite) {
-            this.rsTotal = baseRs;
-            this.rsUsed = 0;
-            this.oreH = 0;
-            this.rsAvailable = baseRs;
-            this.RhpS = baseRhpS;
-            this.id = me.id;
+        // this.Ore = function (baseRs, baseRhpS, name1, name2, sprite) {
+        //     this.rsTotal = baseRs;
+        //     this.rsUsed = 0;
+        //     this.oreH = 0;
+        //     this.rsAvailable = baseRs;
+        //     this.RhpS = baseRhpS;
+        //     this.id = me.id;
 
-            en.newVar("RhpS" + name2, "float");
-            en.newVar("rsTotal" + name2, "int");
-            en.newVar("rsUsed" + name2, "int");
-            en.newVar("oreH" + name2, "int");
-            l('stats3').insertAdjacentHTML('beforeend', '<div id="oreVisual' + this.id + '" style="margin-top:70px;"></div>');
-            this.wrapper = l('oreVisual' + this.id);
-            var str = '';
-            str += '<div id="ore' + this.id + '" class="resBar smallFramed meterContainer" style="width:1px;">'
-            str += '<div id="oreInfo' + this.id + '" class="shadowFilter resBarRefill barRefillL" style="' + writeIcon(sprite) + '"></div>'
-            str += '<div id="oreBarFull' + this.id + '" class="resBarFull meter filling" style="width:1px;"></div>'
-            str += '<div id="oreBarText' + this.id + '" class="resBarText titleFont"></div>'
-            str += '<div id="oreBarInfo' + this.id + '" class="resBarInfo"></div>'
-            str += '</div>'
-            this.wrapper.innerHTML = str;
-            this.mbarFull = l("oreBarFull" + this.id);
-            this.mbar = l("ore" + this.id);
-            this.mbarText = l("oreBarText" + this.id);
-            this.mbarInfo = l("oreBarInfo" + this.id);
-            this.mbarInfo2 = l("oreInfo" + this.id);
+        //     en.newVar("RhpS" + name2, "float");
+        //     en.newVar("rsTotal" + name2, "int");
+        //     en.newVar("rsUsed" + name2, "int");
+        //     en.newVar("oreH" + name2, "int");
+        //     l('stats3').insertAdjacentHTML('beforeend', '<div id="oreVisual' + this.id + '" style="margin-top:70px;"></div>');
+        //     this.wrapper = l('oreVisual' + this.id);
+        //     var str = '';
+        //     str += '<div id="ore' + this.id + '" class="resBar smallFramed meterContainer" style="width:1px;">'
+        //     str += '<div id="oreInfo' + this.id + '" class="shadowFilter resBarRefill barRefillL" style="' + writeIcon(sprite) + '"></div>'
+        //     str += '<div id="oreBarFull' + this.id + '" class="resBarFull meter filling" style="width:1px;"></div>'
+        //     str += '<div id="oreBarText' + this.id + '" class="resBarText titleFont"></div>'
+        //     str += '<div id="oreBarInfo' + this.id + '" class="resBarInfo"></div>'
+        //     str += '</div>'
+        //     this.wrapper.innerHTML = str;
+        //     this.mbarFull = l("oreBarFull" + this.id);
+        //     this.mbar = l("ore" + this.id);
+        //     this.mbarText = l("oreBarText" + this.id);
+        //     this.mbarInfo = l("oreBarInfo" + this.id);
+        //     this.mbarInfo2 = l("oreInfo" + this.id);
 
-            this.oreName = name1;
-            this.name = name2;
+        //     this.oreName = name1;
+        //     this.name = name2;
 
-            this.unlocked = false;
-            this.depleted = false;
+        //     this.unlocked = false;
+        //     this.depleted = false;
 
-            this.infoTooltip = function () {
-                return ''
-            }
+        //     this.infoTooltip = function () {
+        //         return ''
+        //     }
 
-            this.recalculate = function () {
-                var rhpsmult = 1;
-                var rsmult = 1;
+        //     this.recalculate = function () {
+        //         var rhpsmult = 1;
+        //         var rsmult = 1;
 
 
 
-                this.RhpS = baseRhpS * rhpsmult;
-                this.rsTotal = baseRs * rsmult;
-                this.rsAvailable = this.rsTotal - this.rsUsed;
-            }
+        //         this.RhpS = baseRhpS * rhpsmult;
+        //         this.rsTotal = baseRs * rsmult;
+        //         this.rsAvailable = this.rsTotal - this.rsUsed;
+        //     }
 
-            this.harvest = function () {
-                this.rsAvailable = this.rsTotal - this.rsUsed;
-                if (this.rsAvailable <= 0) {
-                    this.depleted = true;
-                } else this.depleted = false;
-                this.rsUsed = Math.min(this.rsUsed, this.rsTotal);
-                this.rsAvailable = Math.max(this.rsAvailable, 0);
-                if (!this.unlocked) return;
-                if (this.depleted) return;
-                this.rsUsed += (this.RhpS / Game.fps);
-                this.oreH += (this.RhpS / Game.fps);
-            }
+        //     this.harvest = function () {
+        //         this.rsAvailable = this.rsTotal - this.rsUsed;
+        //         if (this.rsAvailable <= 0) {
+        //             this.depleted = true;
+        //         } else this.depleted = false;
+        //         this.rsUsed = Math.min(this.rsUsed, this.rsTotal);
+        //         this.rsAvailable = Math.max(this.rsAvailable, 0);
+        //         if (!this.unlocked) return;
+        //         if (this.depleted) return;
+        //         this.rsUsed += (this.RhpS / Game.fps);
+        //         this.oreH += (this.RhpS / Game.fps);
+        //     }
 
-            this.clear = function () {
-                this.rsTotal = baseRs;
-                this.rsUsed = 0;
-                this.oreH = 0;
-                this.rsAvailable = baseRs;
-                this.RhpS = baseRhpS;
+        //     this.clear = function () {
+        //         this.rsTotal = baseRs;
+        //         this.rsUsed = 0;
+        //         this.oreH = 0;
+        //         this.rsAvailable = baseRs;
+        //         this.RhpS = baseRhpS;
 
-                this.baseRhpS = baseRhpS;
-                this.baseRs = baseRs;
-                this.unlocked = false;
-            }
+        //         this.baseRhpS = baseRhpS;
+        //         this.baseRs = baseRs;
+        //         this.unlocked = false;
+        //     }
 
-            this.update = function () {
+        //     this.update = function () {
 
-            }
+        //     }
 
-            this.draw = function () {
-                if (this.unlocked) this.wrapper.style.display = 'block';
-                else this.wrapper.style.display = 'none';
-                if (Game.drawT % 5 == 0) {
-                    this.mbarFull.style.width = Math.max(Math.round((this.rsAvailable / this.rsTotal) * 100), 0) + '%';
-                    this.mbar.style.width = '350px';
-                    this.mbarText.innerHTML = Beautify(Math.max((this.rsAvailable / this.rsTotal) * 100, 0), 1) + '% left';
-                    this.mbarInfo.innerHTML = 'ligma';
-                }
-                this.mbarFull.style.backgroundPosition = (-Game.T * 0.5) + 'px';
-            }
+        //     this.draw = function () {
+        //         if (this.unlocked) this.wrapper.style.display = 'block';
+        //         else this.wrapper.style.display = 'none';
+        //         if (Game.drawT % 5 == 0) {
+        //             this.mbarFull.style.width = Math.max(Math.round((this.rsAvailable / this.rsTotal) * 100), 0) + '%';
+        //             this.mbar.style.width = '350px';
+        //             this.mbarText.innerHTML = Beautify(Math.max((this.rsAvailable / this.rsTotal) * 100, 0), 1) + '% left';
+        //             this.mbarInfo.innerHTML = 'ligma';
+        //         }
+        //         this.mbarFull.style.backgroundPosition = (-Game.T * 0.5) + 'px';
+        //     }
 
-            me.ores.push(this);
-            me.id++;
-        }
+        //     me.ores.push(this);
+        //     me.id++;
+        // }
 
-        this.Ore.prototype.getType = function () {
-            return 'Mine_Ore';
-        }
+        // this.Ore.prototype.getType = function () {
+        //     return 'Mine_Ore';
+        // }
 
-        new this.Ore(77000, 1, "Gold ore", "Gold", [0, 0]);
+        // new this.Ore(77000, 1, "Gold ore", "Gold", [0, 0]);
 
-        en.saveCallback(function () {
-            BModify.mine.ores.forEach(function (me) {
-                en.setVar("RhpS" + me.name, me.RhpS);
-                en.setVar("oreH" + me.name, me.oreH);
-                en.setVar("rsTotal" + me.name, me.rsTotal);
-                en.setVar("rsUsed" + me.name, me.rsUsed);
-            })
-        })
-        en.loadCallback(function () {
-            BModify.mine.ores.forEach(function (me) {
-                me.RhpS = en.getVar("RhpS" + me.name, me.RhpS);
-                me.oreH = en.getVar("oreH" + me.name, me.oreH);
-                me.rsTotal = en.getVar("rsTotal" + me.name, me.rsTotal);
-                me.rsUsed = en.getVar("rsUsed" + me.name, me.rsUsed);
-            })
-        })
+        // en.saveCallback(function () {
+        //     BModify.mine.ores.forEach(function (me) {
+        //         en.setVar("RhpS" + me.name, me.RhpS);
+        //         en.setVar("oreH" + me.name, me.oreH);
+        //         en.setVar("rsTotal" + me.name, me.rsTotal);
+        //         en.setVar("rsUsed" + me.name, me.rsUsed);
+        //     })
+        // })
+        // en.loadCallback(function () {
+        //     BModify.mine.ores.forEach(function (me) {
+        //         me.RhpS = en.getVar("RhpS" + me.name, me.RhpS);
+        //         me.oreH = en.getVar("oreH" + me.name, me.oreH);
+        //         me.rsTotal = en.getVar("rsTotal" + me.name, me.rsTotal);
+        //         me.rsUsed = en.getVar("rsUsed" + me.name, me.rsUsed);
+        //     })
+        // })
     }
 
     BModify.Mines.prototype.getType = function () {
@@ -1086,17 +1116,17 @@ BModify._Initialize = function (en, Research) {
 
     BModify.Recalculate = function () {
         this.rsManagers.forEach(mn => mn.recalculate())
-        this.mine.ores.forEach(mn => mn.recalculate())
+        //this.mine.ores.forEach(mn => mn.recalculate())
     }
     BModify.Harvest = function () {
         this.rsManagers.forEach(mn => mn.harvest())
-        this.mine.ores.forEach(mn => mn.harvest())
+        //this.mine.ores.forEach(mn => mn.harvest())
     }
     BModify.Logic = function () {
         BModify.Harvest()
         BModify.energyUpdate()
         BModify.rsManagers.forEach(mn => mn.draw())
-        BModify.mine.ores.forEach(mn => mn.draw())
+        //BModify.mine.ores.forEach(mn => mn.draw())
         BModify.grandma.update()
         if (Game.T % UpdateTicks == 0) {
             BModify.grandma.draw()
@@ -1109,10 +1139,12 @@ BModify._Initialize = function (en, Research) {
 
     en.saveCallback(function () {
         en.setVar("bankRefill", BModify.bankRefill);
+        en.setVar("rsData", BModify.writeRS());
     })
 
     en.loadCallback(function () {
         BModify.bankRefill = en.getVar("bankRefill", BModify.bankRefill);
+        BModify.loadRS(en.getVar("rsData"), BModify.writeRS());
     })
 
     for (var i in Game.Objects) {
@@ -1130,7 +1162,7 @@ BModify._Initialize = function (en, Research) {
     Game.registerHook('logic', this.Logic);
     Game.registerHook('check', function () {
         BModify.rsManagers.forEach(mn => mn.update())
-        BModify.mine.ores.forEach(mn => mn.update())
+        //BModify.mine.ores.forEach(mn => mn.update())
 
         if (BModify.totalDp >= 50000) Game.Win("Harvester")
         if (BModify.totalDp >= 100000) Game.Win("Industrializer")
@@ -1138,7 +1170,7 @@ BModify._Initialize = function (en, Research) {
     })
     Game.registerHook('reset', function () {
         BModify.rsManagers.forEach(mn => mn.clear())
-        BModify.mine.ores.forEach(mn => mn.clear())
+        //BModify.mine.ores.forEach(mn => mn.clear())
         BModify.bankRefill = 0
         BModify.totalDp = 0
     })
