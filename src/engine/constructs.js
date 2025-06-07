@@ -111,7 +111,7 @@ upgrade_engine.loadUpgrades = function() {
         if ((spl.length % 2 == 0) && (spl.length > 0)) {
             for (var j = 0; j < spl.length; j += 2) {
                 var me = Game.Upgrades[this.batches[i][j]];
-                me.unlocked = parseInt(spl[i]); me.bought = parseInt(spl[i+1]);
+                me.unlocked = parseInt(spl[j]); me.bought = parseInt(spl[j+1]);
                 console.log(me.name);
                 if (me.bought && Game.CountsAsUpgradeOwned(me.pool)) Game.UpgradesOwned++;
             }
