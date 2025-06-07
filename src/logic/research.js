@@ -390,7 +390,7 @@ Research._Initialize = function(en) {
 
         Research.writeSave = function() {
             let toCompress = [];
-            this.upgrades.forEach((tree) => {
+            this.trees.forEach((tree) => {
                 toCompress.push(tree.name + '>' + tree.writeSave());
             })
             return toCompress.join('/');
