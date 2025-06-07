@@ -7,7 +7,7 @@ achiev_engine.replaceQueue = [];
 achiev_engine.batch = '';
 achiev_engine.batches = {};
 
-achiev_engine.addBatch = function (batch) {
+achiev_engine.setBatch = function (batch) {
     this.batch = batch;
     this.batches[batch] = [];
     en.newVar(batch, "string");
@@ -33,7 +33,7 @@ upgrade_engine.upgradeQueue = [];
 upgrade_engine.batch = '';
 upgrade_engine.batches = {};
 
-upgrade_engine.addBatch = function (batch) {
+upgrade_engine.setBatch = function (batch) {
     this.batch = batch;
     this.batches[batch] = [];
     en.newVar(batch, "string");
