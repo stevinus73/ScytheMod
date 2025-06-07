@@ -2,6 +2,8 @@ var General = {}
 
 General._Initialize = function(en, Research) {
     this.en = en;
+    en.ue.setBatch('genUp');
+    en.ae.setBatch('genAc');
 
     /**
      * Nerfing Thousand Fingers

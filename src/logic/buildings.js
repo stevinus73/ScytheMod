@@ -8,6 +8,8 @@ function cfl(val) {
 
 BModify._Initialize = function (en, Research) {
     this.en = en;
+    en.ue.setBatch('buildUp');
+    en.ae.setBatch('buildAc');
     //Game.UpdateMenu = en.injectCode(Game.UpdateMenu, "(dropMult!=1", `'<div class="listing"><b>'+loc("Missed golden cookies:")+'</b> '+Beautify(Game.missedGoldenClicks)+'</div>' + `, "before")
     this.rsManagers = [];
     this.bankRefill = 0;

@@ -2,6 +2,8 @@ var Clicks = {}
 
 Clicks._Initialize = function(en, Research) {
     this.en = en;
+    en.ue.setBatch('clUp');
+    en.ae.setBatch('clAc');
 
     en.ue.addUpgrade("Big clicks", "The mouse is <b>four times</b> as efficient and the cursors are <b>twice</b> as efficient. Maximum click space <b>doubled</b>.<q>Big clicks for the big cookie.</q>",
         1000, [1, 6], 140, {unlockAt: 10, buyFunction: function(){Clicks.clicks+=250;Clicks.recalculate();}, priceFunc: function(me){return me.basePrice*(Game.HasAchiev('Hyperclick')?0.05:1);}});

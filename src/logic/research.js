@@ -6,6 +6,8 @@ function cfl(val) {
 
 Research._Initialize = function(en) {
     this.en = en;
+    en.ue.setBatch('resUp');
+    en.ae.setBatch('resAc');
 
     var str = '';
     str += '<div class="smallFancyButton framed" id="researchButton" style="margin-top: 0px; position:relative;' 

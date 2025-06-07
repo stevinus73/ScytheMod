@@ -1,6 +1,8 @@
 var G = {}
 G._Initialize = function(en, Research) {
     this.me = Game.shimmerTypes.golden;
+    en.ue.setBatch('goldUp');
+    en.ae.setBatch('goldAc');
     this.maxEffs = 1;
 
     // for stats
