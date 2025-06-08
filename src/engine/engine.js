@@ -166,7 +166,7 @@ IdlersPocket.newInfoPanel = function() {
     this.modInfo.innerHTML += '<div class="crate enabled" style="opacity:1;float:none;display:block;margin:12px;'+writeIcon([0,0])+'"></div>';
 }
 
-this.newInfoPanel();
+IdlersPocket.newInfoPanel();
 
 IdlersPocket.rebuildBigCookieButton = function () {
     l('bigCookie').remove();
