@@ -212,10 +212,19 @@ BModify._Initialize = function (en, Research) {
     // EnergyTiered(1, "Elder batteries", "These actually increase in power the older they get.");
     // EnergyTiered(2, "Wind turbines", "Wheeeee!");
 
-    IdlersPocket.newInfoPanel("energyDisp", [0,4,Icons],function(){
-        return `<div class="prompt" style="min-width:200px;text-align:center;font-size:11px;margin:8px 0px;"><h3>Energy</h3><div class="line"></div>`
-            +'This is the amount of energy you have. Buildings consume energy, and clicking the big cookie or any golden cookies produces energy.'
-            +Beautify(Math.ceil(BModify.energy))+'/'+Beautify(BModify.maxEnergy) `max</div>`},"energyTip");
+    en.newInfoPanel("energyDisp", [0,4,Icons],function(){
+        return `<div class="prompt" style="min-width:400px;text-align:center;font-size:11px;margin:8px 0px;"><h3>Energy</h3><div class="line"></div>`
+            +'This is the amount of energy you have. Buildings need energy to stay functional, and clicking the big cookie or any golden cookies produces energy.'
+            +'<br><b>'+Beautify(Math.ceil(BModify.energy))+'/'+Beautify(BModify.maxEnergy) `max</b>`
+            +'<div class="line"></div>Your buildings are currently operating at '+Beautify(100*BModify.efficiency)+' efficiency, giving <b>'
+            +Beautify(100*BModify.efficiency)+'</b> CpS output.'
+            +`</div>`},"energyTip");
+    
+    en.newInfoPanel("speedDisp", [12,5],function(){
+        return `<div class="prompt" style="min-width:400px;text-align:center;font-size:11px;margin:8px 0px;"><h3>Energy</h3><div class="line"></div>`
+            +'This is your <b>speed</b>. Having 100% efficiency for a long period of time causes this to increase.'
+            +'<br>Once speed reaches <b>x3</b>, it will also affect energy consumption.'
+            +`</div>`},"speedTip");
 
     var expstr = 'Maximum energy multiplied by <b>10</b>.';
     BModify.maxEnergyUp = ['Battery tower', 'Energy facility', 'Lightning jar', 'Pocket power dimension', 'Save expander', 'Ether holder', 'Multiversal storage'];
