@@ -101,7 +101,7 @@ BModify._Initialize = function (en, Research) {
         // speed
         if (this.efficiency >= 1) {
             this.nextInc -= 1;
-        } //else this.speed = 1;
+        } else {this.speed = 1};
         if (this.nextInc <= 0) {
             this.speed += 0.01;
             this.nextInc = Math.pow(this.speed, 1.23) * 5;
@@ -222,7 +222,7 @@ BModify._Initialize = function (en, Research) {
     // EnergyTiered(1, "Elder batteries", "These actually increase in power the older they get.");
     // EnergyTiered(2, "Wind turbines", "Wheeeee!");
 
-    en.newInfoPanel("energyDisp", [0,4,Icons],function(){
+    en.newInfoPanel("energyDisp", [3,3,Icons], function(){
         return `<div class="prompt" style="min-width:400px;text-align:center;font-size:11px;margin:8px 0px;"><h3>Energy</h3><div class="line"></div>`
             +'This is the amount of energy you have. Buildings need energy to stay functional, and clicking the big cookie or any golden cookies produces energy.'
             +'<br><b>Energy: '+Beautify(Math.ceil(BModify.energy))+'/'+Beautify(BModify.maxEnergy)+` max</b>`
@@ -230,7 +230,7 @@ BModify._Initialize = function (en, Research) {
             +Beautify(100*BModify.efficiency)+'%</b> of their maximum CpS output.'
             +`</div>`},"energyTip");
     
-    en.newInfoPanel("speedDisp", [12,5],function(){
+    en.newInfoPanel("speedDisp", [12,5], function(){
         return `<div class="prompt" style="min-width:400px;text-align:center;font-size:11px;margin:8px 0px;"><h3>Speed</h3><div class="line"></div>`
             +'This is your <b>speed</b>. Having 100% efficiency for a long period of time causes this to increase.'
             +'<br>Once speed reaches <b>x3</b>, it will also affect energy consumption.'
@@ -1153,7 +1153,7 @@ BModify._Initialize = function (en, Research) {
         BModify.Harvest()
         BModify.energyUpdate()
         l("energyTip").textContent = en.nelBeautify(Math.ceil(BModify.energy))+'/'+en.nelBeautify(BModify.maxEnergy);
-        l("speedTip").textContent = "x"+Beautify(BModify.speed);
+        l("speedTip").textContent = "x"+Beautify(BModify.speed, 2);
         BModify.rsManagers.forEach(mn => mn.draw())
         //BModify.mine.ores.forEach(mn => mn.draw())
         BModify.grandma.update()
