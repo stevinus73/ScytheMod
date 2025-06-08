@@ -31,6 +31,14 @@ BModify._Initialize = function (en, Research) {
         [0, 2, Icons], "Septcentennial", {});
     en.ae.addAchievement("Climate change", "Deplete <b>200,000</b> units of resource in total. <q>Guys, it exists.</q>",
         [0, 1, Icons], "Septcentennial", {});
+    en.ae.addAchievement("Flash", "Maintain a speed of <b>x3</b> or higher for <b>5 minutes</b> while having an energy consumption of at least <b>25k/sec</b>.",
+        [12, 5], "Just wrong", {});
+    en.ae.addAchievement("Lightspeed", "Maintain a speed of <b>x6</b> or higher for <b>10 minutes</b> while having an energy consumption of at least <b>200k/sec</b>.",
+        [12, 6], "Just wrong", {});
+    en.ae.addAchievement("Infinity and beyond", "Maintain a speed of <b>x12</b> or higher for <b>15 minutes</b> while having an energy consumption of at least <b>5M/sec</b>.",
+        [12, 7], "Just wrong", {});
+    en.ae.addAchievement("Through the fourth wall", "Maintain a speed of <b>x50</b> or higher for <b>30 minutes</b> while having an energy consumption of at least <b>40M/sec</b>.",
+        [12, 7], "Third-party", {pool: 'shadow'});
 
     en.newVar('rsData', 'string');
 
@@ -44,6 +52,8 @@ BModify._Initialize = function (en, Research) {
     BModify.speed = 1;
     // for increases
     BModify.nextInc = 3;
+
+    BModify.trackAch = [0, 0, 0, 0];
     BModify.powerPlants = 0;
 
     const bscale = {
@@ -52,18 +62,18 @@ BModify._Initialize = function (en, Research) {
         'Bank': 3,
         'Temple': 3,
         'Wizard tower': 5,
-        'Shipment': 10, //14,
-        'Alchemy lab': 8, //20,
+        'Shipment': 14,
+        'Alchemy lab': 12, //20,
         'Portal': 20, //50,
-        'Time machine': 35, //70,
+        'Time machine': 36, //70,
         'Antimatter condenser': 80, //120,
         'Prism': 65, //110,
         'Chancemaker': 110,
         'Fractal engine': 90,
-        'Javascript console': 300,
-        'Idleverse': 500,
-        'Cortex baker': 1000,
-        'You': 1700 
+        'Javascript console': 170, //300,
+        'Idleverse': 300, //500,
+        'Cortex baker': 600, //1000,
+        'You': 800, //1700 
     }
     for (var i in Game.Objects) {
         Game.Objects[i].baseConsumption = 0.1 * (bscale[i] ? bscale[i] : 1) * (Game.Objects[i].id + 1); //0.1 * Math.round(Math.pow(2.3, Game.Objects[i].id) * (Game.Objects[i].id + 1));
@@ -138,10 +148,23 @@ BModify._Initialize = function (en, Research) {
             if (Game.Objects[i].amount >= 4) Game.Unlock(Game.Objects[i].energyTiered);
         }
 
+        if (this.consumption >= 25000 && this.speed >= 3) {this.trackAch[0]++;} else {this.trackAch[0]=0;}
+        if (this.consumption >= 200000 && this.speed >= 6) {this.trackAch[1]++;} else {this.trackAch[1]=0;}
+        if (this.consumption >= 5000000 && this.speed >= 12) {this.trackAch[2]++;} else {this.trackAch[2]=0;}
+        if (this.consumption >= 40000000 && this.speed >= 50) {this.trackAch[3]++;} else {this.trackAch[3]=0;}
+
+        if (this.trackAch[0] > 5*60) Game.Win("Flash");
+        if (this.trackAch[1] > 10*60) Game.Win("Lightspeed");
+        if (this.trackAch[2] > 15*60) Game.Win("Infinity and beyond");
+        if (this.trackAch[3] > 30*60) Game.Win("Through the fourth wall");
+
         // speed
         if (this.efficiency >= 1 && this.consumption > 5) {
             this.nextInc -= 1;
-        } else if (this.speed > 1) {this.speed -= 1.01};
+        } else {
+            this.speed -= 0.01;
+            this.speed = Math.min(this.speed, 1);
+        };
         if (this.nextInc <= 0) {
             this.speed += 0.01;
             this.nextInc = Math.pow(this.speed, 0.5) * 3;

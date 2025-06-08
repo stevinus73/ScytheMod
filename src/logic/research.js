@@ -383,6 +383,7 @@ Research._Initialize = function(en) {
 
         Research.loadSave = function(str) {
             var me = this;
+            if (str == '') return;
             str.split('/').forEach((tree) => {
                 me.trees[tree.split('>')[0]].loadSave(trees.split('>')[1]);
             })
