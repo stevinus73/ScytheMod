@@ -158,12 +158,13 @@ IdlersPocket.finalizeHooks = function () {
     }
 }
 
-l('sectionLeft').insertAdjacentHTML('afterbegin', '<div id="modinfo" style="position:absolute;top:0px;left:24px;z-index:100000;transform-origin:100% 0%;transform:scale(1.5);">');
+l('sectionLeft').insertAdjacentHTML('afterbegin', '<div id="modinfo" style="position:absolute;top:0px;left:64px;z-index:100000;transform-origin:100% 0%;transform:scale(1.5);">');
 IdlersPocket.modInfo = l('modinfo');
 IdlersPocket.infoPanels = [];
 
 IdlersPocket.newInfoPanel = function() {
-    this.modInfo.innerHTML += '<div class="crate enabled" style="opacity:1;float:none;display:block;margin:12px;'+writeIcon([0,0])+'"><p style="bottom:0px;">test</b></div>';
+    this.modInfo.innerHTML += '<div class="crate enabled" style="opacity:1;float:none;display:block;margin:12px;'+writeIcon([0,0])
+        +'"><div style="bottom:-4px;left:0px;height:16px;width:48px;font-family:Georgia;font-size:8px;">aieee!</div></div>';
 }
 
 IdlersPocket.newInfoPanel();
