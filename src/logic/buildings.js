@@ -252,13 +252,20 @@ BModify._Initialize = function (en, Research) {
         Game.ObjectsById[bid].energyTiered = name;
     }
 
-    for (let i=3; i<20; i++) {
-        EnergyTiered(Game.ObjectsById[i], Game.ObjectsById[i].name + ' power', '... (will make actual upgrades)');
+    for (let i=10; i<20; i++) {
+        EnergyTiered(i, Game.ObjectsById[i].name + ' power', '... (will make actual upgrades)');
     }
 
     EnergyTiered(0, "Mouse wheels", "The hamster wheels of the clicking world.");
     EnergyTiered(1, "Elder batteries", "These actually increase in power the older they get.");
     EnergyTiered(2, "Wind turbines", "Wheeeee!");
+    EnergyTiered(3, "Coal", "The children yearn for the mines.");
+    EnergyTiered(4, "Power facility", "Does not relate to the power plant.");
+    EnergyTiered(5, "Compound rates", "Obtaining energy at a roughly 33% interest rate.");
+    EnergyTiered(6, "Ancient totem", "Carved inscription 'INSPECTED BY NO. 6'.");
+    EnergyTiered(7, "Ethereal charge", "An ancient wizardly technique, feared by many.");
+    EnergyTiered(8, "The electric universe", "Don't worry if it isn't true - in the next ascension we'll find a parallel universe where it *is* true.");
+    EnergyTiered(9, "Cookiemutation", "Look, this isn't even the weirdest thing you've seen this week. It's fine.");
 
     en.newInfoPanel("energyDisp", [3,3,Icons], function(){
         return `<div class="prompt" style="min-width:400px;text-align:center;font-size:11px;margin:8px 0px;"><h3>Energy</h3><div class="line"></div>`
