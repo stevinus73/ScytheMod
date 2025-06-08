@@ -422,7 +422,7 @@ Clicks._Initialize = function(en, Research) {
     Clicks.switchClick = function(on) {
         if (on == -1) on = !this.pcEnabled;
         this.pcEnabled = on;
-        this.switch.style.cssText='opacity:1;float:none;display:block;'+writeIcon([this.pcEnabled?21:20,10]);
+        //this.switch.style.cssText='opacity:1;float:none;display:block;'+writeIcon([this.pcEnabled?21:20,10]);
     }
 
 
