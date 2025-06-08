@@ -124,7 +124,6 @@ BModify._Initialize = function (en, Research) {
         else l("pPriceTag").classList.add("disabled");
 
         l("pSellTag").innerHTML = (this.powerPlants > 0 ? Beautify(this.getCumulativeSellPrice()) : 0) + " cookies";
-        l("energyTip").textContent = Beautify(Math.ceil(BModify.energy))+'/'+Beautify(BModify.maxEnergy);
     }
 
     BModify.buyP = function () {
@@ -215,9 +214,9 @@ BModify._Initialize = function (en, Research) {
     en.newInfoPanel("energyDisp", [0,4,Icons],function(){
         return `<div class="prompt" style="min-width:400px;text-align:center;font-size:11px;margin:8px 0px;"><h3>Energy</h3><div class="line"></div>`
             +'This is the amount of energy you have. Buildings need energy to stay functional, and clicking the big cookie or any golden cookies produces energy.'
-            +'<br><b>'+Beautify(Math.ceil(BModify.energy))+'/'+Beautify(BModify.maxEnergy)+`max</b>`
-            +'<div class="line"></div>Your buildings are currently operating at '+Beautify(100*BModify.efficiency)+' efficiency, giving <b>'
-            +Beautify(100*BModify.efficiency)+'</b> CpS output.'
+            +'<br><b>Energy: '+Beautify(Math.ceil(BModify.energy))+'/'+Beautify(BModify.maxEnergy)+` max</b>`
+            +'<div class="line"></div>Your buildings are currently operating at <b>'+Beautify(100*BModify.efficiency)+'%</b> efficiency, giving <b>'
+            +Beautify(100*BModify.efficiency)+'%</b> of their maximum CpS output.'
             +`</div>`},"energyTip");
     
     en.newInfoPanel("speedDisp", [12,5],function(){
@@ -1142,6 +1141,7 @@ BModify._Initialize = function (en, Research) {
     BModify.Logic = function () {
         BModify.Harvest()
         BModify.energyUpdate()
+        l("energyTip").textContent = Beautify(Math.ceil(BModify.energy))+'/'+Beautify(BModify.maxEnergy);
         BModify.rsManagers.forEach(mn => mn.draw())
         //BModify.mine.ores.forEach(mn => mn.draw())
         BModify.grandma.update()
