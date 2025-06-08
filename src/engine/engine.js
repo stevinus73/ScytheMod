@@ -158,7 +158,7 @@ IdlersPocket.finalizeHooks = function () {
     }
 }
 
-l('leftSection').insertAdjacentHTML('afterbegin', '<div id="modinfo" style="position:absolute;top:0px;right:0px;z-index:100000;transform-origin:100% 0%;transform:scale(0.75);">');
+l('sectionLeft').insertAdjacentHTML('afterbegin', '<div id="modinfo" style="position:absolute;top:0px;right:0px;z-index:100000;transform-origin:100% 0%;transform:scale(0.75);">');
 IdlersPocket.modInfo = l('modinfo');
 IdlersPocket.infoPanels = [];
 
