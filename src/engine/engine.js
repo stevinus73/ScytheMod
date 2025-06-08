@@ -167,7 +167,7 @@ IdlersPocket.newInfoPanel = function(nm, icon, tfunc, tid) {
     this.infoPanels.push({name: nm, icon: icon, tooltipFunc: tfunc, textId: tid});
     this.modInfo.innerHTML += '<div class="crate enabled" style="opacity:1;float:none;display:block;margin:12px;'+writeIcon(icon)
         +'" '+Game.getDynamicTooltip('function(){return Game.Ip.infoPanels['+id+'].tooltipFunc();}', 'right', true)
-        +'><div id="'+tid+'" style="bottom:-4px;left:0px;height:16px;width:48px;font-family:Georgia;font-size:8px;text-align:center;position:absolute;"></div></div>';
+        +'><div id="'+tid+'" style="bottom:-4px;left:0px;height:24px;width:48px;font-family:Georgia;font-size:10px;text-align:center;position:absolute;"></div></div>';
 }
 
 IdlersPocket.rebuildBigCookieButton = function () {

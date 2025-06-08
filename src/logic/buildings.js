@@ -42,6 +42,8 @@ BModify._Initialize = function (en, Research) {
     BModify.efficiency = 1;
     BModify.stress = 0;
     BModify.speed = 1;
+    // for increases
+    BModify.nextInc = 5;
     BModify.powerPlants = 0;
     for (var i in Game.Objects) {
         Game.Objects[i].baseConsumption = 0.1 * Math.round(Math.pow(2.3, Game.Objects[i].id) * (Game.Objects[i].id + 1));
@@ -94,6 +96,15 @@ BModify._Initialize = function (en, Research) {
         // unlock upgrades
         for (var i in Game.Objects) {
             if (Game.Objects[i].amount >= 4) Game.Unlock(Game.Objects[i].energyTiered);
+        }
+
+        // speed
+        if (this.efficiency >= 1) {
+            this.nextInc -= 1;
+        } else this.speed = 1;
+        if (this.nextInc <= 0) {
+            this.speed += 0.01;
+            this.nextInc = Math.pow(this.speed, 1.23) * 5;
         }
 
         this.drawP();
@@ -220,7 +231,7 @@ BModify._Initialize = function (en, Research) {
             +`</div>`},"energyTip");
     
     en.newInfoPanel("speedDisp", [12,5],function(){
-        return `<div class="prompt" style="min-width:400px;text-align:center;font-size:11px;margin:8px 0px;"><h3>Energy</h3><div class="line"></div>`
+        return `<div class="prompt" style="min-width:400px;text-align:center;font-size:11px;margin:8px 0px;"><h3>Speed</h3><div class="line"></div>`
             +'This is your <b>speed</b>. Having 100% efficiency for a long period of time causes this to increase.'
             +'<br>Once speed reaches <b>x3</b>, it will also affect energy consumption.'
             +`</div>`},"speedTip");
@@ -1141,7 +1152,8 @@ BModify._Initialize = function (en, Research) {
     BModify.Logic = function () {
         BModify.Harvest()
         BModify.energyUpdate()
-        l("energyTip").textContent = Beautify(Math.ceil(BModify.energy))+'/'+Beautify(BModify.maxEnergy);
+        l("energyTip").textContent = Beautify(Math.ceil(BModify.energy));
+        l("speedTip").textContent = "x"+Beautify(BModify.speed);
         BModify.rsManagers.forEach(mn => mn.draw())
         //BModify.mine.ores.forEach(mn => mn.draw())
         BModify.grandma.update()
