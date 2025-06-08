@@ -158,18 +158,17 @@ IdlersPocket.finalizeHooks = function () {
     }
 }
 
-l('sectionLeft').insertAdjacentHTML('afterbegin', '<div id="modinfo" style="position:absolute;top:0px;left:64px;z-index:100000;transform-origin:100% 0%;transform:scale(1.5);">');
+l('sectionLeft').insertAdjacentHTML('afterbegin', '<div id="modinfo" style="position:absolute;top:0px;left:64px;z-index:100000;transform-origin:100% 0%;transform:scale(1.25);">');
 IdlersPocket.modInfo = l('modinfo');
 IdlersPocket.infoPanels = [];
 
-IdlersPocket.newInfoPanel = function() {
-    this.modInfo.innerHTML += '<div class="crate enabled" style="opacity:1;float:none;display:block;margin:12px;'+writeIcon([0,0])
-        +'"><div style="bottom:-4px;left:0px;height:16px;width:48px;font-family:Georgia;font-size:8px;">aieee!</div></div>';
+IdlersPocket.newInfoPanel = function(icon, tfunc, tid) {
+    this.modInfo.innerHTML += '<div class="crate enabled" style="opacity:1;float:none;display:block;margin:12px;'+writeIcon(icon)
+        +'" '+(buff.desc?Game.getDynamicTooltip(tfunc,'right',true):'')
+        +'><div id="'+tid+'" style="bottom:-4px;left:0px;height:16px;width:48px;font-family:Georgia;font-size:8px;text-align:center;position:absolute;"></div></div>';
 }
 
-IdlersPocket.newInfoPanel();
-IdlersPocket.newInfoPanel();
-IdlersPocket.newInfoPanel();
+IdlersPocket.newInfoPanel([23,9],function(){return '<div class="prompt" style="min-width:200px;text-align:center;font-size:11px;margin:8px 0px;">Sigma</div>'},"aesf");
 
 IdlersPocket.rebuildBigCookieButton = function () {
     l('bigCookie').remove();
