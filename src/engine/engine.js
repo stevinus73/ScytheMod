@@ -164,7 +164,7 @@ IdlersPocket.infoPanels = [];
 
 IdlersPocket.newInfoPanel = function(icon, tfunc, tid) {
     this.modInfo.innerHTML += '<div class="crate enabled" style="opacity:1;float:none;display:block;margin:12px;'+writeIcon(icon)
-        +'" '+(buff.desc?Game.getDynamicTooltip(tfunc,'right',true):'')
+        +'" '+Game.getDynamicTooltip(tfunc,'right',true)
         +'><div id="'+tid+'" style="bottom:-4px;left:0px;height:16px;width:48px;font-family:Georgia;font-size:8px;text-align:center;position:absolute;"></div></div>';
 }
 
