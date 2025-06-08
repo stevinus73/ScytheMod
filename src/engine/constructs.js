@@ -110,9 +110,8 @@ upgrade_engine.loadUpgrades = function() {
         spl = en.getVar(i).split('^');
         if ((spl.length % 2 == 0) && (spl.length > 0)) {
             for (var j = 0; j < spl.length; j += 2) {
-                var me = Game.Upgrades[this.batches[i][j]];
+                var me = Game.Upgrades[this.batches[i][j/2]];
                 me.unlocked = parseInt(spl[j]); me.bought = parseInt(spl[j+1]);
-                console.log(me.name);
                 if (me.bought && Game.CountsAsUpgradeOwned(me.pool)) Game.UpgradesOwned++;
             }
         }
@@ -120,11 +119,29 @@ upgrade_engine.loadUpgrades = function() {
 }
 
 achiev_engine.saveAchievs = function() {
-    
+    var toCompress = [];
+    for (var i in this.batches) {
+        toCompress = [];
+        this.batches[i].forEach((name) => {
+            let me = Game.Achievements[name];
+            toCompress.push(Math.min(me.won, 1));
+        });
+        en.setVar(i, toCompress.join('^'));
+    }
 }
 
 achiev_engine.loadAchievs = function() {
-    
+    let spl = [];
+    for (var i in this.batches) {
+        spl = en.getVar(i).split('^');
+        if (spl.length > 0) {
+            for (var j = 0; j < spl.length; j ++) {
+                var me = Game.Achievements[this.batches[i][j]];
+                me.won = parseInt(spl[j]);
+                if (me.won && Game.CountsAsAchievementOwned(me.pool)) Game.AchievementsOwned++;
+            }
+        }
+    }
 }
 
 var Process = function (en) {
@@ -155,42 +172,12 @@ var Process = function (en) {
     })
 
     en.saveCallback(function () {
-        // var toCompress = [];
-        // upgrade_engine.upgradeQueue.forEach(function (up) {
-        //     toCompress.push(up.me.name, [Math.min(up.me.unlocked, 1), Math.min(up.me.bought, 1)].join(''));
-        // })
-        // en.setVar("upPacked", toCompress.join('^'));
-
-        // toCompress = [];
-        // achiev_engine.achievementQueue.forEach(function (achiev) {
-        //     toCompress.push(achiev.me.name, Math.min(achiev.me.won));
-        // })
-        // en.setVar("achPacked", toCompress.join('^'));
         upgrade_engine.saveUpgrades();
+        achiev_engine.saveAchievs();
     })
     en.loadCallback(function () {
-        // var spl = [];
-        // if (en.hasVariable("upPacked")) {
-        //     var spl = en.getVar("upPacked").split('^');
-        //     if ((spl.length % 2 == 0) && (spl.length > 0)) {
-        //         for (var i = 0; i < spl.length; i += 2) {
-        //             var me = Game.Upgrades[spl[i]];
-        //             var packedstr = spl[i + 1].split('');
-        //             me.unlocked = parseInt(packedstr[0]); me.bought = parseInt(packedstr[1]);
-        //             if (me.bought && Game.CountsAsUpgradeOwned(me.pool)) Game.UpgradesOwned++;
-        //         }
-        //     }
-        // }
-        // if (en.hasVariable("achPacked")) {
-        //     spl = en.getVar("achPacked").split('^');
-        //     if ((spl.length % 2 == 0) && (spl.length > 0)) {
-        //         for (var i = 0; i < spl.length; i += 2) {
-        //             var me = Game.Achievements[spl[i]];
-        //             me.won = parseInt([i + 1]);
-        //             if (me.bought && Game.CountsAsAchievementOwned(me.pool)) Game.AchievementsOwned++;
-        //         }
-        //     }
-        // }
+        upgrade_engine.loadUpgrades();
+        achiev_engine.loadAchievs();
     })
     LocalizeUpgradesAndAchievs();
     upgrade_engine.replaceQueue.forEach(function (repl) {
