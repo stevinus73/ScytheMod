@@ -50,7 +50,7 @@ Clicks._Initialize = function(en, Research) {
 
     this.pcWidget=en.createLeftWidget([48,16],[3,0,Icons],'mod.clicks.pcTooltip','');
     this.switch=en.createLeftWidget([144,16],[20,10],'mod.clicks.pcSwitchTooltip','mod.clicks.switchClick(-1);');
-    this.gate=en.createLeftWidget([240,16],[15,11],'mod.bModify.gateTooltip','mod.bModify.gate();');
+    //this.gate=en.createLeftWidget([240,16],[15,11],'mod.bModify.gateTooltip','mod.bModify.gate();');
     l('widget0').innerHTML+='<span id="pcInfo" style="position:absolute;top:-32px;left:12px;font-family:\'Merriweather\';font-size:20px;color:#fddfe8;">0/0</span>';
 
     Research.appendStat('<div class="subsection"><div id="clickStats"></div></div>');
@@ -288,8 +288,9 @@ Clicks._Initialize = function(en, Research) {
     )
 
     
-    en.ue.addUpgrade("Wrinkled cursors", "You can <b>perform power clicks on wrinklers</b>, making them instantly explode into <b>+66%</b> more cookies."
-        +'<q>Okay, that\'s just disgusting. (not yet implemented)</q>',
+    en.ue.addUpgrade("Touch of fire", "<b>Performing power clicks on wrinklers</b> burns them, making them take damage until they pop. <br> "
+        +"Each hit gives a reward proportional to the cookies swallowed by the wrinkler."
+        +'<q>Burn, little wrinkly disgusting bugs. Burn!</q>',
         5555555, [19,8], pcOrder, {pool: 'prestige', posX: -516, posY: -890, huParents: ['Mystical regeneration', 'Sacrilegious corruption']}
     )
 
@@ -332,9 +333,10 @@ Clicks._Initialize = function(en, Research) {
             if (Game.hasBuff("Cursed finger")) Game.Notify("Power clicked the big cookie during a Cursed finger", "Click power massively boosted!",[12,17],6);
             else Game.Notify("Power clicked the big cookie","Click power boosted!",[3,0,Icons],6);
         }
-        if (func=='reindeer') Game.Notify("Power clicked a reindeer","Cookies found quintupled!",[3,0,Icons],6);
-        if (func=='gEff') Game.Notify("Power clicked a golden cookie","Effect duration increased by 20%!",[3,0,Icons],6);
-        if (func=='gGains') Game.Notify("Power clicked a golden cookie","Gains increased by 50%!",[3,0,Icons],6);
+        if (func=='reindeer') Game.Notify("Power clicked a reindeer","Cookies found quintupled!",[12,9],6);
+        if (func=='gEff') Game.Notify("Power clicked a golden cookie","Effect duration increased by 20%!",[10,14],6);
+        if (func=='gGains') Game.Notify("Power clicked a golden cookie","Gains increased by 50%!",[10,14],6);
+        if (func=='wrinkler') Game.Notify("Burned a wrinkler", "Treasure gushes out...", [3,0,Icons],6);
     }
 
     Clicks.canPowerClickFunc = function() {
@@ -344,6 +346,32 @@ Clicks._Initialize = function(en, Research) {
         if (this.pcCooldown>0) return false;
         return true;
     }
+
+    Clicks.WrinklerBurn = function(i) {
+        var me = this;
+        this.w = Game.wrinklers[i];
+        this.T = 0;
+        Game.registerHook('logic', function() {
+            me.T++;
+            if (me.T%15 && me.hp>0.5) {
+				me.w.hurt=1;
+				me.w.hp-=0.75;
+				if (Game.prefs.particles && !Game.prefs.notScary && !Game.WINKLERS && !(me.w.hp<=0.5 && me.w.phase>0)) {
+					var x=me.w.x+(Math.sin(me.w.r*Math.PI/180)*90);
+					var y=me.w.y+(Math.cos(me.w.r*Math.PI/180)*90);
+					for (var ii=0;ii<3;ii++) {
+						var part=Game.particleAdd(x,y,Math.random()*4-2,Math.random()*-2-2,1,1,2,me.w.type==1?'shinyWrinklerBits.png':'wrinklerBits.png');
+						part.r=-me.w.r;
+					}
+				}
+
+                // rewards
+
+            }
+        });
+    }
+
+    Clicks.WrinklerBurn.prototype.getType = function() {'burnedWrinkler'}
 
     Clicks.performPowerClick = function(func) {
         if (!this.canPowerClickFunc()) return 1;
@@ -370,9 +398,14 @@ Clicks._Initialize = function(en, Research) {
         } else if (func=='gGains' && Game.Has("Gold-studded mice")) {
             this.expendPowerClick(func);
             return 1.5;
+        } else if (func.includes('wrinkler') && Game.Has("Touch of fire")) {
+            new this.WrinklerBurn(func.replace('wrinkler', ''));
+            this.expendPowerClick(func);
         }
         return 1;
     }
+
+    eval("Game.UpdateWrinklers="+Game.UpdateWrinklers.toString().replace('me.clicks++;','mod.clicks.performPowerClick("wrinkler"+i);me.clicks++;'));
 
     Clicks.pcTooltip = function() {
         return '<div class="prompt" style="min-width:200px;text-align:center;font-size:11px;margin:8px 0px;" id="tooltipBuff"><h3>Power clicks</h3>'
