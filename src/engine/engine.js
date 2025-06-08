@@ -162,13 +162,15 @@ l('sectionLeft').insertAdjacentHTML('afterbegin', '<div id="modinfo" style="posi
 IdlersPocket.modInfo = l('modinfo');
 IdlersPocket.infoPanels = [];
 
-IdlersPocket.newInfoPanel = function(icon, tfunc, tid) {
+IdlersPocket.newInfoPanel = function(nm, icon, tfunc, tid) {
+    var id = this.infoPanels.length;
+    this.infoPanels.push({name: nm, icon: icon, tooltipFunc: tfunc, textId: tid});
     this.modInfo.innerHTML += '<div class="crate enabled" style="opacity:1;float:none;display:block;margin:12px;'+writeIcon(icon)
-        +'" '+Game.getDynamicTooltip(tfunc,'right',true)
+        +'" '+Game.getDynamicTooltip('function(){return Game.Ip.infoPanels['+id+'].tfunc();}', 'right', true)
         +'><div id="'+tid+'" style="bottom:-4px;left:0px;height:16px;width:48px;font-family:Georgia;font-size:8px;text-align:center;position:absolute;"></div></div>';
 }
 
-IdlersPocket.newInfoPanel([23,9],function(){return '<div class="prompt" style="min-width:200px;text-align:center;font-size:11px;margin:8px 0px;">Sigma</div>'},"aesf");
+IdlersPocket.newInfoPanel("test", [23,9],function(){return `<div class="prompt" style="min-width:200px;text-align:center;font-size:11px;margin:8px 0px;">Sigma</div>`},"aesf");
 
 IdlersPocket.rebuildBigCookieButton = function () {
     l('bigCookie').remove();
