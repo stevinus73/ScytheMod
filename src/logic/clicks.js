@@ -151,8 +151,8 @@ Clicks._Initialize = function(en, Research) {
 
             if (this.canPowerClickFunc() != this.canPowerClick) {
                 this.canPowerClick = this.canPowerClickFunc();
-                if (this.canPowerClick) l('widget'+this.pcSwitchId).classList.add('enabled');
-                else l('widget'+this.pcSwitchId).classList.remove('enabled');
+                if (this.canPowerClick) l('widget'+this.switchId).classList.add('enabled');
+                else l('widget'+this.switchId).classList.remove('enabled');
             }
         }
 
@@ -422,7 +422,7 @@ Clicks._Initialize = function(en, Research) {
     Clicks.switchClick = function(on) {
         if (on == -1) on = !this.pcEnabled;
         this.pcEnabled = on;
-        l('widget'+this.pcSwitchId).style.cssText='opacity:1;float:none;display:block;'+writeIcon([this.pcEnabled?21:20,10]);
+        l('widget'+this.switchId).style.cssText='opacity:1;float:none;display:block;'+writeIcon([this.pcEnabled?21:20,10]);
     }
 
 
