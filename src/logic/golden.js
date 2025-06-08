@@ -168,6 +168,11 @@ G._Initialize = function(en, Research) {
         "if (Math.random()<0.9) Game.killBuff('Click frenzy');",
         "replace"
     )
+
+    G.me.popFunc = en.injectCode(G.me.popFunc, "if (Game.goldenClicks>=7) Game.Unlock('Lucky day');", "if (Game.goldenClicks>=1) Game.Unlock('Lucky day');");
+    G.me.popFunc = en.injectCode(G.me.popFunc, "if (Game.goldenClicks>=27) Game.Unlock('Serendipity');", "if (Game.goldenClicks>=3) Game.Unlock('Serendipity');");
+    G.me.popFunc = en.injectCode(G.me.popFunc, "if (Game.goldenClicks>=77) Game.Unlock('Get lucky');", "if (Game.goldenClicks>=7) Game.Unlock('Get lucky');");
+
     en.ae.addAchievement("The click to end all clicks", 
         "Have both <b>Click frenzy</b> and <b>Dragonflight</b> active at the same time.<q>Oh my Orteil, what have you done?</q>",
         [12, 0], "True Neverclick", {pool: 'shadow'});

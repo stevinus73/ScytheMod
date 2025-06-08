@@ -34,11 +34,11 @@ BModify._Initialize = function (en, Research) {
     en.ae.addAchievement("Flash", "Maintain a speed of <b>x3</b> or higher for <b>5 minutes</b> while having an energy consumption of at least <b>25k/sec</b>.",
         [12, 5], "Just wrong", {});
     en.ae.addAchievement("Lightspeed", "Maintain a speed of <b>x6</b> or higher for <b>10 minutes</b> while having an energy consumption of at least <b>200k/sec</b>.",
-        [12, 6], "Just wrong", {});
+        [13, 5], "Just wrong", {});
     en.ae.addAchievement("Infinity and beyond", "Maintain a speed of <b>x12</b> or higher for <b>15 minutes</b> while having an energy consumption of at least <b>5M/sec</b>.",
-        [12, 7], "Just wrong", {});
+        [14, 5], "Just wrong", {});
     en.ae.addAchievement("Through the fourth wall", "Maintain a speed of <b>x50</b> or higher for <b>30 minutes</b> while having an energy consumption of at least <b>40M/sec</b>.",
-        [12, 7], "Third-party", {pool: 'shadow'});
+        [14, 5], "Third-party", {pool: 'shadow'});
 
     en.newVar('rsData', 'string');
 
@@ -79,9 +79,9 @@ BModify._Initialize = function (en, Research) {
         Game.Objects[i].baseConsumption = 0.1 * (bscale[i] ? bscale[i] : 1) * (Game.Objects[i].id + 1); //0.1 * Math.round(Math.pow(2.3, Game.Objects[i].id) * (Game.Objects[i].id + 1));
     }
 
-    Game.Draw = en.injectCode(Game.Draw, `l('cookies').innerHTML=str;`,
-        `str=str+mod.bModify.getEnergyDisplay();`,
-        "before");
+    // Game.Draw = en.injectCode(Game.Draw, `l('cookies').innerHTML=str;`,
+    //     `str=str+mod.bModify.getEnergyDisplay();`,
+    //     "before");
 
     BModify.getEnergyDisplay = function () {
         return '<div style="font:14px sans-serif;display:flex;align-items:center;justify-content:center;">'

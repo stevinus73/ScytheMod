@@ -272,6 +272,10 @@ General._Initialize = function(en, Research) {
             if (General.canShiny() && (Game.cookiesEarned >= obj.basePrice*5)){Game.Unlock(shinyUp[1]);}
         })
         if (General.canShiny() && Game.Objects.Cursor.amount>=150){Game.Unlock('Drag clicking')}
+
+        // lucky day and cps fortunes can now appear infinitely many times
+        Game.fortuneGC=0;
+        Game.fortuneCPS=0;
     })
 
     Game.registerHook('cps', function(cps) {
