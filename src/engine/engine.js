@@ -280,7 +280,7 @@ IdlersPocket.createLeftWidget = function (position, sprite, tooltipStr, clickStr
         + Game.clickStr + '="' + clickStr + '"></div>';
     l('sectionLeft').appendChild(wrapper);
     this.id++;
-    return l('widget' + this.id);
+    return l('widget' + this.id-1);
 }
 
 // patched orteil bs

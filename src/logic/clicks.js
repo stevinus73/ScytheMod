@@ -48,8 +48,8 @@ Clicks._Initialize = function(en, Research) {
 
     en.trackVars(Clicks, [['clicks'],['maxClicks'],['overflow','float'],['powerClicks'],['pcPerformed'],['pcEnabled']]);
 
-    this.pcWidget=en.createLeftWidget([48,16],[3,0,Icons],'mod.clicks.pcTooltip','');
-    this.switch=en.createLeftWidget([144,16],[20,10],'mod.clicks.pcSwitchTooltip','mod.clicks.switchClick(-1);');
+    this.pcWidgetId=en.createLeftWidget([48,16],[3,0,Icons],'mod.clicks.pcTooltip','');
+    this.switchId=en.createLeftWidget([144,16],[20,10],'mod.clicks.pcSwitchTooltip','mod.clicks.switchClick(-1);');
     //this.gate=en.createLeftWidget([240,16],[15,11],'mod.bModify.gateTooltip','mod.bModify.gate();');
     l('widget0').innerHTML+='<span id="pcInfo" style="position:absolute;top:-32px;left:12px;font-family:\'Merriweather\';font-size:20px;color:#fddfe8;">0/0</span>';
 
@@ -151,8 +151,8 @@ Clicks._Initialize = function(en, Research) {
 
             if (this.canPowerClickFunc() != this.canPowerClick) {
                 this.canPowerClick = this.canPowerClickFunc();
-                if (this.canPowerClick) l('pcButton').classList.add('enabled');
-                else l('pcButton').classList.remove('enabled');
+                if (this.canPowerClick) l('widget'+this.pcSwitchId).classList.add('enabled');
+                else l('widget'+this.pcSwitchId).classList.remove('enabled');
             }
         }
 
@@ -422,7 +422,7 @@ Clicks._Initialize = function(en, Research) {
     Clicks.switchClick = function(on) {
         if (on == -1) on = !this.pcEnabled;
         this.pcEnabled = on;
-        //this.switch.style.cssText='opacity:1;float:none;display:block;'+writeIcon([this.pcEnabled?21:20,10]);
+        l('widget'+this.pcSwitchId).style.cssText='opacity:1;float:none;display:block;'+writeIcon([this.pcEnabled?21:20,10]);
     }
 
 
