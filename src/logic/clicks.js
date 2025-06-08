@@ -347,13 +347,16 @@ Clicks._Initialize = function(en, Research) {
         return true;
     }
 
+    Clicks.burned = [];
+
     Clicks.WrinklerBurn = function(i) {
         var me = this;
+        Clicks.burned.push(this);
         this.w = Game.wrinklers[i];
         this.T = 0;
-        Game.registerHook('logic', function() {
+        this.loop = function() {
             me.T++;
-            if (me.T%15 && me.hp>0.5) {
+            if (me.T%10 && me.hp>0.5) {
 				me.w.hurt=1;
 				me.w.hp-=0.75;
 				if (Game.prefs.particles && !Game.prefs.notScary && !Game.WINKLERS && !(me.w.hp<=0.5 && me.w.phase>0)) {
@@ -368,10 +371,10 @@ Clicks._Initialize = function(en, Research) {
                 // rewards
 
             }
-        });
+        };
     }
 
-    Clicks.WrinklerBurn.prototype.getType = function() {'burnedWrinkler'}
+    Clicks.WrinklerBurn.prototype.getType = function() {return 'burnedWrinkler'}
 
     Clicks.performPowerClick = function(func) {
         if (!this.canPowerClickFunc()) return 1;
@@ -462,6 +465,7 @@ Clicks._Initialize = function(en, Research) {
     })
     Game.registerHook('logic', function() {
         Clicks.logic();
+        Clicks.burned.forEach((w) => w.loop());
     });
     Game.registerHook('reset', function(wipe) {
         Clicks.maxClicks = P.baseClicks+((Game.Has("Divine wisdom")&&!wipe)?(Game.Has("Omnipotent mouse")?15:10)*Clicks.getMaxPowerClicks():0);
