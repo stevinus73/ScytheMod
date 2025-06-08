@@ -163,7 +163,7 @@ BModify._Initialize = function (en, Research) {
             this.nextInc -= 1;
         } else {
             this.speed -= 0.01;
-            this.speed = Math.min(this.speed, 1);
+            this.speed = Math.max(this.speed, 1);
         };
         if (this.nextInc <= 0) {
             this.speed += 0.01;
