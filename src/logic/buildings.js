@@ -45,8 +45,26 @@ BModify._Initialize = function (en, Research) {
     // for increases
     BModify.nextInc = 5;
     BModify.powerPlants = 0;
+
+    const bscale = {
+        'Mine': 2,
+        'Factory': 2,
+        'Wizard tower': 5,
+        'Shipment': 10, //14,
+        'Alchemy lab': 8, //20,
+        'Portal': 20, //50,
+        'Time machine': 35, //70,
+        'Antimatter condenser': 80, //120,
+        'Prism': 65, //110,
+        'Chancemaker': 110,
+        'Fractal engine': 90,
+        'Javascript console': 300,
+        'Idleverse': 500,
+        'Cortex baker': 1000,
+        'You': 1700 
+    }
     for (var i in Game.Objects) {
-        Game.Objects[i].baseConsumption = 0.1 * Math.round(Math.pow(2.3, Game.Objects[i].id) * (Game.Objects[i].id + 1));
+        Game.Objects[i].baseConsumption = 0.1 * (bscale[i] ? bscale[i] : 1) * (Game.Objects[i].id + 1); //0.1 * Math.round(Math.pow(2.3, Game.Objects[i].id) * (Game.Objects[i].id + 1));
     }
 
     Game.Draw = en.injectCode(Game.Draw, `l('cookies').innerHTML=str;`,
@@ -62,9 +80,26 @@ BModify._Initialize = function (en, Research) {
     BModify.getGainMultiplier = function () {
         var mult = 1;
         for (var i in Game.Objects) {
-            if (Game.Has(Game.Objects[i].energyTiered)) mult *= 2;
+            if (Game.Has(Game.Objects[i].energyTiered)) mult *= 1.33;
         }
-        return mult;
+        return Math.round((mult + Number.EPSILON) * 100) / 100;
+    }
+
+    BModify.getCursorDrain = function() { // cursor nerf!
+        var rateNum = 1;
+        if (Game.Has("Thousand fingers")) rateNum*=1.75;
+        if (Game.Has("Million fingers")) rateNum*=1.75;
+        if (Game.Has("Billion fingers")) rateNum*=1.75;
+        if (Game.Has("Trillion fingers")) rateNum*=1.75;
+        if (Game.Has("Quadrillion fingers")) rateNum*=1.75;
+        if (Game.Has("Quintillion fingers")) rateNum*=1.75;
+        if (Game.Has("Sextillion fingers")) rateNum*=1.75;
+        if (Game.Has("Septillion fingers")) rateNum*=1.75;
+        if (Game.Has("Octillion fingers")) rateNum*=1.75;
+        if (Game.Has("Nonillion fingers")) rateNum*=1.75;
+        if (Game.Has("Decillion fingers")) rateNum*=1.75;
+        if (Game.Has("Undecillion fingers")) rateNum*=1.75;
+        return Math.round(rateNum);
     }
 
     BModify.gainEnergy = function (en, pcMax) {
@@ -73,11 +108,14 @@ BModify._Initialize = function (en, Research) {
         if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
     }
 
+
+
     BModify.energyCalc = function () {
         this.consumption = 0;
         for (var i in Game.Objects) {
-            this.consumption += Game.Objects[i].baseConsumption * Game.Objects[i].amount;
+            this.consumption += Game.Objects[i].baseConsumption * Game.Objects[i].amount * (i == 'Cursor'?this.getCursorDrain():1);
         }
+        if (this.speed >= 3) this.consumption *= this.speed;
 
         this.production = this.powerPlants;
         this.production *= this.getGainMultiplier();
@@ -99,7 +137,7 @@ BModify._Initialize = function (en, Research) {
         }
 
         // speed
-        if (this.efficiency >= 1) {
+        if (this.efficiency >= 1 && this.consumption > 5) {
             this.nextInc -= 1;
         } else {this.speed = 1};
         if (this.nextInc <= 0) {
@@ -159,7 +197,7 @@ BModify._Initialize = function (en, Research) {
         this.drawP();
     }
 
-    var scale = 1.23;
+    const scale = 1.23;
 
     BModify.getPrice = function () {
         return Math.ceil(100 * Math.pow(scale, this.powerPlants)) * (this.powerPlants + 1);
@@ -206,7 +244,7 @@ BModify._Initialize = function (en, Research) {
 
     var order = 18500;
     function EnergyTiered(bid, name, desc) {
-        desc = "All energy gains <b>x2</b>. " + cfl(Game.ObjectsById[bid].plural) + " gain <b>" + (bid == 0 ? 100 : 200 - bid * 10)
+        desc = "All energy gains <b>x1.33</b>. " + cfl(Game.ObjectsById[bid].plural) + " gain <b>" + (bid == 0 ? 100 : 200 - bid * 10)
             + "%</b> more CpS from speed.<q>" + desc + "</q>";
 
         en.ue.addUpgrade(name, desc, Game.Tiers['Energizium'].price * Game.ObjectsById[bid].basePrice * (bid + 1),
@@ -214,13 +252,13 @@ BModify._Initialize = function (en, Research) {
         Game.ObjectsById[bid].energyTiered = name;
     }
 
-    for (var i in Game.Objects) {
-        EnergyTiered(Game.Objects[i].id, i + ' power', '... (will make actual upgrades)');
+    for (let i=3; i<20; i++) {
+        EnergyTiered(Game.ObjectsById[i], Game.ObjectsById[i].name + ' power', '... (will make actual upgrades)');
     }
 
-    // EnergyTiered(0, "Mouse wheels", "The hamster wheels of the clicking world.");
-    // EnergyTiered(1, "Elder batteries", "These actually increase in power the older they get.");
-    // EnergyTiered(2, "Wind turbines", "Wheeeee!");
+    EnergyTiered(0, "Mouse wheels", "The hamster wheels of the clicking world.");
+    EnergyTiered(1, "Elder batteries", "These actually increase in power the older they get.");
+    EnergyTiered(2, "Wind turbines", "Wheeeee!");
 
     en.newInfoPanel("energyDisp", [3,3,Icons], function(){
         return `<div class="prompt" style="min-width:400px;text-align:center;font-size:11px;margin:8px 0px;"><h3>Energy</h3><div class="line"></div>`
