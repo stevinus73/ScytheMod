@@ -124,6 +124,7 @@ BModify._Initialize = function (en, Research) {
         else l("pPriceTag").classList.add("disabled");
 
         l("pSellTag").innerHTML = (this.powerPlants > 0 ? Beautify(this.getCumulativeSellPrice()) : 0) + " cookies";
+        l("energyTip").textContent = Beautify(Math.ceil(BModify.energy))+'/'+Beautify(BModify.maxEnergy);
     }
 
     BModify.buyP = function () {
@@ -210,6 +211,11 @@ BModify._Initialize = function (en, Research) {
     // EnergyTiered(0, "Mouse wheels", "The hamster wheels of the clicking world.");
     // EnergyTiered(1, "Elder batteries", "These actually increase in power the older they get.");
     // EnergyTiered(2, "Wind turbines", "Wheeeee!");
+
+    IdlersPocket.newInfoPanel("energyDisp", [0,4,Icons],function(){
+        return `<div class="prompt" style="min-width:200px;text-align:center;font-size:11px;margin:8px 0px;"><h3>Energy</h3><div class="line"></div>`
+            +'This is the amount of energy you have. Buildings consume energy, and clicking the big cookie or any golden cookies produces energy.'
+            +Beautify(Math.ceil(BModify.energy))+'/'+Beautify(BModify.maxEnergy) `max</div>`},"energyTip");
 
     var expstr = 'Maximum energy multiplied by <b>10</b>.';
     BModify.maxEnergyUp = ['Battery tower', 'Energy facility', 'Lightning jar', 'Pocket power dimension', 'Save expander', 'Ether holder', 'Multiversal storage'];
