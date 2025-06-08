@@ -158,7 +158,7 @@ IdlersPocket.finalizeHooks = function () {
     }
 }
 
-l('sectionLeft').insertAdjacentHTML('afterbegin', '<div id="modinfo" style="position:absolute;top:0px;right:0px;z-index:100000;transform-origin:100% 0%;transform:scale(0.75);">');
+l('sectionLeft').insertAdjacentHTML('afterbegin', '<div id="modinfo" style="position:absolute;top:0px;left:48px;z-index:100000;transform-origin:100% 0%;transform:scale(0.75);">');
 IdlersPocket.modInfo = l('modinfo');
 IdlersPocket.infoPanels = [];
 
@@ -166,6 +166,8 @@ IdlersPocket.newInfoPanel = function() {
     this.modInfo.innerHTML += '<div class="crate enabled" style="opacity:1;float:none;display:block;margin:12px;'+writeIcon([0,0])+'"></div>';
 }
 
+IdlersPocket.newInfoPanel();
+IdlersPocket.newInfoPanel();
 IdlersPocket.newInfoPanel();
 
 IdlersPocket.rebuildBigCookieButton = function () {
