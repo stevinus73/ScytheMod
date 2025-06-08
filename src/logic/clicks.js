@@ -356,7 +356,7 @@ Clicks._Initialize = function(en, Research) {
         this.T = 0;
         this.loop = function() {
             me.T++;
-            if (me.T%10 && me.hp>0.5) {
+            if (me.T%10 && me.w.hp>0.5) {
 				me.w.hurt=1;
 				me.w.hp-=0.75;
 				if (Game.prefs.particles && !Game.prefs.notScary && !Game.WINKLERS && !(me.w.hp<=0.5 && me.w.phase>0)) {
