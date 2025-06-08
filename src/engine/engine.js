@@ -118,6 +118,69 @@ IdlersPocket.saveCallback = function (callback) {
     this.saveCallbacks.push(callback);
 }
 
+function _formatEveryThirdPower(notations)
+{
+	return function (value)
+	{
+		var base = 0,
+		notationValue = '';
+		if (value >= 1000 && isFinite(value))
+		{
+			value /= 1000;
+			while(Math.round(value) >= 1000)
+			{
+				value /= 1000;
+				base++;
+			}
+			if (base > notations.length) {return 'Inf';} else {notationValue = notations[base];}
+		}
+		return ( Math.round(value * 10) / 10 ) + notationValue;
+	};
+}
+
+function _rawFormatter(value) {return Math.round(value * 1000) / 1000;}
+
+var _numberFormatters =
+[
+	_rawFormatter,
+	_formatEveryThirdPower([
+		' thousand',
+		' million',
+		' billion',
+		' trillion',
+		' quadrillion',
+		' quintillion',
+		' sextillion',
+		' septillion',
+		' octillion',
+		' nonillion',
+		' decillion'
+	]),
+	_formatEveryThirdPower([
+		'k',
+		'M',
+		'B',
+		'T',
+		'Qa',
+		'Qi',
+		'Sx',
+		'Sp',
+		'Oc',
+		'No',
+		'Dc'
+	])
+];
+IdlersPocket.nelBeautify = function(value,floats)
+{
+	var negative=(value<0);
+	var decimal='';
+	if (Math.abs(value)<1000 && floats>0) decimal='.'+(value.toFixed(floats).toString()).split('.')[1];
+	value=Math.floor(Math.abs(value));
+	var formatter=_numberFormatters[2];
+	var output=formatter(value).toString().replace(/\B(?=(\d{3})+(?!\d))/g,',');
+	if (output=='0') negative=false;
+	return negative?'-'+output:output+decimal;
+}
 
 /**
  * more stuffs

@@ -1152,7 +1152,7 @@ BModify._Initialize = function (en, Research) {
     BModify.Logic = function () {
         BModify.Harvest()
         BModify.energyUpdate()
-        l("energyTip").textContent = Beautify(Math.ceil(BModify.energy));
+        l("energyTip").textContent = en.nelBeautify(Math.ceil(BModify.energy))+'/'+en.nelBeautify(BModify.maxEnergy);
         l("speedTip").textContent = "x"+Beautify(BModify.speed);
         BModify.rsManagers.forEach(mn => mn.draw())
         //BModify.mine.ores.forEach(mn => mn.draw())
