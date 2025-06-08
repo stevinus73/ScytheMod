@@ -101,7 +101,7 @@ BModify._Initialize = function (en, Research) {
         // speed
         if (this.efficiency >= 1) {
             this.nextInc -= 1;
-        } else this.speed = 1;
+        } //else this.speed = 1;
         if (this.nextInc <= 0) {
             this.speed += 0.01;
             this.nextInc = Math.pow(this.speed, 1.23) * 5;
