@@ -43,12 +43,14 @@ BModify._Initialize = function (en, Research) {
     BModify.stress = 0;
     BModify.speed = 1;
     // for increases
-    BModify.nextInc = 5;
+    BModify.nextInc = 3;
     BModify.powerPlants = 0;
 
     const bscale = {
         'Mine': 2,
         'Factory': 2,
+        'Bank': 3,
+        'Temple': 3,
         'Wizard tower': 5,
         'Shipment': 10, //14,
         'Alchemy lab': 8, //20,
@@ -139,10 +141,10 @@ BModify._Initialize = function (en, Research) {
         // speed
         if (this.efficiency >= 1 && this.consumption > 5) {
             this.nextInc -= 1;
-        } else {this.speed = 1};
+        } else if (this.speed > 1) {this.speed -= 1.01};
         if (this.nextInc <= 0) {
             this.speed += 0.01;
-            this.nextInc = Math.pow(this.speed, 1.23) * 5;
+            this.nextInc = Math.pow(this.speed, 0.5) * 3;
         }
 
         this.drawP();
@@ -282,21 +284,15 @@ BModify._Initialize = function (en, Research) {
             +`</div>`},"speedTip");
 
     var expstr = 'Maximum energy multiplied by <b>10</b>.';
-    BModify.maxEnergyUp = ['Battery tower', 'Energy facility', 'Lightning jar', 'Pocket power dimension', 'Save expander', 'Ether holder', 'Multiversal storage'];
+    BModify.maxEnergyUp = ['Battery tower', 'Lightning jar', 'Pocket power dimension', 'Save expander'];
     en.ue.addUpgrade('Battery tower', expstr + '<q>Inspired by Universal Paperclips... again? This is lame.</q>', 1e5,
-        [0, 4, Icons], order, { unlockAt: 1e4 });
-    en.ue.addUpgrade('Energy facility', expstr + '<q>Deep underground, or in Area 47, or up in the sky, or whatever...</q>', 1e8,
-        [0, 4, Icons], order, { unlockAt: 1e7 });
+        [0, 4, Icons], order, { unlockAt: 1e5 });
     en.ue.addUpgrade('Lightning jar', expstr + '<q>Now you can catch a lightning bolt!</q>', 1e11,
-        [0, 4, Icons], order, { unlockAt: 1e10 });
+        [0, 4, Icons], order, { unlockAt: 1e8 });
     en.ue.addUpgrade('Pocket power dimension', expstr + '<q>A dimension completely filled to the brim with energy and paperclips.</q>', 1e14,
-        [0, 4, Icons], order, { unlockAt: 1e13 });
+        [0, 4, Icons], order, { unlockAt: 1e14 });
     en.ue.addUpgrade('Save expander', expstr + '<q>By the way, I\'m not optimizing the mod\'s savefile anytime soon.</q>', 1e17,
-        [0, 4, Icons], order, { unlockAt: 1e16 });
-    en.ue.addUpgrade('Ether holder', expstr + '<q>Lighter than air.</q>', 1e20,
-        [0, 4, Icons], order, { unlockAt: 1e19 });
-    en.ue.addUpgrade('Multiversal storage', expstr + '<q>Set aside some of your idleverses for this purpose.</q>', 1e23,
-        [0, 4, Icons], order, { unlockAt: 1e22 });
+        [0, 4, Icons], order, { unlockAt: 1e20 });
 
 
     Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
@@ -309,7 +305,7 @@ BModify._Initialize = function (en, Research) {
 
     Game.ClickCookie = en.injectCode(Game.ClickCookie, "Game.loseShimmeringVeil('click');", "mod.bModify.gainEnergy(10,0);", "after");
     eval('Game.shimmerTypes.golden.popFunc=' + Game.shimmerTypes.golden.popFunc.toString().replace("var buff=0;",
-        "var buff=0; \n\t\tmod.bModify.gainEnergy((me.spawnLead?250:30),(me.spawnLead?0.15:0.01));"
+        "var buff=0; \n\t\tmod.bModify.gainEnergy((me.spawnLead?250:30),(me.spawnLead?0.05:0.001));"
     ));
 
     // POWER PLANTS
