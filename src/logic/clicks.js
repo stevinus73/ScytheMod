@@ -354,8 +354,11 @@ Clicks._Initialize = function(en, Research) {
         Clicks.burned.push(this);
         this.w = Game.wrinklers[i];
         this.T = 0;
+
+        this.w.burning = true;
         this.loop = function() {
             me.T++;
+            if (!this.w.burning) return;
             if (me.T%10 && me.w.hp>0.5) {
 				me.w.hurt=1;
 				me.w.hp-=0.75;
@@ -367,9 +370,9 @@ Clicks._Initialize = function(en, Research) {
 						part.r=-me.w.r;
 					}
 				}
-
                 // rewards
 
+                if (me.w.hp<=0.5) this.w.burning = false;
             }
         };
     }
@@ -402,7 +405,7 @@ Clicks._Initialize = function(en, Research) {
             this.expendPowerClick(func);
             return 1.5;
         } else if (func.includes('wrinkler') && Game.Has("Touch of fire")) {
-            new this.WrinklerBurn(func.replace('wrinkler', ''));
+            if (!Game.Wrinklers[func.replace('wrinkler', '')].burning) new this.WrinklerBurn(func.replace('wrinkler', ''));
             this.expendPowerClick(func);
         }
         return 1;
