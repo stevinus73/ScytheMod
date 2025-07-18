@@ -56,8 +56,8 @@ BModify._Initialize = function (en, Research) {
     BModify.trackAch = [0, 0, 0, 0];
     BModify.powerPlants = 0;
 
-    BModify.batteryPercent = 0.0;
-    BModify.batteryMustRefill = true;
+    BModify.batteryPercent = 1.0;
+    BModify.batteryMustRefill = false;
     BModify.batteryActive = false;
 
     const bscale = {
@@ -87,11 +87,11 @@ BModify._Initialize = function (en, Research) {
     //     `str=str+mod.bModify.getEnergyDisplay();`,
     //     "before");
 
-    BModify.getEnergyDisplay = function () {
-        return '<div style="font:14px sans-serif;display:flex;align-items:center;justify-content:center;">'
-            + '<div class="icon" style="transform:scale(0.9);' + writeIcon([0, 4, Icons]) + '"></div>'
-            + 'Energy: ' + Beautify(Math.ceil(this.energy)) + '/' + Beautify(this.maxEnergy) + '</div>';
-    }
+    // BModify.getEnergyDisplay = function () {
+    //     return '<div style="font:14px sans-serif;display:flex;align-items:center;justify-content:center;">'
+    //         + '<div class="icon" style="transform:scale(0.9);' + writeIcon([0, 4, Icons]) + '"></div>'
+    //         + 'Energy: ' + Beautify(Math.ceil(this.energy)) + '/' + Beautify(this.maxEnergy) + '</div>';
+    // }
 
     BModify.getGainMultiplier = function () {
         var mult = 1;
@@ -150,7 +150,7 @@ BModify._Initialize = function (en, Research) {
 
 
         if (this.batteryMustRefill) {
-            this.batteryPercent += (0.3*Math.max(this.production - this.consumption, 0.1*this.production)) / (0.2*this.maxEnergy);
+            this.batteryPercent += (0.007*Math.max(this.production - this.consumption, 0.1*this.production)) / (0.2*this.maxEnergy);
             if (this.batteryPercent >= 1) {
                 this.batteryPercent = 1;
                 this.batteryMustRefill = false;
@@ -330,6 +330,12 @@ BModify._Initialize = function (en, Research) {
             +'This is your <b>speed</b>. Having 100% efficiency for a long period of time causes this to increase.'
             +'<br>Once speed reaches <b>x3</b>, it will also affect energy consumption.'
             +`</div>`},"speedTip");
+
+    en.newInfoPanel("batteryDisp", [3,4,Icons], function(){
+        return `<div class="prompt" style="min-width:400px;text-align:center;font-size:11px;margin:8px 0px;"><h3>Nucleonic battery</h3><div class="line"></div>`
+            +'This is your <b>battery</b>. It slowly charges energy over time.'
+            +'<br>When energy is depleted, the battery will be used.'
+            +`</div>`},"batteryTip");
 
     var expstr = 'Maximum energy multiplied by <b>10</b>.';
     BModify.maxEnergyUp = ['Battery tower', 'Lightning jar', 'Pocket power dimension', 'Save expander'];
@@ -1243,6 +1249,7 @@ BModify._Initialize = function (en, Research) {
         BModify.energyUpdate()
         l("energyTip").textContent = en.nelBeautify(Math.ceil(BModify.energy))+'/'+en.nelBeautify(BModify.maxEnergy);
         l("speedTip").textContent = "x"+Beautify(BModify.speed, 2);
+        l("batteryTip").textContent = Beautify(this.batteryPercent, 2)+"%";
         BModify.rsManagers.forEach(mn => mn.draw())
         //BModify.mine.ores.forEach(mn => mn.draw())
         BModify.grandma.update()
