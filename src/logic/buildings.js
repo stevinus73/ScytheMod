@@ -1249,7 +1249,7 @@ BModify._Initialize = function (en, Research) {
         BModify.energyUpdate()
         l("energyTip").textContent = en.nelBeautify(Math.ceil(BModify.energy))+'/'+en.nelBeautify(BModify.maxEnergy);
         l("speedTip").textContent = "x"+Beautify(BModify.speed, 2);
-        l("batteryTip").textContent = Beautify(this.batteryPercent, 2)+"%";
+        l("batteryTip").textContent = Beautify(this.batteryPercent*100, 1)+"%";
         BModify.rsManagers.forEach(mn => mn.draw())
         //BModify.mine.ores.forEach(mn => mn.draw())
         BModify.grandma.update()
