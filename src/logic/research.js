@@ -532,7 +532,11 @@ Research._Initialize = function(en) {
     new Research.Tech("Thinktank", "Direct research gains <b>+10%</b>. <q>Big brains think together!</q>", 200, breq('Cortex baker', 200), f, [5], [34, 0], -0.3, -0.5); // 6
     new Research.Tech("Cookie funding", "You passively gain research <b>faster</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 150, breq('Bank', 250), f, [2], [2, 0, Icons], 0.5, -0.3); //7
     new Research.Tech("Shiny cookies", "Unlocks <b>shiny cookies</b>, special cookies that grant a large CpS multiplier. <div class=\"line\"></div>Shiny cookies' power decreases the more you ascend.", 37, f, f, [1], [2, 1, Icons], -0.4, 0.7); // 8
-    new Research.Tech("Otherworldly sight", "Unlocks <b>esoteric statistics</b>, which give much more information about the mod.", 1, f, f, [1], [27, 26], -0.2, 0.8);
+    new Research.Tech("Otherworldly sight", "Unlocks <b>esoteric statistics</b>, which give much more information about the mod.", 1, f, f, [1], [27, 26], -0.2, 0.8); // 9
+    new Research.Tech("Nucleonic batteries", "Unlocks battery storage for energy, holding up to <b>20%</b> of the maximum.<div class=\"line\"></div>"+
+        "It will activate when energy is depleted.<div class=\"line\"></div>"+
+        "When the battery is consumed, it must recharge, causing a <b>30%</b> decrease in energy production."+
+        "<q>With new nuclear fusion techniques! Proven to be 0.1% safe!</q>", 35, f, f, [8], [3, 4, Icons], -0.7, 0.7);
 
     var spr_ref = [0,1,2,3,4,15,16,17,5,6,7,8,13,14,19,20,32,33,34,35];
     var tier_ref = [21,26,27];

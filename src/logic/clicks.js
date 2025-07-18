@@ -288,8 +288,8 @@ Clicks._Initialize = function(en, Research) {
     )
 
     
-    en.ue.addUpgrade("Touch of fire", "<b>Performing power clicks on wrinklers</b> burns them, making them take damage until they pop. <br> "
-        +"Each hit gives a reward proportional to the cookies swallowed by the wrinkler."
+    en.ue.addUpgrade("Touch of fire", "<b>Performing power clicks on wrinklers</b> burns them, making them repeatedly take damage until they pop. <br> "
+        +"Each hit gives a reward proportional to the cookies swallowed by the wrinkler <small>(divided by highest raw CpS this ascension)</small>."
         +'<q>Burn, little wrinkly disgusting bugs. Burn!</q>',
         5555555, [19,8], pcOrder, {pool: 'prestige', posX: -516, posY: -890, huParents: ['Mystical regeneration', 'Sacrilegious corruption']}
     )
@@ -371,11 +371,51 @@ Clicks._Initialize = function(en, Research) {
 					}
 				}
                 // rewards
+                let cookiesR = me.sucked / Math.max(Game.cookiesPsRawHighest, 1);
+                let rewards = ['cookies', 'cookies'];
+                if (Game.season=='christmas') rewards.push('reindeer');
+                if (cookiesR > 60*60 && !Game.hasBuff('cookie storm')) rewards.push('storm', 'wh');
+                if (cookiesR > 60*60*3) rewards.push('wh', 'click boost', 'gold hoard');
+
+                if (cookiesR > 60*60*3 && Math.random() < 0.1) rewards.push('gc');
+                if (cookiesR > 60*60*8 && Math.random() < 0.2) rewards.push('gc');
+                if (cookiesR > 60*60*24 && Math.random() < 0.005) rewards.push('lump');
+                if (cookiesR > 60*60*24*7) {
+                    rewards.push('gc');
+                    if (Math.random() < 0.001) rewards.push('starlight');
+                }
+
+                let popup = '';
+                let reward = choose(rewards);
+                if (reward == 'cookies') {
+                    Game.Earn(Math.min(Game.cookies*0.3,Game.cookiesPs*cookiesR*(0.08+0.24*Math.random()))+13);
+                } else if (reward == 'reindeer') {
+                    popup='<br><small>'+loc("+%1!",loc("%1 cookie",LBeautify(moni)))+'</small>!';
+                } else if (reward == 'storm') {
+                    Game.gainBuff('cookie storm',30,7);
+                } else if (reward == 'click boost') {
+                    Game.gainBuff('wrinklerboost',30,1);
+                }
 
                 if (me.w.hp<=0.5) this.w.burning = false;
             }
         };
     }
+
+    new Game.buffType('wrinklerboost',function(time,pow)
+		{
+			return {
+				name:'Wrinkled cursors',
+				desc:loc("Each click is 0.3% more powerful per cursor for ",[Game.sayTime(time*Game.fps,-1),Game.sayTime(time*Game.fps,-1)]),
+				icon:[12,14],
+				time:time*Game.fps,
+				add:true,
+				power:pow,
+				multCpS:0,
+				aura:1
+			};
+		});
+        // implement
 
     Clicks.WrinklerBurn.prototype.getType = function() {return 'burnedWrinkler'}
 
@@ -405,13 +445,14 @@ Clicks._Initialize = function(en, Research) {
             this.expendPowerClick(func);
             return 1.5;
         } else if (func.includes('wrinkler') && Game.Has("Touch of fire")) {
-            if (!Game.Wrinklers[func.replace('wrinkler', '')].burning) new this.WrinklerBurn(func.replace('wrinkler', ''));
+            if (!Game.wrinklers[func.replace('wrinkler', '')].burning) new this.WrinklerBurn(func.replace('wrinkler', ''));
             this.expendPowerClick(func);
         }
         return 1;
     }
 
     eval("Game.UpdateWrinklers="+Game.UpdateWrinklers.toString().replace('me.clicks++;','mod.clicks.performPowerClick("wrinkler"+i);me.clicks++;'));
+    eval("Game.SpawnWrinkler="+Game.SpawnWrinkler.toString().replace('me.type=0;','me.type=0;me.cps=Game.cookiesPsRawHighest;'));
 
     Clicks.pcTooltip = function() {
         return '<div class="prompt" style="min-width:200px;text-align:center;font-size:11px;margin:8px 0px;" id="tooltipBuff"><h3>Power clicks</h3>'

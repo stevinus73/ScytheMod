@@ -56,6 +56,10 @@ BModify._Initialize = function (en, Research) {
     BModify.trackAch = [0, 0, 0, 0];
     BModify.powerPlants = 0;
 
+    BModify.batteryPercent = 0.0;
+    BModify.batteryMustRefill = true;
+    BModify.batteryActive = false;
+
     const bscale = {
         'Mine': 2,
         'Factory': 2,
@@ -130,6 +134,7 @@ BModify._Initialize = function (en, Research) {
         if (this.speed >= 3) this.consumption *= this.speed;
 
         this.production = this.powerPlants;
+        if (this.batteryMustRefill) this.production *= 0.7;
         this.production *= this.getGainMultiplier();
 
         this.baseEfficiency = (this.consumption > 0 ? this.production / this.consumption : 0);
@@ -142,6 +147,15 @@ BModify._Initialize = function (en, Research) {
         this.maxEnergyUp.forEach((up) => {
             if (Game.Has(up)) this.maxEnergy *= 10;
         })
+
+
+        if (this.batteryMustRefill) {
+            this.batteryPercent += (0.3*Math.max(this.production - this.consumption, 0.1*this.production)) / (0.2*this.maxEnergy);
+            if (this.batteryPercent >= 1) {
+                this.batteryPercent = 1;
+                this.batteryMustRefill = false;
+            }
+        }
 
         // unlock upgrades
         for (var i in Game.Objects) {
@@ -252,7 +266,18 @@ BModify._Initialize = function (en, Research) {
     BModify.energyUpdate = function () {
         this.energy += (this.production - this.consumption) / Game.fps;
         if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
-        if (this.energy < 0) this.energy = 0;
+        if (this.energy < 0) {
+            this.energy = 0;
+            if (!this.batteryActive && Research.has("Nucleonic batteries") && !this.batteryMustRefill) this.batteryActive = true;
+        } else this.batteryActive = false;
+
+        if (this.batteryActive) {
+            this.batteryPercent -= (this.production - this.consumption) / (Game.fps*this.maxEnergy*0.2);
+            if (this.batteryPercent <= 0) {
+                this.batteryPercent = 0;
+                this.batteryMustRefill = true;
+            }
+        }
 
         // draw ppwidget
         if (Game.cookiesEarned > 1e3 && Game.onMenu == '') l("pWidget").style.display = 'block';
