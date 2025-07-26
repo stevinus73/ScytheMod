@@ -385,7 +385,7 @@ Research._Initialize = function(en) {
             var me = this;
             if (str == '') return;
             str.split('/').forEach((tree) => {
-                me.trees[tree.split('>')[0]].loadSave(trees.split('>')[1]);
+                me.trees[tree.split('>')[0]].loadSave(tree.split('>')[1]);
             })
         }
 
