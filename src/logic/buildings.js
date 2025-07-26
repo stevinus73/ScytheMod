@@ -103,18 +103,18 @@ BModify._Initialize = function (en, Research) {
 
     BModify.getCursorDrain = function() { // cursor nerf!
         var rateNum = 1;
-        if (Game.Has("Thousand fingers")) rateNum*=1.75;
-        if (Game.Has("Million fingers")) rateNum*=1.75;
-        if (Game.Has("Billion fingers")) rateNum*=1.75;
-        if (Game.Has("Trillion fingers")) rateNum*=1.75;
-        if (Game.Has("Quadrillion fingers")) rateNum*=1.75;
-        if (Game.Has("Quintillion fingers")) rateNum*=1.75;
-        if (Game.Has("Sextillion fingers")) rateNum*=1.75;
-        if (Game.Has("Septillion fingers")) rateNum*=1.75;
-        if (Game.Has("Octillion fingers")) rateNum*=1.75;
-        if (Game.Has("Nonillion fingers")) rateNum*=1.75;
-        if (Game.Has("Decillion fingers")) rateNum*=1.75;
-        if (Game.Has("Undecillion fingers")) rateNum*=1.75;
+        if (Game.Has("Thousand fingers")) rateNum*=1.65;
+        if (Game.Has("Million fingers")) rateNum*=1.65;
+        if (Game.Has("Billion fingers")) rateNum*=1.65;
+        if (Game.Has("Trillion fingers")) rateNum*=1.65;
+        if (Game.Has("Quadrillion fingers")) rateNum*=1.65;
+        if (Game.Has("Quintillion fingers")) rateNum*=1.65;
+        if (Game.Has("Sextillion fingers")) rateNum*=1.65;
+        if (Game.Has("Septillion fingers")) rateNum*=1.65;
+        if (Game.Has("Octillion fingers")) rateNum*=1.65;
+        if (Game.Has("Nonillion fingers")) rateNum*=1.65;
+        if (Game.Has("Decillion fingers")) rateNum*=1.65;
+        if (Game.Has("Undecillion fingers")) rateNum*=1.65;
         return Math.round(rateNum);
     }
 
@@ -138,7 +138,7 @@ BModify._Initialize = function (en, Research) {
         this.production *= this.getGainMultiplier();
 
         this.baseEfficiency = (this.consumption > 0 ? this.production / this.consumption : 0);
-        if (this.energy > 0) this.baseEfficiency = 1;
+        if (this.energy > 0 || this.batteryPercent > 0) this.baseEfficiency = 1;
         if (this.production >= this.consumption) this.baseEfficiency = 1;
 
         this.efficiency = this.baseEfficiency;
@@ -272,7 +272,7 @@ BModify._Initialize = function (en, Research) {
         } else this.batteryActive = false;
 
         if (this.batteryActive) {
-            this.batteryPercent -= (this.production - this.consumption) / (Game.fps*this.maxEnergy*0.2);
+            this.batteryPercent -= Math.max(this.consumption = this.production, 0) / (Game.fps*this.maxEnergy*0.2);
             if (this.batteryPercent <= 0) {
                 this.batteryPercent = 0;
                 this.batteryMustRefill = true;
@@ -316,6 +316,7 @@ BModify._Initialize = function (en, Research) {
     EnergyTiered(7, "Ethereal charge", "An ancient wizardly technique, feared by many.");
     EnergyTiered(8, "The electric universe", "Don't worry if it isn't true - in the next ascension we'll find a parallel universe where it *is* true.");
     EnergyTiered(9, "Cookiemutation", "Look, this isn't even the weirdest thing you've seen this week. It's fine.");
+    EnergyTiered(10, "Seven-Eyed Lord of Thunder", "Available yesterday at a -6.6% discount!");
 
     en.newInfoPanel("energyDisp", [3,3,Icons], function(){
         return `<div class="prompt" style="min-width:400px;text-align:center;font-size:11px;margin:8px 0px;"><h3>Energy</h3><div class="line"></div>`
