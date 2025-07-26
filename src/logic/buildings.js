@@ -669,7 +669,7 @@ BModify._Initialize = function (en, Research) {
             str += ')</div>';
             str += '<div class="listing"> <b>Base yield: </b>' + Beautify(this.yield, 1) + " cookies/" + this.rsNames[1] + '</div>';
             str += '<div class="listing"> <b>Total amount of ' + this.rsNames[0].toLowerCase() + ' discovered:</b> ' + Beautify(this.rsTotal) + " " + this.rsNames[2] + '</div>';
-            str += '<div class="listing"> <b>Used ' + this.rsNames[0].toLowerCase() + ' so far:</b> ' + (typeof this.rsUsed.toFixed === 'function')?Beautify(this.rsUsed):'' + " " + this.rsNames[2] + '</div>';
+            str += '<div class="listing"> <b>Used ' + this.rsNames[0].toLowerCase() + ' so far:</b> ' + (Number.isFinite(this.rsUsed))?Beautify(this.rsUsed):'' + " " + this.rsNames[2] + '</div>';
             // str+='<div class="listing" '+sty+'> <b>Base CpS:</b> '+Beautify(this.getRawCpS()*this.me.amount, 1)+" cookies/second"+'</div>';
             // str+='<div class="listing" '+sty+'> <b>CpS:</b> '+Beautify(this.me.storedTotalCps*Game.globalCpsMult, 1)+" cookies/second"+'</div>';
             l('statsListing' + this.id).innerHTML = str;
