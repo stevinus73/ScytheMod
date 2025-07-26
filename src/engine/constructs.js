@@ -123,6 +123,7 @@ achiev_engine.saveAchievs = function() {
     for (var i in this.batches) {
         toCompress = [];
         this.batches[i].forEach((name) => {
+            console.log(this.batches[i][j]);
             let me = Game.Achievements[name];
             toCompress.push(Math.min(me.won, 1));
         });
@@ -136,6 +137,7 @@ achiev_engine.loadAchievs = function() {
         spl = en.getVar(i).split('^');
         if (spl.length > 0) {
             for (var j = 0; j < spl.length; j ++) {
+                console.log(this.batches[i][j]);
                 var me = Game.Achievements[this.batches[i][j]];
                 me.won = parseInt(spl[j]);
                 if (me.won && Game.CountsAsAchievementOwned(me.pool)) Game.AchievementsOwned++;
