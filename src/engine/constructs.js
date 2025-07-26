@@ -110,6 +110,8 @@ upgrade_engine.loadUpgrades = function() {
         spl = en.getVar(i).split('^');
         if ((spl.length % 2 == 0) && (spl.length > 0)) {
             for (var j = 0; j < spl.length; j += 2) {
+                
+                console.log(this.batches[i][j]);
                 var me = Game.Upgrades[this.batches[i][j/2]];
                 me.unlocked = parseInt(spl[j]); me.bought = parseInt(spl[j+1]);
                 if (me.bought && Game.CountsAsUpgradeOwned(me.pool)) Game.UpgradesOwned++;
@@ -123,7 +125,6 @@ achiev_engine.saveAchievs = function() {
     for (var i in this.batches) {
         toCompress = [];
         this.batches[i].forEach((name) => {
-            console.log(this.batches[i][j]);
             let me = Game.Achievements[name];
             toCompress.push(Math.min(me.won, 1));
         });
