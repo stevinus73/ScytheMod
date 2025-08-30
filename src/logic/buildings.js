@@ -284,7 +284,7 @@ BModify._Initialize = function (en, Research) {
         } else this.batteryActive = false;
 
         if (this.batteryActive) {
-            this.batteryPercent -= Math.max(this.consumption - this.production, 0) / (Game.fps*this.maxEnergy*0.2);
+            this.batteryPercent -= Math.max(this.consumption - this.production, 0) / (Game.fps*this.maxEnergy*0.02);
             if (this.batteryPercent <= 0) {
                 this.batteryPercent = 0;
                 this.batteryMustRefill = true;
