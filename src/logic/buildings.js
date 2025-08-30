@@ -900,7 +900,7 @@ BModify._Initialize = function (en, Research) {
         // slight change here: instead of Covenant being buyable during Pledge only, you have to have Pledge inactive for it to be buyable.
 
         // all of this is intended to make GPOC a bit more permanent.
-        eval('Game.updateGrandmapocalypse='+Game.updateGrandmapocalypse.toString()
+        eval('Game.UpdateGrandmapocalypse='+Game.UpdateGrandmapocalypse.toString()
              .replaceAll("Game.Lock('Elder Pledge');","Game.Lock('Elder Pledge');Game.Lock('Elder Covenant');")
              .replaceAll("Game.Unlock('Elder Pledge');","Game.Unlock('Elder Pledge');Game.Unlock('Elder Covenant');"));
         Game.Upgrades['Elder Pledge'].canBuyFunc=function(){return BModify.energy>=Game.energyCost(this) && Game.cookies>=this.getPrice()};
