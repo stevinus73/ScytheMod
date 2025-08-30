@@ -546,14 +546,14 @@ BModify._Initialize = function (en, Research) {
             }
             yieldmult *= (1 + 0.025 * Game.Objects.Farm.getLumpBuff());
 
-            if (me.tieredResearch) {
-                if (Research.HasTiered(this.id, 1)) rsmult *= 2;
-                if (Research.HasTiered(this.id, 2)) rsmult *= 2;
-                if (Research.HasTiered(this.id, 3)) rsmult *= 2;
-                if (Research.HasTiered(this.id, 1)) yieldmult *= (2 - 0.05 * this.id);
-                if (Research.HasTiered(this.id, 2)) yieldmult *= (2 - 0.05 * this.id);
-                if (Research.HasTiered(this.id, 3)) yieldmult *= (2 - 0.05 * this.id);
-            }
+            // if (me.tieredResearch) {
+            //     if (Research.HasTiered(this.id, 1)) rsmult *= 2;
+            //     if (Research.HasTiered(this.id, 2)) rsmult *= 2;
+            //     if (Research.HasTiered(this.id, 3)) rsmult *= 2;
+            //     if (Research.HasTiered(this.id, 1)) yieldmult *= (2 - 0.05 * this.id);
+            //     if (Research.HasTiered(this.id, 2)) yieldmult *= (2 - 0.05 * this.id);
+            //     if (Research.HasTiered(this.id, 3)) yieldmult *= (2 - 0.05 * this.id);
+            // }
             if (Game.hasGod) {
                 var godLvl = Game.hasGod('industry');
                 if (godLvl == 1) rhpsmult *= 1.3;
