@@ -20,7 +20,7 @@ Clicks._Initialize = function(en, Research) {
     
     Game.mouseCps = en.injectCode(Game.mouseCps, "Game.Has('Ambidextrous')", "+2*Game.Has('Big clicks')+2*Game.Has('Butterfly')", "after");
     Game.mouseCps = en.injectCode(Game.mouseCps, "if (Game.Has('Dragon claw')) mult*=1.03;", 
-        "\n\t\t\tif(mod.research.has('Malevolent power')) mult*=(1+0.1*mod.clicks.getOverflow())*(Game.Has('Ethereal mouse')?1.5:1);", "after");
+        "\n\t\t\tif(mod.Research.Has('Malevolent power')) mult*=(1+0.1*mod.clicks.getOverflow())*(Game.Has('Ethereal mouse')?1.5:1);", "after");
     Game.Objects.Cursor.cps = en.injectCode(Game.Objects.Cursor.cps, "Game.Has('Ambidextrous')", "+Game.Has('Big clicks')+Game.Has('Butterfly')", "after");
     
     // why does this not work :(
@@ -67,9 +67,9 @@ Clicks._Initialize = function(en, Research) {
 
     Clicks.drainClick = function(now) {
         var overflowEff=1;
-        if (Research.has("Damage control")) overflowEff*=0.8;
-        if (Research.has("Temporal stretch")) overflowEff*=0.8;
-        if (Research.has("Fractal absorption")) overflowEff*=0.8;
+        if (Research.Has("Damage control")) overflowEff*=0.8;
+        if (Research.Has("Temporal stretch")) overflowEff*=0.8;
+        if (Research.Has("Fractal absorption")) overflowEff*=0.8;
         // hidden feature now
         if (Game.Has("Omnipotent mouse") && Game.hasBuff("Celestial energy")) overflowEff*=0.5;
         var clickNum=1+(this.overflow>0?Math.floor(this.overflow*overflowEff):0); 
@@ -85,11 +85,11 @@ Clicks._Initialize = function(en, Research) {
         if(!this.overflow_enabled) return;
         var threshold=P.baseThreshold;
         if (Game.Has("Thousand fingers")) threshold*=(1+0.1*Math.floor(Game.Objects['Cursor'].amount/100)); // cursor nerf!
-        if (now-Game.lastClick<=(1000*threshold)) this.overflow+=P.overflowGain*(Research.has("Sustainable clicks")?0.75:1);
+        if (now-Game.lastClick<=(1000*threshold)) this.overflow+=P.overflowGain*(Research.Has("Sustainable clicks")?0.75:1);
         this.overflow=Math.min(this.overflow,P.maxOverflow);
 
         this.lastClickT=0;
-        if (Research.has("Malevolent power")) Game.recalculateGains = 1;
+        if (Research.Has("Malevolent power")) Game.recalculateGains = 1;
     }
 
     Clicks.getCursorClicks = function() { // cursor nerf!
@@ -121,7 +121,7 @@ Clicks._Initialize = function(en, Research) {
             this.clicks=Math.min(this.clicks, this.maxClicks);
             var rate=P.baseRegen;
             if (Game.Has("Hands-off approach")) rate/=2;
-            if (Research.has("Patience")) rate/=1.3;
+            if (Research.Has("Patience")) rate/=1.3;
             if (Game.Has("Mystical regeneration")) rate/=Math.pow((Game.Has('Omnipotent mouse')?1.02:1.015),this.powerClicks);
             this.regenTimer=rate;
         }

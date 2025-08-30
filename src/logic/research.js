@@ -1,3 +1,5 @@
+/** Look at me still talking when there's Science to do! **/
+
 var Research = {};
 
 function cfl(val) {
@@ -102,6 +104,7 @@ Research._Initialize = function(en) {
         this.req = false;
         this.onBuy = onBuy;
         this.parents = Array.from(parents, (i) => this.tree.upgrades[i]);
+        this.children = [];
         this.sprite = sprite;
         this.x = x; // -1 to 1
         this.y = y; // -1 to 1
@@ -110,7 +113,7 @@ Research._Initialize = function(en) {
         this.priceB = 0;
 
         this.loadSave = function(str) {
-            var sstr = str.split(' ');
+            let sstr = str.split(' ');
             this.req = sstr[0];
             this.bought = sstr[1];
         }
@@ -120,7 +123,7 @@ Research._Initialize = function(en) {
         }
 
         this.canBuy = function() {
-            var parentBuy = true;
+            let parentBuy = true;
             this.parents.forEach(function(parent) {
                 if (!parent.bought) parentBuy = false;
             });
@@ -128,8 +131,8 @@ Research._Initialize = function(en) {
         }
 
         this.getPrice = function() {
-            var priceMult = 1;
-            if (Research.has("Better application forms")) priceMult *= 0.9;
+            let priceMult = 1;
+            if (Research.Has("Better application forms")) priceMult *= 0.9;
             return Math.round(this.priceR * priceMult);
         }
 
@@ -166,19 +169,19 @@ Research._Initialize = function(en) {
         }
 
         this.createLinks = function() {
-            var str = '';
+            let str = '';
             if (!this.isAvailable()) return str;
-            for (var ii in this.parents) {
+            for (let ii in this.parents) {
                 if (this.parents[ii]!=-1) {
-                    var ppos = this.parents[ii].getPosition();
-                    var mpos = this.getPosition();
-                    var origX = ppos.posX+28;
-                    var origY = ppos.posY+28;
-                    var targX = mpos.posX+28;
-                    var targY = mpos.posY+28;
-                    var rot=-(Math.atan((targY-origY)/(origX-targX))/Math.PI)*180;
+                    let ppos = this.parents[ii].getPosition();
+                    let mpos = this.getPosition();
+                    let origX = ppos.posX+28;
+                    let origY = ppos.posY+28;
+                    let targX = mpos.posX+28;
+                    let targY = mpos.posY+28;
+                    let rot=-(Math.atan((targY-origY)/(origX-targX))/Math.PI)*180;
                     if (targX<=origX) rot+=180;
-                    var dist=Math.floor(Math.sqrt((targX-origX)*(targX-origX)+(targY-origY)*(targY-origY)));
+                    let dist=Math.floor(Math.sqrt((targX-origX)*(targX-origX)+(targY-origY)*(targY-origY)));
                     str+='<div class="parentLink" id="researchLink'+this.tree.name+this.id+'-'+ii+'" style="width:'+dist+'px;-webkit-transform:rotate('+rot+'deg);-moz-transform:rotate('+rot+'deg);-ms-transform:rotate('+rot+'deg);-o-transform:rotate('+rot+'deg);transform:rotate('+rot+'deg);left:'+(origX)+'px;top:'+(origY)+'px;"></div>';
                 }
             }
@@ -186,15 +189,15 @@ Research._Initialize = function(en) {
         }
 
         this.getPosition = function() {
-            var cX = Research.container.offsetWidth  * 0.5 - 28;
-            var cY = Research.container.offsetHeight * 0.5 - 28;
-            var sX =  this.x * 500 + cX;
-            var sY = -this.y * 500 + cY;
+            let cX = Research.container.offsetWidth  * 0.5 - 28;
+            let cY = Research.container.offsetHeight * 0.5 - 28;
+            let sX =  this.x * 500 + cX;
+            let sY = -this.y * 500 + cY;
             return {posX: sX, posY: sY};
         }
 
         this.isAvailable = function() {
-            var available = false;
+            let available = false;
             this.parents.forEach(function(parent) {
                 if (parent.bought) available = true;
             });
@@ -205,13 +208,13 @@ Research._Initialize = function(en) {
         }
 
         this.draw = function() {
-            var available = this.isAvailable();
-            var sX = this.getPosition().posX;
-            var sY = this.getPosition().posY;
-            var classes = 'crate upgrade heavenly';
-            var clickStr = available ? 'mod.research.currTree.upgrades['+this.id+'].click()' : ''; 
-            var tname = this.tree.name;
-            var enabled = 0;
+            let available = this.isAvailable();
+            let sX = this.getPosition().posX;
+            let sY = this.getPosition().posY;
+            let classes = 'crate upgrade heavenly';
+            let clickStr = available ? 'mod.research.currTree.upgrades['+this.id+'].click()' : '';
+            let tname = this.tree.name;
+            let enabled = 0;
             if (this.bought) enabled=1;
             if (enabled) classes += ' enabled'; //trees["'+tname+'"]
             return '<div data-id="'+this.tree.name+this.id+'" '+Game.clickStr+'="'+clickStr+'"'+
@@ -221,23 +224,31 @@ Research._Initialize = function(en) {
             'style="'+writeIcon(this.sprite)+'position:absolute;left:'+sX+'px;top:'+sY+'px;'+(available?'':'display:none;')+'"></div>';
         }
 
+        this.hasAnyChildren = function() {
+            let hasChild = false;
+            this.children.forEach((up) => {
+                if (up.bought) hasChild = true;
+            })
+            return hasChild;
+        }
+
         this.getTooltip = function() {
-            var tags = [];
-            var price='';
+            let tags = [];
+            let price='';
 
             tags.push(loc("[Tag]Tech",0,'Tech'),'#36a4ff');
             if (this.bought) tags.push(loc("Researched"),0);
             if (!this.req) tags.push(loc("Locked"),0);
 
-            var tagsStr='';
+            let tagsStr='';
             for (var i=0;i<tags.length;i+=2)
             {
                 if (i%2==0) tagsStr+='<div class="tag" style="background-color:'+(tags[i+1]==0?'#fff':tags[i+1])+';">'+tags[i]+'</div>';
             }
-            var cost=this.getPrice();
+            let cost=this.getPrice();
             price='<div style="float:right;text-align:right;"><span class="price research'+ (this.canBuy() ? '' : ' disabled') +'">'+Beautify(Math.round(cost))+'</span></div>';
-            var tip = this.canBuy() ? loc("Click to research.") : "";
-            if (this.bought && (this.id!=0)) {
+            let tip = this.canBuy() ? loc("Click to research.") : "";
+            if (this.bought && (this.id!=0) && !this.hasAnyChildren()) {
                 if (Game.keys[16]) tip=loc("You are holding Shift. Clicking this research upgrade will unbuy it and refund your research.");
                 else tip=loc("Shift-click to refund.");
             }
@@ -250,7 +261,7 @@ Research._Initialize = function(en) {
         }
 
         this.unlock = function() {
-            if (!this.req && this.requirements.reqDesc) Game.Notify("Unlocked new research!", "Check your research trees!", [9, 0]);
+            if (!this.req && this.requirements.reqDesc) Game.Notify("Unlocked new research!", "To be done on the people who are still alive.", this.sprite);
             this.req = true;
         }
 
@@ -413,7 +424,7 @@ Research._Initialize = function(en) {
         this.crates.innerHTML = crateStr;
 
         // stats
-        l("modStats").style.display=(this.has("Otherworldly sight")?'block':'none');
+        l("modStats").style.display=(this.Has("Otherworldly sight")?'block':'none');
     }
 
     Research.appendStat = function(str) {
@@ -469,7 +480,7 @@ Research._Initialize = function(en) {
         this.dragY = 0;
     }
 
-    Research.has = function(name) {
+    Research.Has = function(name) {
         if (Game.ascensionMode != 0) return false;
         for (var i in this.trees) {
             if (this.trees[i].has(name)) return true;
@@ -501,8 +512,9 @@ Research._Initialize = function(en) {
 
     Research.earnResearch = function(num) {
         var mult = 1;
-        if (this.has("Supercomputers")) mult *= 1.1;
-        if (this.has("Thinktank")) mult *= 1.1;
+        if (this.Has("Supercomputers")) mult *= 1.1;
+        if (this.Has("Thinktank")) mult *= 1.1;
+        if (this.Has("Kitten scientists")) mult *= 1+Game.getMilk()*0.03;
         this.earn(Math.round(num * mult));
     }
     Game.Win = en.injectCode(Game.Win, 'it.won=1;', 'mod.research.earnResearch(10);', "after");
@@ -524,10 +536,10 @@ Research._Initialize = function(en) {
     new Research.Tech("Plain cookie", "Cookie production multiplier <b>+5%</b>. <q>We all gotta start somewhere. </q>", 20, f, f, [0], [2, 3], -0.2, 0.5); //1
     new Research.Tech("Interns", "Unlocks a new grandma type that <b>gains research passively</b>. <q>Grandmas. Can they be trusted? Can they be relied on? All I know is that I can use them for unpaid labor.</q>", 10, f, f, [0], [9, 0], 0.3, 0); //2
     new Research.Tech("Better application forms", "Research costs <b>10%</b> less.", 100, f, f, [2], [9, 1], 0.6, 0); //3
-    new Research.Tech("Kitten scientists", "You gain <b>more CpS</b> the more milk you have.<q>science is a natural for meow</q>", 999, req(() => Game.AchievementsOwned, 500, "achievements"), f, [1], [18, 21], -0.6, 0.4); //4
-    Game.CalculateGains = en.injectCode(Game.CalculateGains, `if (Game.Has('Fortune #103')) catMult*=(1+Game.milkProgress*0.05*milkMult);`,
-        `\n\tif (mod.research.has('Kitten scientists')) catMult*=(1+Game.milkProgress*0.05*milkMult)`, "after"
-    )
+    new Research.Tech("Kitten scientists", "You gain <b>more research</b> the more milk you have.<q>look at meow still talking when there's science to be done</q>", 999, req(() => Game.AchievementsOwned, 500, "achievements"), f, [1], [18, 21], -0.6, 0.4); //4
+    // Game.CalculateGains = en.injectCode(Game.CalculateGains, `if (Game.Has('Fortune #103')) catMult*=(1+Game.milkProgress*0.05*milkMult);`,
+    //     `\n\tif (mod.Research.Has('Kitten scientists')) catMult*=(1+Game.milkProgress*0.05*milkMult)`, "after"
+    // )
     new Research.Tech("Supercomputers", "Direct research gains <b>+10%</b>. <q>To be fair, they take up a lot of space.</q>", 130, breq('Javascript console', 100), f, [0], [32, 0], -0.15, -0.15); //5
     new Research.Tech("Thinktank", "Direct research gains <b>+10%</b>. <q>Big brains think together!</q>", 200, breq('Cortex baker', 200), f, [5], [34, 0], -0.3, -0.5); // 6
     new Research.Tech("Cookie funding", "You passively gain research <b>faster</b> the more banks you own. <q>A backup when the government stops funding your research because of 'ethics' violations or something.</q>", 150, breq('Bank', 250), f, [2], [2, 0, Icons], 0.5, -0.3); //7
@@ -542,7 +554,7 @@ Research._Initialize = function(en) {
     var tier_ref = [21,26,27];
     var buildingTree = function(i) {
         var me = Game.ObjectsById[i];
-        var hfunction = function() {return (me.amount >= 1) && Research.has("Research lab")};
+        var hfunction = function() {return (me.amount >= 1) && Research.Has("Research lab")};
         new Research.Tree(me.dname, [spr_ref[i], 0], hfunction);
         var btext = me.plural;
         if (i == 0) btext = "cursors and clicking";
@@ -569,11 +581,11 @@ Research._Initialize = function(en) {
     for (var i in Game.Objects) {
         Game.Objects[i].getLumpBuff = function() {
             if (!this.lumpBuff) return 0;
-            if (!Research.has(this.lumpBuff.name)) return 0;
+            if (!Research.Has(this.lumpBuff.name)) return 0;
             return Math.min(this.level, 20);
         }
     }
-    Research.hasTiered = function(i, tier) {
+    Research.HasTiered = function(i, tier) {
         if (!Game.ObjectsById[i].tieredResearch) return false;
         if (Game.ObjectsById[i].tieredResearch.length < tier) return false;
         return Game.ObjectsById[i].tieredResearch[tier-1].bought;
@@ -607,9 +619,9 @@ Research._Initialize = function(en) {
     tieredTreeG(0, 3, "Autoclicker", "Huh, wonder why I never thought of this before.", "Cursors are <b>25%</b> more efficient."); // 3
     Game.Objects.Cursor.cps = en.injectChain(Game.Objects.Cursor.cps, "mult*=Game.eff('cursorCps');",
         [
-            'if (mod.research.hasTiered(0, 1)) mult*=1.25;',
-            'if (mod.research.hasTiered(0, 2)) mult*=1.25;',
-            'if (mod.research.hasTiered(0, 3)) mult*=1.25;'
+            'if (mod.Research.HasTiered(0, 1)) mult*=1.25;',
+            'if (mod.Research.HasTiered(0, 2)) mult*=1.25;',
+            'if (mod.Research.HasTiered(0, 3)) mult*=1.25;'
         ]
     )
     // no need for lump buff
@@ -618,9 +630,9 @@ Research._Initialize = function(en) {
     new Research.Tech("Repeated electrical shock", "Clicking is <b>6%</b> more powerful. <q>Ow. Ow. Ow.</q>", 70, req(() => Game.cookieClicks, 2500, "cookie clicks"), f, [5], [12, 2], 0.6, 0.9); // 6
     Game.mouseCps = en.injectChain(Game.mouseCps, "if (Game.Has('Dragon claw')) mult*=1.03;",
         [
-            'if (mod.research.has("Fourth-dimensional workarounds")) mult*=1.06;',
-            'if (mod.research.has("Cybernetic fingers")) mult*=1.06;',
-            'if (mod.research.has("Repeated electrical shock")) mult*=1.06;'
+            'if (mod.Research.Has("Fourth-dimensional workarounds")) mult*=1.06;',
+            'if (mod.Research.Has("Cybernetic fingers")) mult*=1.06;',
+            'if (mod.Research.Has("Repeated electrical shock")) mult*=1.06;'
         ]
     )
     new Research.Tech("Jitter-click", "Clicking is <b>5%</b> more powerful.", 25, req(() => Game.cookieClicks, 150, "cookie clicks"), f, [0], [11, 0], -0.2, -0.1); // 7
@@ -667,7 +679,7 @@ Research._Initialize = function(en) {
 
     Game.getSuckMultiplier=function() {
         var mult=1;
-        if (Research.has("Hyperfolded digestion")) mult*=2;
+        if (Research.Has("Hyperfolded digestion")) mult*=2;
         if (Game.Has("Genetic breeder")) mult*=1.66;
         if (Game.Has("Psychic signal implant")) mult*=1.66;
         if (Game.Has("Eating contests")) mult*=1.66;
@@ -677,25 +689,27 @@ Research._Initialize = function(en) {
 
     Game.getWrinklerSpawnMultiplier=function() {
         var mult=1;
-        if (Research.has("Enticing waft")) mult*=2;
+        if (Research.Has("Enticing waft")) mult*=2;
         if (Game.Has("Cookie crumb trail")) mult*=1.66;
         return mult/2;
     }
 
     var digestStr="Wrinklers explode into <b>66%</b> more cookies.";
     en.ue.addUpgrade('Genetic breeder', digestStr+'<q>Took a long while to capture those wrinklers, but we did it... And one of them escaped already.</q>', 6.666*1e15, [19,8], 15000, 
-        {buyFunction:function(){Game.Unlock("Psychic signal implant");}})
+        {buyFunc:function(){Game.Unlock("Psychic signal implant");Game.storeToRefresh=1;}})
     en.ue.addUpgrade('Psychic signal implant', digestStr+'<q>Eat my cookies, or else.</q>', 6.666*1e20, [19,8], 15000, 
-        {buyFunction:function(){Game.Unlock("Eating contests");}})
+        {buyFunc:function(){Game.Unlock("Eating contests");Game.storeToRefresh=1;}})
     en.ue.addUpgrade('Eating contests', digestStr+'<q>Speaking of eating...</q>', 6.666*1e25, [19,8], 15000, 
-        {buyFunction:function(){Game.Unlock("Safety hangings");}})
+        {buyFunc:function(){Game.Unlock("Safety hangings");Game.storeToRefresh=1;}})
     en.ue.addUpgrade('Safety hangings', digestStr+'<q>Wrinklers can often fall off the big cookie for a few seconds due to their sliminess, leading to a loss in digestion. These tooth-fitting hangings will prevent that.</q>', 6.666*1e30, [19,8], 15000, 
-        {buyFunction:function(){}})
+        {buyFunc:function(){Game.storeToRefresh=1;}})
     
     var spawnStr="Wrinklers spawn <b>66%</b> more often.";
     en.ue.addUpgrade('Cookie crumb trail', spawnStr+'<q>A trail of cookie crumbs leading to the big cookie.</q>', 6.666*1e16, [19,8], 15000, 
-        {buyFunction:function(){}})
+        {buyFunc:function(){Game.storeToRefresh=1;}})
     
+
+
     buildingTree(2);
     tieredTree(2, 1, "Monocookie agriculture", "Gearing your farms to only cultivate cookies."); // 1
     tieredTree(2, 2, "Better hoes", "Actually, scratch that. Who would waste netherite on a hoe?"); // 2
@@ -726,11 +740,11 @@ Research._Initialize = function(en) {
     new Research.Tech("Polytheism", "Decreases worship slot refill time by <b>25%</b>.<q>Worshipping all of your gods at once makes them more willing to cooperate.</q>", 50, hasPantheon, f, [0], [11, 6], 0, 0.5); // 1
     new Research.Tech("Creation star", "All buildings are <b>5%</b> cheaper.<q>Warning: do not touch.</q>", 75, hasPantheon, f, [1], [26, 18], 0.3, 0.8); // 2
     Game.modifyBuildingPrice = en.injectCode(Game.modifyBuildingPrice, "if (building.fortune && Game.Has(building.fortune.name)) price*=0.93;",
-        '\n\tif (mod.research.has("Creation star")) price*=0.95;', "after"
+        '\n\tif (mod.Research.Has("Creation star")) price*=0.95;', "after"
     )
     new Research.Tech("Holiday coupon", "All upgrades are <b>10%</b> cheaper if a season is currently active.<q>Big discount! You can't miss out!</q>", 75, hasPantheon, f, [1], [25, 18], 0, 0.9); // 3
     Game.Upgrade.prototype.getPrice = en.injectCode(Game.Upgrade.prototype.getPrice, "if (Game.hasBuff('Haggler\'s misery')) price*=1.02;",
-        '\n\tif (mod.research.has("Holiday savings") && Game.season!="") price*=0.9;', "after"
+        '\n\tif (mod.Research.Has("Holiday savings") && Game.season!="") price*=0.9;', "after"
     )
     Research.numWrinklers = function() {
         var n=0;
@@ -741,7 +755,7 @@ Research._Initialize = function(en) {
     }
     new Research.Tech("Tooth of the wyrm", "Wrath cookies spawn <b>3%</b> more often per wrinkler present.", 75, hasPantheon, f, [1], [21, 19], -0.3, 0.8); // 4
     Game.shimmerTypes.golden.getTimeMod = en.injectCode(Game.shimmerTypes.golden.getTimeMod, "if (Game.Has('Gold hoard')) m=0.01;",
-        '\n\tif (mod.research.has("Tooth of the wyrm") && me.wrath) m*=(1-0.03*mod.research.numWrinklers());', "after"
+        '\n\tif (mod.Research.Has("Tooth of the wyrm") && me.wrath) m*=(1-0.03*mod.research.numWrinklers());', "after"
     )
     tieredTree(6, 1, "Summoning artifacts", "Mysteriously shiny artifacts that trick people into giving them a handshake, therefore forfeiting their soul to the devils within.") // 5
     tieredTree(6, 2, "Holy light of cookie heaven", "Psst, don't tell people it's just a lightbulb suspended above you with strings.") // 6
@@ -781,29 +795,29 @@ Research._Initialize = function(en) {
     tieredTreeG(14, 3, "The law of large numbers of cookies", "States that the more cookies you have, the more luck you're bound to get.", "Chancemakers are <b>37%</b> more efficient. Golden cookie gains <b>+37%</b>.") // 3
     // Game.shimmerTypes.golden.popFunc = en.injectChain(Game.shimmerTypes.golden.popFunc, "if (Game.Has('Dragon fang')) mult*=1.03;",
     //     [
-    //         'if (mod.research.hasTiered(14, 1)) mult*=1.77;',
-    //         'if (mod.research.hasTiered(14, 2)) mult*=1.57;',
-    //         'if (mod.research.hasTiered(14, 3)) mult*=1.37;',
-    //         'if (mod.research.has("Hoard of treasure")) mult*=2;',
-    //         'if (mod.research.has("The true purpose of luck")) mult*=2;'
+    //         'if (mod.Research.HasTiered(14, 1)) mult*=1.77;',
+    //         'if (mod.Research.HasTiered(14, 2)) mult*=1.57;',
+    //         'if (mod.Research.HasTiered(14, 3)) mult*=1.37;',
+    //         'if (mod.Research.Has("Hoard of treasure")) mult*=2;',
+    //         'if (mod.Research.Has("The true purpose of luck")) mult*=2;'
     //     ]
     // )
     // Game.shimmerTypes.golden.getTimeMod = en.injectChain(Game.shimmerTypes.golden.getTimeMod, "if (Game.Has('Green yeast digestives')) m*=0.99;",
     //     [
-    //         'if (mod.research.has("Pure one-hundred-percent gold")) m*=0.95;',
+    //         'if (mod.Research.Has("Pure one-hundred-percent gold")) m*=0.95;',
     //     ]
     // )
-    en.addGcHook('gains',function(m){return m*(mod.research.hasTiered(14, 1)?1.77:1)})
-    en.addGcHook('gains',function(m){return m*(mod.research.hasTiered(14, 2)?1.57:1)})
-    en.addGcHook('gains',function(m){return m*(mod.research.hasTiered(14, 3)?1.37:1)})
-    en.addGcHook('gains',function(m){return m*(mod.research.has("Hoard of treasure")?1.10:1)})
-    en.addGcHook('frequency',function(m){return m/(mod.research.has("Pure one-hundred-percent gold")?1.05:1)})
-    en.addGcHook('frequency',function(m){return m/(mod.research.has("The true purpose of luck")?1.03:1)})
+    en.addGcHook('gains',function(m){return m*(mod.Research.HasTiered(14, 1)?1.77:1)})
+    en.addGcHook('gains',function(m){return m*(mod.Research.HasTiered(14, 2)?1.57:1)})
+    en.addGcHook('gains',function(m){return m*(mod.Research.HasTiered(14, 3)?1.37:1)})
+    en.addGcHook('gains',function(m){return m*(mod.Research.Has("Hoard of treasure")?1.10:1)})
+    en.addGcHook('frequency',function(m){return m/(mod.Research.Has("Pure one-hundred-percent gold")?1.05:1)})
+    en.addGcHook('frequency',function(m){return m/(mod.Research.Has("The true purpose of luck")?1.03:1)})
     Game.Objects.Chancemaker.cps = en.injectChain(Game.Objects.Chancemaker.cps, "mult*=Game.magicCpS(me.name);", 
         [
-            'if (mod.research.hasTiered(14, 1)) mult*=1.77;',
-            'if (mod.research.hasTiered(14, 2)) mult*=1.57;',
-            'if (mod.research.hasTiered(14, 3)) mult*=1.37;'
+            'if (mod.Research.HasTiered(14, 1)) mult*=1.77;',
+            'if (mod.Research.HasTiered(14, 2)) mult*=1.57;',
+            'if (mod.Research.HasTiered(14, 3)) mult*=1.37;'
         ]
     )
     buildingTree(15);
@@ -817,8 +831,8 @@ Research._Initialize = function(en) {
     buildingTree(17);
     new Research.Tech("Galactica mindoris", "You gain <b>more resource space</b> the more idleverses you have. <q>Turns out there's a ton of room in idleverses!</q>", 410, f, f, [0], [33, 35], 0, 1.5);
     tieredTreeG(17, 1, "Converter", "A machine to convert all matter in an idleverse to cookies. Don't tell any Cookieclysm devs.", "Idleverses are <b>30%</b> more efficient.") // 1
-    tieredTreeG(17, 2, "Testing worlds", "You've managed to repurpose some of your idleverses as multiverse-size guinea pigs for experiments with stuff. Good thing those lawyers have been strangely quiet recently.", "Idleverses are <b>30%</b> more efficient.") // 2
-    tieredTreeG(17, 3, "The marble ball conjecture", "The marble ball conjecture states that our entire multiverse may be only the size of a small marble ball in another multiverse. This means you have even more dimensions to take over.", "Idleverses are <b>30%</b> more efficient.") // 3
+    tieredTreeG(17, 2, "Testing worlds", "You've managed to repurpose some of your idleverses as multiverse-size guinea pigs for Science tests. Good thing no humans are around anymore to complain.", "Idleverses are <b>30%</b> more efficient.") // 2
+    tieredTreeG(17, 3, "The marble ball conjecture", "The marble ball conjecture states that our entire multiverse may be only the size of a small marble ball in another multiverse. The consequences are self-evident.", "Idleverses are <b>30%</b> more efficient.") // 3
     buildingTree(18);
     tieredTree(18, 1, "Headspace expansion", "With all those problems about space, you figured your cortex bakers can probably just think up more space.") // 1
     tieredTree(18, 2, "Cerebral lubricant", "You don't want all those big brains getting in themselves' way, do you?") // 2
@@ -829,34 +843,24 @@ Research._Initialize = function(en) {
     tieredTree(19, 3, "Genetic clone selection", "Recloning the DNA of existing clones allows natural selection to take place, as due to errors in the gene copying mechanism, some clones are more efficient than others. Maybe, with enough time, they could even surpass you?") // 3
 
     this.setCurrTree("General");
+    // initialize children
+    for (var i in this.trees) {
+        this.trees[i].upgrades.forEach(function(up) {
+            up.parents.forEach(function(parent) {
+                parent.children.push(up);
+            })
+        })
+    }
 
     // stats n' switches
 
-    // for (var i in Research.trees) {
-    //     Research.trees[i].upgrades.forEach(function(up) {
-    //         en.newVar("research" + i + up.id, "int");
-    //     })
-    // }
-
     en.saveCallback(function() {
         en.setVar("research", Research.research);
-        // for (var i in Research.trees) {
-        //     Research.trees[i].upgrades.forEach(function(up) {
-        //         en.setVar("research" + i + up.id, up.bought ? 1 : 0);
-        //     })
-        // }
         en.setVar("techData", Research.writeSave());
     })
 
     en.loadCallback(function() {
         Research.research = en.getVar("research", Research.research);
-        // for (var i in Research.trees) {
-        //     Research.trees[i].upgrades.forEach(function(up) {
-        //         var n = en.getVar("research" + i + up.id, up.bought);
-        //         if (n == 0) up.bought = false;
-        //         if (n == 1) up.bought = true;
-        //     })
-        // }
         Research.loadSave(en.getVar("techData"), Research.writeSave());
     })
 
@@ -878,8 +882,8 @@ Research._Initialize = function(en) {
     Game.registerHook('logic', function() {
         Research.update();
 
-        if (Research.has("Hyperfolded digestion")) Game.Unlock("Genetic breeder");
-        if (Research.has("Enticing waft")) Game.Unlock("Cookie crumb trail");
+        if (Research.Has("Hyperfolded digestion")) Game.Unlock("Genetic breeder");
+        if (Research.Has("Enticing waft")) Game.Unlock("Cookie crumb trail");
     });
 
     Game.registerHook('check', function() {
@@ -895,7 +899,7 @@ Research._Initialize = function(en) {
 
     Game.registerHook('cps', function(cps) {
         var mult = 1;
-        if (Research.has("Plain cookie")) mult *= 1.05;
+        if (Research.Has("Plain cookie")) mult *= 1.05;
         return cps * mult;
     });
 }

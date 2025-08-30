@@ -118,7 +118,7 @@ G._Initialize = function(en, Research) {
         if (G.currEffsPower()>4000) Research.unlock("Golden gates");
 
         var moni=mult*Game.cookiesPs*60*15+777;
-        if (Research.has('Golden gates')) moni*=Math.pow(1.5, this.currEffs().length-1);
+        if (Research.Has('Golden gates')) moni*=Math.pow(1.5, this.currEffs().length-1);
 		Game.Earn(moni);
         this.fortunesEarned++;
         Game.Notify("Fortune!", "This golden cookie effect, which would have exceeded the golden cookie effect cap, has been converted into cookies.", [23, 6]);

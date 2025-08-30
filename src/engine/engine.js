@@ -286,7 +286,7 @@ IdlersPocket.createLeftWidget = function (position, sprite, tooltipStr, clickStr
 // patched orteil bs
 eval('Game.CalculateGains='+Game.CalculateGains.toString().replace(
     "Game.cookiesPs=Game.runModHookOnValue('cps',Game.cookiesPs);",
-        "mult*=(Game.cookiesPs>0?Game.runModHookOnValue('cps',Game.cookiesPs)/Game.cookiesPs:1);"));
+        "mult*=(Game.cookiesPs>0??Game.runModHookOnValue('cps',Game.cookiesPs)/Game.cookiesPs);"));
 
 
 IdlersPocket.ModLoaded=false;

@@ -75,7 +75,7 @@ BModify._Initialize = function (en, Research) {
         'Chancemaker': 110,
         'Fractal engine': 90,
         'Javascript console': 170, //300,
-        'Idleverse': 300, //500,
+        'Idleverse': 500, //500,
         'Cortex baker': 600, //1000,
         'You': 800, //1700 
     }
@@ -99,6 +99,21 @@ BModify._Initialize = function (en, Research) {
             if (Game.Has(Game.Objects[i].energyTiered)) mult *= 1.33;
         }
         return Math.round((mult + Number.EPSILON) * 100) / 100;
+    }
+
+    BModify.getLoss = function () {
+        consumption = 0;
+        for (var i in Game.Objects) {
+            consumption += Game.Objects[i].baseConsumption * Game.Objects[i].amount * (i == 'Cursor'??this.getCursorDrain())
+                * (Game.Has(Game.Objects[i].effTiered) ?? Math.pow(0.96, Game.getTieredUpgradesTotal(Game.Objects[i])));
+        }
+        if (Game.Has("Specialized chocolate chips")) consumption *= 0.98;
+        if (Game.Has("Designer cocoa beans")) consumption *= 0.98;
+        if (Game.Has("Underworld ovens")) consumption *= 0.98;
+        if (Game.Has("Exotic nuts")) consumption *= 0.98;
+        if (Game.Has("Arcane sugar")) consumption *= 0.98;
+        if (speed >= 3) consumption *= speed;
+        return Math.round((consumption + Number.EPSILON) * 1000) / 1000;
     }
 
     BModify.getCursorDrain = function() { // cursor nerf!
@@ -127,11 +142,7 @@ BModify._Initialize = function (en, Research) {
 
 
     BModify.energyCalc = function () {
-        this.consumption = 0;
-        for (var i in Game.Objects) {
-            this.consumption += Game.Objects[i].baseConsumption * Game.Objects[i].amount * (i == 'Cursor'?this.getCursorDrain():1);
-        }
-        if (this.speed >= 3) this.consumption *= this.speed;
+        this.consumption = this.getLoss();
 
         this.production = this.powerPlants;
         if (this.batteryMustRefill) this.production *= 0.7;
@@ -160,6 +171,7 @@ BModify._Initialize = function (en, Research) {
         // unlock upgrades
         for (var i in Game.Objects) {
             if (Game.Objects[i].amount >= 4) Game.Unlock(Game.Objects[i].energyTiered);
+            if (Game.Objects[i].amount >= 120) Game.Unlock(Game.Objects[i].effTiered);
         }
 
         if (this.consumption >= 25000 && this.speed >= 3) {this.trackAch[0]++;} else {this.trackAch[0]=0;}
@@ -268,11 +280,11 @@ BModify._Initialize = function (en, Research) {
         if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
         if (this.energy < 0) {
             this.energy = 0;
-            if (!this.batteryActive && Research.has("Nucleonic batteries") && !this.batteryMustRefill) this.batteryActive = true;
+            if (!this.batteryActive && Research.Has("Nucleonic batteries") && !this.batteryMustRefill) this.batteryActive = true;
         } else this.batteryActive = false;
 
         if (this.batteryActive) {
-            this.batteryPercent -= Math.max(this.consumption = this.production, 0) / (Game.fps*this.maxEnergy*0.2);
+            this.batteryPercent -= Math.max(this.consumption - this.production, 0) / (Game.fps*this.maxEnergy*0.2);
             if (this.batteryPercent <= 0) {
                 this.batteryPercent = 0;
                 this.batteryMustRefill = true;
@@ -292,7 +304,22 @@ BModify._Initialize = function (en, Research) {
 
     Game.Tiers['Energizium'] = { name: 'Energizium', unlock: 4, iconRow: 17, source: Icons, color: '#57c1ff', special: 1, price: 15 };
 
+    // icon row is gonna be changed eventually! do not worry
+    Game.Tiers['Efficentia'] = { name: 'Efficentia', unlock: 100000000, iconRow: 17, source: Icons, color: '#267cae', special: 1, price: 330000000 };
+
     var order = 18500;
+
+    // probably a javascript-er way to do this but IDRC
+    Game.GetTieredUpgradesTotal =function(me)
+    {
+        var n=0;
+        for (var i in me.tieredUpgrades)
+        {
+            if (!Game.Tiers[me.tieredUpgrades[i].tier].special && Game.Has(me.tieredUpgrades[i].name)) n++;
+        }
+        return n;
+    }
+
     function EnergyTiered(bid, name, desc) {
         desc = "All energy gains <b>x1.33</b>. " + cfl(Game.ObjectsById[bid].plural) + " gain <b>" + (bid == 0 ? 100 : 200 - bid * 10)
             + "%</b> more CpS from speed.<q>" + desc + "</q>";
@@ -302,7 +329,15 @@ BModify._Initialize = function (en, Research) {
         Game.ObjectsById[bid].energyTiered = name;
     }
 
-    for (let i=10; i<20; i++) {
+    function EffTiered(bid, name, desc) {
+        desc = cfl(Game.ObjectsById[bid].plural) + " lose <b>4%</b> (multiplicative) energy consumption per tiered upgrade bought. <q>" + desc + "</q>";
+
+        en.ue.addUpgrade(name, desc, Game.Tiers['Efficentia'].price * Game.ObjectsById[bid].basePrice * (bid + 1),
+            Game.GetIcon(Game.ObjectsById[bid].name, 'Efficentia'), order, { tier: 'Efficentia' });
+        Game.ObjectsById[bid].effTiered = name;
+    }
+
+    for (let i=12; i<20; i++) {
         EnergyTiered(i, Game.ObjectsById[i].name + ' power', '... (will make actual upgrades)');
     }
 
@@ -313,10 +348,16 @@ BModify._Initialize = function (en, Research) {
     EnergyTiered(4, "Power facility", "Does not relate to the power plant.");
     EnergyTiered(5, "Compound rates", "Obtaining energy at a roughly 33% interest rate.");
     EnergyTiered(6, "Ancient totem", "Carved inscription 'INSPECTED BY NO. 6'.");
-    EnergyTiered(7, "Ethereal charge", "An ancient wizardly technique, feared by many.");
+    EnergyTiered(7, "Arcane electrostatics", "An ancient wizardly technique, feared by many.");
     EnergyTiered(8, "The electric universe", "Don't worry if it isn't true - in the next ascension we'll find a parallel universe where it *is* true.");
     EnergyTiered(9, "Cookiemutation", "Look, this isn't even the weirdest thing you've seen this week. It's fine.");
-    EnergyTiered(10, "Seven-Eyed Lord of Thunder", "Available yesterday at a -6.6% discount!");
+    EnergyTiered(10, "Seven-Eyed God of Thunder", "Available yesterday at a -6.6% discount!");
+    EnergyTiered(11, "Time Lord", "Oh, so we're putting shameless surface-level Doctor Who references now? I'm leaving. Bye.");
+
+    // will make actual upgrades
+    for (let i=0; i<20; i++) {
+        EffTiered(i, 'Efficient '+Game.ObjectsById[i].name, 'Only the latest advances in energy-saving tech!');
+    }
 
     en.newInfoPanel("energyDisp", [3,3,Icons], function(){
         return `<div class="prompt" style="min-width:400px;text-align:center;font-size:11px;margin:8px 0px;"><h3>Energy</h3><div class="line"></div>`
@@ -349,6 +390,16 @@ BModify._Initialize = function (en, Research) {
     en.ue.addUpgrade('Save expander', expstr + '<q>By the way, I\'m not optimizing the mod\'s savefile anytime soon.</q>', 1e17,
         [0, 4, Icons], order, { unlockAt: 1e20 });
 
+    Game.energyCostTip = function(me) {
+        let cost=Game.energyCost(up.name);
+        return (Game.hasEnergyCost(me)??'+<span class="price energy'+(context=='store'??(BModify.energy>=cost?'':' disabled'))+'">'
+                +Beautify(Math.round(cost))+' energy</span>');
+    }
+
+    eval('Game.crateTooltip='+Game.crateTooltip.toString()
+         .replace(`if (me.priceLumps==0 && cost==0)`,`if (me.priceLumps==0 && cost==0 && !Game.hasEnergyCost(me))`)
+         .replace(`+'</div>';`,`+Game.energyCostTip(me)+'</div>';`)
+         .replace(`(me.pool!='prestige' && me.priceLumps==0)`,`(me.pool!='prestige' && me.priceLumps==0  && !Game.hasEnergyCost(me))`));
 
     Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
         `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
@@ -379,6 +430,7 @@ BModify._Initialize = function (en, Research) {
         + '.resBarRefill:active{transform.scale(0.7);}'
         + '.barRefillL{left:-40px;top:-17px;}'
         + '.barRefillR{left:340px;top:-17px;}'
+        + '.energy.price:before{width:48px;height:48px;left:-20px;top:-14px;'+writeIcon([4, 4, Icons])+'transform:scale(0.5);}'
         + '.rlIcon{' + writeIcon([3, 0, Icons]) + '}'
         + '.rrIcon{' + writeIcon([2, 0, Icons]) + '}' // not fully sure why right:-40px doesn't work; think it's something about overriding
         + '.resBarFull{transform:scale(1,2);transform-origin:50% 0;height:50%;}'
@@ -436,7 +488,7 @@ BModify._Initialize = function (en, Research) {
             var dmult = 1;
             if (this.depleted || this.pause)
                 dmult = 0;
-            if ((this.id == 2) && Research.has("Regrowth")) dmult = 1;
+            if ((this.id == 2) && Research.Has("Regrowth")) dmult = 1;
             return cps * dmult * Game.magicCpS(this.me.name);
         }
 
@@ -488,19 +540,19 @@ BModify._Initialize = function (en, Research) {
 
             if (me.fortune && Game.Has(me.fortune.name)) yieldmult *= 1.07;
             yieldmult *= (1 + BModify.grandma.grandmaTypes['G' + me.id].buildingBuff());
-            if ((this.id == 2) && Research.has("Regrowth")) {
+            if ((this.id == 2) && Research.Has("Regrowth")) {
                 yieldmult *= 3;
                 if (this.barred > 0) yieldmult *= 12; // secret feature
             }
             yieldmult *= (1 + 0.025 * Game.Objects.Farm.getLumpBuff());
 
             if (me.tieredResearch) {
-                if (Research.hasTiered(this.id, 1)) rsmult *= 2;
-                if (Research.hasTiered(this.id, 2)) rsmult *= 2;
-                if (Research.hasTiered(this.id, 3)) rsmult *= 2;
-                if (Research.hasTiered(this.id, 1)) yieldmult *= (2 - 0.05 * this.id);
-                if (Research.hasTiered(this.id, 2)) yieldmult *= (2 - 0.05 * this.id);
-                if (Research.hasTiered(this.id, 3)) yieldmult *= (2 - 0.05 * this.id);
+                if (Research.HasTiered(this.id, 1)) rsmult *= 2;
+                if (Research.HasTiered(this.id, 2)) rsmult *= 2;
+                if (Research.HasTiered(this.id, 3)) rsmult *= 2;
+                if (Research.HasTiered(this.id, 1)) yieldmult *= (2 - 0.05 * this.id);
+                if (Research.HasTiered(this.id, 2)) yieldmult *= (2 - 0.05 * this.id);
+                if (Research.HasTiered(this.id, 3)) yieldmult *= (2 - 0.05 * this.id);
             }
             if (Game.hasGod) {
                 var godLvl = Game.hasGod('industry');
@@ -549,7 +601,7 @@ BModify._Initialize = function (en, Research) {
                 this.depleted = true;
             } else this.depleted = false;
             this.rsUsed = Math.min(this.rsUsed, this.rsTotal);
-            if ((this.id == 2) && Research.has("Regrowth")) return;
+            if ((this.id == 2) && Research.Has("Regrowth")) return;
             if (this.depleted) return;
             if (this.pause) {
                 var rate = 0.001 * this.decayedFactor()
@@ -667,6 +719,7 @@ BModify._Initialize = function (en, Research) {
                 Beautify((this.pause || this.depleted) ? 0 : this.RhpS, 1);
             str += ' (' + Beautify(this.RhpS * this.me.amount * this.decayedFactor()) + ' for ' + Beautify(this.me.amount) + ' ' + this.me.plural.toLowerCase();
             str += ')</div>';
+
             str += '<div class="listing"> <b>Base yield: </b>' + Beautify(this.yield, 1) + " cookies/" + this.rsNames[1] + '</div>';
             str += '<div class="listing"> <b>Total amount of ' + this.rsNames[0].toLowerCase() + ' discovered:</b> ' + Beautify(this.rsTotal) + " " + this.rsNames[2] + '</div>';
             str += '<div class="listing"> <b>Used ' + this.rsNames[0].toLowerCase() + ' so far:</b> ' + this.rsUsed + " " + this.rsNames[2] + '</div>';
@@ -737,13 +790,13 @@ BModify._Initialize = function (en, Research) {
             if (Game.drawT % 5 == 0) {
                 this.mbarFull.style.width = Math.max(Math.round((this.availableRes() / this.rsTotal) * 100), 0) + '%';
                 if (this.barred)
-                    if ((this.id == 2) && Research.has("Regrowth")) this.mbar.style.background = 'lightGreen';
+                    if ((this.id == 2) && Research.Has("Regrowth")) this.mbar.style.background = 'lightGreen';
                 this.mbar.style.width = '350px';
                 this.mbarText.innerHTML = Beautify(Math.max((this.availableRes() / this.rsTotal) * 100, 0), 1) + '% left';
                 if (this.depleted) this.mbarInfo.innerHTML = 'This resource has been depleted';
                 else if (this.pause) this.mbarInfo.innerHTML = 'Currently paused';
                 else if (this.barred > 0) this.mbarInfo.innerHTML = 'This resource is under the effects of the Power gate';
-                else if ((this.id == 2) && Research.has("Regrowth")) this.mbarInfo.innerHTML = 'Regrowth is currently active.';
+                else if ((this.id == 2) && Research.Has("Regrowth")) this.mbarInfo.innerHTML = 'Regrowth is currently active.';
                 else this.mbarInfo.innerHTML = 'Depletion rate: -'
                     + Beautify(Math.max(((this.RhpS * this.me.amount * this.decayedFactor()) / this.rsTotal) * 100, 0), 2) + '%/s (-'
                     + Beautify(Math.max(((this.RhpS * this.me.amount * this.decayedFactor()) / this.rsTotal) * 100 * 60, 0), 2) + '%/min)';
@@ -832,6 +885,58 @@ BModify._Initialize = function (en, Research) {
         this.allocT = 0;
         this.grandmaTypes = {};
         this.storage = 0;
+
+        this.anger = 0;
+
+        // make Pledge and Covenant cost Energy
+        Game.hasEnergyCost = function(up) {
+            return up.name=="Elder Pledge"||up.name=="Elder Covenant";
+        }
+
+        Game.energyCost = function(up) {
+            if (up.name=="Elder Pledge") return 4666666*Math.pow(1.3,Math.min(Game.pledges,12));
+            if (up.name=="Elder Covenant") return 16666666;
+        }
+        // slight change here: instead of Covenant being buyable during Pledge only, you have to have Pledge inactive for it to be buyable.
+
+        // all of this is intended to make GPOC a bit more permanent.
+        eval('Game.updateGrandmapocalypse='+Game.updateGrandmapocalypse.toString()
+             .replaceAll("Game.Lock('Elder Pledge');","Game.Lock('Elder Pledge');Game.Lock('Elder Covenant');")
+             .replaceAll("Game.Unlock('Elder Pledge');","Game.Unlock('Elder Pledge');Game.Unlock('Elder Covenant');"));
+        Game.Upgrades['Elder Pledge'].canBuyFunc=function(){return BModify.energy>=Game.energyCost(this) && Game.cookies>=this.getPrice()};
+        Game.Upgrades['Elder Pledge'].buyFunc=function(){
+            Game.elderWrath=0;
+            BModify.grandma.anger=Math.max(0,BModify.grandma.anger-0.22);
+            BModify.energy-=Game.energyCost('Elder Pledge');
+            Game.pledges++;
+            Game.pledgeT=Game.getPledgeDuration();
+            Game.Lock('Elder Covenant');
+            Game.CollectWrinklers();
+            Game.storeToRefresh=1;
+        }
+
+        Game.Upgrades['Elder Covenant'].canBuyFunc=function(){return BModify.energy>=Game.energyCost(this) && Game.cookies>=this.getPrice() && Game.pledgeT<=0};
+        Game.Upgrades['Elder Covenant'].buyFunc=function(){
+            BModify.energy-=Game.energyCost('Elder Covenant');
+            Game.Lock('Revoke Elder Covenant');
+            Game.Unlock('Revoke Elder Covenant');
+            Game.Lock('Elder Pledge');
+            Game.Win('Elder calm');
+            Game.CollectWrinklers();
+            Game.storeToRefresh=1;
+        }
+
+        Game.getPledgeDuration=function(){return Game.fps*60*(Game.Has('Sacrificial rolling pins')?5:2.5);}
+
+        en.ue.appendToDesc(Game.Upgrades['Specialized chocolate chips'], '<b>-2%</b> energy consumption.');
+        en.ue.appendToDesc(Game.Upgrades['Designer cocoa beans'], '<b>-2%</b> energy consumption.');
+        en.ue.appendToDesc(Game.Upgrades['Underworld ovens'], '<b>-2%</b> energy consumption.');
+        en.ue.appendToDesc(Game.Upgrades['Exotic nuts'], '<b>-2%</b> energy consumption.');
+        en.ue.appendToDesc(Game.Upgrades['Arcane sugar'], '<b>-2%</b> energy consumption.');
+        // sorry
+        en.ue.replaceDescPart(Game.Upgrades['Elder Covenant'], '-5%', '-20%');
+        eval('Game.CalculateGains='+Game.CalculateGains.toString().replace("if (Game.Has('Elder Covenant')) mult*=0.95;", "if (Game.Has('Elder Covenant')) mult*=0.8;"));
+
         this.newGrandmaType = function (name, lname, reqFunc, maxFunc, sprite, desc) {
             var grandmaType = {
                 name: name,
@@ -931,9 +1036,9 @@ BModify._Initialize = function (en, Research) {
 
         // scientist grandmas
         const BaseResearchTime = Game.fps * 60 * 60;
-        var sci = this.newGrandmaType("scientist", "Scientist grandmas", (me) => Research.has("Interns"),
+        var sci = this.newGrandmaType("scientist", "Grandma researchers", (me) => Research.Has("Interns"),
             function () { return Math.ceil(grandmaM.maxFree() * 0.2) }, [1, 0, Icons],
-            "You passively gain research. Speed is faster the more grandmas you have.");
+            "You passively gain research.");
         sci.nextResearch = BaseResearchTime;
         sci.update = function () {
             if (this.allocated > 0) {
@@ -960,6 +1065,7 @@ BModify._Initialize = function (en, Research) {
         str += '<div><b>Free grandmas</b> are grandmas not currently producing cookies. You can allocate them to do specific tasks.</div>';
         str += '<div>You gain free grandmas by building retirement homes, which attract grandmas.</div>';
         str += '<div>You have <span id="grandmaInfo1"></span> free grandmas, <span id="grandmaInfo2"></span> of which are currently allocated as grandma types.</div>';
+        str += '<div><b><span id="grandmaAnger"></span></div>';
         str += '<div>You have <span id="storage"></span></div>';
         str += '<div id="storageBuilder"></div>';
         str += '<div id="grandmaTypes">';
@@ -1003,7 +1109,42 @@ BModify._Initialize = function (en, Research) {
                 else { me.unlocked = false; me.allocated = 0; }
                 if (me.upkeep()) me.update();
             }
+
+
+            if (Math.random()<=0.0003) {
+                this.anger+=0.0005*Math.sqrt(this.allocT)*(Game.Has('Elder Pledge')?0.3:1);
+                this.anger=Math.max(this.anger, this.angerCap());
+            }
         }
+
+        this.cpsSuckedFromAnger = function () {
+            return Math.max((this.anger-0.2)*0.7);
+        }
+
+        this.angerCap = function () {
+            if (Game.Has('Bingo center/Research facility') || Game.Has('Elder Covenant')) return 0.2;
+            if (Game.Has('One mind')) return 0.34;
+            if (Game.Has('Communal brainsweep')) return 0.67;
+            if (Game.Has('Elder Pact')) return 1.0;
+            return 0;
+        }
+
+        this.angerToWrath = function () {
+            if (this.anger>=0.9) return 3;
+            else return Math.floor(3*this.anger);
+        }
+
+        Game.UpdateGrandmapocalyse = en.injectCode(Game.UpdateGrandmapocalyse,
+            "Math.random()<0.001 && Game.elderWrath<Game.Has('One mind')+Game.Has('Communal brainsweep')+Game.Has('Elder Pact')",
+            "Math.random()<0.02 && Game.elderWrath<mod.bModify.grandma.angerToWrath()",
+            "replace"
+        )
+
+        Game.UpdateGrandmapocalyse = en.injectCode(Game.UpdateGrandmapocalyse,
+            "Game.Has('One mind') && Game.elderWrath==0",
+            "false",
+            "replace"
+        )
 
         this.draw = function () {
             for (var i in this.grandmaTypes) {
@@ -1016,6 +1157,11 @@ BModify._Initialize = function (en, Research) {
             l('grandmaReqs').innerHTML = '<span' + (this.me.amount >= this.grandmaReq() ? '' : ' style="color:#777;"') + '>' + this.grandmaReq() + ' grandmas</span>' +
                 '<br/><span' + (Game.cookies >= this.cookiesReq() ? '' : ' style="color:#777;"') + '>' + Beautify(this.cookiesReq()) + ' cookies</span>' +
                 '<br/><span' + (Research.research >= this.researchReq() ? '' : ' style="color:#777;"') + '>' + this.researchReq() + ' research</span>';
+
+            if (Game.Has('Bingo center/Research facility')) {
+                l('grandmaAnger').innerHTML = (Game.Has('Elder Covenant')?'Satiated.':'Grandma anger: '+Math.round(this.anger*100)+'%'+
+                    (this.anger>0.2??', resulting in a CpS decrease of '+Math.round(this.cpsSuckedFromAnger()*100)+'%'));
+            }
         }
 
         this.grandmaReq = function () { return 25 * this.storage + 25; }
@@ -1052,9 +1198,9 @@ BModify._Initialize = function (en, Research) {
 
         this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);",
             [
-                'if (mod.research.hasTiered(1, 1)) mult*=1.15;',
-                'if (mod.research.hasTiered(1, 2)) mult*=1.15;',
-                'if (mod.research.hasTiered(1, 3)) mult*=1.15;'
+                'if (mod.Research.HasTiered(1, 1)) mult*=1.15;',
+                'if (mod.Research.HasTiered(1, 2)) mult*=1.15;',
+                'if (mod.Research.HasTiered(1, 3)) mult*=1.15;'
             ]
         )
 
@@ -1080,7 +1226,7 @@ BModify._Initialize = function (en, Research) {
         this.resourceMult = function () {
             var fact = 1.003;
             if (Game.Has("Unshackled idleverses")) fact = 1.004;
-            if (!Research.has("Galactica mindoris")) return 1;
+            if (!Research.Has("Galactica mindoris")) return 1;
             return Math.max(Math.pow(fact, this.me.amount) * this._ifactor(this.me.amount), 1);
         }
 
@@ -1089,7 +1235,7 @@ BModify._Initialize = function (en, Research) {
         )
 
         this.getStat = function () {
-            if (Research.has("Galactica mindoris")) {
+            if (Research.Has("Galactica mindoris")) {
                 l("idleverseStat").innerHTML = "<b>" + loc("Total resource boost provided by") + " " + this.me.amount + " idleverses:</b> "
                     + "x" + Beautify(this.resourceMult(), 3);
             } else l("idleverseStat").innerHTML = "<b>You do not have the Galactica mindoris research upgrade, and are gaining no resource space from idleverses.</b>"
@@ -1097,9 +1243,9 @@ BModify._Initialize = function (en, Research) {
 
         this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);",
             [
-                'if (mod.research.hasTiered(17, 1)) mult*=1.3;',
-                'if (mod.research.hasTiered(17, 2)) mult*=1.3;',
-                'if (mod.research.hasTiered(17, 3)) mult*=1.3;'
+                'if (mod.Research.HasTiered(17, 1)) mult*=1.3;',
+                'if (mod.Research.HasTiered(17, 2)) mult*=1.3;',
+                'if (mod.Research.HasTiered(17, 3)) mult*=1.3;'
             ]
         )
     }
@@ -1328,7 +1474,7 @@ BModify._Initialize = function (en, Research) {
 
     //this.explorer = new BModify.Explorer();
 
-    en.trackVars(BModify.grandma, [['allocT'], ['storage']]);
+    en.trackVars(BModify.grandma, [['allocT'], ['storage'], ['anger']]);
 }
 
 
