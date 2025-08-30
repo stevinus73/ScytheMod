@@ -280,7 +280,7 @@ BModify._Initialize = function (en, Research) {
         if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
         if (this.energy < 0) {
             this.energy = 0;
-            if (!this.batteryActive && mod.research.Has("Nucleonic batteries") && !this.batteryMustRefill) this.batteryActive = true;
+            if (!this.batteryActive && Research.Has("Nucleonic batteries") && !this.batteryMustRefill) this.batteryActive = true;
         } else this.batteryActive = false;
 
         if (this.batteryActive) {
@@ -488,7 +488,7 @@ BModify._Initialize = function (en, Research) {
             var dmult = 1;
             if (this.depleted || this.pause)
                 dmult = 0;
-            if ((this.id == 2) && mod.research.Has("Regrowth")) dmult = 1;
+            if ((this.id == 2) && Research.Has("Regrowth")) dmult = 1;
             return cps * dmult * Game.magicCpS(this.me.name);
         }
 
@@ -540,19 +540,19 @@ BModify._Initialize = function (en, Research) {
 
             if (me.fortune && Game.Has(me.fortune.name)) yieldmult *= 1.07;
             yieldmult *= (1 + BModify.grandma.grandmaTypes['G' + me.id].buildingBuff());
-            if ((this.id == 2) && mod.research.Has("Regrowth")) {
+            if ((this.id == 2) && Research.Has("Regrowth")) {
                 yieldmult *= 3;
                 if (this.barred > 0) yieldmult *= 12; // secret feature
             }
             yieldmult *= (1 + 0.025 * Game.Objects.Farm.getLumpBuff());
 
             if (me.tieredResearch) {
-                if (mod.research.HasTiered(this.id, 1)) rsmult *= 2;
-                if (mod.research.HasTiered(this.id, 2)) rsmult *= 2;
-                if (mod.research.HasTiered(this.id, 3)) rsmult *= 2;
-                if (mod.research.HasTiered(this.id, 1)) yieldmult *= (2 - 0.05 * this.id);
-                if (mod.research.HasTiered(this.id, 2)) yieldmult *= (2 - 0.05 * this.id);
-                if (mod.research.HasTiered(this.id, 3)) yieldmult *= (2 - 0.05 * this.id);
+                if (Research.HasTiered(this.id, 1)) rsmult *= 2;
+                if (Research.HasTiered(this.id, 2)) rsmult *= 2;
+                if (Research.HasTiered(this.id, 3)) rsmult *= 2;
+                if (Research.HasTiered(this.id, 1)) yieldmult *= (2 - 0.05 * this.id);
+                if (Research.HasTiered(this.id, 2)) yieldmult *= (2 - 0.05 * this.id);
+                if (Research.HasTiered(this.id, 3)) yieldmult *= (2 - 0.05 * this.id);
             }
             if (Game.hasGod) {
                 var godLvl = Game.hasGod('industry');
@@ -601,7 +601,7 @@ BModify._Initialize = function (en, Research) {
                 this.depleted = true;
             } else this.depleted = false;
             this.rsUsed = Math.min(this.rsUsed, this.rsTotal);
-            if ((this.id == 2) && mod.research.Has("Regrowth")) return;
+            if ((this.id == 2) && Research.Has("Regrowth")) return;
             if (this.depleted) return;
             if (this.pause) {
                 var rate = 0.001 * this.decayedFactor()
@@ -790,13 +790,13 @@ BModify._Initialize = function (en, Research) {
             if (Game.drawT % 5 == 0) {
                 this.mbarFull.style.width = Math.max(Math.round((this.availableRes() / this.rsTotal) * 100), 0) + '%';
                 if (this.barred)
-                    if ((this.id == 2) && mod.research.Has("Regrowth")) this.mbar.style.background = 'lightGreen';
+                    if ((this.id == 2) && Research.Has("Regrowth")) this.mbar.style.background = 'lightGreen';
                 this.mbar.style.width = '350px';
                 this.mbarText.innerHTML = Beautify(Math.max((this.availableRes() / this.rsTotal) * 100, 0), 1) + '% left';
                 if (this.depleted) this.mbarInfo.innerHTML = 'This resource has been depleted';
                 else if (this.pause) this.mbarInfo.innerHTML = 'Currently paused';
                 else if (this.barred > 0) this.mbarInfo.innerHTML = 'This resource is under the effects of the Power gate';
-                else if ((this.id == 2) && mod.research.Has("Regrowth")) this.mbarInfo.innerHTML = 'Regrowth is currently active.';
+                else if ((this.id == 2) && Research.Has("Regrowth")) this.mbarInfo.innerHTML = 'Regrowth is currently active.';
                 else this.mbarInfo.innerHTML = 'Depletion rate: -'
                     + Beautify(Math.max(((this.RhpS * this.me.amount * this.decayedFactor()) / this.rsTotal) * 100, 0), 2) + '%/s (-'
                     + Beautify(Math.max(((this.RhpS * this.me.amount * this.decayedFactor()) / this.rsTotal) * 100 * 60, 0), 2) + '%/min)';
@@ -1036,15 +1036,15 @@ BModify._Initialize = function (en, Research) {
 
         // scientist grandmas
         const BaseResearchTime = Game.fps * 60 * 60;
-        var sci = this.newGrandmaType("scientist", "Grandma researchers", (me) => mod.research.Has("Interns"),
+        var sci = this.newGrandmaType("scientist", "Grandma researchers", (me) => Research.Has("Interns"),
             function () { return Math.ceil(grandmaM.maxFree() * 0.2) }, [1, 0, Icons],
-            "You passively gain mod.research.");
+            "You passively gain research.");
         sci.nextResearch = BaseResearchTime;
         sci.update = function () {
             if (this.allocated > 0) {
                 this.nextResearch -= 1;
                 if (this.nextResearch <= 0) {
-                    mod.research.earn(1);
+                    Research.earn(1);
                     this.nextResearch = (BaseResearchTime) / Math.sqrt(this.allocated);
                 }
             }
@@ -1156,7 +1156,7 @@ BModify._Initialize = function (en, Research) {
             l('storage').innerHTML = this.storage + ' ' + (this.storage == 1 ? 'retirement home' : 'retirement homes') + '.';
             l('grandmaReqs').innerHTML = '<span' + (this.me.amount >= this.grandmaReq() ? '' : ' style="color:#777;"') + '>' + this.grandmaReq() + ' grandmas</span>' +
                 '<br/><span' + (Game.cookies >= this.cookiesReq() ? '' : ' style="color:#777;"') + '>' + Beautify(this.cookiesReq()) + ' cookies</span>' +
-                '<br/><span' + (mod.research.research >= this.researchReq() ? '' : ' style="color:#777;"') + '>' + this.researchReq() + ' research</span>';
+                '<br/><span' + (Research.research >= this.researchReq() ? '' : ' style="color:#777;"') + '>' + this.researchReq() + ' research</span>';
 
             if (Game.Has('Bingo center/Research facility')) {
                 l('grandmaAnger').innerHTML = (Game.Has('Elder Covenant')?'Satiated.':'Grandma anger: '+Math.round(this.anger*100)+'%'+
@@ -1170,9 +1170,9 @@ BModify._Initialize = function (en, Research) {
 
         this.upgradeStorage = function () {
             if (this.me.amount < this.grandmaReq()) return;
-            if (mod.research.research < this.researchReq()) return;
+            if (Research.research < this.researchReq()) return;
             if (Game.cookies < this.cookiesReq()) return;
-            mod.research.research -= this.researchReq();
+            Research.research -= this.researchReq();
             Game.Spend(this.cookiesReq());
             this.storage++;
             if (l('storageBuilder')) { var rect = l('storageBuilder').getBounds(); Game.SparkleAt((rect.left + rect.right) / 2, (rect.top + rect.bottom) / 2); }
@@ -1198,9 +1198,9 @@ BModify._Initialize = function (en, Research) {
 
         this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);",
             [
-                'if (mod.mod.research.HasTiered(1, 1)) mult*=1.15;',
-                'if (mod.mod.research.HasTiered(1, 2)) mult*=1.15;',
-                'if (mod.mod.research.HasTiered(1, 3)) mult*=1.15;'
+                'if (mod.Research.HasTiered(1, 1)) mult*=1.15;',
+                'if (mod.Research.HasTiered(1, 2)) mult*=1.15;',
+                'if (mod.Research.HasTiered(1, 3)) mult*=1.15;'
             ]
         )
 
@@ -1226,7 +1226,7 @@ BModify._Initialize = function (en, Research) {
         this.resourceMult = function () {
             var fact = 1.003;
             if (Game.Has("Unshackled idleverses")) fact = 1.004;
-            if (!mod.research.Has("Galactica mindoris")) return 1;
+            if (!Research.Has("Galactica mindoris")) return 1;
             return Math.max(Math.pow(fact, this.me.amount) * this._ifactor(this.me.amount), 1);
         }
 
@@ -1235,7 +1235,7 @@ BModify._Initialize = function (en, Research) {
         )
 
         this.getStat = function () {
-            if (mod.research.Has("Galactica mindoris")) {
+            if (Research.Has("Galactica mindoris")) {
                 l("idleverseStat").innerHTML = "<b>" + loc("Total resource boost provided by") + " " + this.me.amount + " idleverses:</b> "
                     + "x" + Beautify(this.resourceMult(), 3);
             } else l("idleverseStat").innerHTML = "<b>You do not have the Galactica mindoris research upgrade, and are gaining no resource space from idleverses.</b>"
@@ -1243,9 +1243,9 @@ BModify._Initialize = function (en, Research) {
 
         this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);",
             [
-                'if (mod.mod.research.HasTiered(17, 1)) mult*=1.3;',
-                'if (mod.mod.research.HasTiered(17, 2)) mult*=1.3;',
-                'if (mod.mod.research.HasTiered(17, 3)) mult*=1.3;'
+                'if (mod.Research.HasTiered(17, 1)) mult*=1.3;',
+                'if (mod.Research.HasTiered(17, 2)) mult*=1.3;',
+                'if (mod.Research.HasTiered(17, 3)) mult*=1.3;'
             ]
         )
     }

@@ -221,8 +221,8 @@ G._Initialize = function(en, Research) {
     eval("Game.shimmerTypes.golden.spawnConditions="+
         G.me.spawnConditions.toString().replace("Game.Has('Golden switch [off]')","(Game.Has('Golden switch [off]')&&(Game.gsType==0))"));
     
-    eval("Game.CalculateGains="+
-        Game.CalculateGains.toString().replace("Game.Has('Golden switch [off]')","(Game.Has('Golden switch [off]')&&(Game.gsType==0))"));    
+    //eval("Game.CalculateGains="+
+    //    Game.CalculateGains.toString().replace("Game.Has('Golden switch [off]')","(Game.Has('Golden switch [off]')&&(Game.gsType==0))"));    
 
     var funcOn=function(){
         if (Game.gsType==0) {
