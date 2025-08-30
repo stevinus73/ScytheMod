@@ -547,12 +547,12 @@ BModify._Initialize = function (en, Research) {
             yieldmult *= (1 + 0.025 * Game.Objects.Farm.getLumpBuff());
 
             if (me.tieredResearch) {
-                if (Research.HasTiered(this.id, 1)) rsmult *= 2;
-                if (Research.HasTiered(this.id, 2)) rsmult *= 2;
-                if (Research.HasTiered(this.id, 3)) rsmult *= 2;
-                if (Research.HasTiered(this.id, 1)) yieldmult *= (2 - 0.05 * this.id);
-                if (Research.HasTiered(this.id, 2)) yieldmult *= (2 - 0.05 * this.id);
-                if (Research.HasTiered(this.id, 3)) yieldmult *= (2 - 0.05 * this.id);
+                if (mod.research.HasTiered(this.id, 1)) rsmult *= 2;
+                if (mod.research.HasTiered(this.id, 2)) rsmult *= 2;
+                if (mod.research.HasTiered(this.id, 3)) rsmult *= 2;
+                if (mod.research.HasTiered(this.id, 1)) yieldmult *= (2 - 0.05 * this.id);
+                if (mod.research.HasTiered(this.id, 2)) yieldmult *= (2 - 0.05 * this.id);
+                if (mod.research.HasTiered(this.id, 3)) yieldmult *= (2 - 0.05 * this.id);
             }
             if (Game.hasGod) {
                 var godLvl = Game.hasGod('industry');
@@ -1198,9 +1198,9 @@ BModify._Initialize = function (en, Research) {
 
         this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);",
             [
-                'if (Research.HasTiered(1, 1)) mult*=1.15;',
-                'if (Research.HasTiered(1, 2)) mult*=1.15;',
-                'if (Research.HasTiered(1, 3)) mult*=1.15;'
+                'if (mod.research.HasTiered(1, 1)) mult*=1.15;',
+                'if (mod.research.HasTiered(1, 2)) mult*=1.15;',
+                'if (mod.research.HasTiered(1, 3)) mult*=1.15;'
             ]
         )
 
@@ -1243,9 +1243,9 @@ BModify._Initialize = function (en, Research) {
 
         this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);",
             [
-                'if (Research.HasTiered(17, 1)) mult*=1.3;',
-                'if (Research.HasTiered(17, 2)) mult*=1.3;',
-                'if (Research.HasTiered(17, 3)) mult*=1.3;'
+                'if (mod.research.HasTiered(17, 1)) mult*=1.3;',
+                'if (mod.research.HasTiered(17, 2)) mult*=1.3;',
+                'if (mod.research.HasTiered(17, 3)) mult*=1.3;'
             ]
         )
     }

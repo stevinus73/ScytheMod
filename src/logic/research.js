@@ -585,7 +585,7 @@ Research._Initialize = function(en) {
             return Math.min(this.level, 20);
         }
     }
-    Research.HasTiered = function(i, tier) {
+    mod.research.HasTiered = function(i, tier) {
         if (!Game.ObjectsById[i].tieredResearch) return false;
         if (Game.ObjectsById[i].tieredResearch.length < tier) return false;
         return Game.ObjectsById[i].tieredResearch[tier-1].bought;
@@ -807,17 +807,17 @@ Research._Initialize = function(en) {
     //         'if (mod.research.Has("Pure one-hundred-percent gold")) m*=0.95;',
     //     ]
     // )
-    en.addGcHook('gains',function(m){return m*(Research.HasTiered(14, 1)?1.77:1)})
-    en.addGcHook('gains',function(m){return m*(Research.HasTiered(14, 2)?1.57:1)})
-    en.addGcHook('gains',function(m){return m*(Research.HasTiered(14, 3)?1.37:1)})
-    en.addGcHook('gains',function(m){return m*(Research.Has("Hoard of treasure")?1.10:1)})
+    en.addGcHook('gains',function(m){return m*(mod.research.HasTiered(14, 1)?1.77:1)})
+    en.addGcHook('gains',function(m){return m*(mod.research.HasTiered(14, 2)?1.57:1)})
+    en.addGcHook('gains',function(m){return m*(mod.research.HasTiered(14, 3)?1.37:1)})
+    en.addGcHook('gains',function(m){return m*(mod.research.Has("Hoard of treasure")?1.10:1)})
     en.addGcHook('frequency',function(m){return m/(mod.research.Has("Pure one-hundred-percent gold")?1.05:1)})
     en.addGcHook('frequency',function(m){return m/(mod.research.Has("The true purpose of luck")?1.03:1)})
     Game.Objects.Chancemaker.cps = en.injectChain(Game.Objects.Chancemaker.cps, "mult*=Game.magicCpS(me.name);", 
         [
-            'if (Research.HasTiered(14, 1)) mult*=1.77;',
-            'if (Research.HasTiered(14, 2)) mult*=1.57;',
-            'if (Research.HasTiered(14, 3)) mult*=1.37;'
+            'if (mod.research.HasTiered(14, 1)) mult*=1.77;',
+            'if (mod.research.HasTiered(14, 2)) mult*=1.57;',
+            'if (mod.research.HasTiered(14, 3)) mult*=1.37;'
         ]
     )
     buildingTree(15);
