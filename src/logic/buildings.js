@@ -396,10 +396,10 @@ BModify._Initialize = function (en, Research) {
                 +Beautify(Math.round(cost))+' energy</span>');
     }
 
-    eval('Game.crateTooltip='+Game.crateTooltip.toString()
-         .replace(`if (me.priceLumps==0 && cost==0)`,`if (me.priceLumps==0 && cost==0 && !Game.hasEnergyCost(me))`)
-         .replace(`+'</div>';`,`+Game.energyCostTip(me)+'</div>';`)
-         .replace(`(me.pool!='prestige' && me.priceLumps==0)`,`(me.pool!='prestige' && me.priceLumps==0  && !Game.hasEnergyCost(me))`));
+    // eval('Game.crateTooltip='+Game.crateTooltip.toString()
+    //      .replace(`if (me.priceLumps==0 && cost==0)`,`if (me.priceLumps==0 && cost==0 && !Game.hasEnergyCost(me))`)
+    //      .replace(`+'</div>';`,`+Game.energyCostTip(me)+'</div>';`)
+    //      .replace(`(me.pool!='prestige' && me.priceLumps==0)`,`(me.pool!='prestige' && me.priceLumps==0  && !Game.hasEnergyCost(me))`));
 
     Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
         `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
