@@ -102,7 +102,7 @@ BModify._Initialize = function (en, Research) {
     }
 
     BModify.getLoss = function () {
-        consumption = 0;
+        let consumption = 0;
         for (var i in Game.Objects) {
             consumption += Game.Objects[i].baseConsumption * Game.Objects[i].amount * (i == 'Cursor'??this.getCursorDrain())
                 * (Game.Has(Game.Objects[i].effTiered) ?? Math.pow(0.96, Game.getTieredUpgradesTotal(Game.Objects[i])));
