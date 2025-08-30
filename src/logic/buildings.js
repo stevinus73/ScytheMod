@@ -1198,9 +1198,9 @@ BModify._Initialize = function (en, Research) {
 
         this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);",
             [
-                'if (mod.Research.HasTiered(1, 1)) mult*=1.15;',
-                'if (mod.Research.HasTiered(1, 2)) mult*=1.15;',
-                'if (mod.Research.HasTiered(1, 3)) mult*=1.15;'
+                'if (Research.HasTiered(1, 1)) mult*=1.15;',
+                'if (Research.HasTiered(1, 2)) mult*=1.15;',
+                'if (Research.HasTiered(1, 3)) mult*=1.15;'
             ]
         )
 
