@@ -396,10 +396,10 @@ BModify._Initialize = function (en, Research) {
                 +Beautify(Math.round(cost))+' energy</span>');
     }
 
-    // eval('Game.crateTooltip='+Game.crateTooltip.toString()
-    //      .replace(`if (me.priceLumps==0 && cost==0)`,`if (me.priceLumps==0 && cost==0 && !Game.hasEnergyCost(me))`)
-    //      .replace(`+'</div>';`,`+Game.energyCostTip(me)+'</div>';`)
-    //      .replace(`(me.pool!='prestige' && me.priceLumps==0)`,`(me.pool!='prestige' && me.priceLumps==0  && !Game.hasEnergyCost(me))`));
+    eval('Game.crateTooltip='+Game.crateTooltip.toString()
+         .replace(`if (me.priceLumps==0 && cost==0)`,`if (me.priceLumps==0 && cost==0 && !Game.hasEnergyCost(me))`)
+         .replace(`+'</div>';`,`+Game.energyCostTip(me)+'</div>';`)
+         .replace(`(me.pool!='prestige' && me.priceLumps==0)`,`(me.pool!='prestige' && me.priceLumps==0  && !Game.hasEnergyCost(me))`));
 
     Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
         `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
@@ -493,10 +493,10 @@ BModify._Initialize = function (en, Research) {
         }
 
         // overwrites vanilla cps function for building
-        // this.me.cps = function (me) {
-        //     me.rsManager.recalculate();
-        //     return me.rsManager.getRawCpS();
-        // };
+        this.me.cps = function (me) {
+            me.rsManager.recalculate();
+            return me.rsManager.getRawCpS();
+        };
 
         this.loadSave = function(str) {
             var sstr = str.split(' ');
@@ -1196,13 +1196,13 @@ BModify._Initialize = function (en, Research) {
             for (var i in grandmaM.grandmaTypes) grandmaM.grandmaTypes[i].load();
         })
 
-        // this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);",
-        //     [
-        //         'if (Research.HasTiered(1, 1)) mult*=1.15;',
-        //         'if (Research.HasTiered(1, 2)) mult*=1.15;',
-        //         'if (Research.HasTiered(1, 3)) mult*=1.15;'
-        //     ]
-        // )
+        this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);",
+            [
+                'if (Research.HasTiered(1, 1)) mult*=1.15;',
+                'if (Research.HasTiered(1, 2)) mult*=1.15;',
+                'if (Research.HasTiered(1, 3)) mult*=1.15;'
+            ]
+        )
 
         Game.registerHook('reset', function (wipe) {
             grandmaM.allocT = 0;
@@ -1241,13 +1241,13 @@ BModify._Initialize = function (en, Research) {
             } else l("idleverseStat").innerHTML = "<b>You do not have the Galactica mindoris research upgrade, and are gaining no resource space from idleverses.</b>"
         }
 
-        // this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);",
-        //     [
-        //         'if (Research.HasTiered(17, 1)) mult*=1.3;',
-        //         'if (Research.HasTiered(17, 2)) mult*=1.3;',
-        //         'if (Research.HasTiered(17, 3)) mult*=1.3;'
-        //     ]
-        // )
+        this.me.cps = en.injectChain(this.me.cps, "mult*=Game.magicCpS(me.name);",
+            [
+                'if (Research.HasTiered(17, 1)) mult*=1.3;',
+                'if (Research.HasTiered(17, 2)) mult*=1.3;',
+                'if (Research.HasTiered(17, 3)) mult*=1.3;'
+            ]
+        )
     }
 
     BModify.Idleverses.prototype.getType = function () {

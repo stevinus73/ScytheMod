@@ -538,7 +538,7 @@ Research._Initialize = function(en) {
     new Research.Tech("Better application forms", "Research costs <b>10%</b> less.", 100, f, f, [2], [9, 1], 0.6, 0); //3
     new Research.Tech("Kitten scientists", "You gain <b>more research</b> the more milk you have.<q>look at meow still talking when there's science to be done</q>", 999, req(() => Game.AchievementsOwned, 500, "achievements"), f, [1], [18, 21], -0.6, 0.4); //4
     // Game.CalculateGains = en.injectCode(Game.CalculateGains, `if (Game.Has('Fortune #103')) catMult*=(1+Game.milkProgress*0.05*milkMult);`,
-    //     `\n\tif (mod.Research.Has('Kitten scientists')) catMult*=(1+Game.milkProgress*0.05*milkMult)`, "after"
+    //     `\n\tif (mod.research.Has('Kitten scientists')) catMult*=(1+Game.milkProgress*0.05*milkMult)`, "after"
     // )
     new Research.Tech("Supercomputers", "Direct research gains <b>+10%</b>. <q>To be fair, they take up a lot of space.</q>", 130, breq('Javascript console', 100), f, [0], [32, 0], -0.15, -0.15); //5
     new Research.Tech("Thinktank", "Direct research gains <b>+10%</b>. <q>Big brains think together!</q>", 200, breq('Cortex baker', 200), f, [5], [34, 0], -0.3, -0.5); // 6
@@ -619,9 +619,9 @@ Research._Initialize = function(en) {
     tieredTreeG(0, 3, "Autoclicker", "Huh, wonder why I never thought of this before.", "Cursors are <b>25%</b> more efficient."); // 3
     Game.Objects.Cursor.cps = en.injectChain(Game.Objects.Cursor.cps, "mult*=Game.eff('cursorCps');",
         [
-            'if (mod.Research.HasTiered(0, 1)) mult*=1.25;',
-            'if (mod.Research.HasTiered(0, 2)) mult*=1.25;',
-            'if (mod.Research.HasTiered(0, 3)) mult*=1.25;'
+            'if (mod.research.HasTiered(0, 1)) mult*=1.25;',
+            'if (mod.research.HasTiered(0, 2)) mult*=1.25;',
+            'if (mod.research.HasTiered(0, 3)) mult*=1.25;'
         ]
     )
     // no need for lump buff
@@ -630,9 +630,9 @@ Research._Initialize = function(en) {
     new Research.Tech("Repeated electrical shock", "Clicking is <b>6%</b> more powerful. <q>Ow. Ow. Ow.</q>", 70, req(() => Game.cookieClicks, 2500, "cookie clicks"), f, [5], [12, 2], 0.6, 0.9); // 6
     Game.mouseCps = en.injectChain(Game.mouseCps, "if (Game.Has('Dragon claw')) mult*=1.03;",
         [
-            'if (mod.Research.Has("Fourth-dimensional workarounds")) mult*=1.06;',
-            'if (mod.Research.Has("Cybernetic fingers")) mult*=1.06;',
-            'if (mod.Research.Has("Repeated electrical shock")) mult*=1.06;'
+            'if (mod.research.Has("Fourth-dimensional workarounds")) mult*=1.06;',
+            'if (mod.research.Has("Cybernetic fingers")) mult*=1.06;',
+            'if (mod.research.Has("Repeated electrical shock")) mult*=1.06;'
         ]
     )
     new Research.Tech("Jitter-click", "Clicking is <b>5%</b> more powerful.", 25, req(() => Game.cookieClicks, 150, "cookie clicks"), f, [0], [11, 0], -0.2, -0.1); // 7
@@ -740,11 +740,11 @@ Research._Initialize = function(en) {
     new Research.Tech("Polytheism", "Decreases worship slot refill time by <b>25%</b>.<q>Worshipping all of your gods at once makes them more willing to cooperate.</q>", 50, hasPantheon, f, [0], [11, 6], 0, 0.5); // 1
     new Research.Tech("Creation star", "All buildings are <b>5%</b> cheaper.<q>Warning: do not touch.</q>", 75, hasPantheon, f, [1], [26, 18], 0.3, 0.8); // 2
     Game.modifyBuildingPrice = en.injectCode(Game.modifyBuildingPrice, "if (building.fortune && Game.Has(building.fortune.name)) price*=0.93;",
-        '\n\tif (mod.Research.Has("Creation star")) price*=0.95;', "after"
+        '\n\tif (mod.research.Has("Creation star")) price*=0.95;', "after"
     )
     new Research.Tech("Holiday coupon", "All upgrades are <b>10%</b> cheaper if a season is currently active.<q>Big discount! You can't miss out!</q>", 75, hasPantheon, f, [1], [25, 18], 0, 0.9); // 3
     Game.Upgrade.prototype.getPrice = en.injectCode(Game.Upgrade.prototype.getPrice, "if (Game.hasBuff('Haggler\'s misery')) price*=1.02;",
-        '\n\tif (mod.Research.Has("Holiday savings") && Game.season!="") price*=0.9;', "after"
+        '\n\tif (mod.research.Has("Holiday savings") && Game.season!="") price*=0.9;', "after"
     )
     Research.numWrinklers = function() {
         var n=0;
@@ -755,7 +755,7 @@ Research._Initialize = function(en) {
     }
     new Research.Tech("Tooth of the wyrm", "Wrath cookies spawn <b>3%</b> more often per wrinkler present.", 75, hasPantheon, f, [1], [21, 19], -0.3, 0.8); // 4
     Game.shimmerTypes.golden.getTimeMod = en.injectCode(Game.shimmerTypes.golden.getTimeMod, "if (Game.Has('Gold hoard')) m=0.01;",
-        '\n\tif (mod.Research.Has("Tooth of the wyrm") && me.wrath) m*=(1-0.03*mod.research.numWrinklers());', "after"
+        '\n\tif (mod.research.Has("Tooth of the wyrm") && me.wrath) m*=(1-0.03*mod.research.numWrinklers());', "after"
     )
     tieredTree(6, 1, "Summoning artifacts", "Mysteriously shiny artifacts that trick people into giving them a handshake, therefore forfeiting their soul to the devils within.") // 5
     tieredTree(6, 2, "Holy light of cookie heaven", "Psst, don't tell people it's just a lightbulb suspended above you with strings.") // 6
@@ -795,29 +795,29 @@ Research._Initialize = function(en) {
     tieredTreeG(14, 3, "The law of large numbers of cookies", "States that the more cookies you have, the more luck you're bound to get.", "Chancemakers are <b>37%</b> more efficient. Golden cookie gains <b>+37%</b>.") // 3
     // Game.shimmerTypes.golden.popFunc = en.injectChain(Game.shimmerTypes.golden.popFunc, "if (Game.Has('Dragon fang')) mult*=1.03;",
     //     [
-    //         'if (mod.Research.HasTiered(14, 1)) mult*=1.77;',
-    //         'if (mod.Research.HasTiered(14, 2)) mult*=1.57;',
-    //         'if (mod.Research.HasTiered(14, 3)) mult*=1.37;',
-    //         'if (mod.Research.Has("Hoard of treasure")) mult*=2;',
-    //         'if (mod.Research.Has("The true purpose of luck")) mult*=2;'
+    //         'if (mod.research.HasTiered(14, 1)) mult*=1.77;',
+    //         'if (mod.research.HasTiered(14, 2)) mult*=1.57;',
+    //         'if (mod.research.HasTiered(14, 3)) mult*=1.37;',
+    //         'if (mod.research.Has("Hoard of treasure")) mult*=2;',
+    //         'if (mod.research.Has("The true purpose of luck")) mult*=2;'
     //     ]
     // )
     // Game.shimmerTypes.golden.getTimeMod = en.injectChain(Game.shimmerTypes.golden.getTimeMod, "if (Game.Has('Green yeast digestives')) m*=0.99;",
     //     [
-    //         'if (mod.Research.Has("Pure one-hundred-percent gold")) m*=0.95;',
+    //         'if (mod.research.Has("Pure one-hundred-percent gold")) m*=0.95;',
     //     ]
     // )
-    en.addGcHook('gains',function(m){return m*(mod.Research.HasTiered(14, 1)?1.77:1)})
-    en.addGcHook('gains',function(m){return m*(mod.Research.HasTiered(14, 2)?1.57:1)})
-    en.addGcHook('gains',function(m){return m*(mod.Research.HasTiered(14, 3)?1.37:1)})
-    en.addGcHook('gains',function(m){return m*(mod.Research.Has("Hoard of treasure")?1.10:1)})
-    en.addGcHook('frequency',function(m){return m/(mod.Research.Has("Pure one-hundred-percent gold")?1.05:1)})
-    en.addGcHook('frequency',function(m){return m/(mod.Research.Has("The true purpose of luck")?1.03:1)})
+    en.addGcHook('gains',function(m){return m*(Research.HasTiered(14, 1)?1.77:1)})
+    en.addGcHook('gains',function(m){return m*(Research.HasTiered(14, 2)?1.57:1)})
+    en.addGcHook('gains',function(m){return m*(Research.HasTiered(14, 3)?1.37:1)})
+    en.addGcHook('gains',function(m){return m*(Research.Has("Hoard of treasure")?1.10:1)})
+    en.addGcHook('frequency',function(m){return m/(mod.research.Has("Pure one-hundred-percent gold")?1.05:1)})
+    en.addGcHook('frequency',function(m){return m/(mod.research.Has("The true purpose of luck")?1.03:1)})
     Game.Objects.Chancemaker.cps = en.injectChain(Game.Objects.Chancemaker.cps, "mult*=Game.magicCpS(me.name);", 
         [
-            'if (mod.Research.HasTiered(14, 1)) mult*=1.77;',
-            'if (mod.Research.HasTiered(14, 2)) mult*=1.57;',
-            'if (mod.Research.HasTiered(14, 3)) mult*=1.37;'
+            'if (Research.HasTiered(14, 1)) mult*=1.77;',
+            'if (Research.HasTiered(14, 2)) mult*=1.57;',
+            'if (Research.HasTiered(14, 3)) mult*=1.37;'
         ]
     )
     buildingTree(15);
