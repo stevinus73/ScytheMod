@@ -1134,13 +1134,13 @@ BModify._Initialize = function (en, Research) {
             else return Math.floor(3*this.anger);
         }
 
-        Game.UpdateGrandmapocalyse = en.injectCode(Game.UpdateGrandmapocalyse,
+        Game.UpdateGrandmapocalypse = en.injectCode(Game.UpdateGrandmapocalypse,
             "Math.random()<0.001 && Game.elderWrath<Game.Has('One mind')+Game.Has('Communal brainsweep')+Game.Has('Elder Pact')",
             "Math.random()<0.02 && Game.elderWrath<mod.bModify.grandma.angerToWrath()",
             "replace"
         )
 
-        Game.UpdateGrandmapocalyse = en.injectCode(Game.UpdateGrandmapocalyse,
+        Game.UpdateGrandmapocalypse = en.injectCode(Game.UpdateGrandmapocalypse,
             "Game.Has('One mind') && Game.elderWrath==0",
             "false",
             "replace"
