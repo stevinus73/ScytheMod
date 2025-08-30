@@ -112,7 +112,7 @@ BModify._Initialize = function (en, Research) {
         if (Game.Has("Underworld ovens")) consumption *= 0.98;
         if (Game.Has("Exotic nuts")) consumption *= 0.98;
         if (Game.Has("Arcane sugar")) consumption *= 0.98;
-        if (speed >= 3) consumption *= speed;
+        if (this.speed >= 3) consumption *= this.speed;
         return Math.round((consumption + Number.EPSILON) * 1000) / 1000;
     }
 
