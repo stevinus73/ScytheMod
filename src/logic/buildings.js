@@ -223,8 +223,8 @@ BModify._Initialize = function (en, Research) {
         if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
         if ((Math.random() < vproc) && Game.Has('Voltage switch [on]')) {
             Game.gainBuff('volt surge',Math.ceil(24*effectDurMod),1);
-            this.drawEnergyParticles(5);
-        } else this.drawEnergyParticles(1);
+            //this.drawEnergyParticles(5);
+        } //else this.drawEnergyParticles(1);
     }
 
     BModify.getRawStress = function () {
@@ -514,10 +514,10 @@ BModify._Initialize = function (en, Research) {
                 +Beautify(Math.round(cost))+' energy</span>');
     }
 
-    // eval('Game.crateTooltip='+Game.crateTooltip.toString()
-    //      .replace(`if (me.priceLumps==0 && cost==0)`,`if (me.priceLumps==0 && cost==0 && !Game.hasEnergyCost(me))`)
-    //      .replace(`+'</div>';`,`+Game.energyCostTip(me)+'</div>';`)
-    //      .replace(`(me.pool!='prestige' && me.priceLumps==0)`,`(me.pool!='prestige' && me.priceLumps==0  && !Game.hasEnergyCost(me))`));
+    eval('Game.crateTooltip='+Game.crateTooltip.toString()
+         .replace(`if (me.priceLumps==0 && cost==0)`,`if (me.priceLumps==0 && cost==0 && !Game.hasEnergyCost(me))`)
+         .replace(`+'</div>';`,`+Game.energyCostTip(me)+'</div>';`)
+         .replace(`(me.pool!='prestige' && me.priceLumps==0)`,`(me.pool!='prestige' && me.priceLumps==0  && !Game.hasEnergyCost(me))`));
 
     Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
         `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
@@ -1038,7 +1038,7 @@ BModify._Initialize = function (en, Research) {
         Game.Upgrades['Elder Pledge'].buyFunction=function(){
             Game.elderWrath=0;
             BModify.grandma.anger=Math.max(0,BModify.grandma.anger-0.22);
-            BModify.energy-=Game.energyCost('Elder Pledge');
+            BModify.energy-=Game.energyCost(Game.Upgrades['Elder Pledge']);
             Game.pledges++;
             Game.pledgeT=Game.getPledgeDuration();
             Game.Lock('Elder Covenant');
@@ -1048,7 +1048,7 @@ BModify._Initialize = function (en, Research) {
 
         Game.Upgrades['Elder Covenant'].canBuyFunc=function(){return BModify.energy>=Game.energyCost(this) && Game.cookies>=this.getPrice() && Game.pledgeT<=0};
         Game.Upgrades['Elder Covenant'].buyFunction=function(){
-            BModify.energy-=Game.energyCost('Elder Covenant');
+            BModify.energy-=Game.energyCost(Game.Upgrades['Elder Covenant']);
             Game.Lock('Revoke Elder Covenant');
             Game.Unlock('Revoke Elder Covenant');
             Game.Lock('Elder Pledge');
@@ -1243,7 +1243,7 @@ BModify._Initialize = function (en, Research) {
 
 
             if (Math.random()<=0.0003) {
-                this.anger+=0.05*/*0.0005**/Math.sqrt(this.allocT)*(Game.Has('Elder Pledge')?0.3:1);
+                this.anger+=0.05*Math.sqrt(this.allocT)*(Game.Has('Elder Pledge')?0.3:1); // should be 0.0005
                 this.anger=Math.min(this.anger, this.angerCap());
             }
         }
