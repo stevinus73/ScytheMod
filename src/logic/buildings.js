@@ -1293,7 +1293,7 @@ BModify._Initialize = function (en, Research) {
 
             if (Game.Has('Bingo center/Research facility')) {
                 l('grandmaAnger').innerHTML = '<b>Grandma anger: '+Math.round(this.anger*100)+'%'+
-                    (t(his.anger>0.2)?', resulting in a CpS decrease of '+Math.round(this.cpsSuckedFromAnger()*100)+'%':'')+'</b>';
+                    ((this.anger>0.2)?', resulting in a CpS decrease of '+Math.round(this.cpsSuckedFromAnger()*100)+'%':'')+'</b>';
             }
         }
 
