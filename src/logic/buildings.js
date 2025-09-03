@@ -219,6 +219,7 @@ BModify._Initialize = function (en, Research) {
 
     BModify.gainEnergy = function (en, pcMax, vproc) {
         var mult = this.getGainMultiplier();
+        mult *= (1 + Game.Has("Volted bolts")) * (1 + Game.Has("Supercapacitor") * (1 + Game.Has("Quantum charge")));
         this.energy += (en * mult + pcMax * this.maxEnergy);
         if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
         if ((Math.random() < vproc) && Game.Has('Voltage switch [on]')) {
@@ -502,11 +503,18 @@ BModify._Initialize = function (en, Research) {
     en.ue.addUpgrade('Battery tower', expstr + '<q>Inspired by Universal Paperclips... again? This is lame.</q>', 1e5,
         [0, 5, Icons], order, { unlockAt: 1e5 });
     en.ue.addUpgrade('Lightning jar', expstr + '<q>Now you can catch a lightning bolt!</q>', 1e11,
-        [0, 6, Icons], order, { unlockAt: 1e8 });
+        [0, 5, Icons], order, { unlockAt: 1e8 });
     en.ue.addUpgrade('Pocket power dimension', expstr + '<q>A dimension completely filled to the brim with energy and paperclips.</q>', 1e14,
-        [0, 6, Icons], order, { unlockAt: 1e14 });
+        [0, 5, Icons], order, { unlockAt: 1e14 });
     en.ue.addUpgrade('Save expander', expstr + '<q>By the way, I\'m not optimizing the mod\'s savefile anytime soon.</q>', 1e17,
-        [0, 6, Icons], order, { unlockAt: 1e20 });
+        [0, 5, Icons], order, { unlockAt: 1e20 });
+    var bufstr = 'Non-passive energy gains <b>doubled</b>.';
+    en.ue.addUpgrade('Volted bolts', bufstr + '<q>Better than bolted volts, to be sure.</q>', 3e16,
+        [0, 6, Icons], order, { unlockAt: 1e15 });
+    en.ue.addUpgrade('Supercapacitor', bufstr + '<q>Forget superconductors; this is where it\'s at!</q>', 5e22,
+        [0, 6, Icons], order, { unlockAt: 1e21 });
+    en.ue.addUpgrade('Quantum charge', bufstr + '<q>Receiving quanta packets just like in the 700\'s BCE.</q>', 11e28,
+        [0, 6, Icons], order, { unlockAt: 1e27 });
 
     Game.energyCostTip = function(me) {
         let cost=Game.energyCost(up.name);
