@@ -1035,7 +1035,7 @@ BModify._Initialize = function (en, Research) {
              .replaceAll("Game.Lock('Elder Pledge');","Game.Lock('Elder Pledge');Game.Lock('Elder Covenant');")
              .replaceAll("Game.Unlock('Elder Pledge');","Game.Unlock('Elder Pledge');Game.Unlock('Elder Covenant');"));
         Game.Upgrades['Elder Pledge'].canBuyFunc=function(){return BModify.energy>=Game.energyCost(this) && Game.cookies>=this.getPrice()};
-        Game.Upgrades['Elder Pledge'].buyFunc=function(){
+        Game.Upgrades['Elder Pledge'].buyFunction=function(){
             Game.elderWrath=0;
             BModify.grandma.anger=Math.max(0,BModify.grandma.anger-0.22);
             BModify.energy-=Game.energyCost('Elder Pledge');
@@ -1047,7 +1047,7 @@ BModify._Initialize = function (en, Research) {
         }
 
         Game.Upgrades['Elder Covenant'].canBuyFunc=function(){return BModify.energy>=Game.energyCost(this) && Game.cookies>=this.getPrice() && Game.pledgeT<=0};
-        Game.Upgrades['Elder Covenant'].buyFunc=function(){
+        Game.Upgrades['Elder Covenant'].buyFunction=function(){
             BModify.energy-=Game.energyCost('Elder Covenant');
             Game.Lock('Revoke Elder Covenant');
             Game.Unlock('Revoke Elder Covenant');
