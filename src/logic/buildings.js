@@ -1243,8 +1243,8 @@ BModify._Initialize = function (en, Research) {
 
 
             if (Math.random()<=0.0003) {
-                this.anger+=0.0005*Math.sqrt(this.allocT)*(Game.Has('Elder Pledge')?0.3:1);
-                this.anger=Math.max(this.anger, this.angerCap());
+                this.anger+=0.05*/*0.0005**/Math.sqrt(this.allocT)*(Game.Has('Elder Pledge')?0.3:1);
+                this.anger=Math.min(this.anger, this.angerCap());
             }
         }
 
