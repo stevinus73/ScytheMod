@@ -389,7 +389,7 @@ Clicks._Initialize = function(en, Research) {
             };
         });
 
-    Game.dragonAuras[12].desc="Wrath cookies may trigger a <b>Dragon's Eye</b>.";Cursed finger
+    Game.dragonAuras[12].desc="Wrath cookies may trigger a <b>Dragon's Eye</b>.";
     Game.dragonLevels[15].action="Train Unholy Dominion<br><small>Aura: wrath cookies may trigger a Dragon's Eye</small>";
 
     eval('Game.shimmerTypes.golden.popFunc='+Game.shimmerTypes.golden.popFunc.toString()
