@@ -503,7 +503,7 @@ General._Initialize = function(en, Research) {
     // DRAGON (change icons when)
     eval('Game.DrawBackground='+Game.DrawBackground.toString()
          .replace("if (Game.hasBuff('Dragonflight') || Game.hasBuff('Dragon Harvest')) ",
-                  "if (Game.hasBuff('Dragonflight') || Game.hasBuff('Dragon Harvest') || Game.hasBuff('Dragon Energy') || Game.hasBuff('Dragon\'s Eye')) "))
+                  "if (Game.hasBuff('Dragonflight') || Game.hasBuff('Dragon Harvest') || Game.hasBuff('Dragon Energy') || Game.hasBuff(`Dragon's Eye`)) "))
 
     // PRESTIGE (written through the magic of "hope for the best" maths)
     Game.lastHcFactor=3;
