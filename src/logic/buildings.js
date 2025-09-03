@@ -39,7 +39,10 @@ BModify._Initialize = function (en, Research) {
         [14, 5], "Just wrong", {});
     en.ae.addAchievement("Through the fourth wall", "Maintain a speed of <b>x50</b> or higher for <b>30 minutes</b> while having an energy consumption of at least <b>40M/sec</b>.",
         [14, 5], "Third-party", {pool: 'shadow'});
-
+    en.ae.addAchievement("Volted", "Have an energy of at least <b>5 million</b>.",
+        [0, 5, Icons], "Infinity and beyond", {});
+    en.ae.addAchievement("Discharge", "Have an energy of at least <b>60 millon</b>.",
+        [0, 5, Icons], "Volted", {});
     en.newVar('rsData', 'string');
 
     BModify.energy = 0;
@@ -75,7 +78,7 @@ BModify._Initialize = function (en, Research) {
         'Chancemaker': 110,
         'Fractal engine': 90,
         'Javascript console': 170, //300,
-        'Idleverse': 500, //500,
+        'Idleverse': 600, //500,
         'Cortex baker': 600, //1000,
         'You': 800, //1700 
     }
@@ -83,21 +86,96 @@ BModify._Initialize = function (en, Research) {
         Game.Objects[i].baseConsumption = 0.1 * (bscale[i] ? bscale[i] : 1) * (Game.Objects[i].id + 1); //0.1 * Math.round(Math.pow(2.3, Game.Objects[i].id) * (Game.Objects[i].id + 1));
     }
 
-    // Game.Draw = en.injectCode(Game.Draw, `l('cookies').innerHTML=str;`,
-    //     `str=str+mod.bModify.getEnergyDisplay();`,
-    //     "before");
+    new Game.buffType('volt surge',function(time,pow)
+        {
+            return {
+                name:'Voltage surge',
+                desc:"Max energy x4 for "+Game.sayTime(time*Game.fps,-1)+"!",
+                icon:[0,5,Icons], // change to buff style when
+                time:time*Game.fps,
+                power:pow,
+                add:true,
+                aura:1
+            };
+        });
 
-    // BModify.getEnergyDisplay = function () {
-    //     return '<div style="font:14px sans-serif;display:flex;align-items:center;justify-content:center;">'
-    //         + '<div class="icon" style="transform:scale(0.9);' + writeIcon([0, 4, Icons]) + '"></div>'
-    //         + 'Energy: ' + Beautify(Math.ceil(this.energy)) + '/' + Beautify(this.maxEnergy) + '</div>';
-    // }
+    new Game.buffType('outage',function(time,pow)
+        {
+            return {
+                name:'Blackout',
+                desc:"Energy production nullified for "+Game.sayTime(time*Game.fps,-1)+"!",
+                icon:[0,5,Icons], // change to debuff style when
+                time:time*Game.fps,
+                power:pow,
+                add:true,
+                aura:2
+            };
+        });
+
+    // havent figured this one out yet
+    new Game.buffType('para',function(time,pow)
+        {
+            return {
+                name:'Paralysis',
+                desc:"? for "+Game.sayTime(time*Game.fps,-1)+"!",
+                icon:[0,5,Icons], // change to debuff style when
+                time:time*Game.fps,
+                power:pow,
+                add:true,
+                aura:2
+            };
+        });
+
+    new Game.buffType('dragon energy',function(time,pow)
+        {
+            return {
+                name:'Dragon Energy',
+                desc:"Your cookie production gains power from your energy!",
+                icon:[0,5,Icons],
+                time:time*Game.fps,
+                power:pow,
+                add:true,
+                aura:1
+            };
+        });
+
+
+    Game.dragonAuras[6].desc="Golden cookies may trigger <b>Dragon Energy</b>."+
+            "<br>Energy production <b>+15%</b>.<br>Upgrades are <b>2%</b> cheaper.";
+    Game.dragonLevels[9].action="Train Master of the Armory<br><small>Aura: golden cookies may trigger Dragon Energy</small>";
+
+    eval('Game.shimmerTypes.golden.popFunc='+Game.shimmerTypes.golden.popFunc.toString()
+         .replace(`if (Math.random()<Game.auraMult('Dragonflight')) list.push('dragonflight');`,
+                  `if (Math.random()<Game.auraMult('Dragonflight')) list.push('dragonflight');`
+                  +`\n\t\tif (Math.random()<Game.auraMult('Master of the Armory')) list.push('dragon energy');`))
+
+    Game.goldenCookieChoices.push("Dragon Energy", "dragon energy");
+
+    // switches! (yes, we will need to add better icons... again.)
+    en.ue.addUpgrade('Voltage switch [on]', 'The switch is currently giving <b>+70%</b> max energy and <b>-30%</b> stress buildup, '
+                     +'in exchange for <b>halved</b> energy production; gaining energy may also form voltage surges.'
+                     +'<br>Turning it off will revert those effects.<br>Cost is equal to 4 hours of highest raw production.',
+                     1, [0,5,Icons], 5000, {
+                         pool: 'toggle',
+                         toggleInto: 'Voltage switch [off]',
+                         priceFunc: function(){return Game.cookiesPsRawHighest*60*60*4;}
+                     })
+
+    en.ue.addUpgrade('Voltage switch [off]', 'Turning this on will give <b>+70%</b> max energy and <b>-30%</b> stress buildup, '
+                     +'in exchange for <b>halved</b> energy production; gaining energy may also form voltage surges.'
+                     +'<br>Cost is equal to 4 hours of highest raw production.',
+                     1, [0,5,Icons], 5000, {
+                         pool: 'toggle',
+                         toggleInto: 'Voltage switch [on]',
+                         priceFunc: function(){return Game.cookiesPsRawHighest*60*60*4;}
+                     })
 
     BModify.getGainMultiplier = function () {
         var mult = 1;
         for (var i in Game.Objects) {
             if (Game.Has(Game.Objects[i].energyTiered)) mult *= 1.33;
         }
+        mult *= (1 + 0.15 * Game.auraMult('Master of the Armory'));
         return Math.round((mult + Number.EPSILON) * 100) / 100;
     }
 
@@ -133,20 +211,31 @@ BModify._Initialize = function (en, Research) {
         return Math.round(rateNum);
     }
 
-    BModify.gainEnergy = function (en, pcMax) {
+    BModify.gainEnergy = function (en, pcMax, vproc) {
         var mult = this.getGainMultiplier();
         this.energy += (en * mult + pcMax * this.maxEnergy);
         if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
+        if ((Math.random() < vproc) && Game.Has('Voltage switch [on]')) {
+            Game.gainBuff('volt surge',Math.ceil(24*effectDurMod),1);
+            this.drawEnergyParticles(5);
+        } else this.drawEnergyParticles(1);
     }
 
-
-
+    BModify.getRawStress = function () {
+        return Math.max(Math.pow(0.5, this.stress), 0.00001);
+    }
     BModify.energyCalc = function () {
+        if (Research.Has('Voltage switch')) Game.Unlock('Voltage switch [off]');
+        else {Game.Lock('Voltage switch [off]'); Game.Lock('Voltage switch [on]');}
         this.consumption = this.getLoss();
 
         this.production = this.powerPlants;
         if (this.batteryMustRefill) this.production *= 0.7;
         this.production *= this.getGainMultiplier();
+        if (Game.Has('Voltage switch [on]')) this.production *= 0.5;
+        this.production *= this.getRawStress();
+
+        if (Game.hasBuff('Blackout')) this.production = 0;
 
         this.baseEfficiency = (this.consumption > 0 ? this.production / this.consumption : 0);
         if (this.energy > 0 || this.batteryPercent > 0) this.baseEfficiency = 1;
@@ -158,6 +247,8 @@ BModify._Initialize = function (en, Research) {
         this.maxEnergyUp.forEach((up) => {
             if (Game.Has(up)) this.maxEnergy *= 10;
         })
+        if (Game.Has('Voltage switch [on]')) this.maxEnergy *= 1.7;
+        if (Game.hasBuff('Voltage surge')) this.maxEnergy *= 4;
 
 
         if (this.batteryMustRefill) {
@@ -184,6 +275,9 @@ BModify._Initialize = function (en, Research) {
         if (this.trackAch[2] > 15*60) Game.Win("Infinity and beyond");
         if (this.trackAch[3] > 30*60) Game.Win("Through the fourth wall");
 
+        if (this.energy >= 5000000) Game.Win("Volted");
+        if (this.energy >= 60000000) Game.Win("Discharge");
+
         // speed
         if (this.efficiency >= 1 && this.consumption > 5) {
             this.nextInc -= 1;
@@ -197,6 +291,18 @@ BModify._Initialize = function (en, Research) {
         }
 
         this.drawP();
+
+        // stress
+    }
+
+    // hopefully this works
+    BModify.drawEnergyParticles = function(num) {
+        for (let i=0; i<num; i++) {
+            let dx = 2*Math.random()-1;
+            let dy = Math.sqrt(1-dx*dx);
+            let part = Game.particleAdd(Game.mouseX,Game.mouseY,dx*3,dy*3,2,1,2,Icons);
+            part.picPos = [0, 5];
+        }
     }
 
     this.ppBSAmnt = 1;
@@ -332,7 +438,7 @@ BModify._Initialize = function (en, Research) {
     function EffTiered(bid, name, desc) {
         desc = cfl(Game.ObjectsById[bid].plural) + " lose <b>4%</b> (multiplicative) energy consumption per tiered upgrade bought. <q>" + desc + "</q>";
 
-        en.ue.addUpgrade(name, desc, Game.Tiers['Efficentia'].price * Game.ObjectsById[bid].basePrice * (bid + 1),
+        en.ue.addUpgrade(name, desc, Game.Tiers['Efficentia'].price * Game.ObjectsById[bid].basePrice * (bid*0.5 + 1),
             Game.GetIcon(Game.ObjectsById[bid].name, 'Efficentia'), order, { tier: 'Efficentia' });
         Game.ObjectsById[bid].effTiered = name;
     }
@@ -373,6 +479,12 @@ BModify._Initialize = function (en, Research) {
             +'<br>Once speed reaches <b>x3</b>, it will also affect energy consumption.'
             +`</div>`},"speedTip");
 
+    en.newInfoPanel("stressDisp", [3,5,Icons], function(){
+        return `<div class="prompt" style="min-width:400px;text-align:center;font-size:11px;margin:8px 0px;"><h3>Stress</h3><div class="line"></div>`
+            +'<b>Stress</b> accumulates over time and lowers CpS.'
+            +'<br>It grows far faster when efficiency is below 100%.'
+            +`</div>`},"stressTip");
+
     en.newInfoPanel("batteryDisp", [3,4,Icons], function(){
         return `<div class="prompt" style="min-width:400px;text-align:center;font-size:11px;margin:8px 0px;"><h3>Nucleonic battery</h3><div class="line"></div>`
             +'This is your <b>battery</b>. It slowly charges energy over time.'
@@ -382,13 +494,13 @@ BModify._Initialize = function (en, Research) {
     var expstr = 'Maximum energy multiplied by <b>10</b>.';
     BModify.maxEnergyUp = ['Battery tower', 'Lightning jar', 'Pocket power dimension', 'Save expander'];
     en.ue.addUpgrade('Battery tower', expstr + '<q>Inspired by Universal Paperclips... again? This is lame.</q>', 1e5,
-        [0, 4, Icons], order, { unlockAt: 1e5 });
+        [0, 5, Icons], order, { unlockAt: 1e5 });
     en.ue.addUpgrade('Lightning jar', expstr + '<q>Now you can catch a lightning bolt!</q>', 1e11,
-        [0, 4, Icons], order, { unlockAt: 1e8 });
+        [0, 6, Icons], order, { unlockAt: 1e8 });
     en.ue.addUpgrade('Pocket power dimension', expstr + '<q>A dimension completely filled to the brim with energy and paperclips.</q>', 1e14,
-        [0, 4, Icons], order, { unlockAt: 1e14 });
+        [0, 6, Icons], order, { unlockAt: 1e14 });
     en.ue.addUpgrade('Save expander', expstr + '<q>By the way, I\'m not optimizing the mod\'s savefile anytime soon.</q>', 1e17,
-        [0, 4, Icons], order, { unlockAt: 1e20 });
+        [0, 6, Icons], order, { unlockAt: 1e20 });
 
     Game.energyCostTip = function(me) {
         let cost=Game.energyCost(up.name);
@@ -396,10 +508,10 @@ BModify._Initialize = function (en, Research) {
                 +Beautify(Math.round(cost))+' energy</span>');
     }
 
-    eval('Game.crateTooltip='+Game.crateTooltip.toString()
-         .replace(`if (me.priceLumps==0 && cost==0)`,`if (me.priceLumps==0 && cost==0 && !Game.hasEnergyCost(me))`)
-         .replace(`+'</div>';`,`+Game.energyCostTip(me)+'</div>';`)
-         .replace(`(me.pool!='prestige' && me.priceLumps==0)`,`(me.pool!='prestige' && me.priceLumps==0  && !Game.hasEnergyCost(me))`));
+    // eval('Game.crateTooltip='+Game.crateTooltip.toString()
+    //      .replace(`if (me.priceLumps==0 && cost==0)`,`if (me.priceLumps==0 && cost==0 && !Game.hasEnergyCost(me))`)
+    //      .replace(`+'</div>';`,`+Game.energyCostTip(me)+'</div>';`)
+    //      .replace(`(me.pool!='prestige' && me.priceLumps==0)`,`(me.pool!='prestige' && me.priceLumps==0  && !Game.hasEnergyCost(me))`));
 
     Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
         `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
@@ -409,10 +521,14 @@ BModify._Initialize = function (en, Research) {
         `\n\t\t\t\t'<div class="listing"><b>Production per second:</b> '+Beautify(mod.bModify.production,1)+'</div>'+`, "after"
     )
 
-    Game.ClickCookie = en.injectCode(Game.ClickCookie, "Game.loseShimmeringVeil('click');", "mod.bModify.gainEnergy(10,0);", "after");
+    Game.ClickCookie = en.injectCode(Game.ClickCookie, "Game.loseShimmeringVeil('click');", "mod.bModify.gainEnergy(10,0,0.003);", "after");
     eval('Game.shimmerTypes.golden.popFunc=' + Game.shimmerTypes.golden.popFunc.toString().replace("var buff=0;",
-        "var buff=0; \n\t\tmod.bModify.gainEnergy((me.spawnLead?250:30),(me.spawnLead?0.05:0.001));"
+        "var buff=0; \n\t\tmod.bModify.gainEnergy((me.spawnLead?250:30),(me.spawnLead?0.05:0),0.07);"
     ));
+
+    BModify.getDragonEnergyMult = function() {
+        return Math.LN10(Math.max(this.energy/100, 10)) * (this.energy>10000000??(this.energy/10000000))
+    }
 
     // POWER PLANTS
 
@@ -442,6 +558,10 @@ BModify._Initialize = function (en, Research) {
         + '</style>';
     //<div id="buildingBG2" style="position:absolute;left:42px;top:58px;background-position:0px -1152px;opacity:50%;background-image:url('img/buildings.png');width:64px;height:64px;transform:scale(2.625);"></div>
     l("centerArea").insertAdjacentHTML('beforeend', sstr)
+
+    // fierce hoarder
+    Game.dragonAuras[7].desc="Resource depletion <b>-30%</b> (does not affect CpS).<br>All buildings are <b>2% cheaper</b>.";
+    Game.dragonLevels[10].action="Train Fierce Hoarder<br><small><b>Aura: slows all resource depletion without affecting CpS</small>";
 
     BModify.loadRS = function (str) {
         str.split('&').forEach((me, index) => {
@@ -513,6 +633,8 @@ BModify._Initialize = function (en, Research) {
         }
 
         // called once every calculateGains()
+
+        // each tiered upgrade is 1.5x yield, 1.33x rhps
         this.recalculate = function () {
             var me = this.me;
             var rhpsmult = 1;
@@ -520,12 +642,14 @@ BModify._Initialize = function (en, Research) {
             var yieldmult = 1;
             for (var i in me.tieredUpgrades) {
                 if (!Game.Tiers[me.tieredUpgrades[i].tier].special && Game.Has(me.tieredUpgrades[i].name)) {
-                    var tierMult = 2;
+                    var tierRhpsMult = 1.25;
+                    var tierYieldMult = 1.6;
                     if (Game.ascensionMode != 1 && Game.Has(me.unshackleUpgrade) && Game.Has(Game.Tiers[me.tieredUpgrades[i].tier].unshackleUpgrade)) {
-                        tierMult += me.id == 1 ? 0.5 : (20 - me.id) * 0.1;
+                        tierRhpsMult *= me.id == 1 ? 1.25 : 1 + (20 - me.id) * 0.05;
                     }
-                    yieldmult *= tierMult;
-                    rsmult *= 1.2;
+                    rhpsmult *= tierRhpsMult;
+                    yieldmult *= tierYieldMult;
+                    rsmult *= 1.3;
                 }
             }
             rsmult *= BModify.idleverse.resourceMult();
@@ -542,7 +666,7 @@ BModify._Initialize = function (en, Research) {
             yieldmult *= (1 + BModify.grandma.grandmaTypes['G' + me.id].buildingBuff());
             if ((this.id == 2) && Research.Has("Regrowth")) {
                 yieldmult *= 3;
-                if (this.barred > 0) yieldmult *= 12; // secret feature
+                if (this.barred > 0) yieldmult *= 4; // secret feature
             }
             yieldmult *= (1 + 0.025 * Game.Objects.Farm.getLumpBuff());
 
@@ -556,9 +680,9 @@ BModify._Initialize = function (en, Research) {
             }
             if (Game.hasGod) {
                 var godLvl = Game.hasGod('industry');
-                if (godLvl == 1) rhpsmult *= 1.3;
-                if (godLvl == 2) rhpsmult *= 1.2;
-                if (godLvl == 3) rhpsmult *= 1.1;
+                if (godLvl == 1) rhpsmult *= 1.5;
+                if (godLvl == 2) rhpsmult *= 1.3;
+                if (godLvl == 3) rhpsmult *= 1.15;
                 var godLvl = Game.hasGod('creation');
                 if (godLvl == 1) { rhpsmult *= 0.75; yieldmult *= 1.08; }
                 if (godLvl == 2) { rhpsmult *= 0.80; yieldmult *= 1.06; }
@@ -576,7 +700,7 @@ BModify._Initialize = function (en, Research) {
 
         // decay factor applied to rhps
         this.decayedFactor = function () {
-            return Math.pow(0.998, Math.min(this.me.amount, 600));
+            return Math.pow(0.998, Math.min(this.me.amount, 600)) * (1-0.3*Game.auraMult('Fierce Hoarder'));
         }
 
         this.availableRes = function () { return this.rsTotal - this.rsUsed; }
@@ -807,7 +931,8 @@ BModify._Initialize = function (en, Research) {
         for (var i in this.me.tieredUpgrades) {
             if (!Game.Tiers[this.me.tieredUpgrades[i].tier].special) {
                 en.ue.appendToDesc(this.me.tieredUpgrades[i],
-                    "<br>Total " + this.rsNames[0].toLowerCase() + " <b>+20%</b>.");
+                    "<br>Total " + this.rsNames[0].toLowerCase() + " <b>+20%</b>."
+                    + "<br><small>Note: double efficiency means <b>+60%</b> yield and <b>+25%</b> harvest rates.</small>");
             }
         }
     }
@@ -934,7 +1059,7 @@ BModify._Initialize = function (en, Research) {
         en.ue.appendToDesc(Game.Upgrades['Exotic nuts'], '<b>-2%</b> energy consumption.');
         en.ue.appendToDesc(Game.Upgrades['Arcane sugar'], '<b>-2%</b> energy consumption.');
         // sorry
-        en.ue.replaceDescPart(Game.Upgrades['Elder Covenant'], '-5%', '-20%');
+        en.ue.strReplace(Game.Upgrades['Elder Covenant'], '-5%', '-20%');
         eval('Game.CalculateGains='+Game.CalculateGains.toString().replace("if (Game.Has('Elder Covenant')) mult*=0.95;", "if (Game.Has('Elder Covenant')) mult*=0.8;"));
 
         this.newGrandmaType = function (name, lname, reqFunc, maxFunc, sprite, desc) {
@@ -1035,7 +1160,7 @@ BModify._Initialize = function (en, Research) {
         }
 
         // scientist grandmas
-        const BaseResearchTime = Game.fps * 60 * 60;
+        const BaseResearchTime = Game.fps * 60 * 150;
         var sci = this.newGrandmaType("scientist", "Grandma researchers", (me) => Research.Has("Interns"),
             function () { return Math.ceil(grandmaM.maxFree() * 0.2) }, [1, 0, Icons],
             "You passively gain research.");
@@ -1044,7 +1169,7 @@ BModify._Initialize = function (en, Research) {
             if (this.allocated > 0) {
                 this.nextResearch -= 1;
                 if (this.nextResearch <= 0) {
-                    Research.earn(1);
+                    Research.earn(5);
                     this.nextResearch = (BaseResearchTime) / Math.sqrt(this.allocated);
                 }
             }
@@ -1396,6 +1521,7 @@ BModify._Initialize = function (en, Research) {
         BModify.energyUpdate()
         l("energyTip").textContent = en.nelBeautify(Math.ceil(BModify.energy))+'/'+en.nelBeautify(BModify.maxEnergy);
         l("speedTip").textContent = "x"+Beautify(BModify.speed, 2);
+        l("stressTip").textContent = "-"+Beautify(1-BModify.getRawStress(), 3)+"%";
         l("batteryTip").textContent = Beautify(BModify.batteryPercent*100, 1)+"%";
         BModify.rsManagers.forEach(mn => mn.draw())
         //BModify.mine.ores.forEach(mn => mn.draw())
@@ -1422,7 +1548,8 @@ BModify._Initialize = function (en, Research) {
     for (var i in Game.Objects) {
         var me = Game.Objects[i];
         en.addCpsHook(i, () => {
-            return BModify.efficiency * (1 + (Game.Has(me.energyTiered) ? (i == 'Cursor' ? 2 : 3 - 0.1 * me.id) : 1) * (BModify.speed - 1))
+            return BModify.efficiency * (1 + (Game.Has(me.energyTiered) ?? (i == 'Cursor' ? 2 : 3 - 0.1 * me.id))
+                    * (BModify.speed - 1)) * (Game.Has('Dragon Energy') ?? BModify.getDragonEnergyMult())
         });
     }
 

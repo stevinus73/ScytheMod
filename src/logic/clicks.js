@@ -60,6 +60,7 @@ Clicks._Initialize = function(en, Research) {
         if (Game.Has("Big clicks")) maxClicks*=2;
         if (Game.Has("Butterfly")) maxClicks*=2;
         if (Game.Has("Divine wisdom")) maxClicks+=(Game.Has("Omnipotent mouse")?15:10)*this.getMaxPowerClicks();
+        if (Game.Has("Celestial powers")) maxClicks*=1.2;
         this.maxClicks = Math.round(maxClicks);
     }
 
@@ -73,8 +74,8 @@ Clicks._Initialize = function(en, Research) {
         // hidden feature now
         if (Game.Has("Omnipotent mouse") && Game.hasBuff("Celestial energy")) overflowEff*=0.5;
         var clickNum=1+(this.overflow>0?Math.floor(this.overflow*overflowEff):0); 
-        if (Game.hasBuff("Click frenzy")) clickNum*=2.3;
-        if (Game.hasBuff("Dragonflight")) clickNum*=5.5;
+        if (Game.hasBuff("Click frenzy")) clickNum*=4;
+        if (Game.hasBuff("Dragonflight")) clickNum*=6;
         var gz = Game.hasBuff("Devastation");
         if (gz) clickNum*=(1+gz.arg1*0.6);
         if (Game.hasBuff("Celestial energy")) clickNum*=0.3;
@@ -164,6 +165,8 @@ Clicks._Initialize = function(en, Research) {
                 this.nextPowerClick=this.accumulationTime()*Game.fps*60;
             }
         }
+
+        if (Game.hasBuff("Dragon's Eye")) this.clicks=0; // boom!
         this.pcCooldown--;
     }
 
@@ -218,6 +221,7 @@ Clicks._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Celestial powers", "Power clicking the big cookie <b>consumes no clicks</b> and temporarily <b>massively decreases click consumption</b>."
         +'<br>Power click cooldown <b>0.4s &rarr; 0.35s</b>.'
+        +'<br><b>+20%</b> click capacity.'
         +'<q>Essentially makes you a demi-god.</q>',
         tCost(4), [4,2,Icons], pcOrder, {pool: 'prestige', posX: -630 - 40*3, posY: -480 - 215*3, huParents: 
             ['Mystical regeneration']}
@@ -235,7 +239,7 @@ Clicks._Initialize = function(en, Research) {
         +'<li>&bull; Power click cooldown <b>0.35s &rarr; 0.3s</b>.</li>'
         +'<li>&bull; Boosts the special effects of Divine wisdom and Mystical regeneration.</li>'
         +'<li>&bull; Power clicks accumulate <b>1 minute</b> faster.</li></ul>'
-        +'<q>This is the most powerful mouse you\'ve ever seen. It was made in the greatest forges of heaven. Please, we beg of you, use it wisely. (Also, what a mouthful!)',
+        +'<q>This is the most powerful mouse ever to grace the world. It was made in the greatest forges of heaven. Please, we beg of you, use it wisely.',
         tCost(5), [12,0], pcOrder, {pool: 'prestige', posX: -630 - 330, posY: -480 - 550, huParents:
             ['Flare cursor', 'Celestial powers', 'Ultra-adrenaline']}
     )
@@ -273,7 +277,7 @@ Clicks._Initialize = function(en, Research) {
 		});
 
     en.ue.addUpgrade("Enchanted sleighs", "You can <b>perform power clicks on reindeer</b>, making them give <b>five times</b> more cookies."
-        +'<q>Enchanted with the power of heartfelt love, Christmas presents, and pure unadulterated power.</q>',
+        +'<q>Enchanted with heartfelt love, Christmas presents, and pure unadulterated power.</q>',
         5555555, [12,9], pcOrder, {pool: 'prestige', posX: -726, posY: -412, huParents: ['Starsnow', 'Ethereal mouse']}
     )
 
@@ -347,6 +351,63 @@ Clicks._Initialize = function(en, Research) {
         return true;
     }
 
+    Clicks.getDragonsEyeBoost = function() {
+        let boost = 1 + 0.01 * this.clicks;
+        if (Game.hasBuff('Click frenzy')) {
+            Game.killBuff('Click frenzy');
+            boost *= 2.5;
+        }
+        if (Game.hasBuff('Dragonflight')) {
+            Game.killBuff('Dragonflight');
+            boost *= 3;
+        }
+        if (Game.hasBuff('Cursed finger')) {
+            Game.killBuff('Cursed finger');
+            boost *= 6;
+        }
+        if (Game.hasBuff('Wrinkled cursors')) {
+            Game.killBuff('Wrinkled cursors');
+            boost *= 1.2;
+        }
+
+        if (boost>=200) Game.Win('Eye of the forgotten');
+        return Math.round((boost + Number.EPSILON) * 100) / 100;
+    }
+
+    new Game.buffType('dragon eye',function(time,pow)
+        {
+            return {
+                name:'Dragon\'s Eye',
+                desc:"Clicks depleted for "+Game.sayTime(time*Game.fps,-1)+", but cookie production x"+pow+"!",
+                icon:[0,5,Icons], // icon when
+                time:time*Game.fps,
+                power:pow,
+                multCpS:pow,
+                multClick:0, // just in case
+                add:true,
+                aura:1
+            };
+        });
+
+    Game.dragonAuras[12].desc="Wrath cookies may trigger a <b>Dragon's Eye</b>.";Cursed finger
+    Game.dragonLevels[15].action="Train Unholy Dominion<br><small>Aura: wrath cookies may trigger a Dragon's Eye</small>";
+
+    eval('Game.shimmerTypes.golden.popFunc='+Game.shimmerTypes.golden.popFunc.toString()
+         .replace(`if (me.wrath && Math.random()<0.1) list.push('cursed finger');`,
+                  `if (me.wrath && Math.random()<0.1) list.push('cursed finger');`
+                  +`\n\t\tif (me.wrath && Math.random()<0.5*Game.auraMult('Unholy Dominion')) list.push('dragon eye');`))
+    Game.goldenCookieChoices.push("Dragon's Eye", "dragon eye");
+    Game.shimmerTypes.golden.popFunc = en.injectCode(Game.shimmerTypes.golden.popFunc,
+        "else if (choice=='clot')",
+        `else if (choice=='dragon eye'){Game.gainBuff('dragon eye',Math.ceil(14*effectDurMod),mod.clicks.getDragonsEyeBoost());}\n\t\t\t`,
+        "before"
+    )
+
+    // add sprite when
+
+    // also maybe make this achievement a research upgrade?
+    en.ae.addAchievement("Eye of the forgotten", "Obtain a CpS multiplier from <b>Dragon's Eye</b> of at least <b>x200</b>",
+        [3,0,Icons], 'Clickstack', {});
     Clicks.burned = [];
 
     Clicks.WrinklerBurn = function(i) {
@@ -406,10 +467,10 @@ Clicks._Initialize = function(en, Research) {
 		{
 			return {
 				name:'Wrinkled cursors',
-				desc:loc("Each click is 0.3% more powerful per cursor for ",[Game.sayTime(time*Game.fps,-1),Game.sayTime(time*Game.fps,-1)]),
+                desc:loc("Each click is 20% more powerful per wrinkler present for ",[Game.sayTime(time*Game.fps,-1),Game.sayTime(time*Game.fps,-1)]),
 				icon:[12,14],
 				time:time*Game.fps,
-				add:true,
+                add:true,
 				power:pow,
 				multCpS:0,
 				aura:1

@@ -21,11 +21,11 @@ G._Initialize = function(en, Research) {
         "buff=Game.gainBuff('dragonflight',Math.ceil(10*effectDurMod),555*(1+Game.auraMult('Dragon Cursor')*(789/555)));",
         "replace"
     )
-    G.me.popFunc = en.injectCode(G.me.popFunc, 
-        "buff=Game.gainBuff('dragon harvest',Math.ceil(60*effectDurMod),15);",
-        "buff=Game.gainBuff('dragon harvest',Math.ceil(60*effectDurMod),25);",
-        "replace"
-    )
+    // G.me.popFunc = en.injectCode(G.me.popFunc,
+    //     "buff=Game.gainBuff('dragon harvest',Math.ceil(60*effectDurMod),15);",
+    //     "buff=Game.gainBuff('dragon harvest',Math.ceil(60*effectDurMod),25);",
+    //     "replace"
+    // )
     Game.decFtMult=function(){return (Game.Has("Decisive fate")?1.5:1);}
 
     // increase click frenzy and cookie chain/storm chance on first ascend + decisive fate
@@ -100,6 +100,8 @@ G._Initialize = function(en, Research) {
                 power*=Game.hasBuff(Game.goldenCookieBuildingBuffs[i][1]).multCpS;
             }
         }
+        if (Game.hasBuff('Dragon Energy')) power*=mod.bModify.getDragonEnergyMult();
+        if (Game.hasBuff('Dragon\'s Eye')) power*=Game.hasBuff('Dragon\'s Eye').multCpS;
         return power;
     }
 
@@ -108,6 +110,30 @@ G._Initialize = function(en, Research) {
         `else if (choice=='fortune'){var moni=mod.G.fortuneEarn(mult);`
         +`popup='Fortune!<br><small>Found '+loc("+%1!",loc("%1 cookie",LBeautify(moni)))+'</small>';}\n\t\t\t`,
         "before"
+    )
+
+    // G.me.popFunc = en.injectCode(G.me.popFunc,
+    //     "else if (choice=='dragonflight')",
+    //     `else if (choice=='volt surge'){Game.gainBuff('volt surge',Math.ceil(24*effectDurMod),1);}\n\t\t\t`,
+    //     "before"
+    // )
+
+    // G.me.popFunc = en.injectCode(G.me.popFunc,
+    //     "if (Math.random()<0.0001) list.push('blab');",
+    //     `if (Game.Has('Voltage switch [on]') && Math.random()<0.2) list.push('volt surge'); \n\t\t\t`,
+    //     "after"
+    // )
+
+    G.me.popFunc = en.injectCode(G.me.popFunc,
+        "if (me.wrath>0) mult*=1+Game.auraMult('Unholy Dominion')*0.1;",
+        "if (me.wrath>0) mult*=1;",
+        "replace"
+    )
+
+    G.me.popFunc = en.injectCode(G.me.popFunc,
+        "else if (me.wrath==0) mult*=1+Game.auraMult('Ancestral Metamorphosis')*0.1;",
+        "if (me.wrath>0) mult*=1;",
+        "replace"
     )
 
     en.ae.addAchievement("Elder fortune", "Obtain the Fortune effect <b>during an elder frenzy</b>.",
@@ -154,6 +180,11 @@ G._Initialize = function(en, Research) {
         return buff;
     }
 
+    // ancestral metamorphosis
+    Game.dragonAuras[11].desc="Golden cookie gains <b>+0.15%</b> (multiplicative) per alchemy lab.";
+    Game.dragonLevels[14].action="Train Ancestral Metamorphosis<br><small>Aura: golden cookies give more cookies per alchemy lab</small>";
+    en.addGcHook('gains',function(m){return m*(1+Game.auraMult('Ancestral Metamorphosis'))*Math.pow(1.0015, Game.Objects['Alchemy lab'].amount)})
+
     // click frenzy/dragonflight mutual exclusitivity (well, technically not completely mutually exclusive but eh, whatever)
     // anything that was supposed to give click frenzy now gives fortune (fun!)
     // also nerfed dragonflight chances
@@ -181,7 +212,7 @@ G._Initialize = function(en, Research) {
         [12, 0], "True Neverclick", {pool: 'shadow'});
 
     // dragon cursor
-    Game.dragonAuras[2].desc="Click frenzy and Dragonflight are stronger.<br>"+loc("Clicking gains <b>+%1% of your CpS</b>.",5);
+    Game.dragonAuras[2].desc="Click frenzy and Dragonflight are stronger.<br>Clicking gains <b>5% of your CpS</b>.";
     Game.dragonLevels[5].action='Train Dragon Cursor<br><small>Aura: boost to Click frenzy and Dragonflight</small>';
     Game.mouseCps = en.injectCode(Game.mouseCps,
         "mult*=1+Game.auraMult('Dragon Cursor')*0.05;",

@@ -555,7 +555,7 @@ Research._Initialize = function(en) {
     var buildingTree = function(i) {
         var me = Game.ObjectsById[i];
         var hfunction = function() {return (me.amount >= 1) && Research.Has("Research lab")};
-        new Research.Tree(me.dname, [spr_ref[i], 0], hfunction);
+        new Research.Tree(me.dname, [spr_ref[i], 16, Icons], hfunction);
         var btext = me.plural;
         if (i == 0) btext = "cursors and clicking";
         new Research.Tech(me.dname+" research", "Unlocks the research tree for <b>"+btext+"</b>.", 20, f, f, [], [spr_ref[i], 0], 0, 0); //0
@@ -597,15 +597,21 @@ Research._Initialize = function(en) {
             })
         }
     }
+    // energy tree
+    new Research.Tree("Energy research", [0, 5, Icons], function(){return Game.Has('Battery tower');});
+    new Research.Tech("Energy research", "Unlocks the research tree for <b>energy</b>.",
+        4, f, f, [], [10, 14], 0, 0); // 0
+    new Research.Tech("Voltage switch", "Unlocks the <b>voltage switch</b>.<q>Levers. They're fun.</q>",
+        64,f, f, [0], [0, 5, Icons], 0.3, 0.25); // 1
     // gc tree
     new Research.Tree("Golden cookies", [27, 6], function(){return Game.goldenClicks;});
     new Research.Tech("Golden cookies", "Unlocks the research tree for <b>golden cookies</b>.", 
         7, f, f, [], [10, 14], 0, 0); // 0
     new Research.Tech("Hoard of treasure", "Golden cookie gains <b>+10%</b>.", 
         27, req(() => mod.G.fortunesEarned, 3, "Fortunes"), f, [0], [27, 6], 0.3, 0.25); // 1
-    new Research.Tech("The true purpose of luck", "Golden cookie frequency <b>+3%</b>.<q>...is to get more cookies.</b>", 
+    new Research.Tech("The true purpose of luck", "Golden cookie frequency <b>+2%</b>.<q>...is to get more cookies.</b>",
         37, req(() => mod.G.fortunesEarned, 17, "Fortunes"), f, [1], [27, 6], 0.6, 0.35); // 2
-    new Research.Tech("Pure one-hundred-percent gold", "Golden cookie frequency <b>+5%</b>.<q>The purest gold!</q>", 
+    new Research.Tech("Pure one-hundred-percent gold", "Golden cookie frequency <b>+2%</b>.<q>The purest gold!</q>",
         27, f, f, [0], [27, 6], 0, 0.5); // 3
     new Research.Tech("Golden gates", "Golden cookie gains <b>doubled</b>. Each golden cookie effect active makes Fortune <b>50%</b> stronger."+
         "<q>The golden gates of heaven. Make sure the angels don't get mad.</q>",
@@ -811,8 +817,8 @@ Research._Initialize = function(en) {
     en.addGcHook('gains',function(m){return m*(mod.research.HasTiered(14, 2)?1.57:1)})
     en.addGcHook('gains',function(m){return m*(mod.research.HasTiered(14, 3)?1.37:1)})
     en.addGcHook('gains',function(m){return m*(mod.research.Has("Hoard of treasure")?1.10:1)})
-    en.addGcHook('frequency',function(m){return m/(mod.research.Has("Pure one-hundred-percent gold")?1.05:1)})
-    en.addGcHook('frequency',function(m){return m/(mod.research.Has("The true purpose of luck")?1.03:1)})
+    en.addGcHook('frequency',function(m){return m/(mod.research.Has("Pure one-hundred-percent gold")?1.02:1)})
+    en.addGcHook('frequency',function(m){return m/(mod.research.Has("The true purpose of luck")?1.02:1)})
     Game.Objects.Chancemaker.cps = en.injectChain(Game.Objects.Chancemaker.cps, "mult*=Game.magicCpS(me.name);", 
         [
             'if (mod.research.HasTiered(14, 1)) mult*=1.77;',

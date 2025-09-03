@@ -12,16 +12,16 @@ General._Initialize = function(en, Research) {
     function fingersNerf(F) {
         return en.injectMult(F, 
             [["if (Game.Has('Unshackled cursors')) add*=	25;", "if (Game.Has('Unshackled cursors')) add*=	5;"],
-            ["if (Game.Has('Trillion fingers')) add*=		20;", "if (Game.Has('Trillion fingers')) add*=		10;"],
-            ["if (Game.Has('Quadrillion fingers')) add*=	20;", "if (Game.Has('Quadrillion fingers')) add*=	10;"],
-            ["if (Game.Has('Quintillion fingers')) add*=	20;", "if (Game.Has('Quintillion fingers')) add*=	10;"]], "replace");
+            ["if (Game.Has('Trillion fingers')) add*=		20;", "if (Game.Has('Trillion fingers')) add*=		15;"],
+            ["if (Game.Has('Quadrillion fingers')) add*=	20;", "if (Game.Has('Quadrillion fingers')) add*=	15;"],
+            ["if (Game.Has('Quintillion fingers')) add*=	20;", "if (Game.Has('Quintillion fingers')) add*=	15;"]], "replace");
     }
     Game.mouseCps = fingersNerf(Game.mouseCps);
     Game.Objects['Cursor'].cps = fingersNerf(Game.Objects['Cursor'].cps);
     en.ue.strReplace(Game.Upgrades['Unshackled cursors'], "25", "5");
-    en.ue.strReplace(Game.Upgrades['Trillion fingers'], "20", "10");
-    en.ue.strReplace(Game.Upgrades['Quadrillion fingers'], "20", "10");
-    en.ue.strReplace(Game.Upgrades['Quintillion fingers'], "20", "10");
+    en.ue.strReplace(Game.Upgrades['Trillion fingers'], "20", "15");
+    en.ue.strReplace(Game.Upgrades['Quadrillion fingers'], "20", "15");
+    en.ue.strReplace(Game.Upgrades['Quintillion fingers'], "20", "15");
     Game.Upgrades['Thousand fingers'].basePrice /= 25;
     Game.Upgrades['Sextillion fingers'].basePrice *= 10**3;
     Game.Upgrades['Septillion fingers'].basePrice *= 10**6;
@@ -193,6 +193,7 @@ General._Initialize = function(en, Research) {
     General.canShiny = function(){return Research.Has("Shiny cookies") || (Game.ascensionMode==1);}
     General.shinies = []
     General.shinyUps = []
+    General.shinyReqs = {}
     var strCookieProductionMultiplierPlus=loc("Cookie production multiplier <b>+%1%</b>.",'[x]');
 	var getStrCookieProductionMultiplierPlus=function(x)
 	{return strCookieProductionMultiplierPlus.replace('[x]',x);}
@@ -208,11 +209,15 @@ General._Initialize = function(en, Research) {
         return P.shinyPower[this.sPowerCoef()];
     }
 
-    General.newShinyCookie = function(name, desc, price, icon){
+    General.newShinyCookie = function(name, desc, price, icon, other, ach){
         en.ue.addUpgrade(name, desc, price, icon, 10400, {
-            descFunc: function(){return getStrCookieProductionMultiplierPlus(General.shinyPower())+'<q>'+desc+'</q>'}
+            descFunc: function(){return '<div style="font-size:80%;text-align:center;">'
+                +'A shiny cookie. Unlocked upon receiving <b>'+ach+'</b>.</div><div class="line"></div>'
+                +getStrCookieProductionMultiplierPlus(General.shinyPower())
+                +(this.unlocked??' '+other)+'<q>'+desc+'</q>'}
         })
         this.shinies.push(name)
+        this.shinyReqs[name] = ach;
     }
 
     General.newShinyUpgrade = function(obj, name, desc) {
@@ -224,17 +229,42 @@ General._Initialize = function(en, Research) {
         en.addCpsHook(obj,function(){return 1+0.01*(Game.Has(name)?[80,40,20,10][General.sPowerCoef()]:0)})
         eval('Game.modifyBuildingPrice='+Game.modifyBuildingPrice.toString()
             .replace(`price*=Game.eff('buildingCost');`,
-                `if (Game.Has('`+name+`')&&building.name=='`+obj+`') price*=0.01*[60,30,15,7][mod.general.sPowerCoef()];\n\t\t\t`+`price*=Game.eff('buildingCost');`))
+                `if (Game.Has('`+name+`')&&building.name=='`+obj+`') price*=0.01*[60,30,15,7][mod.general.sPowerCoef()];\n\t\t\t`
+                     +`price*=Game.eff('buildingCost');`))
         this.shinyUps.push([obj, name])
     }
 
-    General.newShinyCookie("Star cookies", "Glitters and shines like a star. May supernova eventually.", 1e4, [2, 2, Icons])
-    General.newShinyCookie("Emerald cookies", "Beautiful, marvelous, incredible, sublime.", 1e6, [2, 3, Icons])
-    General.newShinyCookie("Diamond cookies", "1 in 8,192 chance!", 1e8, [2, 4, Icons])
-    General.newShinyCookie("Silver cookies", "Tastes pretty meh, but the shininess is the real special part about all of these cookies.", 1e11, [2, 5, Icons])
-    General.newShinyCookie("Tungsten cookies", "The legends didn't lie.", 1e14, [2, 5, Icons])
-    General.newShinyCookie("Big-bang nucleosynthesized cookies", "From the beginning of time itself.", 1e18, [2, 1, Icons])
-    General.newShinyCookie("Computer-generated cookies", "Now 47.68% more likely to overthrow humanity!", 1e22, [2, 3])
+    General.newShinyCookie("Emerald cookies", "Beautiful, marvelous, incredible, sublime.", 1e6, [2, 3, Icons],
+                           "Unlocks <b>emerald ore</b>.", "Wake and bake")
+    General.newShinyCookie("Diamond cookies", "Ya sure ya have an iron pickaxe right there, mate?", 1e8, [2, 4, Icons],
+                           "Unlocks <b>diamond ore</b>.", "Wake and bake")
+    General.newShinyCookie("Silver cookies", "Tastes pretty meh, but the shininess is the real special part about all of these cookies.", 1e11, [2, 5, Icons],
+                           "Unlocks <b>silver ore</b>.", "Wake and bake")
+    General.newShinyCookie("Tungsten cookies", "The legends didn't lie.", 1e14, [2, 5, Icons],
+                           "Unlocks <b>tungsten ore</b>.", "Wake and bake")
+
+    // these are hidden behind achievements
+    General.newShinyCookie("Star cookies", "Glitters and shines like a star. May supernova eventually.", 1e21, [2, 2, Icons],
+                           "Unlocks <b>Stardust</b>.", "Discharge")
+    General.newShinyCookie("Big-bang nucleosynthesized cookies", "It harks from the beginning of time itself.", 1e23, [2, 1, Icons],
+                           "Unlocks the Idleverse and <b>Marbles</b>.", "Wake and bake")
+    General.newShinyCookie("Computer-generated cookies", "Now 47.68% more likely to overthrow humanity!", 2e25, [2, 3],
+                           "Unlocks the Cortex Baker and <b>Research Tests</b>.", "Wake and bake")
+    General.newShinyCookie("Pneuma cookies", "Enriched with the very lifeforce of human beings.", 5e27, [3, 5, Icons],
+                           "Unlocks You, <b>Lifeforce</b> and <b>Pneuma Ore</b>.", "Wake and bake")
+
+    // actual effect not yet implemented
+    //en.ue.replaceDescPart(Game.Upgrades['Dragon cookie'], '')
+
+    Game.hasUnlockMechanism = function(me) {
+        if (me.id==17 && (!Game.Has('Big-bang nucleosynthesized cookies'))) return false;
+        if (me.id==18 && (!Game.Has('Computer-generated cookies'))) return false;
+        if (me.id==19 && (!Game.Has('Pneuma cookies'))) return false;
+        return true;
+    }
+
+    eval('Game.Draw='+Game.Draw.toString().replace('if (Game.cookiesEarned>=me.basePrice || me.bought>0)',
+                                                   'if ((Game.cookiesEarned>=me.basePrice || me.bought>0) && Game.hasUnlockMechanism(me))'));
 
     General.newShinyUpgrade('Cursor', 'A fire mouse', 'No, literally, it\'s on fire. Might need to go to the burn ward.');
     General.newShinyUpgrade('Grandma', 'Rolling rolling pin', 'Look at those little wheels!');
@@ -265,7 +295,9 @@ General._Initialize = function(en, Research) {
     Game.registerHook('logic', function(){
         General.shinies.forEach(function(shiny) {
             var me=Game.Upgrades[shiny]
-            if (General.canShiny() && (Game.cookiesEarned >= me.basePrice/20)){Game.Unlock(shiny);}
+            if ((!me.unlocked) && General.canShiny() && (Game.cookiesEarned >= me.basePrice/20)){
+                if (Game.Has(General.shinyReqs[shiny])) Game.Unlock(shiny);
+            }
         })
         General.shinyUps.forEach(function(shinyUp) {
             var obj=Game.Objects[shinyUp[0]]
@@ -462,11 +494,16 @@ General._Initialize = function(en, Research) {
         1000000000, [5,25], 25100, {priceFunc:function(me){return Game.unbuffedCps*60*30*((Game.dragonLevel<Game.dragonLevels.length-1)?1:0.1);}}
     );
 
+
     eval('Game.ClickSpecialPic='+Game.ClickSpecialPic.toString()
         .replace(`['Dragon scale','Dragon claw','Dragon fang','Dragon teddy bear'];`,
             `['Dragon scale','Dragon claw','Dragon fang','Dragon teddy bear','Dragon wingtip'];`
         ));
     
+    // DRAGON (change icons when)
+    eval('Game.DrawBackground='+Game.DrawBackground.toString()
+         .replace("if (Game.hasBuff('Dragonflight') || Game.hasBuff('Dragon Harvest')) ",
+                  "if (Game.hasBuff('Dragonflight') || Game.hasBuff('Dragon Harvest') || Game.hasBuff('Dragon Energy') || Game.hasBuff('Dragon\'s Eye')) "))
 
     // PRESTIGE (written through the magic of "hope for the best" maths)
     Game.lastHcFactor=3;
