@@ -1025,8 +1025,8 @@ BModify._Initialize = function (en, Research) {
         }
 
         Game.energyCost = function(up) {
-            if (up.name=="Elder Pledge") return 4666666*Math.pow(1.3,Math.min(Game.pledges,12));
-            if (up.name=="Elder Covenant") return 16666666;
+            if (up.name=="Elder Pledge") return 466666*Math.pow(1.3,Math.min(Game.pledges,12));
+            if (up.name=="Elder Covenant") return 6666666;
         }
         // slight change here: instead of Covenant being buyable during Pledge only, you have to have Pledge inactive for it to be buyable.
 
@@ -1253,14 +1253,16 @@ BModify._Initialize = function (en, Research) {
         }
 
         this.angerCap = function () {
-            if (Game.Has('Bingo center/Research facility') || Game.Has('Elder Covenant')) return 0.2;
-            if (Game.Has('One mind')) return 0.34;
-            if (Game.Has('Communal brainsweep')) return 0.67;
-            if (Game.Has('Elder Pact')) return 1.0;
-            return 0;
+            let anger=0;
+            if (Game.Has('Bingo center/Research facility')) anger=0.2;
+            if (Game.Has('One mind')) anger=0.34;
+            if (Game.Has('Communal brainsweep')) anger=0.67;
+            if (Game.Has('Elder Pact')) anger=1.0;
+            return anger;
         }
 
         this.angerToWrath = function () {
+            if (Game.Has('Elder Covenant')) return 0;
             if (this.anger>=0.9) return 3;
             else return Math.floor(3*this.anger);
         }
@@ -1290,8 +1292,8 @@ BModify._Initialize = function (en, Research) {
                 '<br/><span' + (Research.research >= this.researchReq() ? '' : ' style="color:#777;"') + '>' + this.researchReq() + ' research</span>';
 
             if (Game.Has('Bingo center/Research facility')) {
-                l('grandmaAnger').innerHTML = (Game.Has('Elder Covenant')?'Satiated.':'Grandma anger: '+Math.round(this.anger*100)+'%'+
-                    (this.anger>0.2?', resulting in a CpS decrease of '+Math.round(this.cpsSuckedFromAnger()*100)+'%':''));
+                l('grandmaAnger').innerHTML = '<b>Grandma anger: '+Math.round(this.anger*100)+'%'+
+                    (t(his.anger>0.2)?', resulting in a CpS decrease of '+Math.round(this.cpsSuckedFromAnger()*100)+'%':'')+'</b>';
             }
         }
 
