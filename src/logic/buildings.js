@@ -151,6 +151,12 @@ BModify._Initialize = function (en, Research) {
 
     Game.goldenCookieChoices.push("Dragon Energy", "dragon energy");
 
+    Game.shimmerTypes.golden.popFunc = en.injectCode(Game.shimmerTypes.golden.popFunc,
+        "else if (choice=='clot')",
+        `else if (choice=='dragon energy'){Game.gainBuff('dragon energy',Math.ceil(140*effectDurMod),1);}\n\t\t\t`,
+        "before"
+    )
+
     // switches! (yes, we will need to add better icons... again.)
     en.ue.addUpgrade('Voltage switch [on]', 'The switch is currently giving <b>+70%</b> max energy and <b>-30%</b> stress buildup, '
                      +'in exchange for <b>halved</b> energy production; gaining energy may also form voltage surges.'
@@ -1285,7 +1291,7 @@ BModify._Initialize = function (en, Research) {
 
             if (Game.Has('Bingo center/Research facility')) {
                 l('grandmaAnger').innerHTML = (Game.Has('Elder Covenant')?'Satiated.':'Grandma anger: '+Math.round(this.anger*100)+'%'+
-                    (this.anger>0.2??', resulting in a CpS decrease of '+Math.round(this.cpsSuckedFromAnger()*100)+'%'));
+                    (this.anger>0.2?', resulting in a CpS decrease of '+Math.round(this.cpsSuckedFromAnger()*100)+'%':''));
             }
         }
 

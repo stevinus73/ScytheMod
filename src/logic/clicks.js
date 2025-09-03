@@ -60,7 +60,7 @@ Clicks._Initialize = function(en, Research) {
         if (Game.Has("Big clicks")) maxClicks*=2;
         if (Game.Has("Butterfly")) maxClicks*=2;
         if (Game.Has("Divine wisdom")) maxClicks+=(Game.Has("Omnipotent mouse")?15:10)*this.getMaxPowerClicks();
-        if (Game.Has("Celestial powers")) maxClicks*=1.2;
+        //if (Game.Has("Celestial powers")) maxClicks*=1.2;
         this.maxClicks = Math.round(maxClicks);
     }
 
