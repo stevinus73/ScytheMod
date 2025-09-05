@@ -261,7 +261,7 @@ Research._Initialize = function(en) {
         }
 
         this.unlock = function() {
-            if (!this.req && this.requirements.reqDesc) Game.Notify("Unlocked new research!", "To be done on the people who are still alive.", this.sprite);
+            if (!this.req && this.requirements.reqDesc) Game.Notify("Unlocked new research!", 'Unlocked <b>'+this.name+'</b>.', this.sprite);
             this.req = true;
         }
 
@@ -575,8 +575,8 @@ Research._Initialize = function(en) {
     var bLumpBuff = function(i, name, spc, desc) {
         var me = Game.ObjectsById[i];
         var hfunction = {reqFunc:function(){return me.level >= 5},reqDesc:"upgrade this building to level 5"};
-        var deps = [2];
-        me.lumpBuff = new Research.Tech(name, spc+'(not yet implemented :( )<q>'+desc+'</q>', 100, hfunction, f, deps, [spr_ref[i], 22], 2.0, 0.6);
+        var deps = [0];
+        me.lumpBuff = new Research.Tech(name, spc+'(not yet implemented :( )<q>'+desc+'</q>', 100, hfunction, f, deps, [spr_ref[i], 22], -0.6, 0.6);
     }
     for (var i in Game.Objects) {
         Game.Objects[i].getLumpBuff = function() {
@@ -598,11 +598,11 @@ Research._Initialize = function(en) {
         }
     }
     // energy tree
-    new Research.Tree("Energy research", [0, 5, Icons], function(){return Game.Has('Battery tower');});
+    new Research.Tree("Energy research", [0, 5, Icons], function(){return mod.bModify.powerPlants;});
     new Research.Tech("Energy research", "Unlocks the research tree for <b>energy</b>.",
-        4, f, f, [], [10, 14], 0, 0); // 0
+        4, f, f, [], [0, 5, Icons], 0, 0); // 0
     new Research.Tech("Voltage switch", "Unlocks the <b>voltage switch</b>.<q>Levers. They're fun.</q>",
-        64,f, f, [0], [0, 5, Icons], 0.3, 0.25); // 1
+        64,f, f, [0], [4, 6, Icons], 0.3, 0.25); // 1
     // gc tree
     new Research.Tree("Golden cookies", [27, 6], function(){return Game.goldenClicks;});
     new Research.Tech("Golden cookies", "Unlocks the research tree for <b>golden cookies</b>.", 
@@ -617,6 +617,10 @@ Research._Initialize = function(en) {
         "<q>The golden gates of heaven. Make sure the angels don't get mad.</q>",
         155, {reqFunc:function(){return false;},reqDesc:"obtain the Fortune effect while having a CpS multiplier from golden cookie effects of at least <b>x4,000</b>"}, f,
         [2], [27, 6], 0.9, 0.7); // 4
+    new Research.Tech("The all-seeing", "Dragon's Eye starts <b>20% stronger</b>. Fortune is <b>30%</b> more powerful."+
+        "<q>It sees everything.</q>",
+        155, {reqFunc:function(){return false;},reqDesc:"obtain the Fortune effect while having a CpS boost from Dragon's Eye of at least <b>x80</b>"}, f,
+        [2], [3, 6, Icons], 1.1, 0); // 5
     // all the building trees go here
 
     buildingTree(0);
@@ -726,18 +730,23 @@ Research._Initialize = function(en) {
     tieredTree(3, 1, "Mineral scentilocation", "Recent advances have led to the creation of a machine that can detect tasty minerals via their natural scent-giving properties.") // 1
     tieredTree(3, 2, "Nanomining", "Scratch all the giant drills and pickaxes! The fabric of reality itself has been found to contain fundamental particles that can be made into cookies. This will surely have no unforeseen consequences on the stability of the universe, y'know?") // 2
     tieredTree(3, 3, "Quantum tunneling", "I... don't think that's what it's supposed to mean.") // 3
-    bLumpBuff(3, "Candy cane drill", "Buildings sell back for <b>2%</b> more per mine level (up to level 20).","These things don't even work! What use could they possibly be for?")
+    //bLumpBuff(3, "Candy cane drill", "Buildings sell back for <b>2%</b> more per mine level (up to level 20).","These things don't even work! What use could they possibly be for?")
     //eval('Game.Object.prototype.getSellMultiplier='+Game.Object.prototype.getSellMultiplier.toString().replace('var giveBack=0.25;','var giveBack=0.25+Game.Objects.Mine.getLumpBuff()*0.02;'));
     buildingTree(4);
     tieredTree(4, 1, "Lubricant", "Cleans up those old gears and machines and gets them back to working in no time!") // 1
     tieredTree(4, 2, "Fuel aeration", "A new mechanism that conserves fuel used while making it more powerful.") // 2
     tieredTree(4, 3, "Brownian ratchet gears", "They run infinitely and infinitely, with absolutely no energy put in. I guess your cookies are breaking the laws of physics?") // 3
+
+    // finicky code
     bLumpBuff(4, "Chocolate gears", "Upgrades are <b>3%</b> cheaper per factory level (up to level 20).","I think someone got lazy with the upgrade ideas again.")
-    //eval('Game.Upgrade.prototype.getSellMultiplier='+Game.Upgrade.prototype.getSellMultiplier.toString().replace('price*=Game.eff(\'upgradeCost\');','price*=Game.eff(\'upgradeCost\');\n\t\tprice*=Math.pow(0.97,Game.Objects.Factory.getLumpBuff());'));
+    eval('Game.Upgrade.prototype.getPrce='+Game.Upgrade.prototype.getPrice.toString().replace('price*=Game.eff(\'upgradeCost\');','price*=Game.eff(\'upgradeCost\');\n\t\tprice*=Math.pow(0.97,Game.Objects.Factory.getLumpBuff());'));
     buildingTree(5);
     tieredTree(5, 1, "Cookiecoin", "Your new cookie-themed crypto currency, to make cookies off of all those crypto nerds.") // 1
     tieredTree(5, 2, "Financial gobbledygook", "This makes your banking system more legitimate and less likely to get investigated by those pesky government agents.") // 2
     tieredTree(5, 3, "Shinier vaults", "Highly inviting for potential burglars! This leads to all your money being stolen by-wait, where were we, again?") // 3
+    bLumpBuff(5, "Sweetened profits", "Sugar lumps mature <b>8 minutes</b> faster per bank level (up to level 20).", "Sweeter than a warm summer breeze.");
+    eval('Game.computeLumpTimes='+Game.computeLumpTimes.toString().replace("if (Game.Has('Ichor syrup')) Game.lumpMatureAge-=1000*60*7;",
+        "if (Game.Has('Ichor syrup')) Game.lumpMatureAge-=1000*60*7; \n\tif(mod.research.Has('Sweetened profits')) Game.lumpMatureAge-=1000*60*8*Game.Objects.Factory.getLumpBuff();"));
     buildingTree(6);
     var hasPantheon={
         reqFunc: function(){return Game.Objects.Temple.minigame},
@@ -766,6 +775,8 @@ Research._Initialize = function(en) {
     tieredTree(6, 1, "Summoning artifacts", "Mysteriously shiny artifacts that trick people into giving them a handshake, therefore forfeiting their soul to the devils within.") // 5
     tieredTree(6, 2, "Holy light of cookie heaven", "Psst, don't tell people it's just a lightbulb suspended above you with strings.") // 6
     tieredTree(6, 3, "Lovecraftian mythos", "If we feed them cookies, we should be able to get them to like us.") // 7
+
+    // fix this, when?
     bLumpBuff(6, "Sugary marble", "Worship swaps regenerate <b>20%</b> faster per temple level (up to level 20).","When the marble collapses, the gods take it as a good sign."); // 8
     buildingTree(7);
     tieredTree(7, 1, "Magic-made wands", "Generates a perpetual cycle of usage and creation.") // 1

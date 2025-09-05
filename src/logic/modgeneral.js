@@ -19,9 +19,9 @@ General._Initialize = function(en, Research) {
     Game.mouseCps = fingersNerf(Game.mouseCps);
     Game.Objects['Cursor'].cps = fingersNerf(Game.Objects['Cursor'].cps);
     en.ue.strReplace(Game.Upgrades['Unshackled cursors'], "25", "5");
-    en.ue.strReplace(Game.Upgrades['Trillion fingers'], "20", "15");
-    en.ue.strReplace(Game.Upgrades['Quadrillion fingers'], "20", "15");
-    en.ue.strReplace(Game.Upgrades['Quintillion fingers'], "20", "15");
+    en.ue.strReplace(Game.Upgrades['Trillion fingers'], "20", "10");
+    en.ue.strReplace(Game.Upgrades['Quadrillion fingers'], "20", "10");
+    en.ue.strReplace(Game.Upgrades['Quintillion fingers'], "20", "10");
     Game.Upgrades['Thousand fingers'].basePrice /= 25;
     Game.Upgrades['Sextillion fingers'].basePrice *= 10**3;
     Game.Upgrades['Septillion fingers'].basePrice *= 10**6;
@@ -29,6 +29,11 @@ General._Initialize = function(en, Research) {
     Game.Upgrades['Nonillion fingers'].basePrice *= 10**12;
     Game.Upgrades['Decillion fingers'].basePrice *= 10**15;
     Game.Upgrades['Undecillion fingers'].basePrice *= 10**18;
+
+    Game.Upgrades['Fortune #018'].descFunc = function() {
+        return "You are <b>7%</b> more efficient and <b>7%</b> cheaper.<q>There's plenty of everyone, but only "+
+                (Game.Objects['You'].amount>0?Game.Objects['You'].amount:'one')+" of you.</q>";
+    }
 
     /**
      * Name changes + effect deletion (uses eval but this shouldn't really matter due to Game.loadMinigames rarely being called)
@@ -490,10 +495,11 @@ General._Initialize = function(en, Research) {
 
     en.ue.addUpgrade("Dragon wingtip", "Shipments gain <b>+25%</b> CpS (multiplicative) per dragon level."
         +'<br>'+loc("Cost scales with CpS, but %1 times cheaper with a fully-trained dragon.",10)
-        +'<q>A tiny wingtip shed from your dragon. This imbues you with the power of flight.</q>',
+        +'<q>A tiny wingtip shed from your dragon that imbues you with the power of flight.</q>',
         1000000000, [5,25], 25100, {priceFunc:function(me){return Game.unbuffedCps*60*30*((Game.dragonLevel<Game.dragonLevels.length-1)?1:0.1);}}
     );
 
+    Game.Upgrades['Pet the dragon'].basePrice /= 10**5;
 
     eval('Game.ClickSpecialPic='+Game.ClickSpecialPic.toString()
         .replace(`['Dragon scale','Dragon claw','Dragon fang','Dragon teddy bear'];`,
@@ -513,7 +519,7 @@ General._Initialize = function(en, Research) {
 
         var maxHcFactor=3.45;
         if(Game.Has('Heavenly favors')) maxHcFactor=3.4;
-        if(Game.Has('Divine bribes')) maxHcFactor=3.3;
+        if(Game.Has('Divine bribes')) maxHcFactor=3.35;
 
         Game.lastHcFactor=Math.min(3+Math.log10(m)*(1/45), maxHcFactor);
         return Game.lastHcFactor;
@@ -522,6 +528,8 @@ General._Initialize = function(en, Research) {
     Game.HowMuchPrestige=function(cookies) {
 		return Math.pow(cookies/1000000000000,1/Game.HcFactorFunc(cookies));
 	}
+
+    // might not be entirely accurate
 	Game.HowManyCookiesReset=function(chips) {
 		return Math.pow(chips,Game.lastHcFactor)*1000000000000;
 	}
@@ -582,6 +590,14 @@ General._Initialize = function(en, Research) {
         loc("You gain another <b>+%1%</b> of your regular CpS while the game is closed.",5),
         "Offline CpS gains <b>+30%</b>.");
 
+    // chimera
+    en.ue.strReplace(Game.Upgrades['Chimera'],
+        loc("Synergy upgrades are <b>%1% cheaper</b>.",2),
+        "Synergy upgrades are <b>10% more effective</b>.");
+
+    eval('Game.GetTieredCpsMult='+Game.GetTieredCpsMult.toString()
+         .replace('mult*=(1+0.05*syn.buildingTie2.amount);', 'mult*=(1+0.05*syn.buildingTie2.amount*(1+0.1*Game.Has("Chimera")));')
+         .replace('mult*=(1+0.001*syn.buildingTie2.amount);', 'mult*=(1+0.001*syn.buildingTie1.amount*(1+0.1*Game.Has("Chimera")));'))
     // activity check
     this.timeSinceLast=0;
     Game.loseShimmeringVeil=en.injectCode(Game.loseShimmeringVeil,

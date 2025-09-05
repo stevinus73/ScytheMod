@@ -90,8 +90,9 @@ BModify._Initialize = function (en, Research) {
         {
             return {
                 name:'Voltage surge',
+                dname:'Voltage surge',
                 desc:"Max energy x4 for "+Game.sayTime(time*Game.fps,-1)+"!",
-                icon:[0,5,Icons], // change to buff style when
+                icon:[6,4,Icons], // change to buff style when
                 time:time*Game.fps,
                 power:pow,
                 add:true,
@@ -103,8 +104,9 @@ BModify._Initialize = function (en, Research) {
         {
             return {
                 name:'Blackout',
+                dname:'Blackout',
                 desc:"Energy production nullified for "+Game.sayTime(time*Game.fps,-1)+"!",
-                icon:[0,5,Icons], // change to debuff style when
+                icon:[6,5,Icons], // change to debuff style when
                 time:time*Game.fps,
                 power:pow,
                 add:true,
@@ -117,8 +119,9 @@ BModify._Initialize = function (en, Research) {
         {
             return {
                 name:'Paralysis',
+                dname:'Paralysis',
                 desc:"? for "+Game.sayTime(time*Game.fps,-1)+"!",
-                icon:[0,5,Icons], // change to debuff style when
+                icon:[6,5,Icons], // change to debuff style when
                 time:time*Game.fps,
                 power:pow,
                 add:true,
@@ -130,8 +133,9 @@ BModify._Initialize = function (en, Research) {
         {
             return {
                 name:'Dragon Energy',
+                dname:'Dragon Energy',
                 desc:"Your cookie production gains power from your energy!",
-                icon:[0,5,Icons],
+                icon:[2,6,Icons],
                 time:time*Game.fps,
                 power:pow,
                 add:true,
@@ -161,7 +165,7 @@ BModify._Initialize = function (en, Research) {
     en.ue.addUpgrade('Voltage switch [on]', 'The switch is currently giving <b>+70%</b> max energy and <b>-30%</b> stress buildup, '
                      +'in exchange for <b>halved</b> energy production; gaining energy may also form voltage surges.'
                      +'<br>Turning it off will revert those effects.<br>Cost is equal to 4 hours of highest raw production.',
-                     1, [0,5,Icons], 5000, {
+                     1, [4,5,Icons], 5000, {
                          pool: 'toggle',
                          toggleInto: 'Voltage switch [off]',
                          priceFunc: function(){return Game.cookiesPsRawHighest*60*60*4;}
@@ -170,7 +174,7 @@ BModify._Initialize = function (en, Research) {
     en.ue.addUpgrade('Voltage switch [off]', 'Turning this on will give <b>+70%</b> max energy and <b>-30%</b> stress buildup, '
                      +'in exchange for <b>halved</b> energy production; gaining energy may also form voltage surges.'
                      +'<br>Cost is equal to 4 hours of highest raw production.',
-                     1, [0,5,Icons], 5000, {
+                     1, [4,6,Icons], 5000, {
                          pool: 'toggle',
                          toggleInto: 'Voltage switch [on]',
                          priceFunc: function(){return Game.cookiesPsRawHighest*60*60*4;}
@@ -189,7 +193,7 @@ BModify._Initialize = function (en, Research) {
         let consumption = 0;
         for (var i in Game.Objects) {
             consumption += Game.Objects[i].baseConsumption * Game.Objects[i].amount * (i == 'Cursor'??this.getCursorDrain())
-                * (Game.Has(Game.Objects[i].effTiered) ?? Math.pow(0.96, Game.getTieredUpgradesTotal(Game.Objects[i])));
+                * (Game.Has(Game.Objects[i].effTiered) ?? Math.pow(0.986, Game.getTieredUpgradesTotal(Game.Objects[i])));
         }
         if (Game.Has("Specialized chocolate chips")) consumption *= 0.98;
         if (Game.Has("Designer cocoa beans")) consumption *= 0.98;
@@ -219,11 +223,14 @@ BModify._Initialize = function (en, Research) {
 
     BModify.gainEnergy = function (en, pcMax, vproc) {
         var mult = this.getGainMultiplier();
-        mult *= (1 + Game.Has("Volted bolts")) * (1 + Game.Has("Supercapacitor") * (1 + Game.Has("Quantum charge")));
+        //mult *= (1 + Game.Has("Volted bolts")) * (1 + Game.Has("Supercapacitor") * (1 + Game.Has("Quantum charge")));
+        for (let i=0;i<15;i++) mult *= (1+Game.Has(this.tieredEnergyUp[i])*0.11);
         this.energy += (en * mult + pcMax * this.maxEnergy);
         if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
         if ((Math.random() < vproc) && Game.Has('Voltage switch [on]')) {
-            Game.gainBuff('volt surge',Math.ceil(24*effectDurMod),1);
+            let buff=Game.gainBuff('volt surge',36,1);
+            let popup=buff.dname+'<div style="font-size:65%;">'+buff.desc+'</div>';
+            Game.Popup(popup,Game.mouseX,Game.mouseY);
             //this.drawEnergyParticles(5);
         } //else this.drawEnergyParticles(1);
     }
@@ -251,9 +258,7 @@ BModify._Initialize = function (en, Research) {
         this.efficiency = this.baseEfficiency;
 
         this.maxEnergy = 1000;
-        this.maxEnergyUp.forEach((up) => {
-            if (Game.Has(up)) this.maxEnergy *= 10;
-        })
+        for (let i=0;i<15;i++) this.maxEnergy *= (1+Game.Has(this.tieredEnergyUp[i]));
         if (Game.Has('Voltage switch [on]')) this.maxEnergy *= 1.7;
         if (Game.hasBuff('Voltage surge')) this.maxEnergy *= 4;
 
@@ -443,15 +448,11 @@ BModify._Initialize = function (en, Research) {
     }
 
     function EffTiered(bid, name, desc) {
-        desc = cfl(Game.ObjectsById[bid].plural) + " lose <b>4%</b> (multiplicative) energy consumption per tiered upgrade bought. <q>" + desc + "</q>";
+        desc = cfl(Game.ObjectsById[bid].plural) + " lose <b>1.4%</b> (multiplicative) energy consumption per tiered upgrade bought. <q>" + desc + "</q>";
 
         en.ue.addUpgrade(name, desc, Game.Tiers['Efficentia'].price * Game.ObjectsById[bid].basePrice * (bid*0.5 + 1),
             Game.GetIcon(Game.ObjectsById[bid].name, 'Efficentia'), order, { tier: 'Efficentia' });
         Game.ObjectsById[bid].effTiered = name;
-    }
-
-    for (let i=12; i<20; i++) {
-        EnergyTiered(i, Game.ObjectsById[i].name + ' power', '... (will make actual upgrades)');
     }
 
     EnergyTiered(0, "Mouse wheels", "The hamster wheels of the clicking world.");
@@ -459,17 +460,26 @@ BModify._Initialize = function (en, Research) {
     EnergyTiered(2, "Wind turbines", "Wheeeee!");
     EnergyTiered(3, "Coal", "The children yearn for the mines.");
     EnergyTiered(4, "Power facility", "Does not relate to the power plant.");
-    EnergyTiered(5, "Compound rates", "Obtaining energy at a roughly 33% interest rate.");
-    EnergyTiered(6, "Ancient totem", "Carved inscription 'INSPECTED BY NO. 6'.");
+    EnergyTiered(5, "Compound power lines", "Obtaining energy at a roughly 33% interest rate.");
+    EnergyTiered(6, 'Brotherhood of Faraday', 'Who keeps the magnetic monopoles away? Us!');
     EnergyTiered(7, "Arcane electrostatics", "An ancient wizardly technique, feared by many.");
-    EnergyTiered(8, "The electric universe", "Don't worry if it isn't true - in the next ascension we'll find a parallel universe where it *is* true.");
+    EnergyTiered(8, "The electric universe", "Don't worry if it isn't true. Truth and reality have never stopped you.");
     EnergyTiered(9, "Cookiemutation", "Look, this isn't even the weirdest thing you've seen this week. It's fine.");
     EnergyTiered(10, "Seven-Eyed God of Thunder", "Available yesterday at a -6.6% discount!");
     EnergyTiered(11, "Time Lord", "Oh, so we're putting shameless surface-level Doctor Who references now? I'm leaving. Bye.");
+    EnergyTiered(12, "Intrinsic battery quarks", "It turns out that a special type of quark can act really well as a battery. Mostly useless, but cool.");
+    EnergyTiered(13, "Solar power", "Wait, can we get a patent on this?");
+    EnergyTiered(14, 'A bolt in the blue', 'Shocking!');
+    EnergyTiered(15, "Maxwell's recursion", "A fun fact: electric fields produce magnetic fields which produce electric fields.");
+    EnergyTiered(16, "The circuit board", "We've had computers for ages, so how did we not think of this before? Software worshipping morons.");
+    EnergyTiered(17, "Energy multiverse", "According to my assistant Greg, there are infinite multiverses, so one of them must have pure energy inside of it.");
+    EnergyTiered(18, "Hijacked brain waves", "Neurons use electricity to communicate. "+
+                 "With a bit of special apparatus, you can direct this energy to somewhere else. 9/10 cortex bakers approve of this!");
+    EnergyTiered(19, "Lifeblood absorber", "I've been told that the term 'meat grinder that sucks souls' is a bit too on-the-nose, so there you go.");
 
     // will make actual upgrades
     for (let i=0; i<20; i++) {
-        EffTiered(i, 'Efficient '+Game.ObjectsById[i].name, 'Only the latest advances in energy-saving tech!');
+        EffTiered(i, 'Efficient '+Game.ObjectsById[i].plural, 'Only the latest advances in energy-saving tech!');
     }
 
     en.newInfoPanel("energyDisp", [3,3,Icons], function(){
@@ -498,23 +508,52 @@ BModify._Initialize = function (en, Research) {
             +'<br>When energy is depleted, the battery will be used.'
             +`</div>`},"batteryTip");
 
-    var expstr = 'Maximum energy multiplied by <b>10</b>.';
-    BModify.maxEnergyUp = ['Battery tower', 'Lightning jar', 'Pocket power dimension', 'Save expander'];
-    en.ue.addUpgrade('Battery tower', expstr + '<q>Inspired by Universal Paperclips... again? This is lame.</q>', 1e5,
-        [0, 5, Icons], order, { unlockAt: 1e5 });
-    en.ue.addUpgrade('Lightning jar', expstr + '<q>Now you can catch a lightning bolt!</q>', 1e11,
-        [0, 5, Icons], order, { unlockAt: 1e8 });
-    en.ue.addUpgrade('Pocket power dimension', expstr + '<q>A dimension completely filled to the brim with energy and paperclips.</q>', 1e14,
-        [0, 5, Icons], order, { unlockAt: 1e14 });
-    en.ue.addUpgrade('Save expander', expstr + '<q>By the way, I\'m not optimizing the mod\'s savefile anytime soon.</q>', 1e17,
-        [0, 5, Icons], order, { unlockAt: 1e20 });
-    var bufstr = 'Non-passive energy gains <b>doubled</b>.';
-    en.ue.addUpgrade('Volted bolts', bufstr + '<q>Better than bolted volts, to be sure.</q>', 3e16,
-        [0, 6, Icons], order, { unlockAt: 1e15 });
-    en.ue.addUpgrade('Supercapacitor', bufstr + '<q>Forget superconductors; this is where it\'s at!</q>', 5e22,
-        [0, 6, Icons], order, { unlockAt: 1e21 });
-    en.ue.addUpgrade('Quantum charge', bufstr + '<q>Receiving quanta packets just like in the 700\'s BCE.</q>', 11e28,
-        [0, 6, Icons], order, { unlockAt: 1e27 });
+    // var expstr = 'Maximum energy multiplied by <b>10</b>.';
+    // BModify.maxEnergyUp = ['Battery tower', 'Lightning jar', 'Pocket power dimension', 'Save expander'];
+    // en.ue.addUpgrade('Battery tower', expstr + '<q>Inspired by Universal Paperclips... again? This is lame.</q>', 1e5,
+    //     [0, 5, Icons], order, { unlockAt: 1e5 });
+    // en.ue.addUpgrade('Lightning jar', expstr + '<q>Now you can catch a lightning bolt!</q>', 1e11,
+    //     [0, 5, Icons], order, { unlockAt: 1e8 });
+    // en.ue.addUpgrade('Pocket power dimension', expstr + '<q>A dimension completely filled to the brim with energy and paperclips.</q>', 1e14,
+    //     [0, 5, Icons], order, { unlockAt: 1e14 });
+    // en.ue.addUpgrade('Save expander', expstr + '<q>By the way, I\'m not optimizing the mod\'s savefile anytime soon.</q>', 1e17,
+    //     [0, 5, Icons], order, { unlockAt: 1e20 });
+    // var bufstr = 'Non-passive energy gains <b>doubled</b>.';
+    // en.ue.addUpgrade('Volted bolts', bufstr + '<q>Better than bolted volts, to be sure.</q>', 3e16,
+    //     [0, 6, Icons], order, { unlockAt: 1e15 });
+    // en.ue.addUpgrade('Supercapacitor', bufstr + '<q>Forget superconductors; this is where it\'s at!</q>', 5e22,
+    //     [0, 6, Icons], order, { unlockAt: 1e21 });
+    // en.ue.addUpgrade('Quantum charge', bufstr + '<q>Receiving quanta packets just like in the 700\'s BCE.</q>', 11e28,
+    //     [0, 6, Icons], order, { unlockAt: 1e27 });
+
+    let expTstr = "Maximum energy <b>doubled</b>. Non-passive energy gains <b>+11%</b>.";
+    // purely experimental
+    let tier=1;
+    BModify.tieredEnergyUp = [];
+    function addTieredUp(name, flavortext) {
+        en.ue.addUpgrade(name, expTstr+'<q>'+flavortext+'</q>',1e4*Game.Tiers[tier].price,
+                         (tier==1?[0,5,Icons]:[6,tier,icons]), order, {unlockAt:5e3*Game.Tiers[tier].price});
+        this.tieredEnergyUp.push(name);
+        tier++;
+    }
+
+    addTieredUp('Battery tower', 'Inspired by Universal Paperclips... again? This is lame.');
+    addTieredUp('Lightning jar', 'Now you can catch a lightning bolt!');
+    addTieredUp('Volted bolts', 'Better than bolted volts, to be sure.');
+    addTieredUp('Supercapacitor', 'Forget superconductors; this is where it\'s at!');
+    addTieredUp('Force lightning', 'Very theatrical!');
+    addTieredUp('Nuclear rearrangement', 'Not quite fusion, or fission, but a mix of both. You know chemical reactions?');
+    addTieredUp('Pocket power dimension', 'A dimension completely filled to the brim with energy and paperclips.');
+    addTieredUp('Perpetual motion', 'The best kind of motion picture.');
+    addTieredUp('Cosmic lasers', 'Pew! Pew! Pwooshoooofooooowoooshooooommmm!');
+    addTieredUp('Quantum power', 'Now, I know there are killjoys who say quantum dynamics is used purely at the atomic level, but '
+                +'just turn them into pure energy and they\'ll shut up.');
+    addTieredUp('Dark energy', 'Like normal energy, but more goth.');
+    addTieredUp('Electric gateways', 'To nothing in particular, really.');
+    addTieredUp('Intentional overloading', 'You\'ve cleverly designed your energy plants so that a sudden influx of power '
+                +'is massively amplified by strategically flawed machinery, to turn things like short-circuits into ripe opportunities.');
+    addTieredUp('The power of awkward jokes', 'Heh, get it? Because it\'s like, power? And power is, like, energy?');
+    addTieredUp('Save expander', 'By the way, I\'m not optimizing the mod\'s savefile anytime soon.');
 
     Game.energyCostTip = function(me) {
         let cost=Game.energyCost(up.name);
@@ -522,10 +561,10 @@ BModify._Initialize = function (en, Research) {
                 +Beautify(Math.round(cost))+' energy</span>');
     }
 
-    eval('Game.crateTooltip='+Game.crateTooltip.toString()
-         .replace(`if (me.priceLumps==0 && cost==0)`,`if (me.priceLumps==0 && cost==0 && !Game.hasEnergyCost(me))`)
-         .replace(`+'</div>';`,`+Game.energyCostTip(me)+'</div>';`)
-         .replace(`(me.pool!='prestige' && me.priceLumps==0)`,`(me.pool!='prestige' && me.priceLumps==0  && !Game.hasEnergyCost(me))`));
+    // eval('Game.crateTooltip='+Game.crateTooltip.toString()
+    //      .replace(`if (me.priceLumps==0 && cost==0)`,`if (me.priceLumps==0 && cost==0 && !Game.hasEnergyCost(me))`)
+    //      .replace(`+'</div>';`,`+Game.energyCostTip(me)+'</div>';`)
+    //      .replace(`(me.pool!='prestige' && me.priceLumps==0)`,`(me.pool!='prestige' && me.priceLumps==0  && !Game.hasEnergyCost(me))`));
 
     Game.UpdateMenu = en.injectCode(Game.UpdateMenu,
         `'<div class="listing"><b>'+loc("Cookie clicks:")+'</b> '+Beautify(Game.cookieClicks)+'</div>'+`,
@@ -648,7 +687,7 @@ BModify._Initialize = function (en, Research) {
 
         // called once every calculateGains()
 
-        // each tiered upgrade is 1.5x yield, 1.33x rhps
+        // each tiered upgrade is 1.6x yield, 1.25x rhps
         this.recalculate = function () {
             var me = this.me;
             var rhpsmult = 1;
@@ -671,8 +710,8 @@ BModify._Initialize = function (en, Research) {
             for (var i in me.synergies) {
                 var syn = me.synergies[i];
                 if (Game.Has(syn.name)) {
-                    if (syn.buildingTie1.name == me.name) yieldmult *= (1 + 0.05 * syn.buildingTie2.amount);
-                    else if (syn.buildingTie2.name == me.name) yieldmult *= (1 + 0.001 * syn.buildingTie1.amount);
+                    if (syn.buildingTie1.name == me.name) yieldmult *= (1 + 0.05 * syn.buildingTie2.amount) * (1+0.1*Game.Has("Chimera"));
+                    else if (syn.buildingTie2.name == me.name) yieldmult *= (1 + 0.001 * syn.buildingTie1.amount) *(1+0.1*Game.Has("Chimera"));
                 }
             }
 
@@ -714,7 +753,8 @@ BModify._Initialize = function (en, Research) {
 
         // decay factor applied to rhps
         this.decayedFactor = function () {
-            return Math.pow(0.998, Math.min(this.me.amount, 600)) * (1-0.3*Game.auraMult('Fierce Hoarder'));
+            return 1-0.3*Game.auraMult('Fierce Hoarder');
+            //return Math.pow(0.998, Math.min(this.me.amount, 600)) * (1-0.3*Game.auraMult('Fierce Hoarder'));
         }
 
         this.availableRes = function () { return this.rsTotal - this.rsUsed; }
@@ -742,8 +782,7 @@ BModify._Initialize = function (en, Research) {
             if ((this.id == 2) && Research.Has("Regrowth")) return;
             if (this.depleted) return;
             if (this.pause) {
-                var rate = 0.001 * this.decayedFactor()
-                    * (Math.max(this.availableRes() / this.rsTotal, 0.1))
+                var rate = 0.001 * (Math.max(this.availableRes() / this.rsTotal, 0.1))
                     * Math.sqrt(BModify.grandma.grandmaTypes['healer'].allocated);
                 this.rsUsed -= (rate / Game.fps) * this.rsTotal;
                 this.rsUsed = Math.max(this.rsUsed, 0);
@@ -888,7 +927,7 @@ BModify._Initialize = function (en, Research) {
             // if (!Game.Objects.Bank.minigame) return '';
             // var col = (Game.Objects.Bank.minigame.profit >= this.refillPrice()) ? '#73f21e' : '#f21e3c';
             // var str = "Click to <b>refill available resources by 50%</b> for <span style='color:"+col+";'>$"+this.refillPrice()+"</span>.";
-            // str += "<br>However, this will cause resources to deplete <b>50%</b> faster for <b>20 minutes</b> without any CpS boost.";
+            // str += "<br>However, this will cause resources to deplete <b>50%</b> faster for <b>20 minutes</b> afterwards.";
 
             // str += (BModify.bankRefill>0?"<br><small class='red'>(usable again in "+Game.sayTime(BModify.bankRefill+Game.fps, -1)+")</small>"
             //     :"<br><small>(Cooldown time upon use: "+(this.depleted?"<span class='red'>3 hours</span>":"1 hour")+")</small>");
@@ -1361,13 +1400,13 @@ BModify._Initialize = function (en, Research) {
 
         this._ifactor = function (num) {
             if (num == 0) return 1;
-            return 2 - Math.max((1 / Math.pow(2, num * 0.5)), 0.001);
+            return 2 - (1 / Math.pow(2, Math.max(8, num * 0.5)));
         }
 
         this.resourceMult = function () {
+            if (!Research.Has("Galactica mindoris")) return 1;
             var fact = 1.003;
             if (Game.Has("Unshackled idleverses")) fact = 1.004;
-            if (!Research.Has("Galactica mindoris")) return 1;
             return Math.max(Math.pow(fact, this.me.amount) * this._ifactor(this.me.amount), 1);
         }
 

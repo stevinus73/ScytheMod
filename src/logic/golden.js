@@ -26,14 +26,14 @@ G._Initialize = function(en, Research) {
     //     "buff=Game.gainBuff('dragon harvest',Math.ceil(60*effectDurMod),25);",
     //     "replace"
     // )
-    Game.decFtMult=function(){return (Game.Has("Decisive fate")?1.5:1);}
+    Game.decFtMult=function(){return 1+0.5*Game.Has("Decisive fate");}
 
     // increase click frenzy and cookie chain/storm chance on first ascend + decisive fate
     en.ue.appendToDesc(Game.Upgrades['Decisive fate'], '<br>Rarer golden cookie outcomes appear <b>50%</b> more often.');
     G.me.popFunc = en.injectCode(G.me.popFunc, "(Math.random()<0.1",
         "(Math.random()<(Game.ascensionMode==0&&Game.Has('Legacy')?0.1:0.75)*Game.decFtMult()", "replace");
     G.me.popFunc = en.injectCode(G.me.popFunc, "(Math.random()<0.03",
-        "(Math.random()<(Game.ascensionMode==0&&Game.Has('Legacy')?0.03:0.45)*Game.decFtMult()", "replace");
+        "(Math.random()<(Game.ascensionMode==0&&Game.Has('Legacy')?0.08:0.45)*Game.decFtMult()", "replace");
     G.me.popFunc = en.injectCode(G.me.popFunc, "Math.random()<0.1)","Math.random()<0.1*Game.decFtMult())", "replace");
     G.me.popFunc = en.injectCode(G.me.popFunc, "Math.random()<0.25)","Math.random()<0.25*Game.decFtMult())", "replace");
     G.me.popFunc = en.injectCode(G.me.popFunc, "Math.random()<0.15)","Math.random()<0.15*Game.decFtMult())", "replace");
@@ -136,15 +136,17 @@ G._Initialize = function(en, Research) {
         "replace"
     )
 
-    en.ae.addAchievement("Elder fortune", "Obtain the Fortune effect <b>during an elder frenzy</b>.",
+    en.ae.addAchievement("Eldritch fortunes", "Obtain the Fortune effect <b>during an elder frenzy</b>.",
         [27, 6], "Eldeer", {});
 
     G.fortuneEarn = function(mult) {
-        if (Game.hasBuff('Elder frenzy')) Game.Win("Elder fortune");
+        if (Game.hasBuff('Elder frenzy')) Game.Win("Eldritch fortunes");
         if (G.currEffsPower()>4000) Research.unlock("Golden gates");
+        if (Game.hasBuff('Dragon\'s Eye') && Game.hasBuff('Dragon\'s Eye').power>=80) Research.unlock("The all-seeing");
 
         var moni=mult*Game.cookiesPs*60*15+777;
-        if (Research.Has('Golden gates')) moni*=Math.pow(1.5, this.currEffs().length-1);
+        if (Research.Has('Golden gates')) moni*=Math.pow(1.5, this.currEffs().length);
+        if (Research.Has('The all-seeing')) moni*=1.3;
 		Game.Earn(moni);
         this.fortunesEarned++;
         Game.Notify("Fortune!", "This golden cookie effect, which would have exceeded the golden cookie effect cap, has been converted into cookies.", [23, 6]);
@@ -162,6 +164,7 @@ G._Initialize = function(en, Research) {
 		{
 			return {
 				name:'Starlight',
+                dname:'Starlight',
 				desc:"Golden cookie effect cap +"+pow+" for "+Game.sayTime(time*Game.fps,-1)+"!",
 				icon:[9,9],
 				time:time*Game.fps,
@@ -171,12 +174,17 @@ G._Initialize = function(en, Research) {
 			};
 		});
 
+
+    Game.goldenCookieChoices.push("Starlight", "starlight");
+
     G.gainStarlight = function(time) {
         var old=Game.hasBuff('Starlight');
         var pow=(old?old.power+1:1);
         var buff=Game.gainBuff('starlight',time,pow);
         buff.arg1=pow;
         buff.power=pow;
+        let popup=buff.dname+'<div style="font-size:65%;">'+buff.desc+'</div>';
+        Game.Popup(popup,Game.mouseX,Game.mouseY);
         return buff;
     }
 
@@ -187,10 +195,12 @@ G._Initialize = function(en, Research) {
 
     // click frenzy/dragonflight mutual exclusitivity (well, technically not completely mutually exclusive but eh, whatever)
     // anything that was supposed to give click frenzy now gives fortune (fun!)
-    // also nerfed dragonflight chances
+    // also dragon's eye buff lol
     G.me.popFunc = en.injectCode(G.me.popFunc,
         "if (me.force!='') {this.chain=0;choice=me.force;me.force='';}",
-        "if (me.force!='') {this.chain=0;choice=me.force;if (choice=='click frenzy' && Game.hasBuff('Dragonflight')){choice='fortune';};me.force='';}",
+        "if (me.force!='') {this.chain=0;choice=me.force;"+
+        "if (choice=='click frenzy' && Game.hasBuff('Dragonflight')){choice='fortune';};"+
+        "if (Game.hasBuff('Dragon\'s Eye') && Game.buffs['Dragon\'s Eye'].time>0){choice=mod.clicks.feedDragonEye(choice);}me.force=''};",
         "replace"
     )
     // this just makes it harder to get cf+df
@@ -303,6 +313,14 @@ G._Initialize = function(en, Research) {
     Game.Upgrades['Fortune cookies'].parents=[Game.Upgrades['Decisive fate']]
     Game.Upgrades['Fortune cookies'].basePrice=77777777
     Game.Tiers['fortune'].price=77777777777777777777
+
+    // deorl buff
+    en.strReplace(Game.Upgrades['Distilled essence of redoubled luck'],
+                  loc("Golden cookies (and all other things that spawn, such as reindeer) have <b>%1% chance of being doubled</b>.",1),
+                  loc("Golden cookies (and all other things that spawn, such as reindeer) have <b>%1% chance of being doubled</b>.",3));
+
+    eval('Game.updateShimmers='+Game.updateShimmers.toString().replace('Math.random()<0.01','Math.random()<0.03'));
+
 
     // updates
     G.update = function() {
