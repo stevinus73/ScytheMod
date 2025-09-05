@@ -314,7 +314,7 @@ G._Initialize = function(en, Research) {
     Game.Tiers['fortune'].price=77777777777777777777
 
     // deorl buff
-    en.strReplace(Game.Upgrades['Distilled essence of redoubled luck'],
+    en.ue.strReplace(Game.Upgrades['Distilled essence of redoubled luck'],
                   loc("Golden cookies (and all other things that spawn, such as reindeer) have <b>%1% chance of being doubled</b>.",1),
                   loc("Golden cookies (and all other things that spawn, such as reindeer) have <b>%1% chance of being doubled</b>.",3));
 
