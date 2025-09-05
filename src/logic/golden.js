@@ -198,9 +198,8 @@ G._Initialize = function(en, Research) {
     // also dragon's eye buff lol
     G.me.popFunc = en.injectCode(G.me.popFunc,
         "if (me.force!='') {this.chain=0;choice=me.force;me.force='';}",
-        "if (me.force!='') {this.chain=0;choice=me.force;"+
-        "if (choice=='click frenzy' && Game.hasBuff('Dragonflight')){choice='fortune';};"+
-        "if (Game.hasBuff('Dragon\'s Eye') && Game.buffs['Dragon\'s Eye'].time>0){choice=mod.clicks.feedDragonEye(choice);}me.force=''};",
+        "if (me.force!='') {this.chain=0;choice=me.force;if (choice=='click frenzy' && Game.hasBuff('Dragonflight')){choice='fortune';};"+
+        "\n\t\t\t\tif (Game.hasBuff('Dragon\'s Eye') && Game.buffs['Dragon\'s Eye'].time>0){choice=mod.clicks.feedDragonEye(choice);}me.force=''};",
         "replace"
     )
     // this just makes it harder to get cf+df
