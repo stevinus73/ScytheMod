@@ -246,7 +246,7 @@ BModify._Initialize = function (en, Research) {
         this.production = this.powerPlants;
         if (this.batteryMustRefill) this.production *= 0.7;
         this.production *= this.getGainMultiplier();
-        if (Game.Has('Voltage switch [on]')) this.production *= 0.5;
+        if (Game.Has('Voltage switch [off]')) this.production *= 0.5;
         this.production *= this.getRawStress();
 
         if (Game.hasBuff('Blackout')) this.production = 0;
@@ -259,7 +259,7 @@ BModify._Initialize = function (en, Research) {
 
         this.maxEnergy = 1000;
         for (let i=0;i<15;i++) this.maxEnergy *= (1+Game.Has(this.tieredEnergyUp[i]));
-        if (Game.Has('Voltage switch [on]')) this.maxEnergy *= 1.7;
+        if (Game.Has('Voltage switch [off]')) this.maxEnergy *= 1.7;
         if (Game.hasBuff('Voltage surge')) this.maxEnergy *= 4;
 
 
