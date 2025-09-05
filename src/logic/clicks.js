@@ -113,8 +113,8 @@ Clicks._Initialize = function(en, Research) {
                 else if (godLvl==2) clickNum+=gz.arg1*0.003;
                 else if (godLvl==3) clickNum+=gz.arg1*0.0015;
             }
-            if (Game.hasBuff("Celestial energy")) clickNum*=0.4;
         }
+        if (Game.hasBuff("Celestial energy")) clickNum*=0.4;
         this.clicks-=Math.ceil(clickNum);
         if(this.clicks<0) this.clicks=0;
         this.regenTimer=P.baseRecovery;
