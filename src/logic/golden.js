@@ -108,7 +108,7 @@ G._Initialize = function(en, Research) {
     G.me.popFunc = en.injectCode(G.me.popFunc,
         "else if (choice=='blood frenzy')",
         `else if (choice=='fortune'){var moni=mod.G.fortuneEarn(mult);`
-        +`popup='Fortune!<br><small>Found '+loc("+%1!",loc("%1 cookie",LBeautify(moni)))+'</small>';}\n\t\t\t`,
+        +`popup='Fortune!<br><small>Found '+loc("+%1!",loc("%1 cookie",LBeautify(moni)))+'</small>';}\n\t\t\t\t`,
         "before"
     )
 
@@ -155,7 +155,7 @@ G._Initialize = function(en, Research) {
     // the big one
     G.me.popFunc = en.injectCode(G.me.popFunc,
         "this.last=choice;",
-        "if(mod.G.isEff(choice) && mod.G.currEffs().length == mod.G.maxEffs){choice='fortune'};\n\t\t\t",
+        "if(mod.G.isEff(choice) && mod.G.currEffs().length == mod.G.maxEffs){choice='fortune'};\n\t\t\t\t",
         "before"
     )
 
@@ -198,9 +198,13 @@ G._Initialize = function(en, Research) {
     // also dragon's eye buff lol
     G.me.popFunc = en.injectCode(G.me.popFunc,
         "if (me.force!='') {this.chain=0;choice=me.force;me.force='';}",
-        "if (me.force!='') {this.chain=0;choice=me.force;if (choice=='click frenzy' && Game.hasBuff('Dragonflight')){choice='fortune';};"+
-        "\n\t\t\t\tif (Game.hasBuff(`Dragon's Eye`) && Game.buffs[`Dragon's Eye`].time>0){choice=mod.clicks.feedDragonEye(choice);}me.force=''};",
+        "if (me.force!='') {this.chain=0;choice=me.force;if (choice=='click frenzy' && Game.hasBuff('Dragonflight')){choice='fortune';};me.force=''};",
         "replace"
+    )
+    G.me.popFunc = en.injectCode(G.me.popFunc,
+        "if (choice!='chain cookie') this.chain=0;",
+        "\n\t\t\t\tif (Game.hasBuff(`Dragon's Eye`) && Game.buffs[`Dragon's Eye`].time>0){choice=mod.clicks.feedDragonEye(choice);}",
+        "after"
     )
     // this just makes it harder to get cf+df
     G.me.popFunc = en.injectCode(G.me.popFunc,
