@@ -105,15 +105,16 @@ Clicks._Initialize = function(en, Research) {
         var clickNum=1+(this.overflow>0?Math.floor(this.overflow*overflowEff):0); 
         if (Game.hasBuff("Click frenzy")) clickNum*=4;
         if (Game.hasBuff("Dragonflight")) clickNum*=6;
-        var godLvl=Game.hasGod('ruin');
-        var gz = Game.hasBuff("Devastation");
-        if (gz) {
-            if (godLvl==1) clickNum+=gz.arg1*0.006;
-            else if (godLvl==2) clickNum+=gz.arg1*0.003;
-            else if (godLvl==3) clickNum+=gz.arg1*0.0015;
+        if (Game.hasGod) {
+            var godLvl=Game.hasGod('ruin');
+            var gz = Game.hasBuff("Devastation");
+            if (gz) {
+                if (godLvl==1) clickNum+=gz.arg1*0.006;
+                else if (godLvl==2) clickNum+=gz.arg1*0.003;
+                else if (godLvl==3) clickNum+=gz.arg1*0.0015;
+            }
+            if (Game.hasBuff("Celestial energy")) clickNum*=0.4;
         }
-        if (Game.hasBuff("Celestial energy")) clickNum*=0.4;
-
         this.clicks-=Math.ceil(clickNum);
         if(this.clicks<0) this.clicks=0;
         this.regenTimer=P.baseRecovery;
