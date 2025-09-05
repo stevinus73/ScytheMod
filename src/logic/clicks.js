@@ -200,7 +200,7 @@ Clicks._Initialize = function(en, Research) {
             }
         }
 
-        if (Game.hasBuff("Dragon's Eye")) this.clicks=0; // boom!
+        if (Game.hasBuff("Dragon\u2018s Eye")) this.clicks=0; // boom!
         this.pcCooldown--;
     }
 
@@ -415,12 +415,12 @@ Clicks._Initialize = function(en, Research) {
 
     Clicks.feedDragonEye = function(choice) {
         if ((choice=='click frenzy')||(choice=='dragonflight')) {
-            Game.hasBuff("Dragon's Eye").multCpS*=1.3;
+            Game.hasBuff("Dragon\u2018s Eye").multCpS*=1.3;
             Game.Win("The hungering eye");
             return 'fortune';
         }
         if (choice=='cursed finger') {
-            Game.hasBuff("Dragon's Eye").multCpS*=1.8;
+            Game.hasBuff("Dragon\u2018s Eye").multCpS*=1.8;
             Game.Win("The hungering eye");
             return 'fortune';
         }
@@ -429,8 +429,8 @@ Clicks._Initialize = function(en, Research) {
     new Game.buffType('dragon eye',function(time,pow)
         {
             return {
-                name:"Dragon's Eye",
-                dname:"Dragon's Eye",
+                name:"Dragon\u2018s Eye",
+                dname:"Dragon\u2018s Eye",
                 desc:"Clicks",// depleted for "+Game.sayTime(time*Game.fps,-1)+", but cookie production x"+pow+"!",
                 icon:[3,6,Icons], // icon when
                 time:time*Game.fps,
@@ -449,7 +449,7 @@ Clicks._Initialize = function(en, Research) {
          .replace(`if (me.wrath && Math.random()<0.1) list.push('cursed finger');`,
                   `if (me.wrath && Math.random()<0.1) list.push('cursed finger');`
                   +`\n\t\tif (me.wrath && Math.random()<0.5*Game.auraMult('Unholy Dominion')) list.push('dragon eye');`))
-    Game.goldenCookieChoices.push("Dragon's Eye", "dragon eye");
+    Game.goldenCookieChoices.push("Dragon\u2018s Eye", "dragon eye");
     Game.shimmerTypes.golden.popFunc = en.injectCode(Game.shimmerTypes.golden.popFunc,
         "else if (choice=='clot')",
         `else if (choice=='dragon eye'){Game.gainBuff('dragon eye',Math.ceil(14*effectDurMod),mod.clicks.getDragonsEyeBoost());}\n\t\t\t`,
@@ -553,9 +553,9 @@ Clicks._Initialize = function(en, Research) {
                 else return 1;
             }
             if (Game.hasBuff("Cursed finger")) {power*=20*Game.eff('click');Game.killBuff("Cursed finger");} // stolen from idle mod
-            if (Game.hasBuff("Dragon's Eye")) {
+            if (Game.hasBuff("Dragon\u2018s Eye")) {
                 power*=25;
-                Game.killBuff("Dragon's Eye");
+                Game.killBuff("Dragon\u2018s Eye");
                 if (Math.random()<0.1) {
                     let shim=new Game.shimmer('golden',{noWrath:true});
                     shim.force='dragonflight';
