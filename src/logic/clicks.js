@@ -429,9 +429,9 @@ Clicks._Initialize = function(en, Research) {
     new Game.buffType('dragon eye',function(time,pow)
         {
             return {
-                name:"Dragon's Eye",
-                dname:"Dragon's Eye",
-                desc:"Clicks depleted for "+Game.sayTime(time*Game.fps,-1)+", but cookie production x"+pow+"!",
+                name:"Dragon Eye",
+                dname:"Dragon Eye",
+                desc:"Clicks",// depleted for "+Game.sayTime(time*Game.fps,-1)+", but cookie production x"+pow+"!",
                 icon:[3,6,Icons], // icon when
                 time:time*Game.fps,
                 power:pow,
