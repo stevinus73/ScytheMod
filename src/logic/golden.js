@@ -101,7 +101,7 @@ G._Initialize = function(en, Research) {
             }
         }
         if (Game.hasBuff('Dragon Energy')) power*=mod.bModify.getDragonEnergyMult();
-        if (Game.hasBuff('Dragon\'s Eye')) power*=Game.hasBuff('Dragon\'s Eye').multCpS;
+        if (Game.hasBuff("Dragon's Eye")) power*=Game.hasBuff("Dragon's Eye").multCpS;
         return power;
     }
 
@@ -142,7 +142,7 @@ G._Initialize = function(en, Research) {
     G.fortuneEarn = function(mult) {
         if (Game.hasBuff('Elder frenzy')) Game.Win("Eldritch fortunes");
         if (G.currEffsPower()>4000) Research.unlock("Golden gates");
-        if (Game.hasBuff('Dragon\'s Eye') && Game.hasBuff('Dragon\'s Eye').power>=80) Research.unlock("The all-seeing");
+        if (Game.hasBuff("Dragon's Eye") && Game.hasBuff("Dragon's Eye").power>=80) Research.unlock("The all-seeing");
 
         var moni=mult*Game.cookiesPs*60*15+777;
         if (Research.Has('Golden gates')) moni*=Math.pow(1.5, this.currEffs().length);

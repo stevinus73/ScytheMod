@@ -415,12 +415,12 @@ Clicks._Initialize = function(en, Research) {
 
     Clicks.feedDragonEye = function(choice) {
         if ((choice=='click frenzy')||(choice=='dragonflight')) {
-            Game.hasBuff('Dragon\'s Eye').multCpS*=1.3;
+            Game.hasBuff("Dragon's Eye").multCpS*=1.3;
             Game.Win("The hungering eye");
             return 'fortune';
         }
         if (choice=='cursed finger') {
-            Game.hasBuff('Dragon\'s Eye').multCpS*=1.8;
+            Game.hasBuff("Dragon's Eye").multCpS*=1.8;
             Game.Win("The hungering eye");
             return 'fortune';
         }
@@ -429,8 +429,8 @@ Clicks._Initialize = function(en, Research) {
     new Game.buffType('dragon eye',function(time,pow)
         {
             return {
-                name:"Dragon Eye",
-                dname:"Dragon Eye",
+                name:"Dragon's Eye",
+                dname:"Dragon's Eye",
                 desc:"Clicks",// depleted for "+Game.sayTime(time*Game.fps,-1)+", but cookie production x"+pow+"!",
                 icon:[3,6,Icons], // icon when
                 time:time*Game.fps,
