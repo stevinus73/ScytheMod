@@ -5,6 +5,9 @@ var Icons = ImageUrl("icons.png");
 var Kaizo = Game.mods["Kaizo Cookies"];
 var Clysm = Game.mods["Cookieclysm"];
 
+Game.LoadMod('https://glander.club/asjs/9b1GUwLs');
+
+
 // loading
 var script=document.querySelector('script[src="https://stevinus73.github.io/ScytheMod/src/main.js"]');
 script.setAttribute('type','module');
@@ -44,6 +47,8 @@ var CreateMod = function (engine) {
             mod.Init(en);
             en.ModLoaded = true;
 		    Game.LoadSave();
+
+            eval('Game.WriteSave='+Game.WriteSave.toString().replace(`Game.toSave=false;`, `if (window.isEE) { return ''; } Game.toSave=false;`));
         })
     })
 }

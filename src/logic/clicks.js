@@ -431,7 +431,7 @@ Clicks._Initialize = function(en, Research) {
             return {
                 name:"Dragon\u2018s Eye",
                 dname:"Dragon\u2018s Eye",
-                desc:"Clicks",// depleted for "+Game.sayTime(time*Game.fps,-1)+", but cookie production x"+pow+"!",
+                desc:"Clicks depleted for "+Game.sayTime(time*Game.fps,-1)+", but cookie production x"+pow+"!",
                 icon:[3,6,Icons], // icon when
                 time:time*Game.fps,
                 power:pow,
