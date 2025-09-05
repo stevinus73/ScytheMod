@@ -1604,7 +1604,7 @@ BModify._Initialize = function (en, Research) {
         var me = Game.Objects[i];
         en.addCpsHook(i, () => {
             return BModify.efficiency * (1 + (Game.Has(me.energyTiered) ?? (i == 'Cursor' ? 2 : 3 - 0.1 * me.id))
-                    * (BModify.speed - 1)) * (Game.Has('Dragon Energy') ?? BModify.getDragonEnergyMult())
+                    * (BModify.speed - 1)) * (Game.Has('Dragon Energy') ? BModify.getDragonEnergyMult() : 1)
         });
     }
 
