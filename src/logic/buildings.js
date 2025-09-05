@@ -533,7 +533,7 @@ BModify._Initialize = function (en, Research) {
     function addTieredUp(name, flavortext) {
         en.ue.addUpgrade(name, expTstr+'<q>'+flavortext+'</q>',1e4*Game.Tiers[tier].price,
                          (tier==1?[0,5,Icons]:[6,tier,icons]), order, {unlockAt:5e3*Game.Tiers[tier].price});
-        this.tieredEnergyUp.push(name);
+        BModify.tieredEnergyUp.push(name);
         tier++;
     }
 
